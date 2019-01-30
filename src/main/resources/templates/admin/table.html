@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<!-- release v4.1.8, copyright 2014 - 2015 Kartik Visweswaran -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Hellohao图床 - &copy; 纯粹的图片驿站</title>
+    <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" />
+    <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" />
+        <link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link th:href="@{/static/css/style.css}" rel="stylesheet" type="text/css" />
+    
+    
+    <link th:href="@{/static/css/toastr.min.css}" media="all" rel="stylesheet" type="text/css"/>
+    <link th:href="@{/static/css/login-register.css}" media="all" rel="stylesheet" type="text/css"/>
+    
+    <link href="https://cdn.staticfile.org/bootstrap-table/1.13.1/bootstrap-table.css" rel="stylesheet" />
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
+    <script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+    <script th:src="@{/static/js/login-register.js}"></script>
+    <script th:src="@{/static/bootstrap-3.3.4-dist/js/bootstrap-table-hellohao1.13.1.js}"></script>
+	<script src="https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"></script>
+	<script src="https://cdn.staticfile.org/jqBootstrapValidation/1.3.7/jqBootstrapValidation.min.js"></script>
+    <!-- 样式 -->
+    <style type="text/css">
+        .kv-main {
+            padding: 13px;
+
+        }
+
+        #page-header {
+            width: 80%;
+            height: 50px;
+            padding: 10px;
+            margin-top: 5%;
+            margin: o auto;
+        }
+
+        pre {
+            color: #000;
+            line-height: 16px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        #isadmin{
+        float:right;
+        }
+
+    </style>
+</head>
+<body>
+<div th:include="header::header"></div>
+<div class="alert alert-warning">
+    <a href="#" class="close" data-dismiss="alert">
+        &times;
+    </a>
+    <strong>警告！</strong>您的网络连接有问题。
+</div>
+
+
+<div class="container kv-main">
+   <section class="content">
+        <div class="row" style="margin-bottom:5px;">
+            <div class="col-md-3">
+                <div class="sm-st clearfix">
+                    <span class="sm-st-icon st-red"><i class="fa fa-image"></i></span>
+                    <div class="sm-st-info">
+                        <span th:utext="${counts}"></span>
+                        图片总数
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="sm-st clearfix">
+                    <span class="sm-st-icon st-violet"><i class="fa fa-user"></i></span>
+                    <div class="sm-st-info">
+                        <span th:utext="${getUserTotal}">0</span>
+                        用户总数
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="sm-st clearfix">
+                    <span class="sm-st-icon st-blue"><i class="fa fa-dollar"></i></span>
+                    <div class="sm-st-info">
+                        <span>0</span>
+                        Waiting..
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="sm-st clearfix">
+                    <span class="sm-st-icon st-green"><i class="fa fa-paperclip"></i></span>
+                    <div class="sm-st-info">
+                        <span>0</span>
+                        Waiting.. 
+                    </div>
+                </div>
+            </div>
+            
+        </div>    
+  </section>     
+    <div th:utext="${htgl}"></div>
+    
+    <!--分页 -->
+    <table class="table table-bordered ft-table" id="table_server">
+    
+    <h4 id="mytext">我的图片列表</h4>
+    
+        <thead>
+        <tr>
+            <th>链接</th>
+            <th>日期</th>
+            <th>大小</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody id="addyes">
+
+        <!--<tr>
+           <td>https://v3.bootcss.com/css/#buttons</td>
+           <td>2018-02-08</td>
+           <td>1024 k</td>
+           <td>复制</td>
+        </tr>-->
+
+        </tbody>
+    </table>
+</div>
+<hr/>
+
+<!-- 登录注册框 -->
+<div class="modal fade login" id="loginModal">
+    <div class="modal-dialog login animated" style="width: 500px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>配置</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box">
+                    <div class="content">
+                        <div class="social">
+                        </div>
+                        <div class="division">
+                            <!-- 选项卡 -->
+							<ul id="myTab" class="nav nav-tabs">
+							    <li class="active">
+							        <a href="#home" onclick="showLoginForm();" data-toggle="tab">系统配置</a>
+							    </li>
+							    <li>
+							    	<a href="#ios" onclick="showRegisterForm();" data-toggle="tab">个人设置</a>
+							    </li>
+							</ul>
+                            
+                        </div>
+                        <div class="error"></div>
+                        <div class="form loginBox" style="width: 90%;float: left;">
+                            <form accept-charset="UTF-8">
+                                <input id="AccessKey" class="form-control" type="text" placeholder="AccessKey"
+                                       name="AccessKey">
+                                <input id="AccessSecret" class="form-control" type="text" placeholder="AccessSecret"
+                                       name="AccessSecret">
+                                <input id="Endpoint" class="form-control" type="text" placeholder="Endpoint"
+                                       name="Endpoint">
+                                <input id="Bucketname" class="form-control" type="text"
+                                       placeholder="Bucketname" name="Bucketname">
+                                <input id="RequestAddress" class="form-control" type="text"
+                                       placeholder="RequestAddress/域名" name="RequestAddress"> 
+                                       <input id="StorageType" name="StorageType" type="hidden" value="" >
+                            </form>
+                            <a onclick="issave();" class="btn btn-large btn-primary" >保存</a>
+                        </div>
+
+                        <!--<div class="form loginBox" style="width: 49%;float: right;">-->
+                            <!--<form accept-charset="UTF-8">-->
+                                <!--<input id="AccessKey2" class="form-control" type="text" placeholder="AccessKey"-->
+                                       <!--name="AccessKey">-->
+                                <!--<input id="AccessSecret2" class="form-control" type="text" placeholder="AccessSecret"-->
+                                       <!--name="AccessSecret">-->
+                                <!--<input id="Endpoint2" class="form-control" type="text" placeholder="Endpoint"-->
+                                       <!--name="Endpoint">-->
+                                <!--<input id="Bucketname2" class="form-control" type="text"-->
+                                       <!--placeholder="Bucketname" name="Bucketname">-->
+                                <!--<input id="RequestAddress2" class="form-control" type="text"-->
+                                       <!--placeholder="RequestAddress/域名" name="RequestAddress">-->
+                                <!--<input id="StorageType2" name="StorageType" type="hidden" value="" >-->
+                            <!--</form>-->
+                            <!--<a onclick="issave();" class="btn btn-large btn-primary" >保存</a>-->
+                        <!--</div>-->
+
+
+                    </div>
+                </div>
+                <div class="box">
+                            <div class="content registerBox" style="display:none;">
+                             <div class="form">
+                                <form method="post" id="gaimima"  data-remote="true" accept-charset="UTF-8">
+                                <p>修改密码</p>
+                                <input id="username" class="form-control" type="text" placeholder="新用户名" name="username">
+                                <input id="newpassword" class="form-control" type="password" placeholder="新密码" name="email">
+                                <input id="registerpassword" class="form-control" type="password" placeholder="确认密码" name="password">
+                                
+                                </form>
+                                <a onclick="change();" class="btn btn-large btn-primary" >修改</a>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+            <div class="modal-footer">
+<!--                <div class="forgot login-footer">
+                            <span>你希望 
+                                 <a href="javascript: showRegisterForm();">创建一个帐户</a>
+                            ?</span>
+                </div>
+                <div class="forgot register-footer" style="display:none">
+                    <span>已经有一个帐户吗?</span>
+                    <a href="javascript: showLoginForm();">登录</a>
+                </div> -->             
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="footer " th:include="footer::foot"></footer>
+</body>
+
+<script type="application/javascript">
+var t;
+    $(function () {
+        //上传文件个数，默认单上传
+        var loginid = [[${loginid}]];
+        toastr.options.positionClass = 'toast-bottom-right';
+        toastr.options = {
+            closeButton: true,//是否显示关闭按钮
+            debug: false,
+            progressBar: true,
+            positionClass: "toast-bottom-right",
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "2000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
+        // toastr.info("欢迎使用Hellohao图床！");
+        if (loginid == 100) {
+            var username ='[[${username}]]';
+            var isvip = '[[${level}]]';
+            var h1 = '<li><a href="javascript:void(0);" id="usernames" >' + username + '&nbsp;<img style="width:24px;height:24px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip' + isvip + '.png" /></a></li>';
+            var h2 = '<li><a href="javascript:void(0);" onclick="exit()">退出</a></li>';
+            $("#usersrc").html(h1 + h2);
+        }
+
+        // 分页
+        	 t = $("#table_server").bootstrapTable({
+            url: '/admin/selecttable.do',
+            method: 'get',
+            dataType: "json",
+            striped: true,//设置为 true 会有隔行变色效果
+            undefinedText: "空",//当数据为 undefined 时显示的字符
+            pagination: true, //分页
+             showRefresh: true,
+            paginationLoop:true,//设置为 true 启用分页条无限循环的功能。
+            showToggle: "true",//是否显示 切换试图（table/card）按钮
+            showColumns: "true",//是否显示 内容列下拉框
+            pageNumber: 1,//如果设置了分页，首页页码
+            // showPaginationSwitch:true,//是否显示 数据条数选择框
+            pageSize: 5,//如果设置了分页，页面数据条数
+            pageList: [5, 10, 20, 40],	//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
+            paginationPreText: '‹',//指定分页条中上一页按钮的图标或文字,这里是<
+            paginationNextText: '›',//指定分页条中下一页按钮的图标或文字,这里是>
+            // singleSelect: false,//设置True 将禁止多选
+            search: false, //显示搜索框
+            data_local: "zh-CN",//表格汉化
+            sidePagination: "server", //服务端处理分页
+            queryParams: function (params) {//自定义参数，这里的参数是传给后台的，我这是是分页用的
+                return {//这里的params是table提供的
+                    pageNum: (params.offset / params.limit) + 1,//从数据库第几条记录开始
+                    pageSize: params.limit//找多少条
+
+                };
+            },
+            idField: "链接",//指定主键列
+            columns: [
+                {
+                    title: '#',//表的列名
+                    formatter: function (value, rows, index) {
+                        //return index+1; //序号正序排序从1开始
+                        var pageSize = $('#table_server').bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
+                        var pageNumber = $('#table_server').bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
+                        return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
+                    },
+                    align: 'center'//水平居中
+                },
+                {
+                    title: '链接',
+                    formatter: function (value, rows, index) {
+                    return "http://"+rows.imgurl
+                    },
+                    align: 'center'
+                },
+                {
+                    title: '日期',
+                    field: 'updatetime',
+                    align: 'center'
+                },
+                {
+                    //EMAIL
+                    title: '大小',
+                    formatter: function (value, rows, index) {
+                    return rows.sizes+"k"
+                    },
+                    align: 'center'
+                },
+                {
+                    //部门名字
+                    title: '操作',                 
+					formatter: function (value, rows, index) {
+					var htm = "<a onclick='deleimg("+rows.id+")' class='btn btn-danger btn-xs'>删除</a>" + "&nbsp;&nbsp;&nbsp;";
+                    htm += '<a onclick="copy(\'' + rows.imgurl +
+                        '\')" class="btn btn-success btn-xs">复制</a>';
+                    return htm;
+				},
+                    align: 'center'
+                }
+
+            ]
+        });
+
+        t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
+            console.log("load success");
+            $(".pull-right").css("display", "block");
+        });
+
+        //传值
+	        $("#AccessKey").val('[[${AccessKey}]]');   
+	        $("#AccessSecret").val('[[${AccessSecret}]]');
+	        $("#Endpoint").val('[[${Endpoint}]]');
+	        $("#Bucketname").val('[[${Bucketname}]]');  
+	        $("#RequestAddress").val('[[${RequestAddress}]]');
+			$("#StorageType").val('[[${StorageType}]]');
+
+    });
+    var arr_url = "";
+    var arr_markdown = "";
+    var arr_html = "";
+
+
+    function error() {
+        toastr.info("更过功能陆续开发中..");
+    }
+
+    function exit() {
+        $.ajax({
+            type: "POST",
+            url: "/user/exit.do",
+            dataType: "json",
+            success: function (data) {
+                toastr.success("账号已退出。");
+                window.location.reload();
+
+            }
+        });
+    }
+    //保存KEY
+    function issave(){
+    	var AccessKey = $("#AccessKey").val();
+        var AccessSecret = $("#AccessSecret").val();
+        var Endpoint = $("#Endpoint").val();
+        var Bucketname = $("#Bucketname").val();  
+        var RequestAddress = $("#RequestAddress").val();
+        var StorageType = $("#StorageType").val();
+	    $.ajax({
+            type: "POST",
+            url: "/admin/updatekey.do",
+            data:{AccessKey:AccessKey,AccessSecret:AccessSecret,Endpoint:Endpoint,Bucketname:Bucketname,RequestAddress:RequestAddress,StorageType:StorageType},
+            dataType: "json",
+            success: function (data) {
+	            if(data>0){
+	            toastr.success("保存成功");
+	            }else{
+	            toastr.error("保存失败");
+	            }
+            }
+        });
+    }
+  function change(){
+     	var username = $("#username").val();
+        var newpassword = $("#newpassword").val();
+        var registerpassword = $("#registerpassword").val();
+        if((username!=null&&username!="")&&(newpassword!=null&&newpassword!="")&&(registerpassword!=null&&registerpassword!="")){
+        	if(newpassword==registerpassword){
+        	    $.ajax({
+		            type: "POST",
+		            url: "/admin/change.do",
+		            data:{username:username,password:newpassword},
+		            dataType: "json",
+		            success: function (data) {
+			            if(data>0){
+			            toastr.success("修改成功,请重新登录。");
+			           setTimeout(function(){
+					    //这里写时间到后执行的代码
+					    window.location.reload();
+					}, 2000);
+			            }
+			            if(data=="-1"){
+			            toastr.error("用户名重复");
+			            }
+	        		}
+        	});
+        	}else{
+        		toastr.error("两次密码输入不一致");
+        	}
+
+        }else{
+        toastr.error("表单不能为空");
+        }
+
+	    
+    }
+//删除
+function deleimg(id) {
+    $.ajax({
+        type: "POST",
+        url: "/admin/deleimg.do",
+        data: {id: id},
+        dataType: "json",
+        success: function (data) {
+            if (data > 0) {
+                $("#table_server").bootstrapTable('refresh', t);
+                toastr.success("删除成功");
+            } else {
+                toastr.error("删除失败");
+                $("#table_server").bootstrapTable('refresh', t);
+            }
+        }
+    });
+}
+
+
+function copy(data) {
+    var copy = new ClipboardJS('.btn', {
+        text: function(trigger) {
+            return "http://"+data;
+        }
+    });
+    copy.on('success', function (e) {
+            	toastr.success("复制成功");
+            });
+    copy.on('error', function (e) {
+    	alert('复制失败');
+    });
+}
+
+
+
+</script>
+</html>

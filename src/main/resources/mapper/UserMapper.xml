@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.UserMapper">
+
+    <!-- 用户注册 -->
+    <insert id="register" parameterType="cn.hellohao.pojo.User">
+        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL)
+        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level})
+    </insert>
+
+    <!-- 登录 -->
+    <select id="login" parameterType="string" resultType="integer">
+        select COUNT(*)
+        from user
+        where email = #{email}
+          and password = #{password}
+    </select>
+
+    <!-- 查询当前用户 -->
+    <select id="getUsers" parameterType="string" resultType="cn.hellohao.pojo.User">
+        SELECT id,
+               username,
+               email,
+               password,
+               birthder,
+               LEVEL
+        FROM user
+        WHERE email = #{email}
+    </select>
+
+    <!-- 插入图片信息 -->
+    <insert id="insertimg" parameterType="cn.hellohao.pojo.Images">
+        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes)
+        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, NOW(),#{sizes})
+    </insert>
+    
+    <!-- 修改资料 -->
+    <update id="change" parameterType="cn.hellohao.pojo.User">
+    UPDATE `user` set username=#{username},`password`=#{password} where email=#{email}
+    </update>
+    <select id="checkUsername" parameterType="string" resultType="integer">
+    SELECT count(username) FROM `user` where username=#{username}
+    </select>
+    
+    <!-- 查询用户总数 -->
+        <select id="getUserTotal" resultType="integer">
+    SELECT count(*) FROM `user` 
+    </select>
+    
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.ImgMapper">
+
+    <!-- 查询-->
+    <select id="selectimg" parameterType="integer" resultType="cn.hellohao.pojo.Images">
+	SELECT
+		* 
+	FROM
+		imgdata 
+		where
+        1=1
+		<if test="userid != null">
+		userid = #{userid}
+		</if>
+		order by updatetime desc
+    </select>
+    <!-- 此用户下总数 -->
+	<select id="countimg" parameterType="integer" resultType="integer">
+	    select count(*) from imgdata where userid = #{userid} 
+	</select>
+	
+	<delete id="deleimg" parameterType="integer">
+	DELETE FROM imgdata WHERE id=#{id}
+	</delete>
+
+
+	<select id="selectByPrimaryKey" parameterType="integer" resultType="cn.hellohao.pojo.Images">
+		select * from imgdata where id = #{id}
+	</select>
+	
+	<select id="counts" resultType="integer">
+	    select count(*) from imgdata where 1=1
+		<if test="userid != null">
+			userid=#{userid}
+
+		</if>
+	</select>
+
+</mapper>

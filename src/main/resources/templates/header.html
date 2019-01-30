@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- release v4.1.8, copyright 2014 - 2015 Kartik Visweswaran -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8"/>
+    <title>Hellohao图床 - &copy; 纯粹的图片驿站</title>
+</head>
+<body>
+<th:block th:fragment="header">
+	<div class="navbar navbar-inverse navbar-fixed-top">
+	    <div class="container">
+	        <div class="navbar-header">
+	            <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+	                <span class="sr-only">Toggle navigation</span>
+	                <span class="icon-bar"></span>
+	                <span class="icon-bar"></span>
+	                <span class="icon-bar"></span>
+	            </button>
+	            <a class="navbar-brand hidden-sm" href="/" >Hellohao图床</a>
+	        </div>
+	        <div class="navbar-collapse collapse" role="navigation">
+	            <ul class="nav navbar-nav">
+	                <li class="hidden-sm hidden-md">
+	                <a href="http://www.hellohao.cn" target="_blank" >关于</a>
+	                </li>
+	                <li><a href="http://www.hellohao.cn" target="_blank">联系</a>
+	                </li>
+	            </ul>
+	            <ul id="usersrc" class="nav navbar-nav navbar-right hidden-sm">
+	                <li><a id="login" href="javascript:void(0);" onclick="openLoginModal();">登录</a></li>
+	                <li><a id="zhuce" href="javascript:void(0);" onclick="openRegisterModal();">注册</a></li>
+	            </ul>
+	        </div>
+	    </div>
+	</div>
+</th:block>
+</body>
+
+</html>
