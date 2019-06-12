@@ -41,8 +41,8 @@ git clone https://github.com/Hello-hao/Tbed.git
 server.port=8088
 
 spring.datasource.username=root
-spring.datasource.password=123456
-spring.datasource.url=jdbc:mysql://127.0.0.1:3306/shiro_action?useSSL=false&characterEncoding=UTF8
+spring.datasource.password=root
+spring.datasource.url=jdbc:mysql://localhost:3306/picturebed?useUnicode=true&characterEncoding=utf8
 ```
 
 ### 启动项目
