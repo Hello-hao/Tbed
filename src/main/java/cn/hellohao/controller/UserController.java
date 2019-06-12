@@ -53,10 +53,10 @@ public class UserController {
             user.setUid(uid);
             user.setBirthder(birthder);
             //查询是否启用了邮箱验证。
-            EmailConfig emailConfig1 = emailConfigService.getemail();
             Config config = configService.getSourceype();
+            System.err.println("是否启用了邮箱激活："+emailConfig.getUsing());
             Integer type = 0;
-            if(emailConfig1.getUsing()==1){
+            if(emailConfig.getUsing()==1){
                 user.setIsok(0);
                 //初始化邮箱
                 MimeMessage message = SendEmail.Emails(emailConfig);
@@ -67,6 +67,7 @@ public class UserController {
                     }
                 };
                 thread.start();
+                type = 1;
             }else{
                 //直接注册
                 user.setIsok(1);
