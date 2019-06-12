@@ -70,8 +70,8 @@ public class AdminController {
 //
 //        }
         model.addAttribute("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
-        model.addAttribute("counts", imgService.counts(null) + 1000);//总数
-        model.addAttribute("getUserTotal", userService.getUserTotal() + 100);
+        model.addAttribute("counts", imgService.counts(null) );//总数
+        model.addAttribute("getUserTotal", userService.getUserTotal() );
         model.addAttribute("imgreviewcount", imgreview.getCount());
         model.addAttribute("username", u.getUsername());
         model.addAttribute("level", u.getLevel());

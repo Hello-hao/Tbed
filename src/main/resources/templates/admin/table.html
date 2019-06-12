@@ -59,15 +59,6 @@
     </style>
 </head>
 <body>
-<!--
-<div th:include="header::header"></div>
-<div class="alert alert-warning">
-    <a href="#" class="close" data-dismiss="alert">
-        &times;
-    </a>
-    <strong>警告！</strong>您的网络连接有问题。
-</div>
--->
 
 <div class="container kv-main">
     <p id="" style="font-weight: bold;">本站概况</p>
@@ -134,14 +125,17 @@
                 </ul>
             </div>
             <!-- Single button -->
-            <span style="margin-left: 50px;">列表显示：</span>
-            <div class="btn-group">
+
+            <div class="btn-group" th:if=" ${level} gt '1'">
+                <span style="margin-left: 50px;">列表显示：</span>
+            </div>
+
+            <div class="btn-group" th:if=" ${level} gt '1'">
                 <select id="myselect" class="form-control">
                     <option value="1" checked="checked">所有人</option>
                     <option value="2">仅自己</option>
                 </select>
             </div>
-
         </table>
     </div>
 

@@ -6,9 +6,9 @@ import org.json.JSONObject;
 
 public class imgsh {
     //设置APPID/AK/SK
-    private static final String APP_ID = "15434135";
-    private static final String API_KEY = "yDdHaeMf0FfFAxupXFkoxoPG";
-    private static final String SECRET_KEY = "QGRXTy8QNDMr0dWuWS6bj7rNcwtEddKe";
+    private static final String APP_ID = "6666";
+    private static final String API_KEY = "fdgdsgsdgfdsgdgg";
+    private static final String SECRET_KEY = "dgfdsdxcfdghreereterg";
 
     private imgsh() {
     }

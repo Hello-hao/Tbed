@@ -67,15 +67,9 @@ public class OSSImageupload {
         return file;
     }
 
-    //初始化网易NOS对象存储
+    //初始化
     public static void Initialize(Keys k) {
         // 初始化
-        // Endpoint以杭州为例，其它Region请按实际情况填写。
-        String endpoint = "http://oss-cn-beijing.aliyuncs.com";
-        // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
-        String accessKeyId = "LTAI0Yd6Li0VxrUF";
-        String accessKeySecret = "F2ZuDMq0IYefvVDKyfJLpRNzXldci9";
-        String bucketName = "hellohao";
         // 创建OSSClient实例。
         ossClient = new OSSClient(k.getEndpoint(), k.getAccessKey(), k.getAccessSecret());
         key = k;
