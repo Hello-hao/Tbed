@@ -2,38 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hellohao.dao.KeysMapper">
 
-    <!-- 插入对象存储key-->
-    <insert id="register" parameterType="cn.hellohao.pojo.User">
-        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL)
-        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level})
-    </insert>
 
     <!-- 查询对象存储key-->
     <select id="selectKeys" parameterType="integer" resultType="cn.hellohao.pojo.Keys">
         SELECT
-			* 
-		FROM
-			`keys` 
-		WHERE 
-			storageType = #{storageType}
+        *
+        FROM
+        `keys`
+        WHERE
+        storageType = #{storageType}
     </select>
 
-    <!-- 查询对象存储类型-->
-    <select id="selectKeysType" resultType="integer">
-        SELECT
-			storageType 
-		FROM
-			`keys` where id=1
-    </select>
-    <update id="updateKey" parameterType="cn.hellohao.pojo.Keys" >
-		UPDATE `keys` 
-		SET AccessKey = #{AccessKey},
-		AccessSecret = #{AccessSecret},
-		Endpoint = #{Endpoint},
-		Bucketname = #{Bucketname},
-		RequestAddress = #{RequestAddress},
-		storageType = #{storageType} 
-		WHERE
-			id = 1
+    <update id="updateKey" parameterType="cn.hellohao.pojo.Keys">
+        UPDATE `keys`
+        SET AccessKey = #{AccessKey},
+        AccessSecret = #{AccessSecret},
+        Endpoint = #{Endpoint},
+        Bucketname = #{Bucketname},
+        RequestAddress = #{RequestAddress}
+        WHERE
+            storageType = #{storageType}
     </update>
 </mapper>

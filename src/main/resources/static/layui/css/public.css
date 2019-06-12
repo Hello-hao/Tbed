@@ -1,0 +1,57 @@
+/* ----- 滚动条样式 ----- */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-button:vertical {
+    display: none;
+}
+
+::-webkit-scrollbar-track, ::-webkit-scrollbar-corner {
+    background-color: #e2e2e2;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #a6a6a6;
+}
+
+::-webkit-scrollbar-thumb:vertical:hover {
+    background-color: #7f7f7f;
+}
+
+::-webkit-scrollbar-thumb:vertical:active {
+    background-color: rgba(0, 0, 0, .38);
+}
+
+/* ----- 滚动条样式 ----- */
+
+
+* {
+    box-sizing: border-box;
+}
+
+.page-loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #fff;
+}
+
+.rubik-loader {
+    width: 64px;
+    height: 64px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    background-image: url(/images/loading.gif);
+    background-repeat: no-repeat;
+    background-position: center;
+}

@@ -12,13 +12,14 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class TbedApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(TbedApplication.class, args);
-		
-	}
-	   /**
+    public static void main(String[] args) {
+        SpringApplication.run(TbedApplication.class, args);
+
+    }
+
+    /**
      * 文件上传配置
-     * 
+     *
      * @return
      */
     @Bean

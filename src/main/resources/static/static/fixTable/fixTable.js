@@ -1,11 +1,11 @@
 /**
  * Created by zhaozl on 2015/11/4.
  */
-var fixTable = (function() {
+var fixTable = (function () {
 
     // 初始化
     // padding:表示浏览器窗口减去表格高度后的空余高度
-    var initFixTable = function(tableObj, padding, callback) {
+    var initFixTable = function (tableObj, padding, callback) {
 
         // 渲染新表头
         _initNewHeader(tableObj);
@@ -19,8 +19,8 @@ var fixTable = (function() {
         // 计算表头宽度
         recalculateHeader(tableObj);
 
-        $(window).resize(function() {
-            setTimeout(function() {
+        $(window).resize(function () {
+            setTimeout(function () {
 
                 // 根据浏览器窗口调整表格高度
                 _setHeight(tableObj, padding);
@@ -31,7 +31,7 @@ var fixTable = (function() {
         });
 
         // 监听滚动是否到底
-        tableObj.parent().scroll(function(e) {
+        tableObj.parent().scroll(function (e) {
             if ($(this).scrollTop() + $(this).height() >= tableObj.height()) {
                 if (callback) {
                     callback();
@@ -41,7 +41,7 @@ var fixTable = (function() {
     };
 
     // 初始化新表头
-    var _initNewHeader = function(tableObj) {
+    var _initNewHeader = function (tableObj) {
 
         // 通过第一行的td设置最小宽度
         var tds = tableObj.contents().find("tr").eq(1).children("td");
@@ -91,7 +91,7 @@ var fixTable = (function() {
 
             // 根据原始表头display配置表格的display
             if ($(oriThs[i]).css("display") === "none") {
-                tableObj.contents().find("tr").each(function() {
+                tableObj.contents().find("tr").each(function () {
                     $(this).children("td").eq(i).hide();
                 });
             }
@@ -124,7 +124,7 @@ var fixTable = (function() {
     };
 
     // 根据浏览器窗口调整表格高度
-    var _setHeight = function(tableObj, padding) {
+    var _setHeight = function (tableObj, padding) {
         var height = $(window).height() - padding;
         if (height < 100) {
             height = 100;
@@ -134,7 +134,7 @@ var fixTable = (function() {
     };
 
     // 计算表头宽度
-    var recalculateHeader = function(tableObj) {
+    var recalculateHeader = function (tableObj) {
         var ths = tableObj.parent().prev().children("div");
         var tds = tableObj.contents().find("tr").eq(0).children("td");
 
@@ -153,8 +153,8 @@ var fixTable = (function() {
     };
 
     // 根据索引号显示列
-    var showColumn = function(tableObj, idx) {
-        tableObj.contents().find("tr").each(function() {
+    var showColumn = function (tableObj, idx) {
+        tableObj.contents().find("tr").each(function () {
             $(this).children("td").eq(idx).show();
         });
         tableObj.parent().prev().children("div").eq(idx).show();
@@ -164,8 +164,8 @@ var fixTable = (function() {
     };
 
     // 根据索引号隐藏列
-    var hideColumn = function(tableObj, idx) {
-        tableObj.contents().find("tr").each(function() {
+    var hideColumn = function (tableObj, idx) {
+        tableObj.contents().find("tr").each(function () {
             $(this).children("td").eq(idx).hide();
         });
         tableObj.parent().prev().children("div").eq(idx).hide();

@@ -9,26 +9,21 @@ import cn.hellohao.service.KeysService;
 
 @Service
 public class KeysServiceImpl implements KeysService {
-	
-	@Autowired
-	private KeysMapper keysMapper;
 
-	@Override
-	public Keys selectKeys(Integer storageType) {
-		// TODO Auto-generated method stub
-		return keysMapper.selectKeys(storageType);
-	}
+    @Autowired
+    private KeysMapper keysMapper;
 
-	@Override
-	public Integer selectKeysType() {
-		// TODO Auto-generated method stub
-		return keysMapper.selectKeysType();
-	}
+    @Override
+    public Keys selectKeys(Integer storageType) {
+        // TODO Auto-generated method stub
+        return keysMapper.selectKeys(storageType);
+    }
 
-	@Override
-	public Integer updateKey(Keys key) {
-		// TODO Auto-generated method stub
-		return keysMapper.updateKey(key);
-	}
+
+    @Override
+    public Integer updateKey(Keys key) {
+        // TODO Auto-generated method stub
+        return keysMapper.updateKey(key);
+    }
 
 }

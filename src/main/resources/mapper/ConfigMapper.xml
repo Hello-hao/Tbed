@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.ConfigMapper">
+
+    <select id="getSourceype" resultType="cn.hellohao.pojo.Config">
+        select * from config where id = 1
+    </select>
+
+    <update id="setSourceype" parameterType="cn.hellohao.pojo.Config">
+        UPDATE config
+        <set>
+            <if test="sourcekey != null">
+                sourcekey = #{sourcekey},
+            </if>
+            <if test="emails != null">
+                emails = #{emails},
+            </if>
+            <if test="webname != null">
+                webname = #{webname},
+            </if>
+            <if test="explain != null">
+                `explain` = #{explain},
+            </if>
+            <if test="logos != null">
+                `logos` = #{logos},
+            </if>
+            <if test="footed != null">
+                `footed` = #{footed},
+            </if>
+            <if test="links != null">
+                `links` = #{links},
+            </if>
+            <if test="notice != null">
+                `notice` = #{notice},
+            </if>
+            <if test="baidu != null">
+                `baidu` = #{baidu}
+            </if>
+        </set>
+        where id=1
+    </update>
+
+
+</mapper>

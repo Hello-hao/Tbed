@@ -4,37 +4,64 @@
 
     <!-- 查询-->
     <select id="selectimg" parameterType="integer" resultType="cn.hellohao.pojo.Images">
-	SELECT
-		* 
-	FROM
-		imgdata 
-		where
+        SELECT
+        a.id,
+        a.imgname,
+        a.imgurl,
+        b.username,
+        a.updatetime,
+        a.sizes,
+        a.abnormal,
+        a.source
+        FROM
+        imgdata a
+        LEFT JOIN user b ON a.userid = b.id
+        where
         1=1
-		<if test="userid != null">
-		userid = #{userid}
-		</if>
-		order by updatetime desc
+        <if test="userid != null">
+            and
+            userid = #{userid}
+        </if>
+        order by id desc
     </select>
     <!-- 此用户下总数 -->
-	<select id="countimg" parameterType="integer" resultType="integer">
-	    select count(*) from imgdata where userid = #{userid} 
-	</select>
-	
-	<delete id="deleimg" parameterType="integer">
-	DELETE FROM imgdata WHERE id=#{id}
-	</delete>
+    <select id="countimg" parameterType="integer" resultType="integer">
+        select count(*) from imgdata where userid = #{userid}
+    </select>
+
+    <delete id="deleimg" parameterType="integer">
+        DELETE FROM imgdata WHERE id=#{id}
+    </delete>
 
 
-	<select id="selectByPrimaryKey" parameterType="integer" resultType="cn.hellohao.pojo.Images">
-		select * from imgdata where id = #{id}
-	</select>
-	
-	<select id="counts" resultType="integer">
-	    select count(*) from imgdata where 1=1
-		<if test="userid != null">
-			userid=#{userid}
+    <select id="selectByPrimaryKey" parameterType="integer" resultType="cn.hellohao.pojo.Images">
+        select * from imgdata where id = #{id}
+    </select>
 
-		</if>
-	</select>
+    <select id="counts" resultType="integer">
+        select count(*) from imgdata where 1=1
+        <if test="userid != null">
+            userid=#{userid}
+
+        </if>
+    </select>
+
+    <!-- 根据图片名字标记非法提示 -->
+    <update id="setabnormal" parameterType="string">
+        UPDATE imgdata set abnormal=1 where imgname=#{imgname}
+    </update>
+    <!-- 非法图片删除他  根据名称-->
+    <delete id="deleimgname" parameterType="string">
+        DELETE FROM imgdata WHERE imgname=#{imgname}
+    </delete>
+
+<!--    批量删除-->
+    <delete id="deleall" parameterType="integer">
+        DELETE FROM imgdata WHERE id = #{id}
+    </delete>
+
+    <select id="gettimeimg" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        SELECT * from  imgdata WHERE  updatetime>=#{time}
+    </select>
 
 </mapper>

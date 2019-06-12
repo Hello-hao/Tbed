@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.ImgreviewMapper">
+    <resultMap id="BaseResultMap" type="cn.hellohao.pojo.Imgreview">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+        <result column="api_key" jdbcType="VARCHAR" property="apiKey"/>
+        <result column="secret_key" jdbcType="VARCHAR" property="secretKey"/>
+        <result column="Using" jdbcType="INTEGER" property="using"/>
+        <result column="count" jdbcType="INTEGER" property="count"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, app_id, api_key, secret_key, `Using`,`count`
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        <include refid="Base_Column_List"/>
+        from imgreview
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        <!--@mbg.generated-->
+        delete from imgreview
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.hellohao.pojo.Imgreview"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into imgreview (app_id, api_key, secret_key,
+        `Using`,count)
+        values (#{appId,jdbcType=VARCHAR}, #{apiKey,jdbcType=VARCHAR}, #{secretKey,jdbcType=VARCHAR},
+        #{using,jdbcType=INTEGER},#{count,jdbcType=INTEGER})
+    </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.hellohao.pojo.Imgreview"
+            useGeneratedKeys="true">
+        <!--@mbg.generated-->
+        insert into imgreview
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null">
+                app_id,
+            </if>
+            <if test="apiKey != null">
+                api_key,
+            </if>
+            <if test="secretKey != null">
+                secret_key,
+            </if>
+            <if test="using != null">
+                `Using`,
+            </if>
+            <if test="count != null">
+                `count`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null">
+                #{appId,jdbcType=VARCHAR},
+            </if>
+            <if test="apiKey != null">
+                #{apiKey,jdbcType=VARCHAR},
+            </if>
+            <if test="secretKey != null">
+                #{secretKey,jdbcType=VARCHAR},
+            </if>
+            <if test="using != null">
+                #{using,jdbcType=INTEGER},
+            </if>
+            <if test="count != null">
+                #{count,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.hellohao.pojo.Imgreview">
+        <!--@mbg.generated-->
+        update imgreview
+        <set>
+            <if test="appId != null">
+                app_id = #{appId,jdbcType=VARCHAR},
+            </if>
+            <if test="apiKey != null">
+                api_key = #{apiKey,jdbcType=VARCHAR},
+            </if>
+            <if test="secretKey != null">
+                secret_key = #{secretKey,jdbcType=VARCHAR},
+            </if>
+            <if test="using != null">
+                `Using` = #{using,jdbcType=INTEGER},
+            </if>
+            <if test="count != null">
+                `count` = #{count,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.hellohao.pojo.Imgreview">
+        <!--@mbg.generated-->
+        update imgreview
+        set app_id = #{appId,jdbcType=VARCHAR},
+        api_key = #{apiKey,jdbcType=VARCHAR},
+        secret_key = #{secretKey,jdbcType=VARCHAR},
+        `Using` = #{using,jdbcType=INTEGER},
+        `count` = #{count,jdbcType=INTEGER}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

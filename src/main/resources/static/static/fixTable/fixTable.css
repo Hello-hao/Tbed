@@ -1,49 +1,49 @@
 .ft-th-wrapper {
-  background: #fff;
-  position: relative;
-  height: 37px;
-  border-left: 1px solid #ddd;
-  z-index: 1;
+    background: #fff;
+    position: relative;
+    height: 37px;
+    border-left: 1px solid #ddd;
+    z-index: 1;
 }
 
 .ft-th-wrapper div {
-  float: left;
-  padding: 8px;
-  border-right: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
-  border-top: 1px solid #ddd;
-  font-weight: bold;
-  position: absolute;
-  top: 0;
+    float: left;
+    padding: 8px;
+    border-right: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    font-weight: bold;
+    position: absolute;
+    top: 0;
 }
 
 .ft-table {
-  background: #fff;
-  margin: 0 !important;
-  display: none;
+    background: #fff;
+    margin: 0 !important;
+    display: none;
 }
 
 .ft-table td {
-  position: relative;
+    position: relative;
 }
 
 .ft-table td input {
-  position: absolute;
-  width: 98%;
-  top: 1px;
-  left: 1%;
+    position: absolute;
+    width: 98%;
+    top: 1px;
+    left: 1%;
 }
 
 .ft-table td select {
-  position: absolute;
-  width: 98%;
-  top: 1px;
-  left: 1%;
+    position: absolute;
+    width: 98%;
+    top: 1px;
+    left: 1%;
 }
 
 .ft-table-wrapper {
-  width: 100%;
-  overflow-y: auto;
-  /*定位是为了配合bootstrap的滚动组件*/
-  position: relative;
+    width: 100%;
+    overflow-y: auto;
+    /*定位是为了配合bootstrap的滚动组件*/
+    position: relative;
 }

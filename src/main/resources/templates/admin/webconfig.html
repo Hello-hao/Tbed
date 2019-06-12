@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>系統配置</title>
+    <link rel="stylesheet" href="https://cdn.90so.net/layui/2.4.5/css/layui.css">
+   
+</head>
+<body>
+<div class="layui-main">
+    <br />
+    <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+        <ul class="layui-tab-title">
+            <li class="layui-this" lay-id="111">首页设置</li>
+            <li lay-id="222">百度统计</li>
+
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">首页公告</label>
+                        <div class="layui-input-block">
+                            <input id="notice" type="text" name="title" autocomplete="off" placeholder="首页公告" class="layui-input"
+                                   th:value="${config.getNotice()}"/>
+                        </div>
+                    </div>
+                    <hr />
+                    <br/>
+                <div class="layui-form-item">
+                    <label class="layui-form-label">网站标题</label>
+                    <div class="layui-input-block">
+                        <input id="webname" type="text" name="title" autocomplete="off" placeholder="网站标题" class="layui-input"
+                               th:value="${config.getWebname()}"/>
+                    </div>
+                </div>
+                <br />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">站点说明</label>
+                    <div class="layui-input-block">
+                        <input id="explain" type="text" name="title" autocomplete="off" placeholder="站点说明" class="layui-input"
+                               th:value="${config.getExplain()}"/>
+                    </div>
+                </div>
+                <br />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">页面LOGO</label>
+                    <div class="layui-input-block">
+                        <input id="logos" type="text" name="title" autocomplete="off" placeholder="页面LOGO" class="layui-input"
+                               th:value="${config.getLogos()}"/><span style="color: #DAA5A6;">图片推荐大小：242px*33px</span>
+                    </div>
+                </div>
+                    <br />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">底部版权</label>
+                    <div class="layui-input-block">
+                        <input id="footed" type="text" name="title" autocomplete="off" placeholder="底部版权" class="layui-input"
+                               th:value="${config.getFooted()}"/>
+                    </div>
+                </div>
+                    <br />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">友情链接</label>
+                    <div class="layui-input-block">
+                        <textarea id="links" name="links" placeholder="请输入内容" class="layui-textarea" th:text="${config.getLinks()}"></textarea>
+                        <span style="color: #DAA5A6;">友链格式（否则会显示异常）：<xmp><li><a src="地址">网站名</a></li></xmp></span>
+                    </div>
+                </div>
+
+                </form>
+                <a class="layui-btn" lay-filter="demo2" onclick="updateconfig()">保存</a>
+            </div>
+            <div class="layui-tab-item">
+                <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">统计JS代码</label>
+                    <div class="layui-input-block">
+                        <textarea id="baidu" name="baidu" placeholder="请输入统计JS代码" class="layui-textarea" th:text="${config.getBaidu()}"></textarea>
+                        <span style="color: #DAA5A6;"><xmp>添加网站统计的JS代码，不需要要添加<script>标签</script></xmp></span>
+                    </div>
+                    <a class="layui-btn" lay-filter="demo2" onclick="updatebaidu()">保存</a>
+                </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+    <script src="https://cdn.90so.net/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.90so.net/layui/2.4.5/layui.js"></script>
+
+    <script type="text/javascript">
+        /**
+         * 禁用 ajax 缓存
+         */
+        $.ajaxSetup({
+            cache: false
+        });
+
+        layui.use(['table','element'], function(){
+            var table = layui.table;
+            var element = layui.element;
+            
+
+            });
+        function updateconfig() {
+            //修改百度图片鉴别
+                var webname = $("#webname").val();
+                var explain = $("#explain").val();
+                var logos = $("#logos").val();
+                var footed = $("#footed").val();
+                var links = $("#links").val();
+                var notice = $("#notice").val();
+                if (webname != "") {
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/root/updateconfig",
+                        dataType: "json",
+                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice},
+                        success: function (data) {
+                            var vals = Number(data);
+                            if (vals > 0) {
+                                layer.msg("保存成功", {icon: 1});
+                                //window.location.reload();
+                            } else {
+                                layer.msg("保存失败，请尝试刷新页面后操作", {icon: 2});
+                            }
+                        }
+                    });
+                } else {
+                    layer.msg("网站名称内容均不能为空", {icon: 2});
+                }
+        }
+        function updatebaidu() {
+            var baidu = $("#baidu").val();
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/updateconfig",
+                dataType: "json",
+                data: {baidu: baidu},
+                success: function (data) {
+                    var vals = Number(data);
+                    if (vals > 0) {
+                        layer.msg("保存成功", {icon: 1});
+                        //window.location.reload();
+                    } else {
+                        layer.msg("保存失败，请尝试刷新页面后操作", {icon: 2});
+                    }
+                }
+            });
+        }
+
+
+    </script>
+</body>
+</html>

@@ -8,9 +8,21 @@ import org.apache.ibatis.annotations.Param;
 import cn.hellohao.pojo.Images;
 
 public interface ImgService {
-	List<Images> selectimg(Integer id);
-	Integer deleimg(Integer id);
-	Integer countimg(Integer userid);
-	Images selectByPrimaryKey(Integer id);
-	Integer counts(Integer userid);
+    List<Images> selectimg(Integer id);
+
+    Integer deleimg(Integer id);
+
+    Integer countimg(Integer userid);
+
+    Images selectByPrimaryKey(Integer id);
+
+    Integer counts(Integer userid);
+
+    Integer setabnormal(String imgname);
+
+    Integer deleimgname(String imgname);
+
+    Integer deleall(Integer id);
+
+    List<Images> gettimeimg(String time);
 }

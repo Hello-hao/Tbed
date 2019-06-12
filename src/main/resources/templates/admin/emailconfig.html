@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮箱配置</title>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/layui/layui/layui.js}"></script>
+</head>
+<body>
+<div class="layui-main" style="width: 50%;margin-top: 50px;">
+    <h2>邮箱配置(SMTP)</h2>
+    <br/>
+
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">启用验证</label>
+            <div class="layui-input-block">
+                <input id="open" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest"
+                       lay-text="ON|OFF">
+                <!--                <input type="checkbox"  name="open" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">-->
+            </div>
+        </div>
+        <hr/>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱昵称</label>
+            <div class="layui-input-block">
+                <input id="emailname" type="text" name="title" autocomplete="off" placeholder="邮箱昵称" class="layui-input"
+                       th:value="${emailConfig.getEmailname()}"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱地址</label>
+            <div class="layui-input-block">
+                <input id="emails" type="text" name="title" autocomplete="off" placeholder="邮箱地址" class="layui-input"
+                       th:value="${emailConfig.getEmails()}"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">授权码</label>
+            <div class="layui-input-block">
+                <input id="emailkey" type="text" name="title" autocomplete="off" placeholder="授权码" class="layui-input"
+                       th:value="${emailConfig.getEmailkey()}"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">SMTP服务器</label>
+            <div class="layui-input-block">
+                <input id="emailurl" type="text" name="title" autocomplete="off" placeholder="SMTP服务器"
+                       class="layui-input" th:value="${emailConfig.getEmailurl()}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">端口</label>
+            <div class="layui-input-block">
+                <input id="port" type="text" name="title" autocomplete="off" placeholder="端口"
+                       class="layui-input" th:value="${emailConfig.getPort()}"/>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="updateimgreview()">保存</a>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+        //监听指定开关
+        //监听指定开关
+        form.on('switch(switchTest)', function (data) {
+            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+            //     offset: '6px'
+            // });
+            if (this.checked == true) {
+                emailconfig(1);
+            } else {
+                emailconfig(0);
+            }
+        });
+    });
+
+    var using = [[${emailConfig.getUsing()}]];
+    if (using == 1) {
+        $('#open').attr("checked", 'hellohao'); //增加属性
+    } else {
+        $('#open').removeAttr("checked"); //移除属性
+    }
+
+    $(function () {
+
+    });
+
+    function emailconfig(values) {
+        $.ajax({
+            type: "POST",
+            url: "/admin/root/updateemail",
+            dataType: "text",
+            data: {using: values},
+            success: function (data) {
+                var vals = Number(data);
+                if (vals > 0) {
+                    if (values == 1) {
+                        layer.msg('邮箱验证已开启');
+                    } else {
+                        layer.msg('邮箱验证已关闭');
+                    }
+                } else {
+                    layer.msg('系统异常，请刷新重试。');
+                }
+            }
+        });
+    }
+
+    //修改百度图片鉴别
+    function updateimgreview() {
+        var emailname = $("#emailname").val();
+        var emails = $("#emails").val();
+        var emailkey = $("#emailkey").val();
+        var port = $("#port").val();
+        var emailurl = $("#emailurl").val();
+        if (emailname != "" && emails != "" && emailkey != "" && port !="" && emailurl !="") {
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/updateemail",
+                dataType: "json",
+                data: {emailname: emailname, emails: emails, emailkey: emailkey,port:port,emailurl:emailurl},
+                success: function (data) {
+                    var vals = Number(data);
+                    if (vals > 0) {
+                        layer.msg("保存成功", {icon: 1});
+                        //window.location.reload();
+                    } else {
+                        layer.msg("保存失败，请尝试刷新页面后操作", {icon: 2});
+                    }
+                }
+            });
+        } else {
+            layer.msg("各项内容均不能为空", {icon: 2});
+        }
+
+    }
+
+</script>
+</body>
+</html>

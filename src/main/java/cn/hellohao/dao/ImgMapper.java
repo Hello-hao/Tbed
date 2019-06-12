@@ -10,9 +10,20 @@ import cn.hellohao.pojo.Images;
 @Mapper
 public interface ImgMapper {
 
-	List<Images> selectimg(@Param("userid") Integer userid);
-	Integer countimg(@Param("userid") Integer userid);
-	Integer deleimg(@Param("id") Integer id);
-	Images selectByPrimaryKey(@Param("id") Integer id);
-	Integer counts(@Param("userid") Integer userid);
+    List<Images> selectimg(@Param("userid") Integer userid);
+
+    Integer countimg(@Param("userid") Integer userid);
+
+    Integer deleimg(@Param("id") Integer id);
+
+    Images selectByPrimaryKey(@Param("id") Integer id);
+
+    Integer counts(@Param("userid") Integer userid);
+
+    Integer setabnormal(@Param("imgname") String imgname);
+
+    Integer deleimgname(@Param("imgname") String imgname);
+    Integer deleall(@Param("id") Integer id);
+
+    List<Images> gettimeimg(@Param("time") String time);
 }

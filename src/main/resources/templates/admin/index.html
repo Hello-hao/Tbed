@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <title>后台管理 - Hellohao图床</title>
+<!--     - &copy; 纯粹的图片驿站-->
+    <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
+
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <link rel="stylesheet" th:href="@{/layui/css/admin.css}">
+
+</head>
+
+<body class="layui-layout-body">
+
+<div class="layui-layout layui-layout-admin">
+
+    <div class="layui-header">
+        <!-- logo 区域 -->
+        <div class="layui-logo">
+            <!--                <img src="images/security.png" alt="logo"/>-->
+            <cite>&nbsp;Hellohao图床&emsp;</cite>
+        </div>
+
+        <!-- 头部区域 -->
+        <ul class="layui-nav layui-layout-left">
+            <li class="layui-nav-item" lay-unselect>
+                <a lay-event="flexible" title="侧边伸缩">
+                    <i class="layui-icon layui-icon-shrink-right"></i>
+                </a>
+            </li>
+            <!-- 面包屑 -->
+            <span class="layui-breadcrumb">
+                    <a><cite>首页</cite></a>
+                </span>
+        </ul>
+
+        <!-- 头像区域 -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a lay-event="clear" title="清理标签缓存"><img th:src="@{/layui/images/clear.png}" alt=""
+                                                         style="height: 18px;"/></a>
+            </li>
+
+            <li class="layui-nav-item">
+                <a>
+                    <img style="border-radius:20%; height: 25px;width: 25px;" th:src="@{/layui/images/avatar.png}"
+                         class="layui-nav-img" alt="头像">
+                    <!--                        <i class="layui-icon layui-icon-friends" style="font-size: 26px; "></i>-->
+                    <span id="istime"></span>
+                    <cite th:text="'你好！'+${username}"></cite>
+                    <span class="layui-nav-more"></span>
+                </a>
+                <dl class="layui-nav-child layui-anim layui-anim-upbit">
+                    <!--                        <dd lay-unselect>-->
+                    <!--                            <a href="#">个人中心</a>-->
+                    <!--                        </dd>-->
+                    <!--                        <dd lay-unselect>-->
+                    <!--                            <a href="javascript:void(0);" onclick="showRegisterForm()">修改密码</a>-->
+                    <!--                        </dd>-->
+                    <!--                        <hr>-->
+                    <dd lay-unselect>
+                        <a href="javascript:void(0);" onclick="exit()">退出</a>
+                    </dd>
+
+                </dl>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 左侧导航区域 -->
+    <div class="layui-side">
+        <div class="layui-side-scroll">
+            <ul class="layui-nav layui-nav-tree" lay-filter="test" lay-accordion="true">
+                <li class="layui-nav-item">
+                    <a lay-url="/table.html" lay-id="home">
+                        <i class="layui-icon layui-icon-home"></i>&emsp;<cite>系统概况</cite>
+                    </a>
+                </li>
+
+                <li class="layui-nav-item">
+                    <a>
+                        <i class="layui-icon layui-icon-username"></i>&emsp;<cite>个人中心</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="3" lay-url="/admin/tosetuser">
+                                <cite>修改密码</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                    <!--                        <dl class="layui-nav-child">-->
+                    <!--                            <dd>-->
+                    <!--                                <a href="#" lay-id="222" lay-url="/admin/tostorage">-->
+                    <!--                                    <cite>对象存储</cite>-->
+                    <!--                                </a>-->
+                    <!--                            </dd>-->
+                    <!--                        </dl>-->
+                </li>
+
+                <li class="layui-nav-item" th:if=" ${levels} gt '1'">
+                    <a>
+                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>附加功能</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="1" lay-url="/admin/root/touser">
+                                <cite>用户管理</cite>
+                            </a>
+                        </dd>
+                    </dl>
+
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="2" lay-url="/admin/root/tostorage">
+                                <cite>对象存储</cite>
+                            </a>
+                        </dd>
+                    </dl>
+
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="11" lay-url="/admin/root/ImageReview">
+                                <cite>图片鉴黄</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="4" lay-url="/admin/root/emailconfig">
+                                <cite>邮箱配置</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="5" lay-url="/admin/root/towebconfig">
+                                <cite>站点配置</cite>
+                            </a>
+                        </dd>
+                    </dl>
+
+                </li>
+
+
+
+                <!--                    <li class="layui-nav-item">-->
+                <!--                        <a lay-id="存储源配置" lay-url="https://www.baidu.com">-->
+                <!--                            <i class="layui-icon layui-icon-app"></i>&emsp;<cite>一级菜单</cite>-->
+                <!--                        </a>-->
+                <!--                    </li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <div class="layui-pagetabs">
+            <div class="layui-icon admin-tabs-control layui-icon-refresh-3" lay-event="refresh"></div>
+            <div class="layui-tab" lay-unauto lay-allowclose="true" lay-filter="lay-tab">
+                <ul class="layui-tab-title">
+                    <li lay-id="home" lay-url="/table.html" class="layui-this"><i
+                            class="layui-icon layui-icon-home"></i></li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <iframe src="/admin/admin" class="layui-iframe"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <ul class="rightmenu">
+            <li data-type="closethis">关闭此页</li>
+            <li data-type="closeall">关闭所有</li>
+            <li data-type="closeothers">关闭其他</li>
+            <li data-type="closeleft">关闭左侧</li>
+            <li data-type="closeright">关闭右侧</li>
+        </ul>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        copyright © 2019 <a href="http://www.hellohao.cn/" target="_blank">Hellohao</a> 切勿上传违反中华人民共和国互联网法律条约资源.
+    </div>
+    <div class="site-mobile-shade"></div>
+</div>
+<script th:src="@{/layui/layui/layui.js}"></script>
+<script th:src="@{/layui/js/jquery.js}"></script>
+<script th:src="@{/layui/js/zadmin.js}"></script>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+
+    });
+    // $(function () {
+    //     //parent.location.reload();//刷新父元素
+    //     now = new Date(),hour = now.getHours()
+    //     if(hour < 6){document.write("凌晨好！")}
+    //     else if (hour < 9){$("#istime").text("早上好！")}
+    //     else if (hour < 12){$("#istime").text("上午好！")}
+    //     else if (hour < 14){$("#istime").text("中午好！")}
+    //     else if (hour < 17){$("#istime").text("下午好！")}
+    //     else if (hour < 19){$("#istime").text("傍晚好！")}
+    //     else if (hour < 22){$("#istime").text("晚上好！")}
+    //     else {$("#istime").text("夜里好！")}
+    // });
+
+
+    function exit() {
+        $.ajax({
+            type: "POST",
+            url: "/user/exit.do",
+            dataType: "json",
+            success: function (data) {
+                layer.msg('账号已退出');
+                //toastr.success("账号已退出。");
+                //window.location.reload();//刷新当前页面
+                parent.location.reload();//刷新父元素
+
+            }
+        });
+    }
+
+</script>
+</body>
+
+</html>

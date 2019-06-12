@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>密码修改</title>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/layui/layui/layui.js}"></script>
+</head>
+<body>
+<div class="layui-main" style="width: 50%;margin-top: 50px;">
+    <h2>密码修改</h2>
+    <br/>
+
+    <form class="layui-form layui-form-pane" action="">
+
+        <hr/>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">用户名：</label>
+            <div class="layui-input-block">
+                <input id="username" type="text" name="title" autocomplete="off" disabled="disabled" class="layui-input"
+                       th:value="${username}+'（用户名不可修改）'"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">密码：</label>
+            <div class="layui-input-block">
+                <input id="newpassword" type="text" name="title" autocomplete="off" placeholder="新密码"
+                       class="layui-input"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认密码：</label>
+            <div class="layui-input-block">
+                <input id="registerpassword" type="text" name="title" autocomplete="off" placeholder="确认密码"
+                       class="layui-input"/>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="change()">保存</a>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+        //监听指定开关
+        //监听指定开关
+        form.on('switch(switchTest)', function (data) {
+            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+            //     offset: '6px'
+            // });
+            if (this.checked == true) {
+                imgreview(1);
+            } else {
+                imgreview(0);
+            }
+            //layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+    });
+
+    //lay-filter="switchTest"
+
+    $(function () {
+
+    });
+
+
+    //修改密码
+    function change() {
+        //var username = $("#username").val();
+        var newpassword = $("#newpassword").val();
+        var registerpassword = $("#registerpassword").val();
+        if ((newpassword != null && newpassword != "") && (registerpassword != null && registerpassword != "")) {
+            if (newpassword == registerpassword) {
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/change",
+                    //data:{username:username,password:newpassword},
+                    data: {password: newpassword},
+                    dataType: "json",
+                    success: function (data) {
+                        if (data > 0) {
+                            layer.msg("修改成功,请重新登录。", {icon: 1});
+                            setTimeout(function () {
+                                //这里写时间到后执行的代码
+                                //window.location.reload();
+                                parent.location.reload();//刷新父元素
+                            }, 2000);
+                        }
+                        if (data == "-1") {
+                            layer.msg("用户名重复。", {icon: 2});
+                        }
+                    }
+                });
+            } else {
+                layer.msg("两次密码输入不一致。", {icon: 2});
+            }
+
+        } else {
+            layer.msg("表单不能为空", {icon: 2});
+        }
+
+
+    }
+
+</script>
+</body>
+</html>

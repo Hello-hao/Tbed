@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>储存源配置</title>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <script th:src="@{/layui/layui/layui.js}"></script>
+</head>
+<body>
+<div class="layui-main" style="width: 50%;margin-top: 50px;">
+    <h2>存储源Key配置</h2>
+    <br/>
+
+    <form class="layui-form layui-form-pane" action="">
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">对象存储源</label>
+            <div class="layui-input-block">
+                <select id="StorageType" name="city" lay-filter="business" lay-verify="required">
+                    <option value="1">网易NOS</option>
+                    <option value="2">阿里OSS</option>
+                    <option value="3">腾讯COS（未接入）</option>
+                    <option value="3">七牛云存储（未接入）</option>
+                </select>
+            </div>
+        </div>
+
+
+        <hr/>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">AccessKey</label>
+            <div class="layui-input-block">
+                <input id="AccessKey" type="text" name="title" autocomplete="off" placeholder="AccessKey"
+                       class="layui-input" th:value="${AccessKey}"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">AccessSecret</label>
+            <div class="layui-input-block">
+                <input id="AccessSecret" type="text" name="title" autocomplete="off" placeholder="AccessSecret"
+                       class="layui-input" th:value="${AccessSecret}"/>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">Endpoint</label>
+            <div class="layui-input-block">
+                <input id="Endpoint" type="text" name="title" autocomplete="off" placeholder="Endpoint"
+                       class="layui-input" th:value="${Endpoint}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">Bucketname</label>
+            <div class="layui-input-block">
+                <input id="Bucketname" type="text" name="title" autocomplete="off" placeholder="Bucketname"
+                       class="layui-input" th:value="${Bucketname}"/>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">RequestAddress</label>
+            <div class="layui-input-block">
+                <input id="RequestAddress" type="text" name="title" autocomplete="off" placeholder="RequestAddress"
+                       class="layui-input" th:value="${RequestAddress}"/>
+            </div>
+        </div>
+
+
+        <div class="layui-form-item">
+            <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="issave();">保存</a>
+        </div>
+    </form>
+</div>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form;
+
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            layer.msg(JSON.stringify(data.field));
+            return false;
+        });
+        //select选中事件
+        form.on('select(business)', function(data){
+            //alert(data.value)//获取选中的值
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/getkey",
+                data: {
+                    storageType: data.value,
+                },
+                dataType: "json",
+                success: function (data) {
+                    console.log(data)
+                        $("#AccessKey").val(data[0].accessKey);
+                        $("#AccessSecret").val(data[0].accessSecret);
+                        $("#Endpoint").val(data[0].endpoint);
+                        $("#Bucketname").val(data[0].bucketname);
+                        $("#RequestAddress").val(data[0].requestAddress);
+                }
+            });
+
+            // if(data.value==2){
+            //     //阿里oss
+            //     $("#AccessKey").val('');
+            //     $("#AccessSecret").val('');
+            //     $("#Endpoint").val('');
+            //     $("#Bucketname").val('');
+            //     $("#RequestAddress").val('');
+            // }
+        });
+
+    });
+    $(function () {
+        var types = [[${StorageType}]]
+        $("#StorageType").find("option[value='" + types + "']").attr("selected", true);
+    });
+
+    //保存KEY
+    function issave() {
+        var AccessKey = $("#AccessKey").val();
+        var AccessSecret = $("#AccessSecret").val();
+        var Endpoint = $("#Endpoint").val();
+        var Bucketname = $("#Bucketname").val();
+        var RequestAddress = $("#RequestAddress").val();
+        var StorageType = $("#StorageType").val();
+        $.ajax({
+            type: "POST",
+            url: "/admin/root/updatekey",
+            data: {
+                AccessKey: AccessKey,
+                AccessSecret: AccessSecret,
+                Endpoint: Endpoint,
+                Bucketname: Bucketname,
+                RequestAddress: RequestAddress,
+                StorageType: StorageType
+            },
+            dataType: "json",
+            success: function (data) {
+                if (data > 0) {
+                    layer.msg("保存成功", {icon: 1});
+                } else {
+                    layer.msg("保存失败", {icon: 2});
+                }
+            }
+        });
+    }
+
+</script>
+</body>
+</html>

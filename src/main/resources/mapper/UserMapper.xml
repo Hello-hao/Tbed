@@ -4,47 +4,93 @@
 
     <!-- 用户注册 -->
     <insert id="register" parameterType="cn.hellohao.pojo.User">
-        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL)
-        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level})
+        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok)
+        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok} )
     </insert>
+    <!--  查询是否有username  -->
+    <select id="countusername" parameterType="string" resultType="integer">
+        select COUNT(*)
+        from user
+        where username = #{username}
+    </select>
+    <!--  查询是否有邮箱  -->
+    <select id="countmail" parameterType="string" resultType="integer">
+        select COUNT(*)
+        from user
+        where email = #{email}
+    </select>
+    <!--  uid查询用户并修改  -->
+    <update id="uiduser" parameterType="string">
+        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
+        UPDATE `user` set `isok`=1 where uid=#{uid}
+    </update>
 
     <!-- 登录 -->
     <select id="login" parameterType="string" resultType="integer">
         select COUNT(*)
         from user
         where email = #{email}
-          and password = #{password}
+        and password = #{password}
     </select>
 
-    <!-- 查询当前用户 -->
+    <!-- 查询当前用户:根据邮箱 -->
     <select id="getUsers" parameterType="string" resultType="cn.hellohao.pojo.User">
         SELECT id,
-               username,
-               email,
-               password,
-               birthder,
-               LEVEL
+        username,
+        email,
+        password,
+        birthder,
+        LEVEL,
+        uid,
+        isok
         FROM user
         WHERE email = #{email}
+    </select>
+    <!-- 查询当前用户:根据uid -->
+    <select id="getUsersMail" parameterType="string" resultType="cn.hellohao.pojo.User">
+        SELECT id,
+        username,
+        email,
+        password,
+        birthder,
+        LEVEL,
+        uid,
+        isok
+        FROM user
+        WHERE uid = #{uid}
     </select>
 
     <!-- 插入图片信息 -->
     <insert id="insertimg" parameterType="cn.hellohao.pojo.Images">
-        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes)
-        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, NOW(),#{sizes})
+        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source)
+        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},null,#{source})
     </insert>
-    
+
     <!-- 修改资料 -->
     <update id="change" parameterType="cn.hellohao.pojo.User">
-    UPDATE `user` set username=#{username},`password`=#{password} where email=#{email}
+        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
+        UPDATE `user` set `password`=#{password} where email=#{email}
     </update>
     <select id="checkUsername" parameterType="string" resultType="integer">
-    SELECT count(username) FROM `user` where username=#{username}
+        SELECT count(username) FROM `user` where username=#{username}
     </select>
-    
+
     <!-- 查询用户总数 -->
-        <select id="getUserTotal" resultType="integer">
-    SELECT count(*) FROM `user` 
+    <select id="getUserTotal" resultType="integer">
+        SELECT count(*) FROM `user`
     </select>
-    
+    <!-- 获取用户的详细信息 -->
+    <select id="getuserlist" resultType="cn.hellohao.pojo.User">
+        SELECT
+        *
+        FROM
+        user
+        order by birthder desc
+    </select>
+
+    <!--刪除用戶-->
+    <delete id="deleuser" parameterType="integer">
+        DELETE FROM user WHERE id=#{id}
+    </delete>
+
 </mapper>

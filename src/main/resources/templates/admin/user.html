@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户管理</title>
+    <link rel="stylesheet" href="https://cdn.90so.net/layui/2.4.5/css/layui.css">
+   
+</head>
+<body>
+<div class="layui-main">
+    <br />
+    <table id="dates" lay-filter="test"></table>
+</div>
+
+<!--        <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">查看</a>-->
+<!--        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>-->
+
+
+
+    <script src="https://cdn.90so.net/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.90so.net/layui/2.4.5/layui.js"></script>
+
+    <script type="text/javascript">
+        /**
+         * 禁用 ajax 缓存
+         */
+        $.ajaxSetup({
+            cache: false
+        });
+
+        var table = null;
+        layui.use('table', function(){
+            table = layui.table;
+
+            table.render({
+                elem: '#dates'
+                ,cache: false//关闭本地磁盘缓存，
+                ,url:'/admin/selectusertable2'
+                //,limit:20 //默认为10
+                ,cols: [ [
+                    {field:'id', width:70, title: '编号', sort: true} //sort：true页面可进行排序操作
+                    ,{field:'username',  title: '用户名'}
+                    ,{field:'email',width:170,  title: '邮箱', sort: true}
+                    ,{field:'password',width:170,  title: '密码'}
+                    ,{field:'birthder',width:170,  title: '注册时间'}
+                    ,{field:'level',width:100,  title: '等级',templet: function(d){
+                            var str = '';
+                            if(d.level==1){str='普通用户';}
+                            else if(d.level==2){str='管理员';}
+                            return str;
+                        }
+                    }
+                    ,{field:'level',width:100,  title: '操作',templet: function(d){
+                            return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>';
+                        }
+                    }
+                    //, {title: '操作', fixed: 'right',width:250, align: 'center', toolbar: '#column-toolbar'}
+
+                ] ]
+                ,page: true
+                ,done:function(res, curr, count){
+                    //数据的回调用，可不写
+                }
+            });
+
+
+            // 行点击事件
+            table.on('tool', function (obj) {
+                var data = obj.data;
+                var event = obj.event;
+                if (event === 'keyong') {
+                    //alert("可用")
+                }else if (event === 'del') {
+                    var index = layer.confirm('确定删除此用户？', {
+                        btn: ['删除','取消'] //按钮
+                    }, function(){
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/root/deleuser",
+                            data: {id: data.id},
+                            dataType: "json",
+                            success: function (data) {
+                                if (data > 0) {
+                                    table.reload('dates');//重新获取表数据
+                                    layer.msg('删除成功', {icon: 1});
+                                }
+                            }
+                        });
+                        layer.close(index);
+                    }, function(){
+
+                    });
+                }else{
+                    layer.msg('参数异常', {icon: 2});
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>

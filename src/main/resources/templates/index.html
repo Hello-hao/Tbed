@@ -2,195 +2,262 @@
 <!-- release v4.1.8, copyright 2014 - 2015 Kartik Visweswaran -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
- <!-- 网页不会被缓存 -->
- <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-    <title>Hellohao图床 - &copy; 纯粹的图片驿站</title>
-    <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon" />
-	<link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!-- 网页不会被缓存 -->
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <title th:text="${config.getWebname()}"></title>
+    <meta name="description" content="免费纯粹的图片存放驿站。"/>
+    <meta name="Keywords" content="hellohao图床,hellohao,图床,纯粹的图床站,免费图床"/>
+    <link rel=”canonical” href=”http://tc.hellohao.cn/”/>
+    <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/static/css/fileinput.css}" media="all" rel="stylesheet" type="text/css"/>
-    
+
     <link th:href="@{/static/css/toastr.min.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/login-register.css}" media="all" rel="stylesheet" type="text/css"/>
+    <link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" media="all" rel="stylesheet" type="text/css"/>
+
+
     <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
     <script th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
-    
-    
+
     <script th:src="@{/static/js/fileinput.js}" type="text/javascript"></script>
-	<script th:src="@{/static/js/fileinput_locale_zh.min.js}" type="text/javascript"></script>
-	<script th:src="@{/static/js/toastr.min.js}" type="text/javascript"></script>
+    <script th:src="@{/static/js/fileinput_locale_zh.min.js}" type="text/javascript"></script>
+    <script th:src="@{/static/js/toastr.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/login-register.js}"></script>
     <script src="https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script src="https://cdn.staticfile.org/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script type="text/javascript" src="https://api.guoch.xyz/?code=js&charset=utf-8"></script>
+    <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js" type="text/javascript"></script>
     <!-- 样式 -->
-    <style type="text/css" >
+    <style type="text/css">
         .kv-main {
-            padding: 13px;
-            margin-top: 5%;
+            padding: 46px;
+            /*margin-top: 5%;*/
         }
         #page-header {
             width: 80%;
             height: 50px;
             padding: 10px;
             margin-top: 5%;
-            margin: o auto;
+            margin: 0 auto;
         }
-        pre{
-	        color: #000;
-			line-height:16px;
-			font-size:13px;
-			font-weight:bold;
-			white-space: pre-wrap;
-			word-wrap: break-word;
-			
-		}
-		
-		
+        pre {
+            color: #000;
+            line-height: 16px;
+            font-size: 13px;
+            font-weight: bold;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        #page-header {
+            line-height: 2.5em;
+            font-family: "Microsoft YaHei", "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif;
+            font-size: 18px;
+            color: #333;
+        }
     </style>
-    
+
 </head>
 <body>
 <div th:include="header::header"></div>
-<div class="alert alert-warning">
-	<a href="#" class="close" data-dismiss="alert">
-		&times;
-	</a>
-	<strong>警告！</strong>您的网络连接有问题。
+    <div class="alert alert-success">
+        <a href="#" class="close" data-dismiss="alert">
+            &times;
+        </a>
+        <strong>警告！</strong>您的网络连接有问题。
+    </div>
+
+<div  class="container" th:if=" ${config.getNotice()} != ''">
+    <div class="alert alert-info alert-dismissable">
+    <button type="button" class="close" data-dismiss="alert"
+            aria-hidden="true">
+        &times;
+    </button>
+        <li class="glyphicon glyphicon-exclamation-sign">&nbsp;</li><span th:text="${config.getNotice()}"></span>
+    </div>
 </div>
-<div id="page-header" class="container kv-main">
-    <h3>图片上传</h3> 图片大小不得超过3 MB/单上传，注册本站可多文件上传/查看历史图片记录/单文件5M。
-</a>
+<div id="page-header" class="container kv-main jb">
+    <FONT face="Yu Gothic UI" color=#333 size=9>一言：</FONT>
 </div>
 <div class="container kv-main">
+    <div class="jb" style="width: 80%;height: auto;  margin-left: 100px;font-size: 1.5em;">
+        &nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Yu Gothic UI" color=rgb(58, 54, 54) size=5>『</FONT>&nbsp;&nbsp;&nbsp;<span
+            id="saying" style="font-family: 'Yu Gothic UI'"><script>saying()</script></span>&nbsp;&nbsp;<FONT
+            face="Yu Gothic UI" color=rgb(58, 54, 54) size=5>』</FONT>
+    </div>
+    <hr/>
+    <br/>
+    <br/>
+    <FONT color=#737373 size=3>图片大小不得超过3 MB/单上传，注册本站可多文件上传/查看历史图片记录/单文件5M。</FONT>
     <br>
     <form enctype="multipart/form-data">
         <div class="form-group">
-            <input id="updatefile" name="file" type="file" multiple="multiple" class="file" data-overwrite-initial="false"
+            <input id="updatefile" name="file" type="file" multiple="multiple" class="file"
+                   data-overwrite-initial="false"
                    data-min-file-count="1">
         </div>
     </form>
 </div>
 <!-- 生成图片外接的代码 style="display: none;" -->
-<div class="container" id="address" style="display: none;" >
+<div class="container" id="address" style="display: none;">
     <div class="form-group">
-        <label for="exampleInputEmail1">URL外链地址：</label>&nbsp;
-        <!--<a style="cursor:pointer;"  class="label label-info">复制</a>-->
-		<pre id="urls"></pre>
-		<label for="exampleInputEmail1">Markdown外链地址：</label>&nbsp;
-        
-		<pre id="markdowns"></pre>
-		<label for="exampleInputEmail1">HTML外链地址：</label>&nbsp;
-        
-		<pre id="htmls"></pre>
+        <label>URL外链地址：</label>&nbsp;
+        <a style="display: block;width: 50px;float: right;" onclick="copy(1)"  class="btn btn-info btn-xs">复制</a>
+        <pre id="urls"></pre>
+        <label>Markdown外链地址：</label>&nbsp;
+        <a style="display: block;width: 50px;float: right;" onclick="copy(2)"  class="btn btn-info btn-xs">复制</a>
+        <pre id="markdowns"></pre>
+        <label>HTML外链地址：</label>&nbsp;
+        <a style="display: block;width: 50px;float: right;" onclick="copy(3)"  class="btn btn-info btn-xs">复制</a>
+        <pre id="htmls"></pre>
     </div>
 </div>
 <hr/>
 <!-- 登录注册框 -->
 <div class="modal fade login" id="loginModal">
-		      <div class="modal-dialog login animated">
-    		      <div class="modal-content">
-    		         <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">Login with</h4>
-                    </div>
-                    <div class="modal-body">  
-                        <div class="box">
-                             <div class="content">
-                                <div class="social">
-                                    <a class="circle github" href="/">
-                                        Hellohao图床
-                                    </a>
+    <div class="modal-dialog login animated">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">系统登录</h4>
+            </div>
+            <div class="modal-body">
+                <div class="box">
+                    <div class="content">
+                        <div class="social">
+                            <p id="biaoti" class="circle github">
+                                系统登录
+                            </p>
 
-                                </div>
-                                <div class="division">
-                                    <div class="line l"></div>
-                                      <span>-</span>
-                                    <div class="line r"></div>
-                                </div>
-                                <div class="error"></div>
-                                <div class="form loginBox">
-                                    <form id="login"  method="post"  accept-charset="UTF-8">
-                                    <input id="loginemail" class="form-control" type="text" placeholder="Email" name="email">
-                                    <input id="loginpassword" class="form-control" type="password" placeholder="Password" name="password">
-                                    <input id="login-btn" data-toggle="dropdown"  class="btn btn-default btn-login dropdown-toggle" type="button" value="登录" onclick="loginAjax()">
-                                    </form>
-                                </div>
-                             </div>
                         </div>
-                        <div class="box">
-                            <div class="content registerBox" style="display:none;">
-                             <div class="form">
-                                <form method="post"  data-remote="true" accept-charset="UTF-8">
-                                <input id="registerusername" class="form-control" type="text" placeholder="Username" name="username">
-                                <input id="registeremail" class="form-control" type="text" placeholder="Email" name="email">
-                                <input id="registerpassword" class="form-control" type="password" placeholder="Password" name="password">
-                                <input id="registerpassword_confirmation" class="form-control" type="password" placeholder="Repeat Password" name="password_confirmation">
-                                <input class="btn btn-default btn-register" type="button" value="创建账户" name="commit" onclick="ismail();">
-                                </form>
-                                </div>
-                            </div>
+                        <div class="division">
+                            <div class="line l"></div>
+                            <span>-</span>
+                            <div class="line r"></div>
+                        </div>
+                        <div class="error"></div>
+                        <div class="form loginBox">
+                            <form id="login" method="post" accept-charset="UTF-8">
+                                <input id="loginemail" class="form-control" type="text" placeholder="邮箱" name="email">
+                                <input id="loginpassword" class="form-control" type="password" placeholder="密码"
+                                       name="password">
+                                <input id="login-btn" data-toggle="dropdown"
+                                       class="btn btn-default btn-login dropdown-toggle" type="button" value="登录"
+                                       onclick="loginAjax()">
+                            </form>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <div class="forgot login-footer">
+                </div>
+                <div class="box">
+                    <div class="content registerBox" style="display:none;">
+                        <div class="form">
+                            <form method="post" data-remote="true" accept-charset="UTF-8">
+                                <div style="font-size: 13px;">
+                                        <span> ●用户名注册后不能修改<br/>
+                                         ●邮箱激活链接如果没有请在【垃圾箱】查找</span>
+                                </div>
+                                <hr/>
+                                <input id="registerusername" class="form-control" type="text" placeholder="用户名(数字/字母不得超过10位)"
+                                       name="username">
+                                <input id="registeremail" class="form-control" type="text" placeholder="邮箱"
+                                       name="email">
+                                <input id="registerpassword" class="form-control" type="password" placeholder="密码"
+                                       name="password">
+                                <input id="registerpassword_confirmation" class="form-control" type="password"
+                                       placeholder="重复密码" name="password_confirmation">
+                                <input class="btn btn-default btn-register" type="button" value="创建账户" name="commit"
+                                       onclick="ismail();">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="forgot login-footer">
                             <span>你希望 
                                  <a href="javascript: showRegisterForm();">创建一个帐户</a>
                             ?</span>
-                        </div>
-                        <div class="forgot register-footer" style="display:none">
-                             <span>已经有一个帐户吗?</span>
-                             <a href="javascript: showLoginForm();">登录</a>
-                        </div>
-                    </div>        
-    		      </div>
-		      </div>
+                </div>
+                <div class="forgot register-footer" style="display:none">
+                    <span>已经有一个帐户吗?</span>
+                    <a href="javascript: showLoginForm();">登录</a>
+                </div>
+            </div>
+        </div>
+    </div>
 
-		  </div>
+</div>
 
 <footer class="footer " th:include="footer::foot"></footer>
 </body>
 <script th:inline="javascript">
-$(function (){
-//复制
-	var loginid =[[${loginid}]];
-//		    var copy = new ClipboardJS('#copyLink', {
-      //  text: function(trigger) {
-      //      return urls;
-       // }
-    //});
-	toastr.options.positionClass = 'toast-bottom-right';
-	toastr.options = {
-	        closeButton: true,//是否显示关闭按钮
-	        debug: false,
-	        progressBar: true,
-	        positionClass: "toast-bottom-right",
-	        onclick: null,
-	        showDuration: "300",
-	        hideDuration: "1000",
-	        timeOut: "2000",
-	        extendedTimeOut: "1000",
-	        showEasing: "swing",
-	        hideEasing: "linear",
-	        showMethod: "fadeIn",
-	        hideMethod: "fadeOut"
-	    };
-	toastr.info("欢迎使用Hellohao图床！");
-	if(loginid==100){
-	var username=[[${username}]];
-	var isvip = [[${level}]];
-	var h1 = '<li><a target="_blank" href="/admin/admin.do" id="usernames" >'+username+'&nbsp;<img style="width:24px;height:24px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip'+isvip+'.png" /></a></li>';
-	var h2 = '<li><a href="javascript:exit();" onclick="">退出</a></li>';
-	$("#usersrc").html(h1+h2);
-	}
-});
-	var arr_url = "";
-	var arr_markdown = "";
-	var arr_html = "";
-	//上传文件个数，默认单上传
+    $(document).ready(function () {
+        $(".jb").fadeToggle();
+        //$("#page-header").fadeToggle("slow");
+        $(".jb").fadeToggle(4000);
+    });
+    $(function () {
+        //设置页面资料
+        var webname = [[${config.getWebname()}]];
+        var explain = [[${config.getExplain()}]];
+        var footeds = [[${config.getFooted()}]];
+        var links = [[${config.getLinks()}]];
+        var logos = [[${config.getLogos()}]];
+        $("#webname").text(webname);
+        $("#explain").text(explain);
+        $("#footeds").text(footeds);
+        $("#links").html(links);
+        $("#logos").attr('src',logos);
+        var loginid = [[${loginid}]];
+        toastr.options.positionClass = 'toast-bottom-right';
+        toastr.options = {
+            closeButton: true,//是否显示关闭按钮
+            debug: false,
+            progressBar: true,
+            positionClass: "toast-bottom-right",
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "2000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
+        toastr.info("欢迎使用Hellohao图床！");
+        if (loginid == 100) {
+            var username = [[${username}]];
+            var isvip = [[${level}]];
+            var h = '<li><a  target="_blank" id="usernames" >' +times()+ username + '&nbsp;<img style=" margin-top:-6px;width:22px; height:22px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip' + isvip + '.png" /></a></li>';
+            var h1 = '<li><a style="font-weight: bold;" target="_blank" href="/admin/goadmin" id="usernames" >控制面板&nbsp;</a></li>';
+            var h2 = '<li><a href="javascript:exit();" title="666" onclick="">退出</a></li>';
+            $("#usersrc").html(h + h1 + h2);
+        }
+
+        //一言
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/sentence",
+        //     dataType: "json",
+        //     success: function(data){
+        //         var json = eval('(' + data[0] + ')');
+        //         console.log(json.hitokoto)
+        //         $("#yiyan").text(json.hitokoto);
+        //     }
+        // });
+
+    });
+    var arr_url = "";
+    var arr_markdown = "";
+    var arr_html = "";
+    //上传文件个数，默认单上传
     $("#updatefile").fileinput({
         language: 'zh',
-        uploadUrl: '/upimg.do', // you must set a valid URL here else you will get an error
+        uploadUrl: '/upimg', // you must set a valid URL here else you will get an error
         allowedFileExtensions: ['jpeg', 'jpg', 'png', 'gif', 'bmp'],
         overwriteInitial: false,
         uploadAsync: true,//默认异步上传
@@ -198,121 +265,188 @@ $(function (){
         //maxFilesNum: [[${imgcount}]],//上传最大的文件数量
         maxFileCount: [[${imgcount}]],//表示允许同时上传的最大文件个数
         // //allowedFileTypes: ['image', 'video', 'flash'],
-        // slugCallback: function (filename) {
+        //slugCallback: function (filename) {
         //
-        //     return filename.replace('(', '_').replace(']', '_');
-        // }
+        // toastr.info("欢迎！");
+        // return filename.replace('(', '_').replace(']', '_');
+        //}
     });
-//异步上传返回结果处理
-$("#updatefile").on("fileuploaded", function (event, data, previewId, index) {
-		//console.log(data);
-		$("#address").css('display','block');
+    //异步上传返回结果处理
+    $("#updatefile").on("fileuploaded", function (event, data, previewId, index) {
+        //console.log(data);
+        $("#address").css('display', 'block');
         var response = data;
-        arr_url+= 'http://'+data.response+'\r\n';
-        arr_markdown+= '![](http://'+data.response+')\r\n';
-        arr_html+='<img src="http://'+data.response+'" alt="Image" title="Image" /> \r\n';
+        arr_url += 'https://' + data.response + '\r\n';
+        arr_markdown += '![ ](https://' + data.response + ')\r\n';
+        arr_html += '<img src="https://' + data.response + '" alt="Image" title="Image" /> \r\n';
         $("#urls").text(arr_url);
         $("#markdowns").text(arr_markdown);
         $("#htmls").text(arr_html);
         urls = arr_url;
     });
 
-function error(){
-toastr.info("更过功能陆续开发中..");
-}
-function zhuce(mail,registerusername,registerpassword){
-	//验证成功
-	   $.ajax({
-		   type: "POST",
-	       url: "/user/register.do",
-	       data: {email:mail, username:registerusername,password:registerpassword},
-	       dataType: "json",
-	       success: function(data){
-		    	   if(data>0){
+    function zhuce(mail, registerusername, registerpassword) {
+        //验证成功
+        $.ajax({
+            type: "POST",
+            url: "/user/register",
+            data: {email: mail, username: registerusername, password: registerpassword},
+            dataType: "json",
+            success: function (data) {
+                if (data.ret > 0) {
+                    if(data.zctype==1){
+                        swal({
+                                title: "注册成功",
+                                text: "请前往邮箱激活你的账号，注意！激活邮件如果迟迟未收到，有可能在您的【垃圾箱】中。",
+                                type: "success",
+                                showCancelButton: false,//true显示两个按钮
+                                confirmButtonColor: "#A5DC86",
+                                confirmButtonText: "知道了",
+                                //cancelButtonText: "取消删除！",
+                                closeOnConfirm: true,
+                                closeOnCancel: false
+                            },
+                            function(isConfirm){
+                                if (isConfirm) {
+                                    //swal("我知道了！", "你已经点确认了。","success");
+                                    openLoginModal();
+                                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
+                                }
+                            });
+                    }else{
+                        swal({
+                                title: "注册成功",
+                                text: "赶快登录去体验吧。",
+                                type: "success",
+                                showCancelButton: false,//true显示两个按钮
+                                confirmButtonColor: "#A5DC86",
+                                confirmButtonText: "知道了",
+                                //cancelButtonText: "取消删除！",
+                                closeOnConfirm: true,
+                                closeOnCancel: false
+                            },
+                            function(isConfirm){
+                                if (isConfirm) {
+                                    //swal("我知道了！", "你已经点确认了。","success");
+                                    openLoginModal();
+                                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
+                                }
+                            });
+                    }
 
-		    	   toastr.success("注册成功。");
-		    	   setTimeout(function(){
-					    //这里写时间到后执行的代码
-					    openLoginModal();
-					}, 2000);
+                } else {
+                    if (data == -2) {
+                        toastr.error('用户名或邮箱重复且用户名只能为字母数字，请重试。');
+                    } else {
+                        toastr.error('注册失败，请重试。');
+                    }
+                    setTimeout(function () {
+                        //这里写时间到后执行的代码
+                        //window.location.reload();
+                    }, 3000);
+                }
+            }
+        });
+    }
 
-		    	   }else{
+    //登录
+    function loginAjax() {
+        var loginemail = $("#loginemail").val();
+        var loginpassword = $("#loginpassword").val();
+        //验证成功
+        $.ajax({
+            type: "POST",
+            url: "/user/login.do",
+            data: {email: loginemail, password: loginpassword},
+            dataType: "json",
+            success: function (data) {
+                if (data == 1) {
+                    toastr.success("登录成功。");
+                    setTimeout(function () {
+                        //这里写时间到后执行的代码
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    if (data == -1) {
+                        toastr.error('账号未进行邮箱验证，请先验证邮箱。');
+                    } else {
+                        toastr.error('登录失败，请重试。');
+                    }
+                    setTimeout(function () {
+                        //这里写时间到后执行的代码
+                        openLoginModal();
+                    }, 2000);
+                }
+            }
+        });
+    }
 
-		    	    toastr.error('注册失败，请重试。');
-		    	    	setTimeout(function(){
-					    //这里写时间到后执行的代码
-					    window.location.reload();
-					}, 2000);
-		    	   }
-	           }
-	   });
-}
-//登录
-function loginAjax(){
+    function exit() {
+        $.ajax({
+            type: "POST",
+            url: "/user/exit.do",
+            dataType: "json",
+            success: function (data) {
+                toastr.success("账号已退出。");
+                window.location.reload();
+            }
+        });
+    }
+    function guanyu() {
+        bootbox.alert("本站为图床站，用户可以免费使用本站，本站仅有Hellohao一人开发维护，对接（网易、阿里、腾讯、七牛）等多家对象存储，添加图片鉴黄功能，慢慢增加更多功能。但是服务器资源宝贵，切勿恶意上传非法/黄色/暴力等违反国家法律规定图片,一旦发现，严查必究！");
+    }
 
-    var loginemail = $("#loginemail").val();
-    var loginpassword = $("#loginpassword").val();
-	//验证成功
-	   $.ajax({
-		   type: "POST",
-	       url: "/user/login.do",
-	       data: {email:loginemail,password:loginpassword},
-	       dataType: "json",
-	       success: function(data){
-		    	   if(data==1){
-		    	   toastr.success("登录成功。");
-		    	   setTimeout(function(){
-					    //这里写时间到后执行的代码
-					    window.location.reload();
+    function times() {
+        now = new Date(),hour = now.getHours()
+        if(hour < 6){return("凌晨好！")}
+        else if (hour < 9){return("早上好！")}
+        else if (hour < 12){return("上午好！")}
+        else if (hour < 14){return("中午好！")}
+        else if (hour < 17){return("下午好！")}
+        else if (hour < 19){return("傍晚好！")}
+        else if (hour < 22){return("晚上好！")}
+        else {return("夜里好！")}
+    }
+    function copy(val) {
+        var data =null;
+        if(val==1){data = $('#urls').text();}
+        else if(val==2){data = $('#markdowns').text();}
+        else if(val==3){data = $('#htmls').text();}
+        else{return;}
+        var copy = new ClipboardJS('.btn', {
+            text: function (trigger) {
+                return  data;
+            }
+        });
+        copy.on('success', function (e) {
+            toastr.success("复制成功");
+            copy.off("success");
+        });
+        copy.on('error', function (e) {
+            toastr.error("复制失败");
+            copy.off("error");
+        });
+    }
 
-					}, 2000);
 
-		    	   }else{
-		    	    toastr.error('登录失败，请重试。');
-		    	    	setTimeout(function(){
-					    //这里写时间到后执行的代码
-					    openLoginModal();
-					}, 2000);
-		    	   }
-	           }
-	   });
-}
-function exit(){
-	   $.ajax({
-		   type: "POST",
-	       url: "/user/exit.do",
-	       dataType: "json",
-	       success: function(data){
-			    	   toastr.success("账号已退出。");
-					window.location.reload();
+    function loadScriptString(code) {
+        var script = document.createElement("script");
+        script.type = "text/javascript";
+        try{
+            // firefox、safari、chrome和Opera
+            script.appendChild(document.createTextNode(code));
+        }catch(ex) {
+            // IE早期的浏览器 ,需要使用script的text属性来指定javascript代码。
+            script.text = code;
+        }
+        document.getElementsByTagName("head")[0].appendChild(script);
+    }
 
-		    	   }
-	   });
-}
+    //var text = 'var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s)})();';
+    var baidu =[[${config.getBaidu()}]];
+        loadScriptString(baidu);
 
-function goadmin(){
-		var username=[[${username}]];
-		var isvip = [[${level}]];
-	   $.ajax({
-		   type: "POST",
-	       url: "/user/admin/admin.do",
-	       dataType: "json",
-	       data:{username:username,level:isvip},
-	       success: function(data){
-			    	   toastr.success("进后台了");
-
-		    	   }
-	   });
-}
 </script>
-<script>
-    var _hmt = _hmt || [];
-    (function() {
-        var hm = document.createElement("script");
-        hm.src = "https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888";
-        var s = document.getElementsByTagName("script")[0];
-        s.parentNode.insertBefore(hm, s);
-    })();
-</script>
+
 
 </html>

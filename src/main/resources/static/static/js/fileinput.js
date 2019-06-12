@@ -1200,7 +1200,8 @@
         uploadSingle: function (i, files, allFiles) {
             var self = this, total = self.getFileStack().length, formdata = new FormData(), outData,
                 previewId = self.previewInitId + "-" + i, $thumb = $('#' + previewId + ':not(.file-preview-initial)'),
-                pct, chkComplete, $btnUpload = $thumb.find('.kv-file-upload'), $btnDelete = $thumb.find('.kv-file-remove'),
+                pct, chkComplete, $btnUpload = $thumb.find('.kv-file-upload'),
+                $btnDelete = $thumb.find('.kv-file-remove'),
                 $indicator = $thumb.find('.file-upload-indicator'), config = self.fileActionSettings,
                 hasPostData = self.filestack.length > 0 || !$.isEmptyObject(self.uploadExtraData),
                 setIndicator, updateProgress, resetActions, fnBefore, fnSuccess, fnComplete, fnError,
@@ -1338,7 +1339,8 @@
                 var outData = self.getOutData(jqXHR);
                 if (self.showPreview) {
                     self.$preview.find(PREVIEW_FRAMES).each(function () {
-                        var $thumb = $(this), $btnUpload = $thumb.find('.kv-file-upload'), $btnDelete = $thumb.find('.kv-file-remove');
+                        var $thumb = $(this), $btnUpload = $thumb.find('.kv-file-upload'),
+                            $btnDelete = $thumb.find('.kv-file-remove');
                         addCss($thumb, 'file-uploading');
                         $btnUpload.attr('disabled', true);
                         $btnDelete.attr('disabled', true);
@@ -1892,7 +1894,7 @@
             if (err) {
                 title = $('<div>' + self.msgValidationError + '</div>').text();
                 out = '<span class="' + self.msgValidationErrorClass + '">' +
-                self.msgValidationErrorIcon + title + '</span>';
+                    self.msgValidationErrorIcon + title + '</span>';
             } else {
                 title = $('<div>' + content + '</div>').text();
                 out = title + self.getLayoutTemplate('icon');
@@ -1961,7 +1963,8 @@
             return '<button type="button" title="' + self.cancelTitle + '" class="hide ' + css + '">' + self.cancelIcon + self.cancelLabel + '</button>';
         },
         renderUpload: function () {
-            var self = this, css = self.uploadClass + ' kv-fileinput-upload fileinput-upload-button', content = '', status = '';
+            var self = this, css = self.uploadClass + ' kv-fileinput-upload fileinput-upload-button', content = '',
+                status = '';
             if (!self.showUpload) {
                 return '';
             }

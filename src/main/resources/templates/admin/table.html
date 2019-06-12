@@ -5,23 +5,29 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Hellohao图床 - &copy; 纯粹的图片驿站</title>
     <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
-    <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" />
-    <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" />
-        <link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-    <link th:href="@{/static/css/style.css}" rel="stylesheet" type="text/css" />
-    
-    
+    <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico"/>
+    <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link href="https://cdn.staticfile.org/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css"/>
+    <link th:href="@{/static/css/style.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/toastr.min.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/login-register.css}" media="all" rel="stylesheet" type="text/css"/>
-    
-    <link href="https://cdn.staticfile.org/bootstrap-table/1.13.1/bootstrap-table.css" rel="stylesheet" />
+    <link href="https://cdn.staticfile.org/bootstrap-table/1.13.1/bootstrap-table.css" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" media="all" rel="stylesheet"
+          type="text/css"/>
+
     <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
     <script th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
     <script src="https://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
     <script th:src="@{/static/js/login-register.js}"></script>
     <script th:src="@{/static/bootstrap-3.3.4-dist/js/bootstrap-table-hellohao1.13.1.js}"></script>
-	<script src="https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"></script>
-	<script src="https://cdn.staticfile.org/jqBootstrapValidation/1.3.7/jqBootstrapValidation.min.js"></script>
+    <script src="https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script src="https://cdn.staticfile.org/jqBootstrapValidation/1.3.7/jqBootstrapValidation.min.js"></script>
+    <script src="https://cdn.staticfile.org/bootbox.js/4.4.0/bootbox.min.js"></script>
+    <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js" type="text/javascript"></script>
+
+    <script th:src="@{/layui/layui/layui.js}"></script>
     <!-- 样式 -->
     <style type="text/css">
         .kv-main {
@@ -34,7 +40,7 @@
             height: 50px;
             padding: 10px;
             margin-top: 5%;
-            margin: o auto;
+            margin: 0 auto;
         }
 
         pre {
@@ -45,13 +51,15 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
-        #isadmin{
-        float:right;
+
+        #isadmin {
+            float: right;
         }
 
     </style>
 </head>
 <body>
+<!--
 <div th:include="header::header"></div>
 <div class="alert alert-warning">
     <a href="#" class="close" data-dismiss="alert">
@@ -59,181 +67,123 @@
     </a>
     <strong>警告！</strong>您的网络连接有问题。
 </div>
-
+-->
 
 <div class="container kv-main">
-   <section class="content">
+    <p id="" style="font-weight: bold;">本站概况</p>
+    <hr/>
+    <section class="content">
         <div class="row" style="margin-bottom:5px;">
             <div class="col-md-3">
                 <div class="sm-st clearfix">
-                    <span class="sm-st-icon st-red"><i class="fa fa-image"></i></span>
-                    <div class="sm-st-info">
-                        <span th:utext="${counts}"></span>
-                        图片总数
+                    <span class="sm-st-icon st-blue"><i class="fa fa-image"></i></span>
+                    <div style="font-weight:500;font-family:黑体；" class="sm-st-info">
+                        <span id="imgcount" th:utext="${counts}"></span>
+                        本站图片总数
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="sm-st clearfix">
                     <span class="sm-st-icon st-violet"><i class="fa fa-user"></i></span>
-                    <div class="sm-st-info">
+                    <div style="font-weight:500;font-family:黑体；" class="sm-st-info">
                         <span th:utext="${getUserTotal}">0</span>
-                        用户总数
+                        本站用户总数
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="sm-st clearfix">
-                    <span class="sm-st-icon st-blue"><i class="fa fa-dollar"></i></span>
-                    <div class="sm-st-info">
-                        <span>0</span>
-                        Waiting..
+                    <span class="sm-st-icon st-red"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                    <div style="font-weight:500;font-family:黑体；" class="sm-st-info">
+                        <span th:utext="${imgreviewcount}">0</span>
+                        本站拦截非法图片
                     </div>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="sm-st clearfix">
                     <span class="sm-st-icon st-green"><i class="fa fa-paperclip"></i></span>
-                    <div class="sm-st-info">
-                        <span>0</span>
-                        Waiting.. 
+                    <div style="font-weight:500;font-family:黑体；" class="sm-st-info">
+                        <span id="source"></span>
+                        系统储源源
                     </div>
                 </div>
             </div>
-            
-        </div>    
-  </section>     
-    <div th:utext="${htgl}"></div>
-    
-    <!--分页 -->
-    <table class="table table-bordered ft-table" id="table_server">
-    
-    <h4 id="mytext">我的图片列表</h4>
-    
-        <thead>
-        <tr>
-            <th>链接</th>
-            <th>日期</th>
-            <th>大小</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody id="addyes">
 
-        <!--<tr>
-           <td>https://v3.bootcss.com/css/#buttons</td>
-           <td>2018-02-08</td>
-           <td>1024 k</td>
-           <td>复制</td>
-        </tr>-->
+        </div>
+    </section>
+    <!--    <div ><input id="isadmin" onclick="openLoginModal();" class="btn btn-default" type="button" value="后台管理"></div>-->
+    <div id="isimgs">
+        <!--分页 -->
+        <div id="mytext" style="font-weight: bold;">我的图片：
+            <span id="usercount" class="label label-info" style="font-weight: bold;font-size: 18px;"
+                  th:text="${usercount}">0</span>
+        </div>
 
-        </tbody>
-    </table>
+        <table class="table table-bordered ft-table table-hover" id="table_server">
+            <hr/>
+            <!-- Single button -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                        aria-haspopup="true" aria-expanded="false">
+                    批量操作 <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a href="#" onclick="deleall();">删除选中</a></li>
+                </ul>
+            </div>
+            <!-- Single button -->
+            <span style="margin-left: 50px;">列表显示：</span>
+            <div class="btn-group">
+                <select id="myselect" class="form-control">
+                    <option value="1" checked="checked">所有人</option>
+                    <option value="2">仅自己</option>
+                </select>
+            </div>
+
+        </table>
+    </div>
+
+    <div id="isusers">
+        <!--分页 -->
+        <table class="table table-bordered ft-table" id="table_server2">
+            <h4 id="mytext1">用户列表</h4>
+
+        </table>
+    </div>
+
 </div>
 <hr/>
-
-<!-- 登录注册框 -->
-<div class="modal fade login" id="loginModal">
-    <div class="modal-dialog login animated" style="width: 500px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4>配置</h4>
-            </div>
-            <div class="modal-body">
-                <div class="box">
-                    <div class="content">
-                        <div class="social">
-                        </div>
-                        <div class="division">
-                            <!-- 选项卡 -->
-							<ul id="myTab" class="nav nav-tabs">
-							    <li class="active">
-							        <a href="#home" onclick="showLoginForm();" data-toggle="tab">系统配置</a>
-							    </li>
-							    <li>
-							    	<a href="#ios" onclick="showRegisterForm();" data-toggle="tab">个人设置</a>
-							    </li>
-							</ul>
-                            
-                        </div>
-                        <div class="error"></div>
-                        <div class="form loginBox" style="width: 90%;float: left;">
-                            <form accept-charset="UTF-8">
-                                <input id="AccessKey" class="form-control" type="text" placeholder="AccessKey"
-                                       name="AccessKey">
-                                <input id="AccessSecret" class="form-control" type="text" placeholder="AccessSecret"
-                                       name="AccessSecret">
-                                <input id="Endpoint" class="form-control" type="text" placeholder="Endpoint"
-                                       name="Endpoint">
-                                <input id="Bucketname" class="form-control" type="text"
-                                       placeholder="Bucketname" name="Bucketname">
-                                <input id="RequestAddress" class="form-control" type="text"
-                                       placeholder="RequestAddress/域名" name="RequestAddress"> 
-                                       <input id="StorageType" name="StorageType" type="hidden" value="" >
-                            </form>
-                            <a onclick="issave();" class="btn btn-large btn-primary" >保存</a>
-                        </div>
-
-                        <!--<div class="form loginBox" style="width: 49%;float: right;">-->
-                            <!--<form accept-charset="UTF-8">-->
-                                <!--<input id="AccessKey2" class="form-control" type="text" placeholder="AccessKey"-->
-                                       <!--name="AccessKey">-->
-                                <!--<input id="AccessSecret2" class="form-control" type="text" placeholder="AccessSecret"-->
-                                       <!--name="AccessSecret">-->
-                                <!--<input id="Endpoint2" class="form-control" type="text" placeholder="Endpoint"-->
-                                       <!--name="Endpoint">-->
-                                <!--<input id="Bucketname2" class="form-control" type="text"-->
-                                       <!--placeholder="Bucketname" name="Bucketname">-->
-                                <!--<input id="RequestAddress2" class="form-control" type="text"-->
-                                       <!--placeholder="RequestAddress/域名" name="RequestAddress">-->
-                                <!--<input id="StorageType2" name="StorageType" type="hidden" value="" >-->
-                            <!--</form>-->
-                            <!--<a onclick="issave();" class="btn btn-large btn-primary" >保存</a>-->
-                        <!--</div>-->
-
-
-                    </div>
-                </div>
-                <div class="box">
-                            <div class="content registerBox" style="display:none;">
-                             <div class="form">
-                                <form method="post" id="gaimima"  data-remote="true" accept-charset="UTF-8">
-                                <p>修改密码</p>
-                                <input id="username" class="form-control" type="text" placeholder="新用户名" name="username">
-                                <input id="newpassword" class="form-control" type="password" placeholder="新密码" name="email">
-                                <input id="registerpassword" class="form-control" type="password" placeholder="确认密码" name="password">
-                                
-                                </form>
-                                <a onclick="change();" class="btn btn-large btn-primary" >修改</a>
-                                </div>
-                            </div>
-                        </div>
-            </div>
-            <div class="modal-footer">
-<!--                <div class="forgot login-footer">
-                            <span>你希望 
-                                 <a href="javascript: showRegisterForm();">创建一个帐户</a>
-                            ?</span>
-                </div>
-                <div class="forgot register-footer" style="display:none">
-                    <span>已经有一个帐户吗?</span>
-                    <a href="javascript: showLoginForm();">登录</a>
-                </div> -->             
-                
-            </div>
-        </div>
-    </div>
-</div>
-
-<footer class="footer " th:include="footer::foot"></footer>
+<!--<footer class="footer " th:include="footer::foot"></footer>-->
+<img id="linshi" style="display:none;" src="#"/>
 </body>
 
 <script type="application/javascript">
-var t;
+    // function getimglist() {
+    //     $("#isimgs").show();
+    //     $("#isusers").hide();
+    // }
+    var t;
     $(function () {
-        //上传文件个数，默认单上传
+        $("#isimgs").show();
+        $("#isusers").hide();
+
         var loginid = [[${loginid}]];
+        var source = [[${source}]];
+        var str = "";
+        if (source == 1) {
+            str = "网易NOS";
+        } else if (source == 2) {
+            str = "阿里OSS";
+        } else if (source == 2) {
+            str = "腾讯COS";
+        } else if (source == 2) {
+            str = '七牛KODO';
+        } else {
+            str = '未知';
+        }
+        $("#source").text(str);
         toastr.options.positionClass = 'toast-bottom-right';
         toastr.options = {
             closeButton: true,//是否显示关闭按钮
@@ -250,30 +200,200 @@ var t;
             showMethod: "fadeIn",
             hideMethod: "fadeOut"
         };
-        // toastr.info("欢迎使用Hellohao图床！");
-        if (loginid == 100) {
-            var username ='[[${username}]]';
-            var isvip = '[[${level}]]';
-            var h1 = '<li><a href="javascript:void(0);" id="usernames" >' + username + '&nbsp;<img style="width:24px;height:24px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip' + isvip + '.png" /></a></li>';
-            var h2 = '<li><a href="javascript:void(0);" onclick="exit()">退出</a></li>';
-            $("#usersrc").html(h1 + h2);
-        }
-
         // 分页
-        	 t = $("#table_server").bootstrapTable({
-            url: '/admin/selecttable.do',
+        fenye('/admin/selecttable', 1);//1代表查询所有人
+    });
+
+    function deleall() {
+        swal({
+                title: "确认删除选中图片？",
+                text: "删除后将无法恢复，请谨慎操作。",
+                type: "warning",
+                showCancelButton: true,//true显示两个按钮
+                confirmButtonColor: "#A5DC86",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                //closeOnConfirm: true,
+                //closeOnCancel: false
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    var rows = $("#table_server").bootstrapTable('getSelections');
+                    if (rows.length == 0) {// rows 主要是为了判断是否选中，下面的else内容才是主要
+                        swal("请先勾选图片再删除", "目前未选中任何图片", "error");
+                        return;
+                    } else {
+                        var ids = new Array();// 声明一个数组
+                        $(rows).each(function () {// 通过获得别选中的来进行遍历
+                            ids.push(this.id);// cid为获得到的整条数据中的一列
+                        });
+                        deleallimg(ids);
+                    }
+
+                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
+                    //return;
+                }
+            });
+
+    }
+
+    function deleallimg(ids) {
+        $.ajax({
+            type: "POST",
+            url: "/admin/deleallimg",
+            data: {ids: ids},
+            dataType: "json",
+            success: function (data) {
+                if (data.val > 0) {
+                    $("#table_server").bootstrapTable('refresh', t);
+                    swal({
+                            title: "删除成功",
+                            text: "已成功删除所选图片。",
+                            type: "success",
+                            showCancelButton: false,//true显示两个按钮
+                            confirmButtonColor: "#A5DC86",
+                            confirmButtonText: "确定",
+                            //cancelButtonText: "取消删除！",
+                            closeOnConfirm: true,
+                            closeOnCancel: false
+                        },
+                        function (isConfirm) {
+                            if (isConfirm) {
+                                //swal("我知道了！", "你已经点确认了。","success");
+                            } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
+                            }
+                        });
+
+                } else {
+                    //swal("删除失败", "您所选的图片没有完全删除","error");
+                    $("#table_server").bootstrapTable('refresh', t);
+                }
+                $("#imgcount").text(data.count);
+                $("#usercount").text(data.usercount);
+            }
+        });
+    }
+
+    function exit() {
+        $.ajax({
+            type: "POST",
+            url: "/user/exit.do",
+            dataType: "json",
+            success: function (data) {
+                toastr.success("账号已退出。");
+                window.location.reload();
+            }
+        });
+    }
+
+    //删除
+    function deleimg(id, sourcekey) {
+        swal({
+                title: "确认是否删除该图片?",
+                text: "删除后将无法恢复，请谨慎操作。",
+                type: "warning",
+                showCancelButton: true,//true显示两个按钮
+                confirmButtonColor: "#A5DC86",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+            },
+            function (isConfirm) {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/deleimg",
+                        data: {id: id, sourcekey: sourcekey},
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.val > 0) {
+                                $("#table_server").bootstrapTable('refresh', t);
+                                toastr.success("删除成功");
+                                $("#imgcount").text(data.count);
+                                $("#usercount").text(data.usercount);
+                            } else {
+                                toastr.error("删除失败");
+                                $("#table_server").bootstrapTable('refresh', t);
+                            }
+                        }
+                    });
+                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
+                    return;
+                }
+            });
+    }
+
+    function copy(data) {
+        var copy = new ClipboardJS('.btn', {
+            text: function (trigger) {
+                return "https://" + data;
+            }
+        });
+        copy.on('success', function (e) {
+            toastr.success("复制成功");
+            copy.off("success");
+        });
+        copy.on('error', function (e) {
+            toastr.error("复制失败");
+            copy.off("error");
+        });
+    }
+
+    function lookimgs(urls) {
+        layer.load(1);
+
+        var url = "http://" + urls;
+        var w = 0;
+        var h = 0;
+        var dw = document.body.clientWidth;
+        var dh = document.body.clientHeight;
+        $("#linshi").attr('src', url);
+        $("#linshi").off("load");
+        $("#linshi").on("load", function () {
+            w = $(this).width();
+            h = $(this).height();
+            //alert(w+"/"+h);
+            layer.closeAll('loading');
+            layer.open({
+                type: 1,
+                title: false,
+                closeBtn: 0,
+                area: 'auto',
+                skin: 'layui-layer-nobg', //没有背景色
+                shadeClose: true,
+                content: '<img style="height: auto;width: auto;max-width:' + dw * 0.7 + 'px;max-height: ' + dh * 0.7 + 'px" src="' + url + '">'
+            });
+        });
+
+    }
+
+    var layer;
+    layui.use('layer', function () {
+        layer = layui.layer;
+    });
+
+    $("#myselect").change(function () {
+        var opt = $("#myselect").val();
+        // 先销毁table中的数据
+        $("#table_server").bootstrapTable('destroy');
+        fenye('/admin/selecttable', opt);
+    });
+
+    function fenye(url, selecttype) {
+        t = $("#table_server").bootstrapTable({
+            url: url,
             method: 'get',
+            cache: false,//关闭本地磁盘缓存，
             dataType: "json",
             striped: true,//设置为 true 会有隔行变色效果
             undefinedText: "空",//当数据为 undefined 时显示的字符
             pagination: true, //分页
-             showRefresh: true,
-            paginationLoop:true,//设置为 true 启用分页条无限循环的功能。
+            showRefresh: true,
+            paginationLoop: true,//设置为 true 启用分页条无限循环的功能。
             showToggle: "true",//是否显示 切换试图（table/card）按钮
             showColumns: "true",//是否显示 内容列下拉框
             pageNumber: 1,//如果设置了分页，首页页码
             // showPaginationSwitch:true,//是否显示 数据条数选择框
-            pageSize: 5,//如果设置了分页，页面数据条数
+            pageSize: 10,//如果设置了分页，页面数据条数
             pageList: [5, 10, 20, 40],	//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
             paginationPreText: '‹',//指定分页条中上一页按钮的图标或文字,这里是<
             paginationNextText: '›',//指定分页条中下一页按钮的图标或文字,这里是>
@@ -285,25 +405,27 @@ var t;
                 return {//这里的params是table提供的
                     pageNum: (params.offset / params.limit) + 1,//从数据库第几条记录开始
                     pageSize: params.limit//找多少条
-
+                    , selecttype: selecttype
                 };
             },
             idField: "链接",//指定主键列
-            columns: [
-                {
-                    title: '#',//表的列名
-                    formatter: function (value, rows, index) {
-                        //return index+1; //序号正序排序从1开始
-                        var pageSize = $('#table_server').bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
-                        var pageNumber = $('#table_server').bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
-                        return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
-                    },
-                    align: 'center'//水平居中
-                },
+            columns: [{
+                checkbox: true
+            },
+                // {
+                //     title: '#',//表的列名<input id="isall" type="checkbox" onclick="checkboxOnclick(this)">
+                //     formatter: function (value, rows, index) {
+                //         //return index+1; //序号正序排序从1开始
+                //         var pageSize = $('#table_server').bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
+                //         var pageNumber = $('#table_server').bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
+                //         return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
+                //     },
+                //     align: 'center'//水平居中
+                // },
                 {
                     title: '链接',
                     formatter: function (value, rows, index) {
-                    return "http://"+rows.imgurl
+                        return "<a style=\"cursor:pointer;\" onclick='lookimgs(\"" + rows.imgurl + "\");'>https://" + rows.imgurl + "</a>";
                     },
                     align: 'center'
                 },
@@ -316,151 +438,63 @@ var t;
                     //EMAIL
                     title: '大小',
                     formatter: function (value, rows, index) {
-                    return rows.sizes+"k"
+                        return rows.sizes + "k";
+                    },
+                    align: 'center'
+                },
+                {
+                    //EMAIL
+                    title: '存储源',
+                    formatter: function (value, rows, index) {
+                        var source = '';
+                        if (rows.source == 1) {
+                            source = '网易NOS';
+                        } else if (rows.source == 2) {
+                            source = '阿里OSS';
+                        } else if (rows.source == 2) {
+                            source = '腾讯COS';
+                        } else if (rows.source == 2) {
+                            source = '七牛KODO';
+                        } else {
+                            source = '未知';
+                        }
+                        return source;
+                    },
+                    align: 'center'
+                },
+                {
+                    //EMAIL
+                    title: '用户',
+                    formatter: function (value, rows, index) {
+                        var names = "";
+                        if (rows.username == null) {
+                            names = "游客";
+                        } else {
+                            names = rows.username;
+                        }
+                        return names;
                     },
                     align: 'center'
                 },
                 {
                     //部门名字
-                    title: '操作',                 
-					formatter: function (value, rows, index) {
-					var htm = "<a onclick='deleimg("+rows.id+")' class='btn btn-danger btn-xs'>删除</a>" + "&nbsp;&nbsp;&nbsp;";
-                    htm += '<a onclick="copy(\'' + rows.imgurl +
-                        '\')" class="btn btn-success btn-xs">复制</a>';
-                    return htm;
-				},
+                    title: '操作',
+                    formatter: function (value, rows, index) {
+                        var htm = "<a onclick='deleimg(" + rows.id + "," + rows.source + ")' class='btn btn-danger btn-xs'>删除</a>" + "&nbsp;&nbsp;&nbsp;";
+                        htm += '<a onclick="copy(\'' + rows.imgurl +
+                            '\')" class="btn btn-info btn-xs">复制</a>';
+                        return htm;
+                    },
                     align: 'center'
                 }
 
             ]
         });
-
         t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
             console.log("load success");
             $(".pull-right").css("display", "block");
         });
-
-        //传值
-	        $("#AccessKey").val('[[${AccessKey}]]');   
-	        $("#AccessSecret").val('[[${AccessSecret}]]');
-	        $("#Endpoint").val('[[${Endpoint}]]');
-	        $("#Bucketname").val('[[${Bucketname}]]');  
-	        $("#RequestAddress").val('[[${RequestAddress}]]');
-			$("#StorageType").val('[[${StorageType}]]');
-
-    });
-    var arr_url = "";
-    var arr_markdown = "";
-    var arr_html = "";
-
-
-    function error() {
-        toastr.info("更过功能陆续开发中..");
     }
-
-    function exit() {
-        $.ajax({
-            type: "POST",
-            url: "/user/exit.do",
-            dataType: "json",
-            success: function (data) {
-                toastr.success("账号已退出。");
-                window.location.reload();
-
-            }
-        });
-    }
-    //保存KEY
-    function issave(){
-    	var AccessKey = $("#AccessKey").val();
-        var AccessSecret = $("#AccessSecret").val();
-        var Endpoint = $("#Endpoint").val();
-        var Bucketname = $("#Bucketname").val();  
-        var RequestAddress = $("#RequestAddress").val();
-        var StorageType = $("#StorageType").val();
-	    $.ajax({
-            type: "POST",
-            url: "/admin/updatekey.do",
-            data:{AccessKey:AccessKey,AccessSecret:AccessSecret,Endpoint:Endpoint,Bucketname:Bucketname,RequestAddress:RequestAddress,StorageType:StorageType},
-            dataType: "json",
-            success: function (data) {
-	            if(data>0){
-	            toastr.success("保存成功");
-	            }else{
-	            toastr.error("保存失败");
-	            }
-            }
-        });
-    }
-  function change(){
-     	var username = $("#username").val();
-        var newpassword = $("#newpassword").val();
-        var registerpassword = $("#registerpassword").val();
-        if((username!=null&&username!="")&&(newpassword!=null&&newpassword!="")&&(registerpassword!=null&&registerpassword!="")){
-        	if(newpassword==registerpassword){
-        	    $.ajax({
-		            type: "POST",
-		            url: "/admin/change.do",
-		            data:{username:username,password:newpassword},
-		            dataType: "json",
-		            success: function (data) {
-			            if(data>0){
-			            toastr.success("修改成功,请重新登录。");
-			           setTimeout(function(){
-					    //这里写时间到后执行的代码
-					    window.location.reload();
-					}, 2000);
-			            }
-			            if(data=="-1"){
-			            toastr.error("用户名重复");
-			            }
-	        		}
-        	});
-        	}else{
-        		toastr.error("两次密码输入不一致");
-        	}
-
-        }else{
-        toastr.error("表单不能为空");
-        }
-
-	    
-    }
-//删除
-function deleimg(id) {
-    $.ajax({
-        type: "POST",
-        url: "/admin/deleimg.do",
-        data: {id: id},
-        dataType: "json",
-        success: function (data) {
-            if (data > 0) {
-                $("#table_server").bootstrapTable('refresh', t);
-                toastr.success("删除成功");
-            } else {
-                toastr.error("删除失败");
-                $("#table_server").bootstrapTable('refresh', t);
-            }
-        }
-    });
-}
-
-
-function copy(data) {
-    var copy = new ClipboardJS('.btn', {
-        text: function(trigger) {
-            return "http://"+data;
-        }
-    });
-    copy.on('success', function (e) {
-            	toastr.success("复制成功");
-            });
-    copy.on('error', function (e) {
-    	alert('复制失败');
-    });
-}
-
-
 
 </script>
 </html>
