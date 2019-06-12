@@ -65,7 +65,6 @@ spring.datasource.url=jdbc:mysql://127.0.0.1:3306/shiro_action?useSSL=false&char
 #### 前端
 * 首页框架: [Bootstrap](https://www.bootcss.com/)
 * 前端框架: [Layui](https://www.layui.com/)
-* 后台模板: [Z-Admin](https://github.com/zhaojun1998/Z-Admin/)
 
 
 
