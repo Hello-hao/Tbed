@@ -1,12 +1,8 @@
 package cn.hellohao.utils;
 
+import cn.hellohao.pojo.Config;
 import cn.hellohao.pojo.EmailConfig;
-import cn.hellohao.service.EmailConfigService;
-import cn.hellohao.test.asdf;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.mail.*;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
@@ -14,13 +10,6 @@ import java.util.Date;
 import java.util.Properties;
 
 public class SendEmail {
-    // 发件人 账号和密码
-//    private static  String MY_EMAIL_NAME = "Hellohao图床";
-//    private static  String MY_EMAIL_ACCOUNT = "helloshihao@163.com";
-//    private static  String MY_EMAIL_PASSWORD = "hellohao950504";// 密码,是你自己的设置的授权码
-//    // SMTP服务器(这里用的163 SMTP服务器)
-//    public static  String MEAIL_163_SMTP_HOST = "smtp.163.com";
-//    public static  String SMTP_163_PORT = "25";// 端口号,这个是163使用到的;QQ的应该是465或者875
 
     public static MimeMessage Emails(EmailConfig emailConfig) {
         Properties p = new Properties();
@@ -43,7 +32,9 @@ public class SendEmail {
         return message;
     }
 
-    public static Integer sendEmail(MimeMessage message, String username, String Url, String email,EmailConfig emailConfig) {
+    public static Integer sendEmail(MimeMessage message, String username, String Url, String email, EmailConfig emailConfig, Config config) {
+        String webname=config.getWebname();
+        String domain = config.getDomain();
         String body = "<!DOCTYPE html>\n" +
                 "<html>\n" +
                 " <head>\n" +
@@ -64,8 +55,8 @@ public class SendEmail {
                 "     </div>\n" +
                 "    </header>\n" +
                 "    <div class=\"main-content\">\n" +
-                "     <h5><span>您正在注册Hellohao图床<i></i></span></h5>\n" +
-                "     <p>点击 <a href='http://tc.hellohao.cn/user/activation.do?activation=" + Url + "&username=" + username + "'  ><u>&nbsp;激活链接&nbsp;</u></a> 进行账号激活</p>\n" +
+                "     <h5><span>您正在注册"+webname+"<i></i></span></h5>\n" +
+                "     <p>点击 <a href='"+domain+"/user/activation.do?activation=" + Url + "&username=" + username + "'  ><u>&nbsp;激活链接&nbsp;</u></a> 进行账号激活</p>\n" +
                 "    </div>\n" +
                 "   </div>\n" +
                 "  </div>\n" +

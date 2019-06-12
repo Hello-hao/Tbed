@@ -8,7 +8,9 @@ import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import cn.hellohao.pojo.Config;
 import cn.hellohao.pojo.EmailConfig;
+import cn.hellohao.service.ConfigService;
 import cn.hellohao.service.EmailConfigService;
 import cn.hellohao.utils.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +34,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private EmailConfigService emailConfigService;
-
+    @Autowired
+    private ConfigService configService;
 
     @RequestMapping("/register")
     @ResponseBody
@@ -51,6 +54,7 @@ public class UserController {
             user.setBirthder(birthder);
             //查询是否启用了邮箱验证。
             EmailConfig emailConfig1 = emailConfigService.getemail();
+            Config config = configService.getSourceype();
             Integer type = 0;
             if(emailConfig1.getUsing()==1){
                 user.setIsok(0);
@@ -59,7 +63,7 @@ public class UserController {
                 //注册完发激活链接
                 Thread thread = new Thread() {
                     public void run() {
-                        Integer a = SendEmail.sendEmail(message, user.getUsername(), uid, user.getEmail(),emailConfig);
+                        Integer a = SendEmail.sendEmail(message, user.getUsername(), uid, user.getEmail(),emailConfig,config);
                     }
                 };
                 thread.start();
@@ -93,7 +97,6 @@ public class UserController {
             } else {
                 jsonArray.add(-1);
             }
-            //登录成功之后把账号密码存入session
         } else {
             jsonArray.add(0);
         }

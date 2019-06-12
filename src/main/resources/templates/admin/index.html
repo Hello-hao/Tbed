@@ -5,26 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <!-- 网页不会被缓存 -->
     <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
-    <title>后台管理 - Hellohao图床</title>
-<!--     - &copy; 纯粹的图片驿站-->
+    <title>图床后台管理</title>
     <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
-
     <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
     <link rel="stylesheet" th:href="@{/layui/css/admin.css}">
-
 </head>
 
 <body class="layui-layout-body">
-
 <div class="layui-layout layui-layout-admin">
-
     <div class="layui-header">
         <!-- logo 区域 -->
         <div class="layui-logo">
             <!--                <img src="images/security.png" alt="logo"/>-->
-            <cite>&nbsp;Hellohao图床&emsp;</cite>
+            <cite>&nbsp;图床后台管理&emsp;</cite>
         </div>
-
         <!-- 头部区域 -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item" lay-unselect>
@@ -37,31 +31,21 @@
                     <a><cite>首页</cite></a>
                 </span>
         </ul>
-
         <!-- 头像区域 -->
         <ul class="layui-nav layui-layout-right">
             <li class="layui-nav-item">
                 <a lay-event="clear" title="清理标签缓存"><img th:src="@{/layui/images/clear.png}" alt=""
                                                          style="height: 18px;"/></a>
             </li>
-
             <li class="layui-nav-item">
                 <a>
                     <img style="border-radius:20%; height: 25px;width: 25px;" th:src="@{/layui/images/avatar.png}"
                          class="layui-nav-img" alt="头像">
-                    <!--                        <i class="layui-icon layui-icon-friends" style="font-size: 26px; "></i>-->
                     <span id="istime"></span>
                     <cite th:text="'你好！'+${username}"></cite>
                     <span class="layui-nav-more"></span>
                 </a>
                 <dl class="layui-nav-child layui-anim layui-anim-upbit">
-                    <!--                        <dd lay-unselect>-->
-                    <!--                            <a href="#">个人中心</a>-->
-                    <!--                        </dd>-->
-                    <!--                        <dd lay-unselect>-->
-                    <!--                            <a href="javascript:void(0);" onclick="showRegisterForm()">修改密码</a>-->
-                    <!--                        </dd>-->
-                    <!--                        <hr>-->
                     <dd lay-unselect>
                         <a href="javascript:void(0);" onclick="exit()">退出</a>
                     </dd>
@@ -92,13 +76,6 @@
                             </a>
                         </dd>
                     </dl>
-                    <!--                        <dl class="layui-nav-child">-->
-                    <!--                            <dd>-->
-                    <!--                                <a href="#" lay-id="222" lay-url="/admin/tostorage">-->
-                    <!--                                    <cite>对象存储</cite>-->
-                    <!--                                </a>-->
-                    <!--                            </dd>-->
-                    <!--                        </dl>-->
                 </li>
 
                 <li class="layui-nav-item" th:if=" ${levels} gt '1'">
@@ -144,14 +121,6 @@
                     </dl>
 
                 </li>
-
-
-
-                <!--                    <li class="layui-nav-item">-->
-                <!--                        <a lay-id="存储源配置" lay-url="https://www.baidu.com">-->
-                <!--                            <i class="layui-icon layui-icon-app"></i>&emsp;<cite>一级菜单</cite>-->
-                <!--                        </a>-->
-                <!--                    </li>-->
             </ul>
         </div>
     </div>
@@ -198,19 +167,6 @@
             , layer = layui.layer
 
     });
-    // $(function () {
-    //     //parent.location.reload();//刷新父元素
-    //     now = new Date(),hour = now.getHours()
-    //     if(hour < 6){document.write("凌晨好！")}
-    //     else if (hour < 9){$("#istime").text("早上好！")}
-    //     else if (hour < 12){$("#istime").text("上午好！")}
-    //     else if (hour < 14){$("#istime").text("中午好！")}
-    //     else if (hour < 17){$("#istime").text("下午好！")}
-    //     else if (hour < 19){$("#istime").text("傍晚好！")}
-    //     else if (hour < 22){$("#istime").text("晚上好！")}
-    //     else {$("#istime").text("夜里好！")}
-    // });
-
 
     function exit() {
         $.ajax({
@@ -219,8 +175,6 @@
             dataType: "json",
             success: function (data) {
                 layer.msg('账号已退出');
-                //toastr.success("账号已退出。");
-                //window.location.reload();//刷新当前页面
                 parent.location.reload();//刷新父元素
 
             }

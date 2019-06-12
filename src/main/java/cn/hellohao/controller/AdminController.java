@@ -77,20 +77,9 @@ public class AdminController {
         model.addAttribute("level", u.getLevel());
         model.addAttribute("email", u.getEmail());
         model.addAttribute("loginid", 100);
-        model.addAttribute("source", key.getStorageType());
-
-        //key信息
-//		model.addAttribute("AccessKey", key.getAccessKey());
-//		model.addAttribute("AccessSecret", key.getAccessSecret());
-//		model.addAttribute("Endpoint", key.getEndpoint());
-//		model.addAttribute("Bucketname", key.getBucketname());
-//		model.addAttribute("RequestAddress", key.getRequestAddress());
-//		model.addAttribute("StorageType", storageType);
-//		if (u.getLevel() > 1) {
-////			model.addAttribute("htgl",
-////					"<a href=\"#home\" onclick=\"showRegisterForm();\" data-toggle=\"tab\">系统配置</a>");
-////
-////		}
+        if(key!=null){
+            model.addAttribute("source", key.getStorageType());
+        }
         return "admin/table";
     }
 
@@ -171,13 +160,15 @@ public class AdminController {
     public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         Keys key = keysService.selectKeys(config.getSourcekey());
-        //key信息
-        model.addAttribute("AccessKey", key.getAccessKey());
-        model.addAttribute("AccessSecret", key.getAccessSecret());
-        model.addAttribute("Endpoint", key.getEndpoint());
-        model.addAttribute("Bucketname", key.getBucketname());
-        model.addAttribute("RequestAddress", key.getRequestAddress());
-        model.addAttribute("StorageType", config.getSourcekey());
+        if(key!=null){
+            //key信息
+            model.addAttribute("AccessKey", key.getAccessKey());
+            model.addAttribute("AccessSecret", key.getAccessSecret());
+            model.addAttribute("Endpoint", key.getEndpoint());
+            model.addAttribute("Bucketname", key.getBucketname());
+            model.addAttribute("RequestAddress", key.getRequestAddress());
+            model.addAttribute("StorageType", config.getSourcekey());
+        }
         return "admin/storageconfig";
     }
 
@@ -214,43 +205,9 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         Images images = imgService.selectByPrimaryKey(id);
         Keys key = keysService.selectKeys(sourcekey);
-        ImgServiceImpl de = new ImgServiceImpl();
+        if(key!=null){
+            ImgServiceImpl de = new ImgServiceImpl();
 
-        if (key.getStorageType() == 1) {
-            de.delect(key, images.getImgname());
-        } else if (key.getStorageType() == 2) {
-            de.delectOSS(key, images.getImgname());
-        } else if (key.getStorageType() == 3) {
-            //初始化腾讯云
-        } else if (key.getStorageType() == 4) {
-            //初始化七牛云
-        } else {
-            System.err.println("未获取到对象存储参数，删除失败。");
-        }
-        Integer ret = imgService.deleimg(id);
-        Integer count = 0;
-        if (ret > 0) {
-            jsonObject.put("usercount", imgService.countimg(u.getId()));
-            jsonObject.put("count", imgService.counts(null) + 1000);
-            count = 1;
-        } else {
-            count = 0;
-        }
-        jsonObject.put("val", count);
-        return jsonObject.toString();
-    }
-
-    //批量删除图片
-    @PostMapping("/deleallimg")
-    @ResponseBody
-    public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids) {
-        JSONObject jsonObject = new JSONObject();
-        Integer v = 0;
-        ImgServiceImpl de = new ImgServiceImpl();
-        User u = (User) session.getAttribute("user");
-        for (int i = 0; i < ids.length; i++) {
-            Images images = imgService.selectByPrimaryKey(ids[i]);
-            Keys key = keysService.selectKeys(images.getSource());
             if (key.getStorageType() == 1) {
                 de.delect(key, images.getImgname());
             } else if (key.getStorageType() == 2) {
@@ -262,16 +219,61 @@ public class AdminController {
             } else {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
-            Integer ret = imgService.deleimg(ids[i]);
-            if (ret < 1) {
-                v = 0;
+            Integer ret = imgService.deleimg(id);
+            Integer count = 0;
+            if (ret > 0) {
+                jsonObject.put("usercount", imgService.countimg(u.getId()));
+                jsonObject.put("count", imgService.counts(null) + 1000);
+                count = 1;
             } else {
-                v = 1;
+                count = 0;
+            }
+            jsonObject.put("val", count);
+        }else{
+            jsonObject.put("val", 0);
+        }
+
+        return jsonObject.toString();
+    }
+
+    //批量删除图片
+    @PostMapping("/deleallimg")
+    @ResponseBody
+    public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids) {
+        JSONObject jsonObject = new JSONObject();
+        Integer v = 0;
+        ImgServiceImpl de = new ImgServiceImpl();
+        User u = (User) session.getAttribute("user");
+
+        for (int i = 0; i < ids.length; i++) {
+            Images images = imgService.selectByPrimaryKey(ids[i]);
+            Keys key = keysService.selectKeys(images.getSource());
+            if(key!=null){
+                if (key.getStorageType() == 1) {
+                    de.delect(key, images.getImgname());
+                } else if (key.getStorageType() == 2) {
+                    de.delectOSS(key, images.getImgname());
+                } else if (key.getStorageType() == 3) {
+                    //初始化腾讯云
+                } else if (key.getStorageType() == 4) {
+                    //初始化七牛云
+                } else {
+                    System.err.println("未获取到对象存储参数，删除失败。");
+                }
+                Integer ret = imgService.deleimg(ids[i]);
+                if (ret < 1) {
+                    v = 0;
+                } else {
+                    v = 1;
+                }
+            }else {
+                v = 0;
             }
         }
+        jsonObject.put("val", v);
         jsonObject.put("usercount", imgService.countimg(u.getId()));
         jsonObject.put("count", imgService.counts(null) + 1000);
-        jsonObject.put("val", v);
+
         return jsonObject.toString();
     }
 
@@ -303,7 +305,6 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         user.setEmail(u.getEmail());
         JSONArray jsonArray = new JSONArray();
-        //if(count==0) {
         Integer ret = userService.change(user);
         jsonArray.add(ret);
         if (u.getEmail() != null && u.getPassword() != null) {
@@ -311,9 +312,6 @@ public class AdminController {
             //刷新view
             session.invalidate();
         }
-        //}else {
-        //	jsonArray.add("-1");
-        //}
         // -1 用户名重复
         return jsonArray.toString();
     }
@@ -350,8 +348,8 @@ public class AdminController {
     @PostMapping("/root/updateconfig")
     @ResponseBody
     public Integer updateconfig(HttpSession session, String webname,String explain, String logos,
-                                String footed, String links, String notice,String baidu ) {
-        System.err.println(links);
+                                String footed, String links, String notice,String baidu,String domain ) {
+        System.err.println("域名=="+domain);
         Config config = new Config();
         config.setWebname(webname);
         config.setExplain(explain);
@@ -360,6 +358,7 @@ public class AdminController {
         config.setLinks(links);
         config.setNotice(notice);
         config.setBaidu(baidu);
+        config.setDomain(domain);
         Integer ret = configService.setSourceype(config);
         return ret;
     }

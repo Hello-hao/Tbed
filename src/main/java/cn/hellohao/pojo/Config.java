@@ -11,11 +11,12 @@ public class Config {
     private String links;
     private String notice;
     private String baidu;
+    private String domain;
 
     public Config() {
     }
 
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu, String domain) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
@@ -26,6 +27,7 @@ public class Config {
         this.links = links;
         this.notice = notice;
         this.baidu = baidu;
+        this.domain = domain;
     }
 
     public Integer getId() {
@@ -106,5 +108,13 @@ public class Config {
 
     public void setBaidu(String baidu) {
         this.baidu = baidu;
+    }
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 }

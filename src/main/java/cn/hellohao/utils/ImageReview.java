@@ -16,16 +16,10 @@ import java.util.Map;
 @Component
 public class ImageReview {
 
-    //设置APPID/AK/SK
-//    private static final String APP_ID = "15434135";
-//    private static final String API_KEY = "yDdHaeMf0FfFAxupXFkoxoPG";
-//    private static final String SECRET_KEY = "QGRXTy8QNDMr0dWuWS6bj7rNcwtEddKe";
     private static AipContentCensor client;
 
     private ImageReview() {
     }
-
-
     private static void Initializes(Imgreview imgreview) {
         client = new AipContentCensor(imgreview.getAppId(), imgreview.getApiKey(), imgreview.getSecretKey());
         client.setConnectionTimeoutInMillis(2000);
@@ -74,21 +68,15 @@ public class ImageReview {
                             }else{
                                 System.err.println("未获取到对象存储参数，上传失败。");
                             }
-
                             if (ret == 1) {
                                 System.out.println("存在色情图片，删除成功。");
                             } else {
                                 System.out.println("存在色情图片，删除失败");
                             }
                         }
-
                     }
                 }
-
             }
-
-
-
         }
     }
 

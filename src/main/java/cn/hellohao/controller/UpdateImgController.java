@@ -41,18 +41,23 @@ public class UpdateImgController {
     public String indexImg(Model model, HttpServletRequest request, HttpSession httpSession) throws Exception {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         Keys key = keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
-        if(key.getStorageType()==1){
-            nOSImageupload.Initialize(key);//实例化网易
-            System.out.println("NOS初始化成功。");
-        }else if (key.getStorageType()==2){
-            OSSImageupload.Initialize(key);
-            System.out.println("OSS初始化成功。");
-        }else if(key.getStorageType()==3){
-            //初始化腾讯云
-        }else if(key.getStorageType()==4){
-            //初始化七牛云
-        }else{
-            System.err.println("未获取到对象存储参数，初始化失败。");
+        if(key!=null)
+        {
+            if(key.getStorageType()!=0 || key.getStorageType()!=null){
+                if(key.getStorageType()==1){
+                    nOSImageupload.Initialize(key);//实例化网易
+                    System.out.println("NOS初始化成功。");
+                }else if (key.getStorageType()==2){
+                    OSSImageupload.Initialize(key);
+                    System.out.println("OSS初始化成功。");
+                }else if(key.getStorageType()==3){
+                    //初始化腾讯云
+                }else if(key.getStorageType()==4){
+                    //初始化七牛云
+                }else{
+                    System.err.println("未获取到对象存储参数，初始化失败。");
+                }
+            }
         }
 
         User u = (User) httpSession.getAttribute("user");
@@ -79,27 +84,6 @@ public class UpdateImgController {
 
         }
         model.addAttribute("config", config);
-
-//		AipContentCensor client = ImageReview.Initialize();
-//		String url = "https://hellohao.nos-eastchina1.126.net/Hellohao/huangse.png";
-//		JSONObject res = client.antiPorn(url);
-//		res = client.imageCensorUserDefined(url, EImgType.URL, null);
-//		System.out.println(res.toString());
-
-//
-//        CronTrigger cron  = (CronTrigger) scheduler.getTrigger(cronTrigger.getKey());
-//        String currentCron = cron.getCronExpression();// 当前Trigger使用的
-//        System.err.println("当前trigger使用的-"+currentCron);
-//
-//        //修改每隔?秒执行任务
-//        CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 09 07 * * ?");
-//
-//        // 按新的cronExpression表达式重新构建trigger
-//        cron = cron.getTriggerBuilder().withIdentity(cronTrigger.getKey())
-//                .withSchedule(scheduleBuilder).build();
-//
-//        scheduler.rescheduleJob(cronTrigger.getKey(),cron);
-
         return "index";
 
     }

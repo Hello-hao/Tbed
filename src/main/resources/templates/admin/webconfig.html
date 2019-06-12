@@ -45,6 +45,14 @@
                     </div>
                 </div>
                 <br />
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">站点域名</label>
+                        <div class="layui-input-block">
+                            <input id="domain" type="text" name="title" autocomplete="off" placeholder="站点域名" class="layui-input"
+                                   th:value="${config.getDomain()}"/><span style="color: #DAA5A6;">填写访问本站的域名或IP,否则开启邮箱激活不能正常使用。</span>
+                        </div>
+                    </div>
+                    <br />
                 <div class="layui-form-item">
                     <label class="layui-form-label">站点说明</label>
                     <div class="layui-input-block">
@@ -116,19 +124,19 @@
 
             });
         function updateconfig() {
-            //修改百度图片鉴别
                 var webname = $("#webname").val();
                 var explain = $("#explain").val();
                 var logos = $("#logos").val();
                 var footed = $("#footed").val();
                 var links = $("#links").val();
                 var notice = $("#notice").val();
-                if (webname != "") {
+                var domain = $("#domain").val();
+                if (webname != "" && domain!="" ) {
                     $.ajax({
                         type: "POST",
                         url: "/admin/root/updateconfig",
                         dataType: "json",
-                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice},
+                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice,domain:domain},
                         success: function (data) {
                             var vals = Number(data);
                             if (vals > 0) {
@@ -140,7 +148,7 @@
                         }
                     });
                 } else {
-                    layer.msg("网站名称内容均不能为空", {icon: 2});
+                    layer.msg("网站名称或站点域名均不能为空", {icon: 2});
                 }
         }
         function updatebaidu() {

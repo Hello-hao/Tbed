@@ -14,20 +14,17 @@
     <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
     <link th:href="@{/static/css/fileinput.css}" media="all" rel="stylesheet" type="text/css"/>
-
     <link th:href="@{/static/css/toastr.min.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/login-register.css}" media="all" rel="stylesheet" type="text/css"/>
-    <link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" media="all" rel="stylesheet" type="text/css"/>
-
-
-    <script src="https://cdn.staticfile.org/jquery/3.3.1/jquery.min.js"></script>
+    <link href="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.css" media="all" rel="stylesheet"
+          type="text/css"/>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <script th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
-
     <script th:src="@{/static/js/fileinput.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/fileinput_locale_zh.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/toastr.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/login-register.js}"></script>
-    <script src="https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"></script>
+    <script src="https://cdn.staticfile.org/clipboard.js/2.0.4/clipboard.min.js"></script><!--2.0.4 -->
     <script src="https://cdn.staticfile.org/bootbox.js/4.4.0/bootbox.min.js"></script>
     <script type="text/javascript" src="https://api.guoch.xyz/?code=js&charset=utf-8"></script>
     <script src="https://cdn.bootcss.com/sweetalert/1.1.3/sweetalert.min.js" type="text/javascript"></script>
@@ -37,6 +34,7 @@
             padding: 46px;
             /*margin-top: 5%;*/
         }
+
         #page-header {
             width: 80%;
             height: 50px;
@@ -44,6 +42,7 @@
             margin-top: 5%;
             margin: 0 auto;
         }
+
         pre {
             color: #000;
             line-height: 16px;
@@ -52,6 +51,7 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+
         #page-header {
             line-height: 2.5em;
             font-family: "Microsoft YaHei", "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -63,20 +63,21 @@
 </head>
 <body>
 <div th:include="header::header"></div>
-    <div class="alert alert-success">
-        <a href="#" class="close" data-dismiss="alert">
-            &times;
-        </a>
-        <strong>警告！</strong>您的网络连接有问题。
-    </div>
-
-<div  class="container" th:if=" ${config.getNotice()} != ''">
-    <div class="alert alert-info alert-dismissable">
-    <button type="button" class="close" data-dismiss="alert"
-            aria-hidden="true">
+<div class="alert alert-success">
+    <a href="#" class="close" data-dismiss="alert">
         &times;
-    </button>
-        <li class="glyphicon glyphicon-exclamation-sign">&nbsp;</li><span th:text="${config.getNotice()}"></span>
+    </a>
+    <strong>警告！</strong>您的网络连接有问题。
+</div>
+
+<div class="container" th:if=" ${config.getNotice()} != ''">
+    <div class="alert alert-info alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert"
+                aria-hidden="true">
+            &times;
+        </button>
+        <li class="glyphicon glyphicon-exclamation-sign">&nbsp;</li>
+        <span th:text="${config.getNotice()}"></span>
     </div>
 </div>
 <div id="page-header" class="container kv-main jb">
@@ -105,17 +106,16 @@
 <div class="container" id="address" style="display: none;">
     <div class="form-group">
         <label>URL外链地址：</label>&nbsp;
-        <a style="display: block;width: 50px;float: right;" onclick="copy(1)"  class="btn btn-info btn-xs">复制</a>
+        <a style="display: block;width: 50px;float: right;" onclick="copy(1)" class="btn btn-info btn-xs">复制</a>
         <pre id="urls"></pre>
         <label>Markdown外链地址：</label>&nbsp;
-        <a style="display: block;width: 50px;float: right;" onclick="copy(2)"  class="btn btn-info btn-xs">复制</a>
+        <a style="display: block;width: 50px;float: right;" onclick="copy(2)" class="btn btn-info btn-xs">复制</a>
         <pre id="markdowns"></pre>
         <label>HTML外链地址：</label>&nbsp;
-        <a style="display: block;width: 50px;float: right;" onclick="copy(3)"  class="btn btn-info btn-xs">复制</a>
+        <a style="display: block;width: 50px;float: right;" onclick="copy(3)" class="btn btn-info btn-xs">复制</a>
         <pre id="htmls"></pre>
     </div>
 </div>
-<hr/>
 <!-- 登录注册框 -->
 <div class="modal fade login" id="loginModal">
     <div class="modal-dialog login animated">
@@ -160,7 +160,8 @@
                                          ●邮箱激活链接如果没有请在【垃圾箱】查找</span>
                                 </div>
                                 <hr/>
-                                <input id="registerusername" class="form-control" type="text" placeholder="用户名(数字/字母不得超过10位)"
+                                <input id="registerusername" class="form-control" type="text"
+                                       placeholder="用户名(数字/字母不得超过10位)"
                                        name="username">
                                 <input id="registeremail" class="form-control" type="text" placeholder="邮箱"
                                        name="email">
@@ -210,7 +211,7 @@
         $("#explain").text(explain);
         $("#footeds").text(footeds);
         $("#links").html(links);
-        $("#logos").attr('src',logos);
+        $("#logos").attr('src', logos);
         var loginid = [[${loginid}]];
         toastr.options.positionClass = 'toast-bottom-right';
         toastr.options = {
@@ -232,24 +233,11 @@
         if (loginid == 100) {
             var username = [[${username}]];
             var isvip = [[${level}]];
-            var h = '<li><a  target="_blank" id="usernames" >' +times()+ username + '&nbsp;<img style=" margin-top:-6px;width:22px; height:22px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip' + isvip + '.png" /></a></li>';
+            var h = '<li><a  target="_blank" id="usernames" >' + times() + username + '&nbsp;<img style=" margin-top:-6px;width:22px; height:22px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip' + isvip + '.png" /></a></li>';
             var h1 = '<li><a style="font-weight: bold;" target="_blank" href="/admin/goadmin" id="usernames" >控制面板&nbsp;</a></li>';
             var h2 = '<li><a href="javascript:exit();" title="666" onclick="">退出</a></li>';
             $("#usersrc").html(h + h1 + h2);
         }
-
-        //一言
-        // $.ajax({
-        //     type: "POST",
-        //     url: "/sentence",
-        //     dataType: "json",
-        //     success: function(data){
-        //         var json = eval('(' + data[0] + ')');
-        //         console.log(json.hitokoto)
-        //         $("#yiyan").text(json.hitokoto);
-        //     }
-        // });
-
     });
     var arr_url = "";
     var arr_markdown = "";
@@ -294,7 +282,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.ret > 0) {
-                    if(data.zctype==1){
+                    if (data.zctype == 1) {
                         swal({
                                 title: "注册成功",
                                 text: "请前往邮箱激活你的账号，注意！激活邮件如果迟迟未收到，有可能在您的【垃圾箱】中。",
@@ -306,14 +294,12 @@
                                 closeOnConfirm: true,
                                 closeOnCancel: false
                             },
-                            function(isConfirm){
+                            function (isConfirm) {
                                 if (isConfirm) {
-                                    //swal("我知道了！", "你已经点确认了。","success");
                                     openLoginModal();
-                                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
-                                }
+                                } else{}
                             });
-                    }else{
+                    } else {
                         swal({
                                 title: "注册成功",
                                 text: "赶快登录去体验吧。",
@@ -321,16 +307,13 @@
                                 showCancelButton: false,//true显示两个按钮
                                 confirmButtonColor: "#A5DC86",
                                 confirmButtonText: "知道了",
-                                //cancelButtonText: "取消删除！",
                                 closeOnConfirm: true,
                                 closeOnCancel: false
                             },
-                            function(isConfirm){
+                            function (isConfirm) {
                                 if (isConfirm) {
-                                    //swal("我知道了！", "你已经点确认了。","success");
                                     openLoginModal();
-                                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
-                                }
+                                } else {}
                             });
                     }
 
@@ -341,8 +324,6 @@
                         toastr.error('注册失败，请重试。');
                     }
                     setTimeout(function () {
-                        //这里写时间到后执行的代码
-                        //window.location.reload();
                     }, 3000);
                 }
             }
@@ -363,7 +344,6 @@
                 if (data == 1) {
                     toastr.success("登录成功。");
                     setTimeout(function () {
-                        //这里写时间到后执行的代码
                         window.location.reload();
                     }, 1000);
                 } else {
@@ -373,7 +353,6 @@
                         toastr.error('登录失败，请重试。');
                     }
                     setTimeout(function () {
-                        //这里写时间到后执行的代码
                         openLoginModal();
                     }, 2000);
                 }
@@ -392,30 +371,46 @@
             }
         });
     }
+
     function guanyu() {
         bootbox.alert("本站为图床站，用户可以免费使用本站，本站仅有Hellohao一人开发维护，对接（网易、阿里、腾讯、七牛）等多家对象存储，添加图片鉴黄功能，慢慢增加更多功能。但是服务器资源宝贵，切勿恶意上传非法/黄色/暴力等违反国家法律规定图片,一旦发现，严查必究！");
     }
 
     function times() {
-        now = new Date(),hour = now.getHours()
-        if(hour < 6){return("凌晨好！")}
-        else if (hour < 9){return("早上好！")}
-        else if (hour < 12){return("上午好！")}
-        else if (hour < 14){return("中午好！")}
-        else if (hour < 17){return("下午好！")}
-        else if (hour < 19){return("傍晚好！")}
-        else if (hour < 22){return("晚上好！")}
-        else {return("夜里好！")}
+        now = new Date(), hour = now.getHours()
+        if (hour < 6) {
+            return ("凌晨好！")
+        } else if (hour < 9) {
+            return ("早上好！")
+        } else if (hour < 12) {
+            return ("上午好！")
+        } else if (hour < 14) {
+            return ("中午好！")
+        } else if (hour < 17) {
+            return ("下午好！")
+        } else if (hour < 19) {
+            return ("傍晚好！")
+        } else if (hour < 22) {
+            return ("晚上好！")
+        } else {
+            return ("夜里好！")
+        }
     }
+
     function copy(val) {
-        var data =null;
-        if(val==1){data = $('#urls').text();}
-        else if(val==2){data = $('#markdowns').text();}
-        else if(val==3){data = $('#htmls').text();}
-        else{return;}
+        var data = null;
+        if (val == 1) {
+            data = $('#urls').text();
+        } else if (val == 2) {
+            data = $('#markdowns').text();
+        } else if (val == 3) {
+            data = $('#htmls').text();
+        } else {
+            return;
+        }
         var copy = new ClipboardJS('.btn', {
             text: function (trigger) {
-                return  data;
+                return data;
             }
         });
         copy.on('success', function (e) {
@@ -427,25 +422,20 @@
             copy.off("error");
         });
     }
-
-
     function loadScriptString(code) {
         var script = document.createElement("script");
         script.type = "text/javascript";
-        try{
+        try {
             // firefox、safari、chrome和Opera
             script.appendChild(document.createTextNode(code));
-        }catch(ex) {
+        } catch (ex) {
             // IE早期的浏览器 ,需要使用script的text属性来指定javascript代码。
             script.text = code;
         }
         document.getElementsByTagName("head")[0].appendChild(script);
     }
-
-    //var text = 'var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s)})();';
-    var baidu =[[${config.getBaidu()}]];
-        loadScriptString(baidu);
-
+    var baidu = [[${config.getBaidu()}]];
+    loadScriptString(baidu);
 </script>
 
 

@@ -34,8 +34,12 @@
                 `notice` = #{notice},
             </if>
             <if test="baidu != null">
-                `baidu` = #{baidu}
+                `baidu` = #{baidu},
             </if>
+            <if test="domain != null">
+                `domain` = #{domain}
+            </if>
+
         </set>
         where id=1
     </update>

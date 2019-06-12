@@ -1,12 +1,9 @@
-package cn.hellohao;
+package cn.hellohao.utils;
 
 import cn.hellohao.pojo.Imgreview;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.ImgreviewService;
-import cn.hellohao.utils.ImageReview;
-
-import java.util.HashMap;
 import java.util.Map;
 
 public class JianHuangThread extends Thread {
