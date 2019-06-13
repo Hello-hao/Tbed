@@ -5,6 +5,7 @@ import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.ImgServiceImpl;
 
+import cn.hellohao.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -77,8 +78,11 @@ public class AdminController {
         model.addAttribute("level", u.getLevel());
         model.addAttribute("email", u.getEmail());
         model.addAttribute("loginid", 100);
-        if(key!=null){
+        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        if(b){
             model.addAttribute("source", key.getStorageType());
+        }else{
+            model.addAttribute("source", 456);
         }
         return "admin/table";
     }
@@ -160,7 +164,8 @@ public class AdminController {
     public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         Keys key = keysService.selectKeys(config.getSourcekey());
-        if(key!=null){
+        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        if(b){
             //key信息
             model.addAttribute("AccessKey", key.getAccessKey());
             model.addAttribute("AccessSecret", key.getAccessSecret());
@@ -205,7 +210,8 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         Images images = imgService.selectByPrimaryKey(id);
         Keys key = keysService.selectKeys(sourcekey);
-        if(key!=null){
+        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        if(b){
             ImgServiceImpl de = new ImgServiceImpl();
 
             if (key.getStorageType() == 1) {
@@ -248,7 +254,8 @@ public class AdminController {
         for (int i = 0; i < ids.length; i++) {
             Images images = imgService.selectByPrimaryKey(ids[i]);
             Keys key = keysService.selectKeys(images.getSource());
-            if(key!=null){
+            Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+            if(b){
                 if (key.getStorageType() == 1) {
                     de.delect(key, images.getImgname());
                 } else if (key.getStorageType() == 2) {

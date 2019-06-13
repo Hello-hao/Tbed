@@ -70,6 +70,13 @@
     </form>
 </div>
 <script>
+    /**
+     * 禁用 ajax 缓存
+     */
+    $.ajaxSetup({
+        cache: false
+    });
+
     layui.use(['form', 'layedit', 'laydate'], function () {
         var form = layui.form;
 
@@ -93,14 +100,12 @@
     });
 
     var using = [[${emailConfig.getUsing()}]];
-    if (using == 1) {
-        $('#open').attr("checked", 'hellohao'); //增加属性
-    } else {
-        $('#open').removeAttr("checked"); //移除属性
-    }
-
     $(function () {
-
+        if (using == 1) {
+            $('#open').attr("checked", 'hellohao'); //增加属性
+        } else {
+            $('#open').removeAttr("checked"); //移除属性
+        }
     });
 
     function emailconfig(values) {
