@@ -45,6 +45,7 @@ public class OSSImageupload {
                 }
                 meta.setHeader("Content-Type", head);//image/jpeg
                 // 上传文件流。
+            System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                 ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
                 // 关闭OSSClient。
                 //ossClient.shutdown();

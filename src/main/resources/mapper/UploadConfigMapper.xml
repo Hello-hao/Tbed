@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.UploadConfigMapper">
+
+    <select id="getUpdateConfig" resultType="cn.hellohao.pojo.UploadConfig">
+        select * from uploadconfig where id = 1
+    </select>
+
+    <update id="setUpdateConfig" parameterType="cn.hellohao.pojo.UploadConfig">
+        UPDATE uploadconfig
+        <set>
+            <if test="filesizetourists != null">
+                `filesizetourists` = #{filesizetourists},
+            </if>
+            <if test="filesizeuser != null">
+                `filesizeuser` = #{filesizeuser},
+            </if>
+            <if test="imgcounttourists != null">
+                `imgcounttourists` = #{imgcounttourists},
+            </if>
+            <if test="imgcountuser != null">
+                `imgcountuser` = #{imgcountuser},
+            </if>
+            <if test="suffix != null">
+                `suffix` = #{suffix}
+            </if>
+
+        </set>
+        where id=1
+    </update>
+
+
+</mapper>

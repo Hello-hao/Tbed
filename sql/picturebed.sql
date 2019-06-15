@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 13/06/2019 15:36:38
+ Date: 16/06/2019 03:35:29
 */
 
 SET NAMES utf8mb4;
@@ -39,7 +39,7 @@ CREATE TABLE `config`  (
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 1, 1, 'Hellohao图床', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao.nos-eastchina1.126.net/%E7%BD%91%E7%AB%99%E7%B4%A0%E6%9D%90/logo2.png', 'Hellohao  切勿上传违反中华人民共和国互联网法律条约资源', '<li><a href=\"http://www.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">作者博客</a></li><li><a href=\"http://bz.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">高清壁纸</a></li><li><a href=\"http://json.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">json格式化</a></li>', '系统更改存储源，大大优化图片访问速度，同时已经开启图片鉴黄检测，对于任何恶意使用永久禁封，请各位合理使用本站资源。', 'console.log(\'百度统计JS代码\');', NULL);
+INSERT INTO `config` VALUES (1, 1, 1, 'Hellohao图床', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao.nos-eastchina1.126.net/%E7%BD%91%E7%AB%99%E7%B4%A0%E6%9D%90/logo2.png', 'Hellohao  切勿上传违反中华人民共和国互联网法律条约资源', '<li><a href=\"http://www.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">作者博客</a></li><li><a href=\"http://bz.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">高清壁纸</a></li><li><a href=\"http://json.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">json格式化</a></li>', '', 'console.log(\'百度统计JS代码\');', NULL);
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -75,7 +75,7 @@ CREATE TABLE `imgdata`  (
   `abnormal` int(2) NULL DEFAULT NULL COMMENT '异常',
   `source` int(2) NULL DEFAULT NULL COMMENT '存储源',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 158 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for imgreview
@@ -109,7 +109,7 @@ CREATE TABLE `keys`  (
   `RequestAddress` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `storageType` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of keys
@@ -129,6 +129,25 @@ CREATE TABLE `notice`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
+-- Table structure for uploadconfig
+-- ----------------------------
+DROP TABLE IF EXISTS `uploadconfig`;
+CREATE TABLE `uploadconfig`  (
+  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `filesizetourists` int(10) NULL DEFAULT NULL COMMENT '游客上传文件最大',
+  `filesizeuser` int(10) NULL DEFAULT NULL COMMENT '用户上传文件最大',
+  `imgcounttourists` int(10) NULL DEFAULT NULL COMMENT '游客文件总数量, 超出则不允许加入队列',
+  `imgcountuser` int(10) NULL DEFAULT NULL COMMENT '用户文件总数量, 超出则不允许加入队列',
+  `suffix` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支持后缀',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of uploadconfig
+-- ----------------------------
+INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png');
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -142,7 +161,7 @@ CREATE TABLE `user`  (
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
   `isok` int(2) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user

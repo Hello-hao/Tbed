@@ -37,6 +37,8 @@ public class AdminController {
     private ConfigService configService;
     @Autowired
     private EmailConfigService emailConfigService;
+    @Autowired
+    private UploadConfigService updateConfigService;
 
 
     @RequestMapping(value = "/goadmin")
@@ -229,7 +231,7 @@ public class AdminController {
             Integer count = 0;
             if (ret > 0) {
                 jsonObject.put("usercount", imgService.countimg(u.getId()));
-                jsonObject.put("count", imgService.counts(null) + 1000);
+                jsonObject.put("count", imgService.counts(null));
                 count = 1;
             } else {
                 count = 0;
@@ -348,15 +350,16 @@ public class AdminController {
     @RequestMapping(value = "/root/towebconfig")
     public String towebconfig(Model model) {
         Config config = configService.getSourceype();
+        UploadConfig updateConfig = updateConfigService.getUpdateConfig();
         model.addAttribute("config",config);
+        model.addAttribute("updateConfig",updateConfig);
         return "admin/webconfig";
     }
     //修改站点配置
     @PostMapping("/root/updateconfig")
     @ResponseBody
-    public Integer updateconfig(HttpSession session, String webname,String explain, String logos,
+    public Integer updateconfig(String webname,String explain, String logos,
                                 String footed, String links, String notice,String baidu,String domain ) {
-        System.err.println("域名=="+domain);
         Config config = new Config();
         config.setWebname(webname);
         config.setExplain(explain);
@@ -367,6 +370,13 @@ public class AdminController {
         config.setBaidu(baidu);
         config.setDomain(domain);
         Integer ret = configService.setSourceype(config);
+        return ret;
+    }
+    //修改上传配置
+    @PostMapping("/root/scconfig")
+    @ResponseBody
+    public Integer scconfig(UploadConfig updateConfig) {
+        Integer ret = updateConfigService.setUpdateConfig(updateConfig);
         return ret;
     }
 

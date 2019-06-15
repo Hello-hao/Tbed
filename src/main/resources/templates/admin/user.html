@@ -36,11 +36,10 @@
         $.ajaxSetup({
             cache: false
         });
-
         var table = null;
-        layui.use('table', function(){
+        layui.use(['table','layer'], function(){
             table = layui.table;
-
+            var layer = layui.layer
             table.render({
                 elem: '#dates'
                 ,cache: false//关闭本地磁盘缓存，
@@ -64,14 +63,12 @@
                         }
                     }
                     //, {title: '操作', fixed: 'right',width:250, align: 'center', toolbar: '#column-toolbar'}
-
                 ] ]
                 ,page: true
                 ,done:function(res, curr, count){
                     //数据的回调用，可不写
                 }
             });
-
 
             // 行点击事件
             table.on('tool', function (obj) {

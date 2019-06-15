@@ -20,8 +20,8 @@
                 <select id="StorageType" name="city" lay-filter="business" lay-verify="required">
                     <option value="1">网易NOS</option>
                     <option value="2">阿里OSS</option>
-                    <option value="3">腾讯COS（未接入）</option>
-                    <option value="3">七牛云存储（未接入）</option>
+                    <option >腾讯COS（未接入）</option>
+                    <option >七牛云存储（未接入）</option>
                 </select>
             </div>
         </div>
@@ -50,6 +50,7 @@
             <div class="layui-input-block">
                 <input id="Endpoint" type="text" name="title" autocomplete="off" placeholder="Endpoint"
                        class="layui-input" th:value="${Endpoint}"/>
+                <span style="color: #DAA5A6;">需带有http://或https://</span>
             </div>
         </div>
         <div class="layui-form-item">
@@ -64,6 +65,7 @@
             <div class="layui-input-block">
                 <input id="RequestAddress" type="text" name="title" autocomplete="off" placeholder="RequestAddress"
                        class="layui-input" th:value="${RequestAddress}"/>
+                <span style="color: #DAA5A6;">需带有http://或https://</span>
             </div>
         </div>
 
@@ -126,26 +128,30 @@
         var Bucketname = $("#Bucketname").val();
         var RequestAddress = $("#RequestAddress").val();
         var StorageType = $("#StorageType").val();
-        $.ajax({
-            type: "POST",
-            url: "/admin/root/updatekey",
-            data: {
-                AccessKey: AccessKey,
-                AccessSecret: AccessSecret,
-                Endpoint: Endpoint,
-                Bucketname: Bucketname,
-                RequestAddress: RequestAddress,
-                StorageType: StorageType
-            },
-            dataType: "json",
-            success: function (data) {
-                if (data > 0) {
-                    layer.msg("保存成功", {icon: 1});
-                } else {
-                    layer.msg("保存失败", {icon: 2});
+        if(AccessKey!="" && AccessSecret!="" && Endpoint!="" && Bucketname!="" && RequestAddress!="" && StorageType!=""){
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/updatekey",
+                data: {
+                    AccessKey: AccessKey,
+                    AccessSecret: AccessSecret,
+                    Endpoint: Endpoint,
+                    Bucketname: Bucketname,
+                    RequestAddress: RequestAddress,
+                    StorageType: StorageType
+                },
+                dataType: "json",
+                success: function (data) {
+                    if (data > 0) {
+                        layer.msg("保存成功", {icon: 1});
+                    } else {
+                        layer.msg("保存失败", {icon: 2});
+                    }
                 }
-            }
-        });
+            });
+        }else{
+            layer.msg("有参数不正确，请检查", {icon: 2});
+        }
     }
 
 </script>

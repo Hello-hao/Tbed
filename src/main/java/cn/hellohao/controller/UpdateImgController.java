@@ -1,10 +1,7 @@
 package cn.hellohao.controller;
 
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
@@ -37,11 +34,22 @@ public class UpdateImgController {
     private OSSImageupload ossImageupload;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private UploadConfigService uploadConfigService;
 
 
     @RequestMapping({"/", "/index"})
-    public String indexImg(Model model, HttpServletRequest request, HttpSession httpSession) throws Exception {
+    public String indexImg(Model model, HttpSession httpSession) {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+        Integer filesizetourists = 0;
+        Integer filesizeuser = 0;
+        Integer imgcounttourists = 0;
+        Integer imgcountuser = 0;
+        if(uploadConfig.getFilesizetourists()!=null){filesizetourists = uploadConfig.getFilesizetourists();}
+        if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
+        if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
+        if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
         Keys key = keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
         Boolean b = StringUtils.doNull(key);//判断对象是否有空值
         if(b)
@@ -62,7 +70,6 @@ public class UpdateImgController {
                 }
             }
         }
-
         User u = (User) httpSession.getAttribute("user");
         String email = (String) httpSession.getAttribute("email");
         if (email != null) {
@@ -73,27 +80,29 @@ public class UpdateImgController {
                 model.addAttribute("username", user.getUsername());
                 model.addAttribute("level", user.getLevel());
                 model.addAttribute("loginid", 100);
-                model.addAttribute("imgcount", 3);
-                model.addAttribute("fileSize", 5120);
+                model.addAttribute("imgcount", imgcountuser);
+                model.addAttribute("filesize", filesizeuser*1024*1024);
 
             } else {
                 model.addAttribute("loginid", -1);
-                model.addAttribute("imgcount", 1);
+                model.addAttribute("imgcount", imgcounttourists);
             }
         } else {
             model.addAttribute("loginid", -2);
-            model.addAttribute("imgcount", 1);
-            model.addAttribute("fileSize", 3072);
+            model.addAttribute("imgcount", imgcounttourists);
+            model.addAttribute("filesize", filesizetourists*1024*1024);
 
         }
+        model.addAttribute("suffix", uploadConfig.getSuffix());
         model.addAttribute("config", config);
-        return "index";
+        model.addAttribute("uploadConfig", uploadConfig);
+        return "index_upload";
 
     }
 
     @RequestMapping(value = "/upimg")
     @ResponseBody
-    public String upimg(HttpServletRequest request, HttpServletResponse response, HttpSession session
+    public String upimg( HttpSession session
             , @RequestParam(value = "file", required = false) MultipartFile[] file) throws Exception {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         JSONArray jsonArray = new JSONArray();
@@ -166,7 +175,7 @@ public class UpdateImgController {
 //            JianHuangThread thread = new JianHuangThread(imgreviewService, key, u, m);
 //            thread.start();
 //        }
-
+        System.err.println("上传后返回值："+jsonArray.toString());
         return jsonArray.toString();
     }
 
@@ -179,6 +188,7 @@ public class UpdateImgController {
         jsonArray.add(text);
         return jsonArray.toString();
     }
+
 
 
 }

@@ -11,7 +11,7 @@
     <meta name="renderer" content="webkit">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>系統配置</title>
+    <title>系统配置</title>
     <link rel="stylesheet" href="https://cdn.90so.net/layui/2.4.5/css/layui.css">
    
 </head>
@@ -22,6 +22,7 @@
         <ul class="layui-tab-title">
             <li class="layui-this" lay-id="111">首页设置</li>
             <li lay-id="222">百度统计</li>
+            <li lay-id="333">上传配置</li>
 
         </ul>
         <div class="layui-tab-content">
@@ -49,7 +50,7 @@
                         <label class="layui-form-label">站点域名</label>
                         <div class="layui-input-block">
                             <input id="domain" type="text" name="title" autocomplete="off" placeholder="站点域名" class="layui-input"
-                                   th:value="${config.getDomain()}"/><span style="color: #DAA5A6;">填写访问本站的域名或IP,否则开启邮箱激活不能正常使用。</span>
+                                   th:value="${config.getDomain()}"/><span style="color: #DAA5A6;">填写访问本站的域名或IP,否则开启邮箱激活不能正常使用。需带有http://或https://</span>
                         </div>
                     </div>
                     <br />
@@ -99,6 +100,50 @@
                     <a class="layui-btn" lay-filter="demo2" onclick="updatebaidu()">保存</a>
                 </div>
                 </form>
+            </div>
+<!--分组3-->
+            <div class="layui-tab-item">
+                <h3>游客上传配置</h3>
+                <hr />
+                <div class="layui-inline">
+                    <label class="layui-form-label" style="width: 100px;">单个文件大小(M)</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input id="filesizetourists" th:value="${updateConfig.getFilesizetourists()}"  type="text" name="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline" style="margin-left: 50px;">
+                    <label class="layui-form-label" style="width: 100px;">单次上传个数</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input id="imgcounttourists" th:value="${updateConfig.getImgcounttourists()}" type="text" name="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <br />
+                <h3 style="margin-top: 50px;">会员上传配置</h3>
+                <hr />
+                <div class="layui-inline" >
+                    <label class="layui-form-label" style="width: 100px;">单个文件大小(M)</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input id="filesizeuser" th:value="${updateConfig.getFilesizeuser()}" type="text" name="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline" style="margin-left: 50px;">
+                    <label class="layui-form-label" style="width: 100px;">单次上传个数</label>
+                    <div class="layui-input-inline" style="width: 100px;">
+                        <input id="imgcountuser" th:value="${updateConfig.getImgcountuser()}" type="text" name="" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+                <br />
+                <h3 style="margin-top: 50px;">支持文件配置</h3>
+                <hr />
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文件类型</label>
+                    <div class="layui-input-block">
+                        <input id="suffix" th:value="${updateConfig.getSuffix()}" type="text" name="title" required  lay-verify="required" placeholder="配置可上传的文件类型" autocomplete="off" class="layui-input">
+                        <span style="color: #DAA5A6;">配个类型用“ , ”隔开</span>
+                    </div>
+                </div>
+
+                <a class="layui-btn" lay-filter="demo2" onclick="scconfig()">保存</a>
             </div>
 
         </div>
@@ -168,6 +213,33 @@
                     }
                 }
             });
+        }
+        function scconfig() {
+            var filesizetourists = $("#filesizetourists").val();
+            var filesizeuser = $("#filesizeuser").val();
+            var imgcounttourists = $("#imgcounttourists").val();
+            var imgcountuser = $("#imgcountuser").val();
+            var suffix = $("#suffix").val();
+            if(filesizetourists!=""&&filesizeuser!=""&&imgcounttourists!=""&&imgcountuser!=""&&suffix!=""){
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/root/scconfig",
+                    dataType: "json",
+                    data: {filesizetourists: filesizetourists,filesizeuser:filesizeuser,imgcounttourists:imgcounttourists,imgcountuser:imgcountuser,suffix:suffix},
+                    success: function (data) {
+                        var vals = Number(data);
+                        if (vals > 0) {
+                            layer.msg("保存成功", {icon: 1});
+                            //window.location.reload();
+                        } else {
+                            layer.msg("保存失败，请尝试刷新页面后操作", {icon: 2});
+                        }
+                    }
+                });
+            }else{
+                layer.msg("各项内容不能为空", {icon: 2});
+            }
+
         }
 
 

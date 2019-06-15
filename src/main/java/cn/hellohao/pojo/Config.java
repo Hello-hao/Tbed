@@ -13,6 +13,7 @@ public class Config {
     private String baidu;
     private String domain;
 
+
     public Config() {
     }
 

@@ -37,7 +37,7 @@
                 `baidu` = #{baidu},
             </if>
             <if test="domain != null">
-                `domain` = #{domain}
+                `domain` = #{domain},
             </if>
 
         </set>
