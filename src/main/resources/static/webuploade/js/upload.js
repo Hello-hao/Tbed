@@ -202,7 +202,7 @@
                     arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
                     arr_html += '未配置存储源，请先后台配置存储源\r\n';
                 }else{
-                    arr_url += 'https://' + response[i] + '\r\n';
+                    arr_url += response[i] + '\r\n';
                     arr_markdown += '![ ](' + response[i] + ')\r\n';
                     arr_html += '<img src="' + response[i] + '" alt="Image" title="Image" /> \r\n';
                 }
