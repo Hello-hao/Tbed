@@ -80,7 +80,7 @@ server.port=8088
 
 ### 说明
 如果你不会编译本程序可以去我的博客搜`图床`,下载编译后jar包直接部署即可。
-### [**编译包点击下载**](https://share.weiyun.com/5AOHVpf "点击下载") 　 密码：`RINK`
+### [**编译包点击下载**](https://share.weiyun.com/5Np8LfJ "点击下载") 　 密码：`YUs8`
 
 ### 技术选型
 
