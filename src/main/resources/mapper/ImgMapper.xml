@@ -48,7 +48,7 @@
 
     <!-- 根据图片名字标记非法提示 -->
     <update id="setabnormal" parameterType="string">
-        UPDATE imgdata set abnormal=1 where imgname=#{imgname}
+         UPDATE imgdata set abnormal=1 where imgname=#{imgname}
     </update>
     <!-- 非法图片删除他  根据名称-->
     <delete id="deleimgname" parameterType="string">
