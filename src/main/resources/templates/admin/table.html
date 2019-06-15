@@ -421,7 +421,6 @@
                         var view = {
                             imgurl: rows.imgurl
                         };
-                        //var output = Mustache.render('<div class="pin" onclick="win(\'{{&url}}\', \'{{name}}\')"><img class="img" src="{{&imgurl}}" lay-src="{{&imgurl}}"/><p class="description" align="center">{{name}}</p></div>', view);
                         var output = Mustache.render('<a style="cursor:pointer;" onclick="lookimgs(\'{{&imgurl}}\')">{{imgurl}}</a>', view);
                         return output;
                         //return "<a style=\"cursor:pointer;\" onclick='lookimgs(\"" + rows.imgurl + "\");'>" + rows.imgurl + "</a>";
