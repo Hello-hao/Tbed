@@ -281,7 +281,7 @@ public class AdminController {
         }
         jsonObject.put("val", v);
         jsonObject.put("usercount", imgService.countimg(u.getId()));
-        jsonObject.put("count", imgService.counts(null) + 1000);
+        jsonObject.put("count", imgService.counts(null));
 
         return jsonObject.toString();
     }
