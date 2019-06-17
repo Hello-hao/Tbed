@@ -256,12 +256,11 @@
             url: "/islogin",
             dataType: "json",
             success: function (data) {
-                console.log(data)
                 if(data.lgoinret==1){
                     var username = data.username;
                     var isvip = data.level;
                     var h = '<li><a  target="_blank" id="usernames" >' + times() + username + '&nbsp;<img style=" margin-top:-6px;width:22px; height:22px;max-width:90%;max-height:90%;" src="/static/img/vip/Vip' + isvip + '.png" /></a></li>';
-                    var h1 = '<li><a style="font-weight: bold;" target="_blank" href="/admin/goadmin" id="usernames" >控制面板&nbsp;</a></li>';
+                    var h1 = '<li><a style="font-weight: bold;" target="_blank" href="/admin/goadmin?random=Math.random" id="usernames" >控制面板&nbsp;</a></li>';
                     var h2 = '<li><a href="javascript:exit();" title="666" onclick="">退出</a></li>';
                     $("#usersrc").html(h + h1 + h2);
                 }

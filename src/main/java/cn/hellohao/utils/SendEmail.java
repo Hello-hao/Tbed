@@ -35,6 +35,7 @@ public class SendEmail {
     public static Integer sendEmail(MimeMessage message, String username, String Url, String email, EmailConfig emailConfig, Config config) {
         String webname=config.getWebname();
         String domain = config.getDomain();
+        String texts = "<h3>你正在注册【"+webname+"】，点击下方链接进行激活：</h3><br /><a href='"+domain+"/user/activation.do?activation=" + Url + "&username=" + username + "'>"+domain+"/user/activation.do?activation=" + Url + "&username=" + username + "</a>";
         String body = "<!DOCTYPE html>\n" +
                 "<html>\n" +
                 " <head>\n" +
@@ -75,7 +76,7 @@ public class SendEmail {
             message.setRecipients(Message.RecipientType.TO, email);
             // 内容(这个内容还不能乱写,有可能会被SMTP拒绝掉;多试几次吧)
             message.setSubject(emailConfig.getEmailname()+"账号激活");//标题
-            message.setContent(body, "text/html;charset=UTF-8");//内容
+            message.setContent(texts, "text/html;charset=UTF-8");//内容
             message.setSentDate(new Date());
             message.saveChanges();
             System.out.println("准备发送");

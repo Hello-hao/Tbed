@@ -118,7 +118,6 @@ public class UserController {
             session.invalidate();
             jsonObject.put("exit", 1);
         }
-
         return jsonObject.toString();
     }
 

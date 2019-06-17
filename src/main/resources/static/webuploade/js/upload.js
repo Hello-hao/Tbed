@@ -155,7 +155,8 @@
             server: '/upimg',
             method:'POST',
             // runtimeOrder: 'flash',
-
+            compress: false,//不启用压缩
+            resize: false,//尺寸不改变
             accept: {
                 title: 'Images',
                 //extensions: 'gif,jpg,jpeg,bmp,png',
