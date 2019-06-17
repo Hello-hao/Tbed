@@ -14,6 +14,7 @@ public class StringUtils {
         for (Field field : fields) {
             //不检查 直接取值
             field.setAccessible(true);
+
             try {
                 if(StringUtils.isNull(field.get(objs))) {
                     //不为空

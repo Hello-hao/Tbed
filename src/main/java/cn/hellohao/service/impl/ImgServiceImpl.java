@@ -1,9 +1,12 @@
 package cn.hellohao.service.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.UpYun;
 import com.aliyun.oss.OSSClient;
+import com.upyun.UpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,14 +87,23 @@ public class ImgServiceImpl implements ImgService {
         String accessKeySecret = key.getAccessSecret();
         String bucketName = key.getBucketname();
         String objectName = fileName;
-
 // 创建OSSClient实例。
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
 // 删除文件。
         ossClient.deleteObject(bucketName, objectName);
 // 关闭OSSClient。
         ossClient.shutdown();
-
+    }
+    //删除USS对象存储的图片文件
+    public void delectUSS(Keys key, String fileName) {
+        UpYun upyun = new UpYun(key.getBucketname(), key.getAccessKey(), key.getAccessSecret());
+        try {
+            boolean result = upyun.deleteFile(fileName, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
+        }
     }
 
 

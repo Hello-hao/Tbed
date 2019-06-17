@@ -42,7 +42,7 @@ public class InterceptorConfig implements HandlerInterceptor {
             //这个方法返回false表示忽略当前请求，如果一个用户调用了需要登陆才能使用的接口，如果他没有登陆这里会直接忽略掉
             //当然你可以利用response给用户返回一些提示信息，告诉他没登陆
             System.out.println("没有登录权限");
-            request.getRequestDispatcher("/index").forward(request, response);
+            request.getRequestDispatcher("/err").forward(request, response);
             return false;
         } else {
 

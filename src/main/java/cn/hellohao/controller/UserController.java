@@ -125,16 +125,20 @@ public class UserController {
     //邮箱激活
     @RequestMapping(value = "/activation.do", method = RequestMethod.GET)
     public String activation(Model model, HttpServletRequest request, HttpSession session, String activation, String username) {
-        System.out.println("激活方法进去了");
+        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        System.out.println("域名："+config.getDomain());
         Integer ret = 0;
         User user = userService.getUsersMail(activation);
+        model.addAttribute("config", config);
         if (user != null && user.getIsok() == 0) {
             Integer setisok = userService.uiduser(activation);
             model.addAttribute("setisok", ret);
             model.addAttribute("username", username);
+
             return "isok";
         } else {
-            return "redirect:/index.do";
+            //return "redirect:/index.do";
+            return "isok";
         }
 
     }

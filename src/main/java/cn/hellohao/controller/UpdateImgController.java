@@ -6,6 +6,7 @@ import javax.servlet.http.HttpSession;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.OSSImageupload;
+import cn.hellohao.service.impl.USSImageupload;
 import cn.hellohao.utils.Sentence;
 import cn.hellohao.utils.SetText;
 import cn.hellohao.utils.StringUtils;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONArray;
-
 import cn.hellohao.service.impl.NOSImageupload;
 
 @Controller
@@ -29,18 +29,19 @@ public class UpdateImgController {
     @Autowired
     private KeysService keysService;
     @Autowired
-    private NoticeService noticeService;
-    @Autowired
     private OSSImageupload ossImageupload;
     @Autowired
     private ConfigService configService;
     @Autowired
     private UploadConfigService uploadConfigService;
+    @Autowired
+    private USSImageupload ussImageupload;
 
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        System.out.println("域名："+config.getDomain());
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         Integer filesizetourists = 0;
         Integer filesizeuser = 0;
@@ -62,7 +63,9 @@ public class UpdateImgController {
                     OSSImageupload.Initialize(key);
                     System.out.println("OSS初始化成功。");
                 }else if(key.getStorageType()==3){
-                    //初始化腾讯云
+                    USSImageupload.Initialize(key);
+                    System.out.println("USS初始化成功。");
+                    //初始化又拍云
                 }else if(key.getStorageType()==4){
                     //初始化七牛云
                 }else{
@@ -91,7 +94,6 @@ public class UpdateImgController {
             model.addAttribute("loginid", -2);
             model.addAttribute("imgcount", imgcounttourists);
             model.addAttribute("filesize", filesizetourists*1024*1024);
-
         }
         model.addAttribute("suffix", uploadConfig.getSuffix());
         model.addAttribute("config", config);
@@ -115,7 +117,6 @@ public class UpdateImgController {
             if (u != null) {
                 username = u.getUsername();
             }
-
             Map<String, MultipartFile> map = new HashMap<>();
             for (MultipartFile multipartFile : file) {
                 // 获取ImageReader对象的迭代器
@@ -129,19 +130,18 @@ public class UpdateImgController {
                 }
             }
             Map<String, Integer> m = null;
-
             if(key.getStorageType()==1){
                 m = nOSImageupload.Imageupload(map, username);
             }else if (key.getStorageType()==2){
                 m = ossImageupload.ImageuploadOSS(map, username);
             }else if(key.getStorageType()==3){
+                m = ussImageupload.ImageuploadUSS(map, username);
                 //初始化腾讯云
             }else if(key.getStorageType()==4){
                 //初始化七牛云
             }else{
                 System.err.println("未获取到对象存储参数，上传失败。");
             }
-
             Images img = new Images();
             SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
             String times = df.format(new Date());
@@ -166,7 +166,6 @@ public class UpdateImgController {
         }else{
             jsonArray.add(-1);
         }
-
         //开辟新进程鉴黄。现在已经改成定时器
         //查询鉴黄功能是否启动，1为启用
 //        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
@@ -175,7 +174,6 @@ public class UpdateImgController {
 //            JianHuangThread thread = new JianHuangThread(imgreviewService, key, u, m);
 //            thread.start();
 //        }
-        System.err.println("上传后返回值："+jsonArray.toString());
         return jsonArray.toString();
     }
 
@@ -189,6 +187,9 @@ public class UpdateImgController {
         return jsonArray.toString();
     }
 
-
+    @RequestMapping("/err")
+    public String err() {
+        return "err";
+    }
 
 }

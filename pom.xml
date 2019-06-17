@@ -64,6 +64,12 @@
             <artifactId>java-sdk</artifactId>
             <version>4.11.0</version>
         </dependency>
+<!--        又拍云-->
+        <dependency>
+            <groupId>com.upyun</groupId>
+            <artifactId>java-sdk</artifactId>
+            <version>4.1.2</version>
+        </dependency>
 
 <!--        定时器依赖-->
         <dependency>

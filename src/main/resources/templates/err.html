@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>登录超时</title>
+    <script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
+</head>
+<body>
+<h2>登录已过期，请重新登录</h2>
+
+<script>
+$(function () {
+    top.location.href="/";
+})
+</script>
+</body>
+</html>

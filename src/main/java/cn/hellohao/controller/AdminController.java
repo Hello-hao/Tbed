@@ -4,7 +4,6 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.ImgServiceImpl;
-
 import cn.hellohao.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -35,31 +33,30 @@ public class AdminController {
     private ImgreviewService imgreviewService;
     @Autowired
     private ConfigService configService;
-    @Autowired
-    private EmailConfigService emailConfigService;
-    @Autowired
-    private UploadConfigService updateConfigService;
 
 
     @RequestMapping(value = "/goadmin")
     public String goadmin1(HttpSession session, Model model, HttpServletRequest request) {
         User user = (User) session.getAttribute("user");
-        if (user.getLevel() == 1) {
-            model.addAttribute("level", "普通用户");
-        } else if (user.getLevel() == 2) {
-            model.addAttribute("level", "管理员");
-        } else {
-            model.addAttribute("level", "未 知");
+        if(user!=null){
+            if (user.getLevel() == 1) {
+                model.addAttribute("level", "普通用户");
+            } else if (user.getLevel() == 2) {
+                model.addAttribute("level", "管理员");
+            } else {
+                model.addAttribute("level", "未 知");
+            }
+            model.addAttribute("levels", user.getLevel());
+            model.addAttribute("username", user.getUsername());
+            return "admin/index";
+        }else{
+            return "redirect:/";
         }
-        model.addAttribute("levels", user.getLevel());
-        model.addAttribute("username", user.getUsername());
-        return "admin/index";
     }
-
 
     // 进入后台页面
     @RequestMapping(value = "/admin")
-    public String goadmin(HttpSession session, Model model, HttpServletRequest request) {
+    public String goadmin(HttpSession session, Model model) {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         Keys key = keysService.selectKeys(config.getSourcekey());
         User u = (User) session.getAttribute("user");
@@ -70,24 +67,47 @@ public class AdminController {
 //        } else {
 //            //个人用户
 //            //model.addAttribute("counts", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
-//
 //        }
-        model.addAttribute("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
-        model.addAttribute("counts", imgService.counts(null) );//总数
-        model.addAttribute("getUserTotal", userService.getUserTotal() );
-        model.addAttribute("imgreviewcount", imgreview.getCount());
+
+        //model.addAttribute("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
+        //model.addAttribute("counts", imgService.counts(null) );//总数
+        //model.addAttribute("getusertotal", userService.getUserTotal() );
+        //model.addAttribute("imgreviewcount", imgreview.getCount());
         model.addAttribute("username", u.getUsername());
         model.addAttribute("level", u.getLevel());
         model.addAttribute("email", u.getEmail());
         model.addAttribute("loginid", 100);
         Boolean b = StringUtils.doNull(key);//判断对象是否有空值
-        if(b){
-            model.addAttribute("source", key.getStorageType());
-        }else{
-            model.addAttribute("source", 456);
-        }
+//        if(b){
+//            model.addAttribute("source", key.getStorageType());
+//        }else{
+//            model.addAttribute("source", 456);
+//        }
         return "admin/table";
     }
+
+    //获取本站概况
+    @RequestMapping(value = "/getwebconfig")
+    @ResponseBody
+    public String getwebconfig(HttpSession session) {
+        JSONObject jsonObject = new JSONObject();
+        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Keys key = keysService.selectKeys(config.getSourcekey());
+        User u = (User) session.getAttribute("user");
+        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
+        jsonObject.put("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
+        jsonObject.put("counts", imgService.counts(null) );//总数
+        jsonObject.put("getusertotal", userService.getUserTotal() );
+        jsonObject.put("imgreviewcount", imgreview.getCount());
+        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        if(b){
+            jsonObject.put("source", key.getStorageType());
+        }else{
+            jsonObject.put("source", 456);
+        }
+        return jsonObject.toString();
+    }
+
 
     @RequestMapping(value = "/selecttable")
     @ResponseBody
@@ -130,11 +150,6 @@ public class AdminController {
         }
     }
 
-    //返回对象存储界面
-    @RequestMapping(value = "/root/touser")
-    public String touser() {
-        return "admin/user";
-    }
 
     //获取用户信息列表
     @RequestMapping(value = "/selectusertable2")
@@ -161,50 +176,6 @@ public class AdminController {
         }
     }
 
-    //返回对象存储界面
-    @RequestMapping(value = "/root/tostorage")
-    public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        Keys key = keysService.selectKeys(config.getSourcekey());
-        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
-        if(b){
-            //key信息
-            model.addAttribute("AccessKey", key.getAccessKey());
-            model.addAttribute("AccessSecret", key.getAccessSecret());
-            model.addAttribute("Endpoint", key.getEndpoint());
-            model.addAttribute("Bucketname", key.getBucketname());
-            model.addAttribute("RequestAddress", key.getRequestAddress());
-            model.addAttribute("StorageType", config.getSourcekey());
-        }
-        return "admin/storageconfig";
-    }
-
-    //根据下拉框选的存储源查询对应的key
-    @PostMapping("/root/getkey")
-    @ResponseBody
-    public String getkey(Integer storageType) {
-        JSONArray jsonArray = new JSONArray();
-        Keys key = keysService.selectKeys(storageType);
-        jsonArray.add(key);
-        return jsonArray.toString();
-    }
-
-    @PostMapping("/root/updatekey")
-    @ResponseBody
-    public String updatekey(Keys key) {
-        JSONArray jsonArray = new JSONArray();
-        Config config = new Config();
-        config.setSourcekey(key.getStorageType());
-        Integer val = configService.setSourceype(config);
-        if (val > 0) {
-            Integer ret = keysService.updateKey(key);
-            jsonArray.add(ret);
-        } else {
-            jsonArray.add(0);
-        }
-        return jsonArray.toString();
-    }
-
     @PostMapping("/deleimg")
     @ResponseBody
     public String deleimg(HttpSession session, Integer id, Integer sourcekey) {
@@ -221,7 +192,7 @@ public class AdminController {
             } else if (key.getStorageType() == 2) {
                 de.delectOSS(key, images.getImgname());
             } else if (key.getStorageType() == 3) {
-                //初始化腾讯云
+                de.delectUSS(key, images.getImgname());
             } else if (key.getStorageType() == 4) {
                 //初始化七牛云
             } else {
@@ -240,7 +211,6 @@ public class AdminController {
         }else{
             jsonObject.put("val", 0);
         }
-
         return jsonObject.toString();
     }
 
@@ -252,7 +222,6 @@ public class AdminController {
         Integer v = 0;
         ImgServiceImpl de = new ImgServiceImpl();
         User u = (User) session.getAttribute("user");
-
         for (int i = 0; i < ids.length; i++) {
             Images images = imgService.selectByPrimaryKey(ids[i]);
             Keys key = keysService.selectKeys(images.getSource());
@@ -263,7 +232,7 @@ public class AdminController {
                 } else if (key.getStorageType() == 2) {
                     de.delectOSS(key, images.getImgname());
                 } else if (key.getStorageType() == 3) {
-                    //初始化腾讯云
+                    de.delectUSS(key, images.getImgname());
                 } else if (key.getStorageType() == 4) {
                     //初始化七牛云
                 } else {
@@ -281,19 +250,8 @@ public class AdminController {
         }
         jsonObject.put("val", v);
         jsonObject.put("usercount", imgService.countimg(u.getId()));
-        jsonObject.put("count", imgService.counts(null) + 1000);
-
+        jsonObject.put("count", imgService.counts(null));
         return jsonObject.toString();
-    }
-
-    //刪除用戶
-    @PostMapping("/root/deleuser")
-    @ResponseBody
-    public String deleuser(HttpSession session, Integer id) {
-        JSONArray jsonArray = new JSONArray();
-        Integer ret = userService.deleuser(id);
-        jsonArray.add(ret);
-        return jsonArray.toString();
     }
 
     //进入修改密码页面
@@ -302,7 +260,6 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         //key信息
         model.addAttribute("username", u.getUsername());
-//
         return "admin/setuser";
     }
 
@@ -325,60 +282,6 @@ public class AdminController {
         return jsonArray.toString();
     }
 
-    //跳转邮箱配置页面
-    @RequestMapping(value = "/root/emailconfig")
-    public String emailconfig(Model model) {
-        EmailConfig emailConfig = emailConfigService.getemail();
-        model.addAttribute("emailConfig",emailConfig);
-        return "admin/emailconfig";
-    }
-    //修改邮箱验证
-    @PostMapping("/root/updateemail")
-    @ResponseBody
-    public Integer updateemail(HttpSession session,String emails, String emailkey, String emailurl, String port, String emailname, Integer using ) {
-        EmailConfig emailConfig = new EmailConfig();
-        emailConfig.setEmailname(emailname);
-        emailConfig.setEmails(emails);
-        emailConfig.setEmailkey(emailkey);
-        emailConfig.setEmailurl(emailurl);
-        emailConfig.setPort(port);
-        emailConfig.setUsing(using);
-        Integer ret = emailConfigService.updateemail(emailConfig);
-        return ret;
-    }
-    //跳转系统配置页面
-    @RequestMapping(value = "/root/towebconfig")
-    public String towebconfig(Model model) {
-        Config config = configService.getSourceype();
-        UploadConfig updateConfig = updateConfigService.getUpdateConfig();
-        model.addAttribute("config",config);
-        model.addAttribute("updateConfig",updateConfig);
-        return "admin/webconfig";
-    }
-    //修改站点配置
-    @PostMapping("/root/updateconfig")
-    @ResponseBody
-    public Integer updateconfig(String webname,String explain, String logos,
-                                String footed, String links, String notice,String baidu,String domain ) {
-        Config config = new Config();
-        config.setWebname(webname);
-        config.setExplain(explain);
-        config.setLogos(logos);
-        config.setFooted(footed);
-        config.setLinks(links);
-        config.setNotice(notice);
-        config.setBaidu(baidu);
-        config.setDomain(domain);
-        Integer ret = configService.setSourceype(config);
-        return ret;
-    }
-    //修改上传配置
-    @PostMapping("/root/scconfig")
-    @ResponseBody
-    public Integer scconfig(UploadConfig updateConfig) {
-        Integer ret = updateConfigService.setUpdateConfig(updateConfig);
-        return ret;
-    }
 
     @GetMapping(value = "/images/{id}")
     @ResponseBody
