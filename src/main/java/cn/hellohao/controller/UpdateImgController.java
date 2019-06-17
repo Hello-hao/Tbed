@@ -10,6 +10,7 @@ import cn.hellohao.service.impl.USSImageupload;
 import cn.hellohao.utils.Sentence;
 import cn.hellohao.utils.SetText;
 import cn.hellohao.utils.StringUtils;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -185,6 +186,24 @@ public class UpdateImgController {
         String text = Sentence.getURLContent();
         jsonArray.add(text);
         return jsonArray.toString();
+    }
+
+    //ajax查询用户是否已经登录
+    @RequestMapping(value = "/islogin")
+    @ResponseBody
+    public String islogin(HttpSession session) {
+        JSONObject jsonObject = new JSONObject();
+        User user = (User) session.getAttribute("user");
+        if(user!=null){
+            if (user.getEmail() != null && user.getPassword() != null) {
+                jsonObject.put("username",user.getUsername());
+                jsonObject.put("level",user.getLevel());
+                jsonObject.put("lgoinret",1);
+            }else{
+                jsonObject.put("lgoinret",0);
+            }
+        }
+        return jsonObject.toString();
     }
 
     @RequestMapping("/err")
