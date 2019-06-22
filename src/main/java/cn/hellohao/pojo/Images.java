@@ -17,13 +17,15 @@ public class Images {
     private String updatetime;
     private String username;
     private Integer storageType;
+    private String starttime;
+    private String stoptime;
 
 
     public Images() {
         super();
     }
 
-    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, Integer abnormal, Integer source, String updatetime, String username, Integer storageType) {
+    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, Integer abnormal, Integer source, String updatetime, String username, Integer storageType, String starttime, String stoptime) {
         this.id = id;
         this.imgname = imgname;
         this.imgurl = imgurl;
@@ -34,6 +36,8 @@ public class Images {
         this.updatetime = updatetime;
         this.username = username;
         this.storageType = storageType;
+        this.starttime = starttime;
+        this.stoptime = stoptime;
     }
 
     public Integer getId() {
@@ -116,11 +120,26 @@ public class Images {
         this.storageType = storageType;
     }
 
-    @Mapper
-    public static interface ConfigMapper {
-        Config getSourceype();
-        Integer setSourceype(@Param("sourcekey") Integer sourcekey);
+    public String getStarttime() {
+        return starttime;
     }
+
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
+    }
+
+    public String getStoptime() {
+        return stoptime;
+    }
+
+    public void setStoptime(String stoptime) {
+        this.stoptime = stoptime;
+    }
+//    @Mapper
+//    public static interface ConfigMapper {
+//        Config getSourceype();
+//        Integer setSourceype(@Param("sourcekey") Integer sourcekey);
+//    }
 }
 	
 		

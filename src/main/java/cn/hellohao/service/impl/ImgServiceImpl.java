@@ -31,9 +31,9 @@ public class ImgServiceImpl implements ImgService {
     private ImgMapper imgMapper;
 
     @Override
-    public List<Images> selectimg(Integer userid) {
+    public List<Images> selectimg(Images images) {
         // TODO Auto-generated method stub
-        return imgMapper.selectimg(userid);
+        return imgMapper.selectimg(images);
     }
 
     @Override

@@ -3,7 +3,7 @@
 <mapper namespace="cn.hellohao.dao.ImgMapper">
 
     <!-- 查询-->
-    <select id="selectimg" parameterType="integer" resultType="cn.hellohao.pojo.Images">
+    <select id="selectimg" parameterType="cn.hellohao.pojo.Images" resultType="cn.hellohao.pojo.Images">
         SELECT
         a.id,
         a.imgname,
@@ -21,6 +21,18 @@
         <if test="userid != null">
             and
             userid = #{userid}
+        </if>
+        <if test="source != null">
+            and
+            source = #{source}
+        </if>
+        <if test="starttime != null">
+            and
+            updatetime &gt;= #{starttime}
+        </if>
+        <if test="stoptime != null">
+            and
+            updatetime &lt;= #{stoptime}
         </if>
         order by id desc
     </select>

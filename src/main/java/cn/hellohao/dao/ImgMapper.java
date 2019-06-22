@@ -10,7 +10,7 @@ import cn.hellohao.pojo.Images;
 @Mapper
 public interface ImgMapper {
 
-    List<Images> selectimg(@Param("userid") Integer userid);
+    List<Images> selectimg(Images images);
 
     Integer countimg(@Param("userid") Integer userid);
 

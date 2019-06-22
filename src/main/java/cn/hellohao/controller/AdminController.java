@@ -111,20 +111,35 @@ public class AdminController {
 
     @RequestMapping(value = "/selecttable")
     @ResponseBody
-    public PageResultBean<Images> selectByFy(HttpSession session, Integer pageNum, Integer pageSize, Integer selecttype) {
+    public PageResultBean<Images> selectByFy(HttpSession session, Integer pageNum, Integer pageSize, Integer selecttype,
+                                             Integer storageType,String starttime,String stoptime) {
         User u = (User) session.getAttribute("user");
+        Images img = new Images();
+        if(storageType!=null){
+            if(storageType!=0){
+                img.setSource(storageType);
+            }
+        }
+        if(starttime!=null && stoptime!=null){
+            if(!starttime.equals("") && !stoptime.equals("")){
+                img.setStarttime(starttime);
+                img.setStoptime(stoptime);
+            }
+        }
         // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
         // 从他的下一条sql开始分页
         PageHelper.startPage(pageNum, pageSize);
         List<Images> images = null;
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
             if (selecttype == 1) {
-                images = imgService.selectimg(null);// 这是我们的sql
+                images = imgService.selectimg(img);// 这是我们的sql
             } else {
-                images = imgService.selectimg(u.getId());// 这是我们的sql
+                img.setUserid(u.getId());
+                images = imgService.selectimg(img);// 这是我们的sql
             }
         } else {
-            images = imgService.selectimg(u.getId());// 这是我们的sql
+            img.setUserid(u.getId());
+            images = imgService.selectimg(img);// 这是我们的sql
         }
         // 使用pageInfo包装查询
         PageInfo<Images> rolePageInfo = new PageInfo<>(images);//
