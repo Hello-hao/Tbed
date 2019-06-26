@@ -21,7 +21,7 @@
                     <option value="1">网易NOS</option>
                     <option value="2">阿里OSS</option>
                     <option value="3">又拍USS</option>
-                    <option value="4">七牛云存储（未接入）</option>
+                    <option value="4">七牛云KODO</option>
                 </select>
             </div>
         </div>
@@ -53,6 +53,21 @@
                 <span style="color: #DAA5A6;">需带有http://或https://</span>
             </div>
         </div>
+
+        <div class="layui-form-item" id="c3-1" style="display: none;">
+            <label class="layui-form-label">桶地区</label>
+            <div class="layui-input-block">
+                <select id="Endpoint2" name="diqu"  lay-verify="required">
+                    <option value="0">请选择地区</option>
+                    <option value="1">华东</option>
+                    <option value="2">华北</option>
+                    <option value="3">华南</option>
+                    <option value="4">北美</option>
+                    <option value="5">东南亚</option>
+                </select>
+            </div>
+        </div>
+
         <div class="layui-form-item" id="c4">
             <label class="layui-form-label">存储桶名称</label>
             <div class="layui-input-block">
@@ -97,11 +112,19 @@
                 $("#keyusername").text('操作员名称');
                 $("#keypass").text('操作员密码');
 
-            }else{
+            }else if(data.value==4){
+                $("#c3").css('display','none');
+                $("#c3-1").css('display','block');
+                $("#keyusername").text('AccessKey');
+                $("#keypass").text('SecretKey');
+            }
+            else{
                 $("#c3").css('display','block');
+                $("#c3-1").css('display','none');
                 $("#keyusername").text('AccessKey');
                 $("#keypass").text('AccessSecret');
             }
+
 
             $.ajax({
                 type: "POST",
@@ -131,8 +154,28 @@
 
     });
     $(function () {
-        var types = [[${StorageType}]]
+        var types = [[${StorageType!=null?StorageType:0}]];
+        var Endpoint2=null;
         $("#StorageType").find("option[value='" + types + "']").attr("selected", true);
+        if(types==3){
+            $("#c3").css('display','none');
+            $("#keyusername").text('操作员名称');
+            $("#keypass").text('操作员密码');
+
+        }else if(types==4){
+            Endpoint2 = [[${Endpoint2}]];
+            $("#c3").css('display','none');
+            $("#c3-1").css('display','block');
+            $("#keyusername").text('AccessKey');
+            $("#keypass").text('SecretKey');
+            $("#Endpoint2").find("option[value='" + Endpoint + "']").attr("selected", true);
+        }
+        else{
+            $("#c3").css('display','block');
+            $("#c3-1").css('display','none');
+            $("#keyusername").text('AccessKey');
+            $("#keypass").text('AccessSecret');
+        }
     });
 
     //保存KEY
@@ -144,7 +187,9 @@
         var RequestAddress = $("#RequestAddress").val();
         var StorageType = $("#StorageType").val();
         if(StorageType==3){Endpoint="0";}
-        else{Endpoint = $("#Endpoint").val();}
+        else{
+            if(StorageType==4){Endpoint = $("#Endpoint2").val();}else{Endpoint = $("#Endpoint").val();}
+        }
         if(AccessKey!="" && AccessSecret!="" &&Endpoint!="" &&  Bucketname!="" && RequestAddress!="" && StorageType!=""){
             $.ajax({
                 type: "POST",

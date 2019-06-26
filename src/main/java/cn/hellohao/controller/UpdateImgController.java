@@ -5,6 +5,7 @@ import java.util.*;
 import javax.servlet.http.HttpSession;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
+import cn.hellohao.service.impl.KODOImageupload;
 import cn.hellohao.service.impl.OSSImageupload;
 import cn.hellohao.service.impl.USSImageupload;
 import cn.hellohao.utils.Sentence;
@@ -37,7 +38,8 @@ public class UpdateImgController {
     private UploadConfigService uploadConfigService;
     @Autowired
     private USSImageupload ussImageupload;
-
+    @Autowired
+    private KODOImageupload kodoImageupload;
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
@@ -69,6 +71,8 @@ public class UpdateImgController {
                     //初始化又拍云
                 }else if(key.getStorageType()==4){
                     //初始化七牛云
+                    KODOImageupload.Initialize(key);
+                    System.out.println("KODO初始化成功。");
                 }else{
                     System.err.println("未获取到对象存储参数，初始化失败。");
                 }
@@ -140,6 +144,7 @@ public class UpdateImgController {
                 //初始化腾讯云
             }else if(key.getStorageType()==4){
                 //初始化七牛云
+                m = kodoImageupload.ImageuploadKODO(map, username);
             }else{
                 System.err.println("未获取到对象存储参数，上传失败。");
             }

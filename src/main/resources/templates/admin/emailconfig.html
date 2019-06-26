@@ -11,7 +11,6 @@
 <div class="layui-main" style="width: 50%;margin-top: 50px;">
     <h2>邮箱配置(SMTP)</h2>
     <br/>
-
     <form class="layui-form layui-form-pane" action="">
 
         <div class="layui-form-item">
@@ -20,10 +19,10 @@
                 <input id="open" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest"
                        lay-text="ON|OFF">
                 <!--                <input type="checkbox"  name="open" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">-->
+                <span style="color: #DAA5A6;">开启前保证下方信息填写正确</span>
             </div>
         </div>
         <hr/>
-
         <div class="layui-form-item">
             <label class="layui-form-label">邮箱昵称</label>
             <div class="layui-input-block">
@@ -63,7 +62,6 @@
             </div>
         </div>
 
-
         <div class="layui-form-item">
             <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="updateimgreview()">保存</a>
         </div>
@@ -77,37 +75,34 @@
         cache: false
     });
 
-    layui.use(['form', 'layedit', 'laydate'], function () {
-        var form = layui.form;
-
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
-            layer.msg(JSON.stringify(data.field));
-            return false;
-        });
-        //监听指定开关
-        //监听指定开关
-        form.on('switch(switchTest)', function (data) {
-            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-            //     offset: '6px'
-            // });
-            if (this.checked == true) {
-                emailconfig(1);
-            } else {
-                emailconfig(0);
-            }
-        });
-    });
 
     var using = [[${emailConfig.getUsing()}]];
     $(function () {
+
+        layui.use(['form', 'layedit', 'laydate'], function () {
+            var form = layui.form;
+
+            form.on('submit(formDemo)', function (data) {
+                layer.msg(JSON.stringify(data.field));
+                return false;
+            });
+            //监听指定开关
+            form.on('switch(switchTest)', function (data) {
+
+                if (this.checked == true) {
+                    emailconfig(1);
+                } else {
+                    emailconfig(0);
+                }
+            });
+        });
+
         if (using == 1) {
             $('#open').attr("checked", 'hellohao'); //增加属性
         } else {
             $('#open').removeAttr("checked"); //移除属性
         }
     });
-
     function emailconfig(values) {
         $.ajax({
             type: "POST",
@@ -128,7 +123,6 @@
             }
         });
     }
-
     function updateimgreview() {
         var emailname = $("#emailname").val();
         var emails = $("#emails").val();

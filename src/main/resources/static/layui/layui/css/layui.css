@@ -2324,7 +2324,7 @@ hr {
 }
 
 .layui-form-select dl dd.layui-this {
-    background-color: #ff0000;
+    background-color: #7ab6f2;
     color: #fff
 }
 
@@ -2537,8 +2537,8 @@ hr {
 }
 
 .layui-form-onswitch {
-    border-color: #ff0000;
-    background-color: #ff0000
+    border-color: #009688;
+    background-color: #009688
 }
 
 .layui-checkbox-disbaled,

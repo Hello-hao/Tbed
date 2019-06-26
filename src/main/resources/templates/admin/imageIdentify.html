@@ -11,20 +11,17 @@
 <div class="layui-main" style="width: 50%;margin-top: 50px;">
     <h2>百度鉴黄Key配置</h2>
     <br/>
-
     <form class="layui-form layui-form-pane" action="">
-
-
         <div class="layui-form-item">
             <label class="layui-form-label">鉴黄检测</label>
             <div class="layui-input-block">
                 <input id="open" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest"
                        lay-text="ON|OFF">
                 <!--                <input type="checkbox"  name="open" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">-->
+                <span style="color: #DAA5A6;">开启前保证下方信息填写正确</span>
             </div>
         </div>
         <hr/>
-
         <div class="layui-form-item">
             <label class="layui-form-label">APP_ID</label>
             <div class="layui-input-block">
@@ -32,7 +29,6 @@
                        th:value="${appid}"/>
             </div>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label">API_KEY</label>
             <div class="layui-input-block">
@@ -40,7 +36,6 @@
                        th:value="${apikey}"/>
             </div>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label">SECRET_KEY</label>
             <div class="layui-input-block">
@@ -48,8 +43,6 @@
                        class="layui-input" th:value="${secretkey}"/>
             </div>
         </div>
-
-
         <div class="layui-form-item">
             <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="updataimgreview()">保存</a>
         </div>
@@ -62,33 +55,31 @@
     $.ajaxSetup({
         cache: false
     });
-    layui.use(['form', 'layedit', 'laydate'], function () {
-        var form = layui.form;
-
-        //监听提交
-        form.on('submit(formDemo)', function (data) {
-            layer.msg(JSON.stringify(data.field));
-            return false;
-        });
-        //监听指定开关
-        //监听指定开关
-        form.on('switch(switchTest)', function (data) {
-            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-            //     offset: '6px'
-            // });
-            if (this.checked == true) {
-                imgreview(1);
-            } else {
-                imgreview(0);
-            }
-            //layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
-        });
-
-    });
-
     var using = [[${using}]];
 
     $(function () {
+        layui.use(['form', 'layedit', 'laydate'], function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                layer.msg(JSON.stringify(data.field));
+                return false;
+            });
+            //监听指定开关
+            form.on('switch(switchTest)', function (data) {
+                // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+                //     offset: '6px'
+                // });
+                if (this.checked == true) {
+                    imgreview(1);
+                } else {
+                    imgreview(0);
+                }
+                //layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+            });
+
+        });
+
         if (using == 1) {
             $('#open').attr("checked", 'hellohao'); //增加属性
         } else {

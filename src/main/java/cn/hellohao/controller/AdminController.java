@@ -85,7 +85,19 @@ public class AdminController {
 //        }
         return "admin/table";
     }
-
+    // 进入后台页面
+    @RequestMapping(value = "/tosurvey")
+    public String admin2(HttpSession session, Model model) {
+        User u = (User) session.getAttribute("user");
+        String sysetmname = System.getProperty("os.name");
+        String isarch = System.getProperty("os.arch");
+        String jdk = System.getProperty("java.version");
+        model.addAttribute("username", u.getUsername());
+        model.addAttribute("sysetmname",sysetmname);
+        model.addAttribute("isarch", isarch);
+        model.addAttribute("jdk", jdk);
+        return "admin/survey";
+    }
     //获取本站概况
     @RequestMapping(value = "/getwebconfig")
     @ResponseBody
@@ -201,7 +213,6 @@ public class AdminController {
         Boolean b = StringUtils.doNull(key);//判断对象是否有空值
         if(b){
             ImgServiceImpl de = new ImgServiceImpl();
-
             if (key.getStorageType() == 1) {
                 de.delect(key, images.getImgname());
             } else if (key.getStorageType() == 2) {
@@ -210,6 +221,7 @@ public class AdminController {
                 de.delectUSS(key, images.getImgname());
             } else if (key.getStorageType() == 4) {
                 //初始化七牛云
+                de.delectKODO(key, images.getImgname());
             } else {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
@@ -250,6 +262,7 @@ public class AdminController {
                     de.delectUSS(key, images.getImgname());
                 } else if (key.getStorageType() == 4) {
                     //初始化七牛云
+                    de.delectKODO(key, images.getImgname());
                 } else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }

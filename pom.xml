@@ -70,8 +70,14 @@
             <artifactId>java-sdk</artifactId>
             <version>4.1.2</version>
         </dependency>
+<!--七牛-->
+        <dependency>
+            <groupId>com.qiniu</groupId>
+            <artifactId>qiniu-java-sdk</artifactId>
+            <version>7.2.22</version>
+        </dependency>
 
-<!--        定时器依赖-->
+        <!--        定时器依赖-->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -88,6 +94,13 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
             <version>4.3.16.RELEASE</version>
+        </dependency>
+
+        <!-- 服务器配置信息依赖 -->
+        <dependency>
+            <groupId>org.fusesource</groupId>
+            <artifactId>sigar</artifactId>
+            <version>1.6.4</version>
         </dependency>
 
         <dependency>

@@ -3,7 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Hellohao图床 - &copy; 纯粹的图片驿站</title>
+    <title>本站概况</title>
     <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
     <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"/>
@@ -49,9 +49,11 @@
 <body>
 
 <div class="container kv-main">
+    <!--
     <p id="" style="font-weight: bold;">本站概况</p>
     <hr/>
     <section class="content">
+
         <div class="row" style="margin-bottom:5px;">
             <div class="col-md-3">
                 <div class="sm-st clearfix">
@@ -91,7 +93,9 @@
             </div>
 
         </div>
+
     </section>
+    -->
     <div id="isimgs">
         <!--分页 -->
         <div id="mytext" style="font-weight: bold;">我的图片：
@@ -128,7 +132,7 @@
                             <option value="1">网易NOS</option>
                             <option value="2">阿里OSS</option>
                             <option value="3">又拍USS</option>
-                            <option value="4">七牛云存储（未接入）</option>
+                            <option value="4">七牛云KODO</option>
                         </select>
                     </div>
                     <div class="btn-group">
@@ -198,30 +202,30 @@
         // });
 
         //获取本站概况
-        $.ajax({
-            type: "POST",
-            url: "/admin/getwebconfig",
-            dataType: "json",
-            success: function (data) {
-                $("#counts").text(data.counts);
-                $("#getusertotal").text(data.getusertotal);
-                $("#imgreviewcount").text(data.imgreviewcount);
-                $("#usercount").text(data.usercount);
-                var str = "";
-                if (data.source == 1) {
-                    str = "网易NOS";
-                } else if (data.source == 2) {
-                    str = "阿里OSS";
-                } else if (data.source == 3) {
-                    str = "又拍USS";
-                } else if (data.source == 4) {
-                    str = '七牛KODO';
-                } else {
-                    str = '未知';
-                }
-                $("#source").text(str);
-            }
-        });
+        // $.ajax({
+        //     type: "POST",
+        //     url: "/admin/getwebconfig",
+        //     dataType: "json",
+        //     success: function (data) {
+        //         $("#counts").text(data.counts);
+        //         $("#getusertotal").text(data.getusertotal);
+        //         $("#imgreviewcount").text(data.imgreviewcount);
+        //         $("#usercount").text(data.usercount);
+        //         var str = "";
+        //         if (data.source == 1) {
+        //             str = "网易NOS";
+        //         } else if (data.source == 2) {
+        //             str = "阿里OSS";
+        //         } else if (data.source == 3) {
+        //             str = "又拍USS";
+        //         } else if (data.source == 4) {
+        //             str = '七牛KODO';
+        //         } else {
+        //             str = '未知';
+        //         }
+        //         $("#source").text(str);
+        //     }
+        // });
 
 
     });
@@ -518,7 +522,6 @@
                     },
                     align: 'center'
                 }
-
             ]
         });
         t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数

@@ -6,6 +6,11 @@ import java.util.List;
 
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
+import com.qiniu.common.QiniuException;
+import com.qiniu.common.Zone;
+import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.Configuration;
+import com.qiniu.util.Auth;
 import com.upyun.UpException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -105,7 +110,25 @@ public class ImgServiceImpl implements ImgService {
             e.printStackTrace();
         }
     }
-
+    //删除KODO对象存储的图片文件
+    public void delectKODO(Keys key, String fileName) {
+        Configuration cfg;
+        //构造一个带指定Zone对象的配置类
+        if(key.getEndpoint().equals("1")){cfg = new Configuration(Zone.zone0());}
+        else if(key.getEndpoint().equals("2")){cfg = new Configuration(Zone.zone1());}
+        else if(key.getEndpoint().equals("3")){cfg = new Configuration(Zone.zone2());}
+        else if(key.getEndpoint().equals("4")){cfg = new Configuration(Zone.zoneNa0());}
+        else{cfg = new Configuration(Zone.zoneAs0());}
+        Auth auth = Auth.create(key.getAccessKey(), key.getAccessSecret());
+        BucketManager bucketManager = new BucketManager(auth, cfg);
+        try {
+            bucketManager.delete(key.getBucketname(), fileName);
+        } catch (QiniuException ex) {
+            //如果遇到异常，说明删除失败
+            System.err.println(ex.code());
+            System.err.println(ex.response.toString());
+        }
+    }
 
     @Override
     public Integer counts(Integer userid) {

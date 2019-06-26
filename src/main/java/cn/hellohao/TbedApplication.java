@@ -30,6 +30,11 @@ public class TbedApplication {
         /// 总上传数据大小
         factory.setMaxRequestSize("102400KB");
         return factory.createMultipartConfig();
+
+
+
+
+
     }
 
 }

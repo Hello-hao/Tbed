@@ -3,12 +3,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <!-- 网页不会被缓存 -->
-    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="Cache" content="no-cache">
     <title>图床后台管理</title>
     <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
     <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
     <link rel="stylesheet" th:href="@{/layui/css/admin.css}">
+    <style>
+        .layui-logo{
+            font-family: 'Old English Text MT', 'EngraversOldEnglishBT-Bold', 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+        }
+    </style>
 </head>
 
 <body class="layui-layout-body">
@@ -60,32 +67,39 @@
         <div class="layui-side-scroll">
             <ul class="layui-nav layui-nav-tree" lay-filter="test" lay-accordion="true">
                 <li class="layui-nav-item">
-                    <a lay-url="/table.html" lay-id="home">
+                    <a lay-url="/table.html" lay-id="home" style="font-weight: bold;">
                         <i class="layui-icon layui-icon-home"></i>&emsp;<cite>系统概况</cite>
                     </a>
                 </li>
 
                 <li class="layui-nav-item">
-                    <a>
+                    <a style="font-weight: bold;">
                         <i class="layui-icon layui-icon-username"></i>&emsp;<cite>个人中心</cite>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
+                            <a href="#" lay-id="1" lay-url="/admin/admin">
+                                <i class="layui-icon layui-icon-right"></i><cite>我的图片</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                    <dl class="layui-nav-child">
+                        <dd>
                             <a href="#" lay-id="3" lay-url="/admin/tosetuser">
-                                <cite>修改密码</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>修改密码</cite>
                             </a>
                         </dd>
                     </dl>
                 </li>
 
                 <li class="layui-nav-item" th:if=" ${levels} gt '1'">
-                    <a>
-                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>附加功能</cite>
+                    <a style="font-weight: bold;">
+                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>系统功能</cite>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="1" lay-url="/admin/root/touser">
-                                <cite>用户管理</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>用户管理</cite>
                             </a>
                         </dd>
                     </dl>
@@ -93,7 +107,7 @@
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="2" lay-url="/admin/root/tostorage">
-                                <cite>对象存储</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>对象存储</cite>
                             </a>
                         </dd>
                     </dl>
@@ -101,21 +115,21 @@
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="11" lay-url="/admin/root/ImageReview">
-                                <cite>图片鉴黄</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>图片鉴黄</cite>
                             </a>
                         </dd>
                     </dl>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="4" lay-url="/admin/root/emailconfig">
-                                <cite>邮箱配置</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>邮箱配置</cite>
                             </a>
                         </dd>
                     </dl>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="5" lay-url="/admin/root/towebconfig">
-                                <cite>站点配置</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>站点配置</cite>
                             </a>
                         </dd>
                     </dl>
@@ -130,12 +144,12 @@
             <div class="layui-icon admin-tabs-control layui-icon-refresh-3" lay-event="refresh"></div>
             <div class="layui-tab" lay-unauto lay-allowclose="true" lay-filter="lay-tab">
                 <ul class="layui-tab-title">
-                    <li lay-id="home" lay-url="/table.html" class="layui-this"><i
+                    <li lay-id="home" lay-url="/survey.html" class="layui-this"><i
                             class="layui-icon layui-icon-home"></i></li>
                 </ul>
                 <div class="layui-tab-content">
                     <div class="layui-tab-item layui-show">
-                        <iframe src="/admin/admin" class="layui-iframe"></iframe>
+                        <iframe src="/admin/tosurvey" class="layui-iframe"></iframe>
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ import cn.hellohao.pojo.EmailConfig;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.service.*;
+import cn.hellohao.utils.Print;
 import cn.hellohao.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,15 +44,24 @@ public class AdminRootController {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         Keys key = keysService.selectKeys(config.getSourcekey());
         Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        Integer StorageType = 0;
         if(b){
             //key信息
             model.addAttribute("AccessKey", key.getAccessKey());
             model.addAttribute("AccessSecret", key.getAccessSecret());
+
             model.addAttribute("Endpoint", key.getEndpoint());
             model.addAttribute("Bucketname", key.getBucketname());
             model.addAttribute("RequestAddress", key.getRequestAddress());
             model.addAttribute("StorageType", config.getSourcekey());
         }
+        //如果是4就是七牛
+        if(config.getSourcekey()==4){
+            model.addAttribute("Endpoint2", key.getEndpoint());
+        }else{
+            model.addAttribute("Endpoint2", 0);
+        }
+
         return "admin/storageconfig";
     }
 
