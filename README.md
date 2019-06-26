@@ -99,9 +99,13 @@ server.port=8088
 
 ![Hellohao图床 - 纯粹的图片存放驿站.png](https://i.loli.net/2019/06/16/5d0553871195b58021.png)
 
-![图床后台管理2.png](https://i.loli.net/2019/06/16/5d0553b1e416e39832.png)
+![图床后台管理1.png](https://i.loli.net/2019/06/27/5d13abbbd94d288839.png)
 
-![图床后台管理.png](https://i.loli.net/2019/06/16/5d0553cb70b5367100.png)
+![图床后台管理2.png](https://i.loli.net/2019/06/27/5d13abbbd9e6149026.png)
+
+![图床后台管理3.png](https://i.loli.net/2019/06/27/5d13abbbbd76136816.png)
+
+![图床后台管理4.png](https://i.loli.net/2019/06/27/5d13abbbbe12320316.png)
 
 ### 说明
 如果你不会编译本程序可以去我的博客搜`图床`,下载编译后jar包直接部署即可。
