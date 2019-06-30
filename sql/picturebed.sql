@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 26/06/2019 23:43:43
+ Date: 30/06/2019 15:36:20
 */
 
 SET NAMES utf8mb4;
@@ -75,7 +75,7 @@ CREATE TABLE `imgdata`  (
   `abnormal` int(2) NULL DEFAULT NULL COMMENT '异常',
   `source` int(2) NULL DEFAULT NULL COMMENT '存储源',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for imgreview
@@ -115,7 +115,7 @@ CREATE TABLE `keys`  (
 -- Records of keys
 -- ----------------------------
 INSERT INTO `keys` VALUES (1, '', '', '', '', '', 1);
-INSERT INTO `keys` VALUES (2, '', '', '', '', '', 2);
+INSERT INTO `keys` VALUES (2, '11111111', '222222222222', '444444444444', '555555555', 'http://1.1.1', 2);
 INSERT INTO `keys` VALUES (3, '', '', '0', '', '', 3);
 INSERT INTO `keys` VALUES (4, '', '', '', '', '', 4);
 INSERT INTO `keys` VALUES (5, NULL, NULL, NULL, NULL, NULL, 5);
@@ -157,16 +157,16 @@ CREATE TABLE `user`  (
   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名',
   `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `email` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '邮箱',
-  `birthder` datetime(0) NULL DEFAULT NULL COMMENT '注册时间',
-  `level` int(10) NULL DEFAULT NULL COMMENT '等级',
+  `birthder` date NOT NULL COMMENT '注册时间',
+  `level` int(10) NOT NULL COMMENT '等级',
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
   `isok` int(2) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'admin', 'admin', '2019-06-12 00:00:00', 2, NULL, 1);
+INSERT INTO `user` VALUES (1, 'admin', 'admin', 'admin', '2019-06-12', 2, 'admin', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
