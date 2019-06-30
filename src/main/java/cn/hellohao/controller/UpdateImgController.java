@@ -1,20 +1,24 @@
 package cn.hellohao.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
+import cn.hellohao.TbedApplication;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.KODOImageupload;
 import cn.hellohao.service.impl.OSSImageupload;
 import cn.hellohao.service.impl.USSImageupload;
-import cn.hellohao.utils.Sentence;
-import cn.hellohao.utils.SetText;
-import cn.hellohao.utils.StringUtils;
+import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -103,6 +107,7 @@ public class UpdateImgController {
         model.addAttribute("suffix", uploadConfig.getSuffix());
         model.addAttribute("config", config);
         model.addAttribute("uploadConfig", uploadConfig);
+
         return "index_upload";
 
     }
@@ -136,15 +141,15 @@ public class UpdateImgController {
             }
             Map<String, Integer> m = null;
             if(key.getStorageType()==1){
-                m = nOSImageupload.Imageupload(map, username);
+                m = nOSImageupload.Imageupload(map, username,null);
             }else if (key.getStorageType()==2){
-                m = ossImageupload.ImageuploadOSS(map, username);
+                m = ossImageupload.ImageuploadOSS(map, username,null);
             }else if(key.getStorageType()==3){
-                m = ussImageupload.ImageuploadUSS(map, username);
+                m = ussImageupload.ImageuploadUSS(map, username,null);
                 //初始化腾讯云
             }else if(key.getStorageType()==4){
                 //初始化七牛云
-                m = kodoImageupload.ImageuploadKODO(map, username);
+                m = kodoImageupload.ImageuploadKODO(map, username,null);
             }else{
                 System.err.println("未获取到对象存储参数，上传失败。");
             }
@@ -180,8 +185,194 @@ public class UpdateImgController {
 //            JianHuangThread thread = new JianHuangThread(imgreviewService, key, u, m);
 //            thread.start();
 //        }
+        Print.Normal(jsonArray.toString());
+
         return jsonArray.toString();
     }
+
+
+
+//根据网络图片url上传
+    @PostMapping(value = "/upurlimg")
+    @ResponseBody
+    public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request) throws Exception {
+
+        User u = (User) session.getAttribute("user");
+        String username = "tourist";
+
+        if (u != null) {
+            username = u.getUsername();
+        }
+        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        JSONArray jsonArray = new JSONArray();
+        Keys key = keysService.selectKeys(config.getSourcekey());
+        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+        long imgsize = ImgUrlUtil.getFileLength(imgurl);
+        Integer youke = uploadConfig.getFilesizetourists();
+        Integer yonghu = uploadConfig.getFilesizeuser();
+        String uuid= UUID.randomUUID().toString().replace("-", "");
+        Boolean isnull = StringUtils.doNull(key);//判断对象是否有空值
+        //先判断对象存储key是不是null
+        Print.warning("上传地址是："+request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+        if(isnull){
+            long stime = System.currentTimeMillis();
+            //判断是会员还是游客
+            if(u!=null){
+                //判断文件大小
+                if(imgsize>0 && imgsize<=(yonghu*1024*1024)){
+                    try{
+                        boolean bl =ImgUrlUtil.downLoadFromUrl(imgurl,
+                                uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        if(bl==true){
+                            FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                            byte[] b = new byte[3];
+                            is.read(b, 0, b.length);
+                            String xxx = ImgUrlUtil.bytesToHexString(b);
+                            xxx = xxx.toUpperCase();
+                            System.out.println("头文件是：" + xxx);
+                            String ooo = TypeDict.checkType(xxx);
+                            System.out.println("后缀名是：" + ooo);
+                            if(is!=null){
+                                is.close();
+                            }
+                            //判断文件头是否是图片
+                            if(!xxx.equals("0000")){
+                                Map<String, String> map = new HashMap<>();
+                                map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                                Map<String, Integer> m = null;
+                                if(key.getStorageType()==1){
+                                    m = nOSImageupload.Imageupload(null, username,map);
+                                }else if (key.getStorageType()==2){
+                                    m = ossImageupload.ImageuploadOSS(null, username,map);
+                                }else if(key.getStorageType()==3){
+                                    m = ussImageupload.ImageuploadUSS(null, username,map);
+                                    //初始化又拍
+                                }else if(key.getStorageType()==4){
+                                    //初始化七牛云
+                                    m = kodoImageupload.ImageuploadKODO(null, username,map);
+                                }else{
+                                    System.err.println("未获取到对象存储参数，上传失败。");
+                                }
+                                Images img = new Images();
+                                SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+                                String times = df.format(new Date());
+                                System.out.println("上传图片的时间是："+times);
+                                for (Map.Entry<String, Integer> entry : m.entrySet()) {
+                                    jsonArray.add(entry.getKey());
+                                    img.setImgurl(entry.getKey());//图片链接
+                                    img.setUpdatetime(times);
+                                    img.setSource(key.getStorageType());
+                                    if (u == null) {
+                                        img.setUserid(0);//用户id
+                                    } else {
+                                        img.setUserid(u.getId());//用户id
+                                    }
+                                    img.setSizes((entry.getValue()) / 1024);
+                                    img.setImgname(SetText.getSubString(entry.getKey(), key.getRequestAddress() + "/", ""));
+                                    img.setAbnormal(0);
+                                    userService.insertimg(img);
+                                    long etime = System.currentTimeMillis();
+                                    System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
+                                }
+                            }else{
+                                jsonArray.add(-3);
+                            }
+                        }
+                    }catch (Exception e) {
+                        // TODO: handle exception
+                        Print.warning(e.toString());
+                        jsonArray.add(-4);
+                    }
+                }else{
+                    //文件过大
+                    jsonArray.add(-2);
+                }
+            }else{
+                if(imgsize>0 && imgsize<=(youke*1024*1024)){
+                    try{
+                        boolean bl = ImgUrlUtil.downLoadFromUrl(imgurl,
+                                uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        if(bl==true){
+                            FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                            byte[] b = new byte[3];
+                            is.read(b, 0, b.length);
+                            String xxx = ImgUrlUtil.bytesToHexString(b);
+                            xxx = xxx.toUpperCase();
+                            //System.out.println("头文件是：" + xxx);
+                            String ooo = TypeDict.checkType(xxx);
+                            //System.out.println("后缀名是：" + ooo);
+                            if(is!=null){
+                                is.close();
+                            }
+                            //判断文件头是否是图片
+                            if(!xxx.equals("0000")){
+                                Map<String, String> map = new HashMap<>();
+                                map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                                Map<String, Integer> m = null;
+                                if(key.getStorageType()==1){
+                                    m = nOSImageupload.Imageupload(null, username,map);
+                                }else if (key.getStorageType()==2){
+                                    m = ossImageupload.ImageuploadOSS(null, username,map);
+                                }else if(key.getStorageType()==3){
+                                    m = ussImageupload.ImageuploadUSS(null, username,map);
+                                    //初始化又拍
+                                }else if(key.getStorageType()==4){
+                                    //初始化七牛云
+                                    m = kodoImageupload.ImageuploadKODO(null, username,map);
+                                }else{
+                                    System.err.println("未获取到对象存储参数，上传失败。");
+                                }
+                                Images img = new Images();
+                                SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+                                String times = df.format(new Date());
+                                System.out.println("上传图片的时间是："+times);
+                                for (Map.Entry<String, Integer> entry : m.entrySet()) {
+                                    jsonArray.add(entry.getKey());
+                                    img.setImgurl(entry.getKey());//图片链接
+                                    img.setUpdatetime(times);
+                                    img.setSource(key.getStorageType());
+                                    if (u == null) {
+                                        img.setUserid(0);//用户id
+                                    } else {
+                                        img.setUserid(u.getId());//用户id
+                                    }
+                                    img.setSizes((entry.getValue()) / 1024);
+                                    img.setImgname(SetText.getSubString(entry.getKey(), key.getRequestAddress() + "/", ""));
+                                    img.setAbnormal(0);
+                                    userService.insertimg(img);
+                                    long etime = System.currentTimeMillis();
+                                    System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
+                                }
+                            }else{
+                                jsonArray.add(-3);
+                            }
+                        }
+                    }catch (Exception e) {
+                        // TODO: handle exception
+                        Print.warning(e.toString());
+                        jsonArray.add(-4);
+                    }
+                }else{
+                    //文件过大
+                    jsonArray.add(-2);
+                }
+            }
+        }else{
+            jsonArray.add(-1);
+        }
+
+/**
+ * 错误返回值含义：
+ * -1 存储源key未配置
+ * -2 目标图片太大或者不存在
+ * -3 文件类型不符合要求
+ * */
+
+        return jsonArray.toString();
+    }
+
+
+
 
     //刪除用戶
     @RequestMapping("/sentence")
@@ -210,6 +401,17 @@ public class UpdateImgController {
         }
         return jsonObject.toString();
     }
+
+    //ajax查询用户是否已经登录
+    @RequestMapping(value = "/getsentence")
+    @ResponseBody
+    public String getsentence(HttpSession session) {
+        JSONObject jsonObject = new JSONObject();
+        String yiyan = Sentence.getURLContent();
+
+        return yiyan;
+    }
+
 
     @RequestMapping("/err")
     public String err() {

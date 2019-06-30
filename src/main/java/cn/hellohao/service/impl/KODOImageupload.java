@@ -1,6 +1,7 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
+import cn.hellohao.utils.ImgUrlUtil;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.google.gson.Gson;
@@ -27,36 +28,67 @@ public class KODOImageupload {
     static UploadManager uploadManager;
     static Keys key;
 
-    public Map<String, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username) throws Exception {
+    public Map<String, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
         // 要上传文件的路径
-        File file = null;
-        Map<String, Integer> ImgUrl = new HashMap<>();
+        if(fileMap2==null){
+            File file = null;
+            Map<String, Integer> ImgUrl = new HashMap<>();
 
-        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-            java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-            String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                String times = format1.format(new Date());
+                file = changeFile(entry.getValue());
                 // 上传文件流。
-            System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                 //ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
-            try {
-                Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                //解析上传成功的结果
-                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
-                //System.out.println(putRet.hash);
-            } catch (QiniuException ex) {
-                Response r = ex.response;
-                System.err.println(r.toString());
                 try {
-                    System.err.println(r.bodyString());
-                } catch (QiniuException ex2) {
-                    //ignore
+                    Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
+                    //解析上传成功的结果
+                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+                    ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                    //System.out.println(putRet.hash);
+                } catch (QiniuException ex) {
+                    Response r = ex.response;
+                    System.err.println(r.toString());
+                    try {
+                        System.err.println(r.bodyString());
+                    } catch (QiniuException ex2) {
+                        //ignore
+                    }
                 }
             }
+            return ImgUrl;
+        }else{
+            Map<String, Integer> ImgUrl = new HashMap<>();
+
+            for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
+                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                String times = format1.format(new Date());
+                String imgurl = entry.getValue();
+                // 上传文件流。
+                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+                try {
+                    Response response = uploadManager.put(new File(imgurl),username + "/" + uuid+times + "." + entry.getKey(),upToken);
+                    //解析上传成功的结果
+                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+                    ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    //System.out.println(putRet.hash);
+                    new File(imgurl).delete();
+                } catch (QiniuException ex) {
+                    Response r = ex.response;
+                    System.err.println(r.toString());
+                    try {
+                        System.err.println(r.bodyString());
+                    } catch (QiniuException ex2) {
+                        //ignore
+                    }
+                }
+            }
+            return ImgUrl;
         }
-        return ImgUrl;
+
     }
 
     // 转换文件方法

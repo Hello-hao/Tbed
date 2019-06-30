@@ -6,9 +6,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 
     <title th:text="${config.getWebname()}+' - 纯粹的图片存放驿站'"></title>
-    <meta name="description" content="免费纯粹的图片存放驿站。"/>
-    <meta name="Keywords" content="hellohao图床,hellohao,图床,纯粹的图床站,免费图床"/>
-    <link rel=”canonical” href=”http://tc.hellohao.cn/”/>
+<!--    <meta name="description" content="免费纯粹的图片存放驿站。"/>-->
+<!--    <meta name="Keywords" content="hellohao图床,hellohao,图床,纯粹的图床站,免费图床"/>-->
+<!--    <link rel=”canonical” href=”http://tc.hellohao.cn/”/>-->
     <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
     <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet">
@@ -71,6 +71,17 @@
 </head>
 <body id="copyimage">
 <div th:include="header::header"></div>
+
+<div class="modal fade" id="loadingModal" backdrop="static" keyboard="false">
+    <div style="width: 200px;height:20px; z-index: 20000; position: absolute; text-align: center; left: 50%; top: 50%;margin-left:-100px;margin-top:-10px">
+        <div class="progress progress-striped active" style="margin-bottom: 0;">
+            <div class="progress-bar" style="width: 100%;"></div>
+        </div>
+        <h5 style="color:black"> <strong style="color: #FFFFFF;">正在上传图片，请稍等。</strong> </h5>
+    </div>
+</div>
+
+
 <div class="alert alert-success">
     <a href="#" class="close" data-dismiss="alert">
         &times;
@@ -100,7 +111,12 @@
     <hr/>
     <br/>
     <br/>
-    <FONT color=#737373 size=3 th:text="'图片大小不得超过'+${uploadConfig.getFilesizetourists()}+' MB，登录本站可上传'+${uploadConfig.getFilesizeuser()}+' M图片以及查看历史图片记录等更多操作。'"></FONT>
+    <div>
+        <FONT color=#737373 size=3 th:text="'图片大小不得超过'+${uploadConfig.getFilesizetourists()}+' MB，登录本站可上传'+${uploadConfig.getFilesizeuser()}+' M图片以及查看历史图片记录等更多操作。'"></FONT>
+        <button onclick="urlimg()" type="button" class="btn btn-primary btn-xs" style="float: right;margin-right: 15px;background-color: #00b7ee;border-color: #00b7ee;font-size: 14px;">通过图片URL上传</button>
+
+    </div>
+
     <br>
     <form enctype="multipart/form-data">
 <!--        <div class="form-group">-->
@@ -238,6 +254,18 @@
     if (window != top){top.location.href = location.href;}
 
     $(function () {
+/*
+//一言
+        $.ajax({
+            type: "GET",
+            url: "/getsentence",
+            dataType: "json",
+            success: function (data) {
+                console.log(data)
+                alert(data.hitokoto);
+            }
+        });
+*/
         //设置页面资料
         var webname = [[${config.getWebname()}]];
         var explain = [[${config.getExplain()}]];
@@ -414,7 +442,7 @@
     }
 
     function guanyu() {
-        bootbox.alert("本站为图床站，用户可以免费使用本站，本站仅有Hellohao一人开发维护，对接（网易、阿里、腾讯、七牛）等多家对象存储，添加图片鉴黄功能，慢慢增加更多功能。但是服务器资源宝贵，切勿恶意上传非法/黄色/暴力等违反国家法律规定图片,一旦发现，严查必究！");
+        bootbox.alert("本站的主要功能基本上都完成了，在接下来的过程中我会进行代码优化，提高性能。如果你有什么好的功能意见可以来我博客进行评论。我也会尽力打造更加强大的图床站。");
     }
 
     function times() {
@@ -477,6 +505,87 @@
     }
     var baidu = [[${config.getBaidu()}]];
     loadScriptString(baidu);
+
+    function urlimg() {
+        var locale = {
+            OK: 'I Suppose',
+            CONFIRM: '上传',
+            CANCEL: '取消'
+        };
+        bootbox.addLocale('custom', locale);
+        bootbox.prompt({
+            title: "输入图片完整URL地址:",
+            locale: 'custom',
+            callback: function (result) {
+                    if(result) {
+                        var rx=/^https?:\/\//i;
+                        // alert(rx.test('http://xfdafefe'))
+                        // alert(rx.test('https://xfdafefe'))
+                        // alert(rx.test('bhttps://xfdafefe'))
+                        if(rx.test(result)==true){
+                            $('#loadingModal').modal({backdrop: 'static', keyboard: false});
+                            $.ajax({
+                                type: "POST",
+                                url: "/upurlimg",
+                                dataType: "json",
+                                data: {imgurl: result},
+                                success: function (data) {
+                                    for(var i=0;i<data.length;i++){
+
+                                        if(data[i]==-1){
+                                            // arr_url += '未配置存储源，请先后台配置存储源\r\n';
+                                            // arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
+                                            // arr_html += '未配置存储源，请先后台配置存储源\r\n';
+                                            $('#loadingModal').modal('hide');
+                                            tanchuang('上传失败','未配置存储源，请先后台配置存储源','error');
+                                        }
+                                        else if(data[i]==-2){
+                                            $('#loadingModal').modal('hide');
+                                            tanchuang('上传失败','图片不存在或太大','error');
+                                        }
+                                        else if(data[i]==-3){
+                                            $('#loadingModal').modal('hide');
+                                            tanchuang('上传失败','文件类型不符合要求','error');
+                                        }
+                                        else if(data[i]==-4){
+                                            $('#loadingModal').modal('hide');
+                                            tanchuang('上传失败','该文件不支持上传','error');
+                                        }
+                                        else{
+                                            $('#loadingModal').modal('hide');
+                                            tanchuang('上传成功','该图片链接已成功上传','success');
+                                            $("#address").css('display', 'block');
+                                            arr_url += data[i] + '\r\n';
+                                            arr_markdown += '![ ](' + data[i] + ')\r\n';
+                                            arr_html += '<img src="' + data[i] + '" alt="Image" title="Image" /> \r\n';
+                                        }
+                                        $("#urls").text(arr_url);
+                                        $("#markdowns").text(arr_markdown);
+                                        $("#htmls").text(arr_html);
+                                        urls = arr_url;
+                                    }
+                                }
+                            });
+                        }else{tanchuang('网址格式错误','网址必须以http(s)://开头。','error');}
+
+
+                    }
+            }
+        });
+    }
+
+    function tanchuang(str1,str2,types) {
+        swal({
+            title: str1,
+            text: str2,
+            type: types,
+            showCancelButton: false,//true显示两个按钮
+            confirmButtonColor: "#A5DC86",
+            confirmButtonText: "知道了",
+            closeOnConfirm: true,
+            closeOnCancel: false
+        });
+    }
 </script>
 
 

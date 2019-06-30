@@ -98,9 +98,9 @@
     -->
     <div id="isimgs">
         <!--分页 -->
-        <div id="mytext" style="font-weight: bold;">我的图片：
-            <span id="usercount" class="label label-info" style="font-weight: bold;font-size: 18px;">0</span>
-        </div>
+<!--        <div id="mytext" style="font-weight: bold;">我的图片：-->
+<!--            <span id="usercount" class="label label-info" style="font-weight: bold;font-size: 18px;">0</span>-->
+<!--        </div>-->
 
         <table class="table table-bordered ft-table table-hover" id="table_server">
             <hr/>
@@ -276,6 +276,7 @@
     }
 
     function deleallimg(ids) {
+        layer.load(1);
         $.ajax({
             type: "POST",
             url: "/admin/deleallimg",
@@ -283,6 +284,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.val > 0) {
+                    layer.closeAll('loading');
                     $("#table_server").bootstrapTable('refresh', t);
                     swal({
                             title: "删除成功",
@@ -303,6 +305,7 @@
                         });
 
                 } else {
+                    layer.closeAll('loading');
                     //swal("删除失败", "您所选的图片没有完全删除","error");
                     $("#table_server").bootstrapTable('refresh', t);
                 }
