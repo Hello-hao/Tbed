@@ -110,7 +110,7 @@ server.port=8088
 
 ### 说明
 如果你不会编译本程序可以去我的博客搜`图床`,下载编译后jar包直接部署即可。
-### [**编译包点击下载**](https://share.weiyun.com/5J1zfHV "点击下载") 　 密码：`nJVr`
+### [**编译包点击下载**](https://share.weiyun.com/5wZqBUm "点击下载") 　 密码：`48AU`
 
 
 ### 技术选型
