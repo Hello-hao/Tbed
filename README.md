@@ -12,6 +12,18 @@
 
 更多后台功能你可以自己搭建配置使用。
 
+## 系统预览
+
+![Hellohao图床 - 纯粹的图片存放驿站.png](https://i.loli.net/2019/06/16/5d0553871195b58021.png)
+
+![图床后台管理1.png](https://i.loli.net/2019/06/27/5d13abbbd94d288839.png)
+
+![图床后台管理2.png](https://i.loli.net/2019/06/27/5d13abbbd9e6149026.png)
+
+![图床后台管理3.png](https://i.loli.net/2019/06/27/5d13abbbbd76136816.png)
+
+![图床后台管理4.png](https://i.loli.net/2019/06/27/5d13abbbbe12320316.png)
+
 ## 更新日志
 
 **2019-06-27**
@@ -52,7 +64,7 @@
 
 ## 运行环境
 * JDK 1.8
-* MySQL 5.5+
+* MySQL
 
 ## 快速开始
 
@@ -95,21 +107,10 @@ server.port=8088
 
 启动后访问地址为：http://localhost:8088 , `8088`就是你配置`server.port=8088`的端口.
 
-## 系统预览
-
-![Hellohao图床 - 纯粹的图片存放驿站.png](https://i.loli.net/2019/06/16/5d0553871195b58021.png)
-
-![图床后台管理1.png](https://i.loli.net/2019/06/27/5d13abbbd94d288839.png)
-
-![图床后台管理2.png](https://i.loli.net/2019/06/27/5d13abbbd9e6149026.png)
-
-![图床后台管理3.png](https://i.loli.net/2019/06/27/5d13abbbbd76136816.png)
-
-![图床后台管理4.png](https://i.loli.net/2019/06/27/5d13abbbbe12320316.png)
 
 ### 说明
 如果你不会编译本程序可以去我的博客搜`图床`,下载编译后jar包直接部署即可。
-### [**编译包点击下载**](https://share.weiyun.com/5hXaC27 "点击下载") 　 密码：`i3x697`
+### [**编译包点击下载**](https://share.weiyun.com/5J1zfHV "点击下载") 　 密码：`nJVr`
 
 
 ### 技术选型
