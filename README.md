@@ -34,7 +34,7 @@
 * JDK 1.8
 * MySQL
 
-## 快速开始
+## 项目编译
 
 ### 下载项目
 
@@ -76,10 +76,40 @@ server.port=8088
 启动后访问地址为：http://localhost:8088 , `8088`就是你配置`server.port=8088`的端口.
 
 
-### 说明
-如果你不会编译本程序可以去我的博客搜`图床`,下载编译后jar包直接部署即可。
+
+## 也可以直接下载编译包部署到你的服务器
+
+
 ### [**编译包点击下载**](https://share.weiyun.com/5JSuD7D "点击下载") 　 密码：`evifmv`
 
+### 配置文件
+
+打开 `application.properties` 修改 `MySQL` 和 `服务器端口` 等连接信息改成你服务器的信息.
+
+
+
+```shell
+
+	#数据库账号
+	spring.datasource.username=root
+	#数据库密码
+	spring.datasource.password=root
+	#数据库地址
+	spring.datasource.url=jdbc:mysql://localhost:3306/picturebed?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+	#端口
+	server.port=8088
+
+```
+### 部署
+前提是你的服务器必须要有`JDK1.8`环境，和`mysql`数据库。如果你是宝塔环境，就会方便一些，在应用商店安装一个`Tomcat8`因该是自带JDK1.8环境。
+把`Tbed.jar`和`application.properties`放到服务器你想存放的目录比如`/home`，注意这两个文件必须要在同一目录下不能分开。
+依次运行如下命令：
+```shell
+cd /home
+
+java -jar Tbed.jar
+```
+注意：上边的`/home`是你的jar包和application.properties文件放的目录。
 
 ### 技术选型
 
