@@ -393,7 +393,6 @@
         $("#linshi").on("load", function () {
             w = $(this).width();
             h = $(this).height();
-            //alert(w+"/"+h);
             layer.closeAll('loading');
             layer.open({
                 type: 1,
@@ -402,7 +401,7 @@
                 area: 'auto',
                 skin: 'layui-layer-nobg', //没有背景色
                 shadeClose: true,
-                content: '<img style="height: auto;width: auto;max-width:' + dw * 0.7 + 'px;max-height: ' + dh * 0.7 + 'px" src="' + urls + '">'
+                content: '<div style="width:'+ dw * 0.7 + 'px;height:auto;text-align:center;float:none;margin-left:auto;margin-right:auto;"></div><img style="height: 100%;width: 100%;max-width:' + dw * 0.7 + 'px;max-height: ' + dh * 0.7 + 'px" src="' + urls + '">'
             });
         });
 

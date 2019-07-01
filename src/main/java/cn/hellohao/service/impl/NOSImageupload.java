@@ -40,12 +40,6 @@ public class NOSImageupload {
     static Keys key;
 
     public Map<String, Integer> Imageupload(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
-//		String Catalog = "";//默认游客目录
-//		if(username.equals("tourist")){
-//			Catalog = "tourist";
-//		}else{
-//			Catalog = username;
-//		}
         // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
