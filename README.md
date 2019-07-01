@@ -109,7 +109,11 @@ cd /home
 
 java -jar Tbed.jar
 ```
+
+然后访问`http://服务器IP:8088/`即可。
 注意：上边的`/home`是你的jar包和application.properties文件放的目录。
+项目运行起来不要关闭xshell窗口，否则项目将不能访问。可以使用一些后台命令把项目锁定后台。如`nohup`或`screen`
+
 
 ### 技术选型
 
