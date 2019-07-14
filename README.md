@@ -83,7 +83,7 @@ server.port=8088
 ## 也可以直接下载编译包部署到你的服务器
 
 
-### [**编译包点击下载**](https://share.weiyun.com/5nhufAU "点击下载") 　 密码：`Tr5t`
+### [**编译包点击下载**](https://share.weiyun.com/5Uwu4lY "点击下载") 　 密码：`8QmG`
 
 ### 配置文件
 
