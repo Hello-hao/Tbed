@@ -1,4 +1,4 @@
-# Hellohao图床
+# Hellohao图床 - 全新响应式UI
 
 
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
@@ -14,7 +14,9 @@
 
 ## 系统预览
 
-![Hellohao图床 - 纯粹的图片存放驿站.png](https://i.loli.net/2019/06/16/5d0553871195b58021.png)
+![Hellohao图床 - 纯粹的图片存放驿站1.png](https://i.loli.net/2019/07/14/5d2afe02837ec88282.png)
+
+![Hellohao图床 - 纯粹的图片存放驿站.png](https://i.loli.net/2019/07/14/5d2afe108630341050.png)
 
 ![图床后台管理1.png](https://i.loli.net/2019/06/27/5d13abbbd94d288839.png)
 
@@ -26,9 +28,10 @@
 
 ## 更新日志
 
-**2019-06-27**
+**2019-07-14**
 
-> 修复后台图片列表显示缩略图不完整问题
+> 设计全新响应式UI
+> 去除部分无用配置项
 
 ## 运行环境
 * JDK 1.8
@@ -80,7 +83,7 @@ server.port=8088
 ## 也可以直接下载编译包部署到你的服务器
 
 
-### [**编译包点击下载**](https://share.weiyun.com/5JSuD7D "点击下载") 　 密码：`evifmv`
+### [**编译包点击下载**](https://share.weiyun.com/5nhufAU "点击下载") 　 密码：`Tr5t`
 
 ### 配置文件
 
