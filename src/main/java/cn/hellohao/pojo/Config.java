@@ -12,12 +12,14 @@ public class Config {
     private String notice;
     private String baidu;
     private String domain;
+    private  String background1;
+    private  String background2;
 
 
     public Config() {
     }
 
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu, String domain) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu, String domain, String background1, String background2) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
@@ -29,6 +31,8 @@ public class Config {
         this.notice = notice;
         this.baidu = baidu;
         this.domain = domain;
+        this.background1 = background1;
+        this.background2 = background2;
     }
 
     public Integer getId() {
@@ -117,5 +121,21 @@ public class Config {
 
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    public String getBackground1() {
+        return background1;
+    }
+
+    public void setBackground1(String background1) {
+        this.background1 = background1;
+    }
+
+    public String getBackground2() {
+        return background2;
+    }
+
+    public void setBackground2(String background2) {
+        this.background2 = background2;
     }
 }

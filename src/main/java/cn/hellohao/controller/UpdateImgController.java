@@ -108,7 +108,8 @@ public class UpdateImgController {
         model.addAttribute("config", config);
         model.addAttribute("uploadConfig", uploadConfig);
 
-        return "index_upload";
+        //return "index_upload";
+        return "index";
 
     }
 

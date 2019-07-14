@@ -241,6 +241,7 @@
 <footer class="footer " th:include="footer::foot"></footer>
 </body>
 <script th:inline="javascript">
+
     var loginid = [[${loginid}]];
     var filesize = [[${filesize}]];
     var imgcount = [[${imgcount}]];
@@ -325,22 +326,7 @@
     var arr_html = "";
     //上传文件个数，默认单上传
     //异步上传返回结果处理
-    $("#updatefile").on("fileuploaded", function (event, data, previewId, index) {
-        $("#address").css('display', 'block');
-        if(data.response==-1){
-            arr_url += '未配置存储源，请先后台配置存储源\r\n';
-            arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
-            arr_html += '未配置存储源，请先后台配置存储源\r\n';
-        }else{
-            arr_url += 'https://' + data.response + '\r\n';
-            arr_markdown += '![ ](https://' + data.response + ')\r\n';
-            arr_html += '<img src="https://' + data.response + '" alt="Image" title="Image" /> \r\n';
-        }
-        $("#urls").text(arr_url);
-        $("#markdowns").text(arr_markdown);
-        $("#htmls").text(arr_html);
-        urls = arr_url;
-    });
+
 
     function zhuce(mail, registerusername, registerpassword) {
         //验证成功

@@ -1,4 +1,5 @@
 
+
 (function( $ ){
     // 当domReady的时候开始初始化
     $(function() {
@@ -148,7 +149,7 @@
                 uid: 123
             },
             dnd: '#dndArea',
-            paste: '#copyimage',
+            paste: '#wrapper',
             swf: 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Uploader.swf',
             chunked: false,//分片上传
             chunkSize: 512 * 1024,
@@ -192,11 +193,11 @@
         });
 
         // 文件上传成功
+
         uploader.on( 'uploadSuccess', function(file,response) {
             //alert(response.length);
             for(var i=0;i<response.length;i++){
-                console.log("上传成功返回值1："+response[i])
-                //console.log(data);
+                //console.log(response);
                 $("#address").css('display', 'block');
                 if(response[i]==-1){
                     arr_url += '未配置存储源，请先后台配置存储源\r\n';
@@ -207,10 +208,17 @@
                     arr_markdown += '![ ](' + response[i] + ')\r\n';
                     arr_html += '<img src="' + response[i] + '" alt="Image" title="Image" /> \r\n';
                 }
-                $("#urls").text(arr_url);
-                $("#markdowns").text(arr_markdown);
-                $("#htmls").text(arr_html);
-                urls = arr_url;
+                // $("#urls").text(arr_url);
+                // $("#markdowns").text(arr_markdown);
+                // $("#htmls").text(arr_html);
+                //urls = arr_url;
+                if(urltypes==1){
+                    $("#urls").text(arr_url);
+                }else if(urltypes==2){
+                    $("#urls").text(arr_markdown);
+                }else{
+                    $("#urls").text(arr_html);
+                }
             }
 
 

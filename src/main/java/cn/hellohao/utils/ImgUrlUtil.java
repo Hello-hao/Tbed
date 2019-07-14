@@ -48,7 +48,7 @@ public class ImgUrlUtil {
      * 获取网络文件大小
      */
     public static long getFileLength(String downloadUrl) throws IOException {
-        if(downloadUrl == null || "".equals(downloadUrl)){
+        if(downloadUrl == null || "".equals(downloadUrl) ||downloadUrl.length()<=7){
             return 0L ;
         }
         URL url = new URL(downloadUrl);

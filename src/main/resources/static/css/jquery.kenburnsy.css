@@ -1,0 +1,1 @@
+.kenburnsy{position:relative;overflow:hidden;width:100%}.kenburnsy .slide,.kenburnsy.fullscreen{position:absolute;top:0;left:0;right:0;bottom:0}.kenburnsy.fullscreen{z-index:-1}.kenburnsy img{display:none}.kenburnsy .slide{background-repeat:no-repeat;background-position:center center;background-size:cover;transform-origin:center;transform:translateZ(0)}

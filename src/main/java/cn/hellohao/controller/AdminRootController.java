@@ -136,7 +136,8 @@ public class AdminRootController {
     @PostMapping("/updateconfig")
     @ResponseBody
     public Integer updateconfig(String webname,String explain, String logos,
-                                String footed, String links, String notice,String baidu,String domain ) {
+                                String footed, String links, String notice,String baidu,
+                                String domain,String background1,String background2 ) {
         Config config = new Config();
         config.setWebname(webname);
         config.setExplain(explain);
@@ -146,6 +147,8 @@ public class AdminRootController {
         config.setNotice(notice);
         config.setBaidu(baidu);
         config.setDomain(domain);
+        config.setBackground1(background1);
+        config.setBackground2(background2);
         Integer ret = configService.setSourceype(config);
         return ret;
     }

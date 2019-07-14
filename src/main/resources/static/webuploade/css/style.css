@@ -62,11 +62,12 @@ table {
 }
 
 #container {
-    border: 1px solid #dadada;
+    border: 1px solid #838383;
+    border-radius: 5px;
     color: #838383;
     font-size: 12px;
     margin-top: 10px;
-    background-color: #FFF;
+    /*background-color: #FFF;*/
 }
 
 #uploader .queueList {
@@ -80,7 +81,7 @@ table {
 }
 
 #uploader .placeholder {
-    border: 3px dashed #e6e6e6;
+    /*border: 3px dashed #4ebd87;*/
     min-height: 238px;
     padding-top: 158px;
     text-align: center;
@@ -92,16 +93,18 @@ table {
 
 #uploader .placeholder .webuploader-pick {
     font-size: 18px;
-    background: #00b7ee;
-    border-radius: 3px;
+    background: #4ebd87;
+    /*border-radius: 3px;*/
     line-height: 44px;
     padding: 0 30px;
-    color: #fff;
+    color: #262626;
     display: inline-block;
     margin: 20px auto;
     cursor: pointer;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+
 }
+
 
 #uploader .placeholder .webuploader-pick-hover {
     background: #00a2d4;
@@ -403,12 +406,14 @@ table {
 }
 
 #uploader .statusBar .btns .uploadBtn {
-    background: #00b7ee;
+    /*background: #00b7ee;*/
+    background:#4ebd87;
     color: #fff;
     border-color: transparent;
 }
 #uploader .statusBar .btns .uploadBtn:hover {
-    background: #00a2d4;
+    /*background: #00a2d4;*/
+    background: #4ebd87;
 }
 
 #uploader .statusBar .btns .uploadBtn.disabled {

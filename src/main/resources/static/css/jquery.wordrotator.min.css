@@ -1,0 +1,5 @@
+.wordsrotator_words{display:inline-block; width:100%; position:relative; -webkit-transition:width 1s;  -moz-transition:width 1s;  -o-transition:width 1s;  transition:width 1s;}
+.wordsrotator_words .wordsrotator_wordOut, .wordsrotator_words .wordsrotator_wordIn{position:relative; display:inline-block; -webkit-animation-duration:1s; -webkit-animation-timing-function:ease; -webkit-animation-fill-mode:both; -moz-animation-duration:1s; -moz-animation-timing-function:ease; -moz-animation-fill-mode:both; -ms-animation-duration:1s; -ms-animation-timing-function:ease; -ms-animation-fill-mode:both;}
+.wordsrotator_words .wordsrotator_wordOut{width:100%; display:inline-block; position:absolute; left:0px; -webkit-backface-visibility:hidden;}
+.wordsrotator_words .wordsrotator_wordOut span{width:auto; position:relative; -webkit-backface-visibility:hidden;}
+.wordsrotator_words .wordsrotator_wordIn{opacity:0; -webkit-backface-visibility:hidden;}

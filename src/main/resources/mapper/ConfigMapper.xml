@@ -39,6 +39,12 @@
             <if test="domain != null">
                 `domain` = #{domain},
             </if>
+            <if test="background1 != null">
+                `background1` = #{background1},
+            </if>
+            <if test="background2 != null">
+                `background2` = #{background2},
+            </if>
 
         </set>
         where id=1

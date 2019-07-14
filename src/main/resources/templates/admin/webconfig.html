@@ -26,6 +26,7 @@
                         <div class="layui-input-block">
                             <input id="notice" type="text" name="title" autocomplete="off" placeholder="首页公告" class="layui-input"
                                    th:value="${config.getNotice()}"/>
+                            <span style="color: #DAA5A6;">欲想显示多个公告请用 | 分开</span>
                         </div>
                     </div>
                     <hr />
@@ -53,30 +54,46 @@
                                th:value="${config.getExplain()}"/>
                     </div>
                 </div>
-                <br />
-                <div class="layui-form-item">
-                    <label class="layui-form-label">页面LOGO</label>
-                    <div class="layui-input-block">
-                        <input id="logos" type="text" name="title" autocomplete="off" placeholder="页面LOGO" class="layui-input"
-                               th:value="${config.getLogos()}"/><span style="color: #DAA5A6;">图片推荐大小：242px*33px</span>
-                    </div>
-                </div>
+<!--                <br />-->
+<!--                <div class="layui-form-item">-->
+<!--                    <label class="layui-form-label">页面LOGO</label>-->
+<!--                    <div class="layui-input-block">-->
+<!--                        <input id="logos" type="text" name="title" autocomplete="off" placeholder="页面LOGO" class="layui-input"-->
+<!--                               th:value="${config.getLogos()}"/><span style="color: #DAA5A6;">图片推荐大小：242px*33px</span>-->
+<!--                    </div>-->
+<!--                </div>-->
                     <br />
-                <div class="layui-form-item">
-                    <label class="layui-form-label">底部版权</label>
-                    <div class="layui-input-block">
-                        <input id="footed" type="text" name="title" autocomplete="off" placeholder="底部版权" class="layui-input"
-                               th:value="${config.getFooted()}"/>
+<!--                <div class="layui-form-item">-->
+<!--                    <label class="layui-form-label">底部版权</label>-->
+<!--                    <div class="layui-input-block">-->
+<!--                        <input id="footed" type="text" name="title" autocomplete="off" placeholder="底部版权" class="layui-input"-->
+<!--                               th:value="${config.getFooted()}"/>-->
+<!--                    </div>-->
+<!--                </div>-->
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">首页背景一</label>
+                        <div class="layui-input-block">
+                            <input id="background1" type="text" name="title" autocomplete="off" placeholder="首页背景图" class="layui-input"
+                                   th:value="${config.getBackground1()}"/>
+                        </div>
                     </div>
-                </div>
                     <br />
-                <div class="layui-form-item">
-                    <label class="layui-form-label">友情链接</label>
-                    <div class="layui-input-block">
-                        <textarea id="links" name="links" placeholder="请输入内容" class="layui-textarea" th:text="${config.getLinks()}"></textarea>
-                        <span style="color: #DAA5A6;">友链格式（否则会显示异常）：<xmp><li><a src="地址">网站名</a></li></xmp></span>
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">首页背景二</label>
+                        <div class="layui-input-block">
+                            <input id="background2" type="text" name="title" autocomplete="off" placeholder="上传页面背景图" class="layui-input"
+                                   th:value="${config.getBackground2()}"/>
+                        </div>
                     </div>
-                </div>
+                    <br />
+<!--                <div class="layui-form-item">-->
+<!--                    <label class="layui-form-label">友情链接</label>-->
+<!--                    <div class="layui-input-block">-->
+<!--                        <textarea id="links" name="links" placeholder="请输入内容" class="layui-textarea" th:text="${config.getLinks()}"></textarea>-->
+<!--                        <span style="color: #DAA5A6;">友链格式（否则会显示异常）：<xmp><li><a src="地址">网站名</a></li></xmp></span>-->
+<!--                    </div>-->
+<!--                </div>-->
+
 
                 </form>
                 <a class="layui-btn" lay-filter="demo2" onclick="updateconfig()">保存</a>
@@ -150,8 +167,6 @@
         layui.use(['table','element'], function(){
             var table = layui.table;
             var element = layui.element;
-            
-
             });
         function updateconfig() {
                 var webname = $("#webname").val();
@@ -161,12 +176,14 @@
                 var links = $("#links").val();
                 var notice = $("#notice").val();
                 var domain = $("#domain").val();
+                var background1 = $("#background1").val();
+                var background2 = $("#background2").val();
                 if (webname != "" && domain!="" ) {
                     $.ajax({
                         type: "POST",
                         url: "/admin/root/updateconfig",
                         dataType: "json",
-                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice,domain:domain},
+                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice,domain:domain,background1:background1,background2:background2},
                         success: function (data) {
                             var vals = Number(data);
                             if (vals > 0) {

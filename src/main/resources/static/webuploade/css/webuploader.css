@@ -2,19 +2,22 @@
 	position: relative;
 }
 .webuploader-element-invisible {
-	position: absolute !important;
+	/*position: absolute !important;*/
+	background-color:transparent !important;
 	clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
     clip: rect(1px,1px,1px,1px);
+	filter:Alpha(opacity=30); opacity: 0;
 }
 .webuploader-pick {
 	position: relative;
 	display: inline-block;
 	cursor: pointer;
-	background: #00b7ee;
+	/*background: #00b7ee;*/
+	background: #4ebd87;
 	padding: 10px 15px;
 	color: #fff;
 	text-align: center;
-	border-radius: 3px;
+	/*border-radius: 3px;*/
 	overflow: hidden;
 }
 .webuploader-pick-hover {
