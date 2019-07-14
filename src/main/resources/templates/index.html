@@ -8,7 +8,7 @@
     <meta name="author" content="Hitesh Jariwala">
     <meta name="keywords" content="">
     <!-- title -->
-	<title th:text="${config.getWebname()}+' - 纯粹的图片存放驿站'"></title>
+	<title th:text="${config.getWebname()}"></title>
 
 	<link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
 	<link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
@@ -58,11 +58,6 @@
 			 cursor:pointer;
 		}
 		#goupdate:hover{}
-			.upimg {
-				background:url(../img/background/sample2.jpg) no-repeat;
-				background-size:cover;
-				background-position:50% 50%;
-			}
 
 		</style>
 </head>
@@ -94,12 +89,10 @@
                 </a></li>                
                 <li><a href="javascript:;" class="md-trigger" data-modal="modal-3">登录&nbsp;<span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
 				<li><a href="javascript:;" class="md-trigger" data-modal="modal-4">注册&nbsp;<span class="glyphicon glyphicon-education" aria-hidden="true"></span></a></li>
-<!--				<li><a class="menu-link" onclick="openLoginModal();"-->
-<!--					   >登录<i class="fa fa-fw fa-list"></i></a></li>-->
-				<li><a class="menu-link" href="https://github.com/Hello-hao/Tbed" target="_blank"
-				>GitHub<i class="fa fa-github"></i></a></li>
-				<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"
-				>关于<i class="fa fa-share-alt"></i></a></li>
+<!--				<li><a class="menu-link" href="https://github.com/Hello-hao/Tbed" target="_blank"-->
+<!--				>GitHub<i class="fa fa-github"></i></a></li>-->
+<!--				<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"-->
+<!--				>关于<i class="fa fa-share-alt"></i></a></li>-->
             </ul>
         </div>
         <div class="cls">
@@ -119,7 +112,7 @@
                 	<div class="content col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-rlt no-pad centering-y">            	    	
             	    	<div class="col-md-12 col-sm-12">
                 	    	<!-- headline -->
-							<h1 style="font-size: 4.5em;">Hellohao</h1>
+							<h1 style="font-size: 4.5em;" th:text="${config.getWebname()}"></h1>
 							<a id="goupdate" class="menu-link" data-section="contact" data-nav-title="contact" data-section-pos="-100"
 								data-section-posy="0">立即上传</a>
 

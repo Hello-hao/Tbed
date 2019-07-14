@@ -59,7 +59,7 @@ public class SchedulerTask {
         List<Images> imglist=  imgService.gettimeimg(oldtime);
         for (Images images : imglist) {
 
-            String imgurl = "http://"+images.getImgurl();
+            String imgurl = images.getImgurl();
             System.err.println("正在鉴定的图片：" + imgurl);
             JSONObject res = client.antiPorn(imgurl);
             res = client.imageCensorUserDefined(imgurl, EImgType.URL, null);

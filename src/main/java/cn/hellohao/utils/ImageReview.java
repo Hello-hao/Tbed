@@ -26,6 +26,9 @@ public class ImageReview {
         client.setSocketTimeoutInMillis(60000);
     }
 
+    public static void main(String[] args) {
+
+    }
     //开始调用鉴黄。
     public static void imgJB(Map<String, Integer> imgmap, String requestAddress, Keys key, Imgreview imgreview) {
         ImgServiceImpl imgService = SpringContextHolder.getBean(ImgServiceImpl.class);
@@ -35,7 +38,7 @@ public class ImageReview {
         for (Map.Entry<String, Integer> entry : imgmap.entrySet()) {
             System.out.println("正在鉴定的图片：" + entry.getKey());
             JSONObject res = client.antiPorn(entry.getKey());
-            res = client.imageCensorUserDefined("http://" + entry.getKey(), EImgType.URL, null);
+            res = client.imageCensorUserDefined(entry.getKey(), EImgType.URL, null);
 
             com.alibaba.fastjson.JSONArray jsonArray = JSON.parseArray("[" + res.toString() + "]");
             for (Object o : jsonArray) {
