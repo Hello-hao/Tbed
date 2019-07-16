@@ -4,6 +4,7 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.ImgServiceImpl;
+import cn.hellohao.utils.LocUpdateImg;
 import cn.hellohao.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -104,13 +105,13 @@ public class AdminController {
     public String getwebconfig(HttpSession session) {
         JSONObject jsonObject = new JSONObject();
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        Keys key = keysService.selectKeys(config.getSourcekey());
         User u = (User) session.getAttribute("user");
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
         jsonObject.put("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
         jsonObject.put("counts", imgService.counts(null) );//总数
         jsonObject.put("getusertotal", userService.getUserTotal() );
         jsonObject.put("imgreviewcount", imgreview.getCount());
+        Keys key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
         Boolean b = StringUtils.doNull(key);//判断对象是否有空值
         if(b){
             jsonObject.put("source", key.getStorageType());
@@ -220,9 +221,10 @@ public class AdminController {
             } else if (key.getStorageType() == 3) {
                 de.delectUSS(key, images.getImgname());
             } else if (key.getStorageType() == 4) {
-                //初始化七牛云
                 de.delectKODO(key, images.getImgname());
-            } else {
+            } else if (key.getStorageType() == 5) {
+                LocUpdateImg.deleteLOCImg(images.getImgname());
+            }else {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
             Integer ret = imgService.deleimg(id);
@@ -263,7 +265,9 @@ public class AdminController {
                 } else if (key.getStorageType() == 4) {
                     //初始化七牛云
                     de.delectKODO(key, images.getImgname());
-                } else {
+                } else if (key.getStorageType() == 5) {
+                    LocUpdateImg.deleteLOCImg(images.getImgname());
+                }else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }
                 Integer ret = imgService.deleimg(ids[i]);

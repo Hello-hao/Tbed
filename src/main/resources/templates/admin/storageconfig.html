@@ -18,6 +18,8 @@
             <label class="layui-form-label">对象存储源</label>
             <div class="layui-input-block">
                 <select id="StorageType" name="city" lay-filter="business" lay-verify="required">
+                    <option value="0">未设置任何存储源</option>
+                    <option value="5">本地存储</option>
                     <option value="1">网易NOS</option>
                     <option value="2">阿里OSS</option>
                     <option value="3">又拍USS</option>
@@ -86,6 +88,8 @@
 
 
         <div class="layui-form-item">
+            <h3 id="c6" style="display: none;color: #DAA5A6;">确保站点设置中：【站点域名】已经填写。</h3>
+            <br />
             <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="issave();">保存</a>
         </div>
     </form>
@@ -107,24 +111,42 @@
             $("#Endpoint").val('');
             $("#Bucketname").val('');
             $("#RequestAddress").val('');
-            if(data.value==3){
-                $("#c3").css('display','none');
-                $("#keyusername").text('操作员名称');
-                $("#keypass").text('操作员密码');
+            if(data.value!=5){
 
-            }else if(data.value==4){
-                $("#c3").css('display','none');
-                $("#c3-1").css('display','block');
-                $("#keyusername").text('AccessKey');
-                $("#keypass").text('SecretKey');
-            }
-            else{
+                $("#c1").css('display','block');
+                $("#c2").css('display','block');
                 $("#c3").css('display','block');
-                $("#c3-1").css('display','none');
-                $("#keyusername").text('AccessKey');
-                $("#keypass").text('AccessSecret');
-            }
+                $("#c3-1").css('display','block');
+                $("#c4").css('display','block');
+                $("#c5").css('display','block');
+                $("#c6").css('display','none');
 
+                if(data.value==3){
+                    $("#c3").css('display','none');
+                    $("#keyusername").text('操作员名称');
+                    $("#keypass").text('操作员密码');
+
+                }else if(data.value==4){
+                    $("#c3").css('display','none');
+                    $("#c3-1").css('display','block');
+                    $("#keyusername").text('AccessKey');
+                    $("#keypass").text('SecretKey');
+                }
+                else{
+                    $("#c3").css('display','block');
+                    $("#c3-1").css('display','none');
+                    $("#keyusername").text('AccessKey');
+                    $("#keypass").text('AccessSecret');
+                }
+            }else{
+                $("#c1").css('display','none');
+                $("#c2").css('display','none');
+                $("#c3").css('display','none');
+                $("#c3-1").css('display','none');
+                $("#c4").css('display','none');
+                $("#c5").css('display','none');
+                $("#c6").css('display','block');
+            }
 
             $.ajax({
                 type: "POST",
@@ -169,6 +191,18 @@
             $("#keyusername").text('AccessKey');
             $("#keypass").text('SecretKey');
             $("#Endpoint2").find("option[value='" + Endpoint + "']").attr("selected", true);
+        }else if(types==5){
+            Endpoint2 = [[${Endpoint2}]];
+            $("#keyusername").text('none');
+            $("#keypass").text('none');
+            $("#c1").css('display','none');
+            $("#c2").css('display','none');
+            $("#c3").css('display','none');
+            $("#c3-1").css('display','none');
+            $("#c4").css('display','none');
+            $("#c5").css('display','none');
+            $("#c6").css('display','block');
+            //$("#Endpoint2").find("option[value='" + Endpoint + "']").attr("selected", true);
         }
         else{
             $("#c3").css('display','block');
@@ -190,17 +224,17 @@
         else{
             if(StorageType==4){Endpoint = $("#Endpoint2").val();}else{Endpoint = $("#Endpoint").val();}
         }
-        if(AccessKey!="" && AccessSecret!="" &&Endpoint!="" &&  Bucketname!="" && RequestAddress!="" && StorageType!=""){
+        if($("#StorageType").val()==5){
             $.ajax({
                 type: "POST",
                 url: "/admin/root/updatekey",
                 data: {
-                    AccessKey: AccessKey,
-                    AccessSecret: AccessSecret,
-                    Endpoint: Endpoint,
-                    Bucketname: Bucketname,
-                    RequestAddress: RequestAddress,
-                    StorageType: StorageType
+                    AccessKey: 0,
+                    AccessSecret: 0,
+                    Endpoint: 0,
+                    Bucketname: 0,
+                    RequestAddress: 0,
+                    StorageType: 5
                 },
                 dataType: "json",
                 success: function (data) {
@@ -212,7 +246,30 @@
                 }
             });
         }else{
-            layer.msg("有参数不正确，请检查", {icon: 2});
+            if(AccessKey!="" && AccessSecret!="" &&Endpoint!="" &&  Bucketname!="" && RequestAddress!="" && StorageType!=""){
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/root/updatekey",
+                    data: {
+                        AccessKey: AccessKey,
+                        AccessSecret: AccessSecret,
+                        Endpoint: Endpoint,
+                        Bucketname: Bucketname,
+                        RequestAddress: RequestAddress,
+                        StorageType: StorageType
+                    },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data > 0) {
+                            layer.msg("保存成功", {icon: 1});
+                        } else {
+                            layer.msg("保存失败", {icon: 2});
+                        }
+                    }
+                });
+            }else{
+                layer.msg("有参数不正确，请检查", {icon: 2});
+            }
         }
     }
 

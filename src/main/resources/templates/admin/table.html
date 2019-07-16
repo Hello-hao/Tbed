@@ -129,6 +129,7 @@
                     <div class="btn-group">
                         <select id="StorageType" class="form-control">
                             <option value="0">所有</option>
+                            <option value="5">本地存储</option>
                             <option value="1">网易NOS</option>
                             <option value="2">阿里OSS</option>
                             <option value="3">又拍USS</option>
@@ -492,7 +493,9 @@
                             source = '又拍USS';
                         } else if (rows.source == 4) {
                             source = '七牛KODO';
-                        } else {
+                        } else if (rows.source == 5) {
+                            source = '本地存储';
+                        }else {
                             source = '未知';
                         }
                         return source;

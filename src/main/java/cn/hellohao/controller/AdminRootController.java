@@ -42,25 +42,31 @@ public class AdminRootController {
     @RequestMapping(value = "tostorage")
     public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        Keys key = keysService.selectKeys(config.getSourcekey());
+        Keys  key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
         Boolean b = StringUtils.doNull(key);//判断对象是否有空值
         Integer StorageType = 0;
-        if(b){
-            //key信息
-            model.addAttribute("AccessKey", key.getAccessKey());
-            model.addAttribute("AccessSecret", key.getAccessSecret());
+        if(config.getSourcekey()!=5){
+            if(b){
+                //key信息
+                model.addAttribute("AccessKey", key.getAccessKey());
+                model.addAttribute("AccessSecret", key.getAccessSecret());
 
-            model.addAttribute("Endpoint", key.getEndpoint());
-            model.addAttribute("Bucketname", key.getBucketname());
-            model.addAttribute("RequestAddress", key.getRequestAddress());
-            model.addAttribute("StorageType", config.getSourcekey());
-        }
-        //如果是4就是七牛
-        if(config.getSourcekey()==4){
-            model.addAttribute("Endpoint2", key.getEndpoint());
+                model.addAttribute("Endpoint", key.getEndpoint());
+                model.addAttribute("Bucketname", key.getBucketname());
+                model.addAttribute("RequestAddress", key.getRequestAddress());
+                model.addAttribute("StorageType", config.getSourcekey());
+            }
+            //如果是4就是七牛
+            if(config.getSourcekey()==4){
+                model.addAttribute("Endpoint2", key.getEndpoint());
+            }else{
+                model.addAttribute("Endpoint2", 0);
+            }
         }else{
+            model.addAttribute("StorageType", 5);//切换到本地
             model.addAttribute("Endpoint2", 0);
         }
+
 
         return "admin/storageconfig";
     }

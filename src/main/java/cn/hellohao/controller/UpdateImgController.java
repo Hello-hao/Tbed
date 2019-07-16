@@ -7,12 +7,12 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import cn.hellohao.TbedApplication;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.KODOImageupload;
 import cn.hellohao.service.impl.OSSImageupload;
 import cn.hellohao.service.impl.USSImageupload;
+import cn.hellohao.utils.IPPortUtil;
 import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,8 +47,9 @@ public class UpdateImgController {
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
+        Print.Normal("欢迎使用Hellohao图床源码。者也许是最好用的java图床项目。");
+        Print.warning("当前项目路径："+System.getProperty("user.dir"));
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        System.out.println("域名："+config.getDomain());
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         Integer filesizetourists = 0;
         Integer filesizeuser = 0;
@@ -58,8 +59,12 @@ public class UpdateImgController {
         if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
         if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
         if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
-        Keys key = keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
-        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        Boolean b =false;
+        Keys key = null;
+        if(config.getSourcekey()!=0 && config.getSourcekey()!=5){
+            key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
+            b = StringUtils.doNull(key);//判断对象是否有空值
+        }
         if(b)
         {
             if(key.getStorageType()!=0 || key.getStorageType()!=null){
@@ -151,6 +156,8 @@ public class UpdateImgController {
             }else if(key.getStorageType()==4){
                 //初始化七牛云
                 m = kodoImageupload.ImageuploadKODO(map, username,null);
+            }else if(key.getStorageType()==5){
+                m = LocUpdateImg.ImageuploadLOC(map, username,null);
             }else{
                 System.err.println("未获取到对象存储参数，上传失败。");
             }
@@ -159,8 +166,19 @@ public class UpdateImgController {
             String times = df.format(new Date());
             System.out.println("上传图片的时间是："+times);
             for (Map.Entry<String, Integer> entry : m.entrySet()) {
-                jsonArray.add(entry.getKey());
-                img.setImgurl(entry.getKey());//图片链接
+                if(key.getStorageType()==5){
+                    if(config.getDomain()!=null){
+                        jsonArray.add(config.getDomain()+"/links/"+entry.getKey());
+                        img.setImgurl(config.getDomain()+"/links/"+entry.getKey());//图片链接
+                    }else{
+                        jsonArray.add(config.getDomain()+"/links/"+entry.getKey());
+                        img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey());//图片链接
+                    }
+                }else{
+                    jsonArray.add(entry.getKey());
+                    img.setImgurl(entry.getKey());//图片链接
+                }
+
                 img.setUpdatetime(times);
                 img.setSource(key.getStorageType());
                 if (u == null) {
@@ -247,10 +265,10 @@ public class UpdateImgController {
                                     m = ossImageupload.ImageuploadOSS(null, username,map);
                                 }else if(key.getStorageType()==3){
                                     m = ussImageupload.ImageuploadUSS(null, username,map);
-                                    //初始化又拍
                                 }else if(key.getStorageType()==4){
-                                    //初始化七牛云
                                     m = kodoImageupload.ImageuploadKODO(null, username,map);
+                                }else if(key.getStorageType()==5){
+                                    m = LocUpdateImg.ImageuploadLOC(null,username,map);
                                 }else{
                                     System.err.println("未获取到对象存储参数，上传失败。");
                                 }
@@ -259,8 +277,18 @@ public class UpdateImgController {
                                 String times = df.format(new Date());
                                 System.out.println("上传图片的时间是："+times);
                                 for (Map.Entry<String, Integer> entry : m.entrySet()) {
-                                    jsonArray.add(entry.getKey());
-                                    img.setImgurl(entry.getKey());//图片链接
+                                    if(key.getStorageType()==5){
+                                        if(config.getDomain()!=null){
+                                            jsonArray.add(config.getDomain()+"/links/"+entry.getKey());
+                                            img.setImgurl(config.getDomain()+"/links/"+entry.getKey());//图片链接
+                                        }else{
+                                            jsonArray.add(config.getDomain()+"/links/"+entry.getKey());
+                                            img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey());//图片链接
+                                        }
+                                    }else{
+                                        jsonArray.add(entry.getKey());
+                                    }
+                                    //img.setImgurl(entry.getKey());//图片链接
                                     img.setUpdatetime(times);
                                     img.setSource(key.getStorageType());
                                     if (u == null) {
@@ -316,10 +344,10 @@ public class UpdateImgController {
                                     m = ossImageupload.ImageuploadOSS(null, username,map);
                                 }else if(key.getStorageType()==3){
                                     m = ussImageupload.ImageuploadUSS(null, username,map);
-                                    //初始化又拍
                                 }else if(key.getStorageType()==4){
-                                    //初始化七牛云
                                     m = kodoImageupload.ImageuploadKODO(null, username,map);
+                                }else if(key.getStorageType()==5){
+                                    m =LocUpdateImg.ImageuploadLOC(null,username, map);
                                 }else{
                                     System.err.println("未获取到对象存储参数，上传失败。");
                                 }
@@ -328,8 +356,18 @@ public class UpdateImgController {
                                 String times = df.format(new Date());
                                 System.out.println("上传图片的时间是："+times);
                                 for (Map.Entry<String, Integer> entry : m.entrySet()) {
-                                    jsonArray.add(entry.getKey());
-                                    img.setImgurl(entry.getKey());//图片链接
+                                    if(key.getStorageType()==5){
+                                        if(config.getDomain()!=null){
+                                            jsonArray.add(config.getDomain()+"/links/"+entry.getKey());
+                                            img.setImgurl(config.getDomain()+"/links/"+entry.getKey());//图片链接
+                                        }else{
+                                            jsonArray.add(config.getDomain()+"/links/"+entry.getKey());
+                                            img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey());//图片链接
+                                        }
+                                    }else{
+                                        jsonArray.add(entry.getKey());
+                                    }
+                                    //img.setImgurl(entry.getKey());//图片链接
                                     img.setUpdatetime(times);
                                     img.setSource(key.getStorageType());
                                     if (u == null) {

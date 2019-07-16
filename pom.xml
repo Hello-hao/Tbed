@@ -114,6 +114,11 @@
             <version>1.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>nekohtml</groupId>
+            <artifactId>nekohtml</artifactId>
+            <version>1.9.6.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

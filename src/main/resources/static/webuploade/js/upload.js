@@ -148,7 +148,7 @@
             formData: {
                 uid: 123
             },
-            dnd: '#dndArea',
+            dnd: '#wrapper',
             paste: '#wrapper',
             swf: 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Uploader.swf',
             chunked: false,//分片上传

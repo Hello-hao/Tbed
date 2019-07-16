@@ -90,9 +90,8 @@
             <div class="col-sm-6">
                 <div class="widget navy-bg no-padding">
                     <div class="p-m">
-                        <h1 class="m-xs" th:text="'你好！'+${username}"></h1>
-
-                        <h3 class="font-bold no-margins">
+                        <h1 class="m-xs" th:text="'Hi~'+${username}"></h1>
+                        <h3 class="font-bold no-margins" id="ly">
                             欢迎你的到来！如果遇到问题，可以联系管理员咨询。
                         </h3>
                         <small> </small>
@@ -139,6 +138,12 @@
                                                 <span th:text="${jdk}" style="font-weight: bold;"></span>
                                             </td>
                                     </tr>
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-info m-r-sm">开发语言：</button>
+                                            <span  style="font-weight: bold;">JAVA开发</span>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                 </div>
@@ -177,10 +182,20 @@
                         str = "又拍USS";
                     } else if (data.source == 4) {
                         str = '七牛KODO';
-                    } else {
+                    } else if (data.source == 5) {
+                        str = '本地存储';
+                    }else {
                         str = '未知';
                     }
                     $("#source").text(str);
+                }
+            });
+            $.ajax({
+                type: "GET",
+                url: "/getsentence",
+                dataType: "json",
+                success: function (data) {
+                    $("#ly").text(data.hitokoto);
                 }
             });
         })
@@ -358,6 +373,26 @@
                 },
             });
         });
+        function times() {
+            now = new Date(), hour = now.getHours()
+            if (hour < 6) {
+                return ("凌晨好！")
+            } else if (hour < 9) {
+                return ("早上好！")
+            } else if (hour < 12) {
+                return ("上午好！")
+            } else if (hour < 14) {
+                return ("中午好！")
+            } else if (hour < 17) {
+                return ("下午好！")
+            } else if (hour < 19) {
+                return ("傍晚好！")
+            } else if (hour < 22) {
+                return ("晚上好！")
+            } else {
+                return ("夜里好！")
+            }
+        }
     </script>
 
     
