@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 14/07/2019 17:55:13
+ Date: 16/07/2019 18:22:50
 */
 
 SET NAMES utf8mb4;
@@ -41,7 +41,7 @@ CREATE TABLE `config`  (
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 1, 1, 'Hellohao图床', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao.nos-eastchina1.126.net/%E7%BD%91%E7%AB%99%E7%B4%A0%E6%9D%90/logo2.png', 'Hellohao  切勿上传违反中华人民共和国互联网法律条约资源', '<li><a href=\"http://www.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">作者博客</a></li><li><a href=\"http://bz.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">高清壁纸</a></li><li><a href=\"http://json.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">json格式化</a></li>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://tc.hellohao.cn', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/eb83a0714030248.jpg', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/086650714030248.jpg');
+INSERT INTO `config` VALUES (1, 5, 1, 'Hellohao图床', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao.nos-eastchina1.126.net/%E7%BD%91%E7%AB%99%E7%B4%A0%E6%9D%90/logo2.png', 'Hellohao  切勿上传违反中华人民共和国互联网法律条约资源', '<li><a href=\"http://www.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">作者博客</a></li><li><a href=\"http://bz.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">高清壁纸</a></li><li><a href=\"http://json.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">json格式化</a></li>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://tc.hellohao.cn', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/eb83a0714030248.jpg', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/086650714030248.jpg');
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -120,7 +120,7 @@ INSERT INTO `keys` VALUES (1, '', '', '', '', '', 1);
 INSERT INTO `keys` VALUES (2, '11111111', '222222222222', '444444444444', '555555555', 'http://1.1.1', 2);
 INSERT INTO `keys` VALUES (3, '', '', '0', '', '', 3);
 INSERT INTO `keys` VALUES (4, '', '', '', '', '', 4);
-INSERT INTO `keys` VALUES (5, NULL, NULL, NULL, NULL, NULL, 5);
+INSERT INTO `keys` VALUES (5, '0', '0', '0', '0', '0', 5);
 
 -- ----------------------------
 -- Table structure for notice
