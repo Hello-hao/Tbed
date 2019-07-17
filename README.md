@@ -86,7 +86,7 @@ server.port=8088
 
 > **项目搭建部署教程：**  [**http://www.hellohao.cn/?p=201**](http://www.hellohao.cn/?p=201 "点击查看搭建文档")
 
-> [**编译包点击下载 **](https://share.weiyun.com/5Uwu4lY "点击下载") 　 密码：`8QmG`
+> [**编译包点击下载**](https://share.weiyun.com/5Uwu4lY "点击下载") 　 密码：`8QmG`
 
 
 
