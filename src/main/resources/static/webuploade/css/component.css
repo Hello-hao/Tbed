@@ -27,8 +27,8 @@ perspective effects (not including the modals and the overlay).
 	top: 50%;
 	left: 50%;
 	width: 50%;
-	max-width: 551px;
-	min-width: 321px;
+	max-width: 550px;
+	min-width: 320px;
 	height: auto;
 	z-index: 9999999;
 	visibility: hidden;

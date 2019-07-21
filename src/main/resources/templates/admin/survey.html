@@ -184,20 +184,22 @@
                         str = '七牛KODO';
                     } else if (data.source == 5) {
                         str = '本地存储';
+                    }else if (data.source == 6) {
+                        str = '腾云COS';
                     }else {
                         str = '未知';
                     }
                     $("#source").text(str);
                 }
             });
-            $.ajax({
-                type: "GET",
-                url: "/getsentence",
-                dataType: "json",
-                success: function (data) {
-                    $("#ly").text(data.hitokoto);
-                }
-            });
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/getsentence",
+            //     dataType: "json",
+            //     success: function (data) {
+            //         $("#ly").text(data.hitokoto);
+            //     }
+            // });
         })
 
 

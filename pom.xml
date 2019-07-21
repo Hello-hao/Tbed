@@ -76,6 +76,12 @@
             <artifactId>qiniu-java-sdk</artifactId>
             <version>7.2.22</version>
         </dependency>
+<!--        腾讯-->
+        <dependency>
+            <groupId>com.qcloud</groupId>
+            <artifactId>cos_api</artifactId>
+            <version>5.5.7</version>
+        </dependency>
 
         <!--        定时器依赖-->
         <dependency>

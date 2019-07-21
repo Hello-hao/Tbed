@@ -1,5 +1,6 @@
 package cn.hellohao.utils;
 
+import com.google.gson.Gson;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
@@ -68,5 +69,34 @@ public class LocUpdateImg {
             return ImgUrl;
             }
         }
+
+    /**
+     * 客户端接口
+     * */
+    public Map<String, Integer> clientuploadKODO(Map<String, MultipartFile> fileMap, String username) throws Exception {
+        String filePath =File.separator + "HellohaoData" + File.separator;
+        File file = null;
+        Map<String, Integer> ImgUrl = new HashMap<>();
+        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+            java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+            String times = format1.format(new Date());
+            //file = SetFiles.changeFile(entry.getValue());
+            // 上传文件流。
+            System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+            File dest = new File(filePath + username + File.separator+ uuid+times + "." + entry.getKey());
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            try {
+                entry.getValue().transferTo(dest);
+                ImgUrl.put(username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.err.println("上传失败");
+            }
+        }
+        return ImgUrl;
+    }
 
 }

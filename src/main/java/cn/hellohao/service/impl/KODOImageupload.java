@@ -121,5 +121,35 @@ public class KODOImageupload {
         key = k;
     }
 
+    /**
+     * 客户端接口
+     * */
+    public Map<String, Integer> clientuploadKODO(Map<String, MultipartFile> fileMap, String username) throws Exception {
+        File file = null;
+        Map<String, Integer> ImgUrl = new HashMap<>();
+
+        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+            java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+            String times = format1.format(new Date());
+            file = changeFile(entry.getValue());
+            System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+            try {
+                Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
+                //解析上传成功的结果
+                DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+            } catch (QiniuException ex) {
+                Response r = ex.response;
+                System.err.println(r.toString());
+                try {
+                    System.err.println(r.bodyString());
+                } catch (QiniuException ex2) {
+                }
+            }
+        }
+        return ImgUrl;
+    }
+
 
 }

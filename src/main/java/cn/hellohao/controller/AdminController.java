@@ -19,7 +19,11 @@ import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * @author Hellohao
+ * @version 1.0
+ * @date 2019-07-17 14:22
+ */
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
@@ -224,6 +228,8 @@ public class AdminController {
                 de.delectKODO(key, images.getImgname());
             } else if (key.getStorageType() == 5) {
                 LocUpdateImg.deleteLOCImg(images.getImgname());
+            }else if (key.getStorageType() == 6) {
+                de.delectCOS(key, images.getImgname());
             }else {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
@@ -263,10 +269,11 @@ public class AdminController {
                 } else if (key.getStorageType() == 3) {
                     de.delectUSS(key, images.getImgname());
                 } else if (key.getStorageType() == 4) {
-                    //初始化七牛云
                     de.delectKODO(key, images.getImgname());
                 } else if (key.getStorageType() == 5) {
                     LocUpdateImg.deleteLOCImg(images.getImgname());
+                }else if (key.getStorageType() == 6) {
+                    de.delectCOS(key, images.getImgname());
                 }else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }

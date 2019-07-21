@@ -1,6 +1,5 @@
 package cn.hellohao.controller;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -9,9 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
-import cn.hellohao.service.impl.KODOImageupload;
-import cn.hellohao.service.impl.OSSImageupload;
-import cn.hellohao.service.impl.USSImageupload;
+import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.IPPortUtil;
 import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONObject;
@@ -24,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONArray;
-import cn.hellohao.service.impl.NOSImageupload;
 
 @Controller
 public class UpdateImgController {
@@ -44,6 +40,8 @@ public class UpdateImgController {
     private USSImageupload ussImageupload;
     @Autowired
     private KODOImageupload kodoImageupload;
+    @Autowired
+    private COSImageupload cosImageupload;
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
@@ -67,7 +65,7 @@ public class UpdateImgController {
         }
         if(b)
         {
-            if(key.getStorageType()!=0 || key.getStorageType()!=null){
+            if(key.getStorageType()!=0 && key.getStorageType()!=null){
                 if(key.getStorageType()==1){
                     nOSImageupload.Initialize(key);//实例化网易
                     System.out.println("NOS初始化成功。");
@@ -77,13 +75,15 @@ public class UpdateImgController {
                 }else if(key.getStorageType()==3){
                     USSImageupload.Initialize(key);
                     System.out.println("USS初始化成功。");
-                    //初始化又拍云
                 }else if(key.getStorageType()==4){
-                    //初始化七牛云
                     KODOImageupload.Initialize(key);
                     System.out.println("KODO初始化成功。");
-                }else{
-                    System.err.println("未获取到对象存储参数，初始化失败。");
+                }else if(key.getStorageType()==6){
+                    COSImageupload.Initialize(key);
+                    System.out.println("COS初始化成功。");
+                }
+                else{
+                    Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
                 }
             }
         }
@@ -152,13 +152,14 @@ public class UpdateImgController {
                 m = ossImageupload.ImageuploadOSS(map, username,null);
             }else if(key.getStorageType()==3){
                 m = ussImageupload.ImageuploadUSS(map, username,null);
-                //初始化腾讯云
             }else if(key.getStorageType()==4){
-                //初始化七牛云
                 m = kodoImageupload.ImageuploadKODO(map, username,null);
             }else if(key.getStorageType()==5){
                 m = LocUpdateImg.ImageuploadLOC(map, username,null);
-            }else{
+            }else if(key.getStorageType()==6){
+                m = cosImageupload.ImageuploadCOS(map, username,null);
+            }
+            else{
                 System.err.println("未获取到对象存储参数，上传失败。");
             }
             Images img = new Images();
@@ -255,7 +256,7 @@ public class UpdateImgController {
                                 is.close();
                             }
                             //判断文件头是否是图片
-                            if(!xxx.equals("0000")){
+                            if(!ooo.equals("0000")){
                                 Map<String, String> map = new HashMap<>();
                                 map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
                                 Map<String, Integer> m = null;
@@ -269,7 +270,10 @@ public class UpdateImgController {
                                     m = kodoImageupload.ImageuploadKODO(null, username,map);
                                 }else if(key.getStorageType()==5){
                                     m = LocUpdateImg.ImageuploadLOC(null,username,map);
-                                }else{
+                                }else if(key.getStorageType()==6){
+                                    m = cosImageupload.ImageuploadCOS(null,username,map);
+                                }
+                                else{
                                     System.err.println("未获取到对象存储参数，上传失败。");
                                 }
                                 Images img = new Images();
@@ -296,7 +300,7 @@ public class UpdateImgController {
                                     } else {
                                         img.setUserid(u.getId());//用户id
                                     }
-                                    img.setSizes((entry.getValue()) / 1024);
+                                    img.setSizes((entry.getValue()));
                                     img.setImgname(SetText.getSubString(entry.getKey(), key.getRequestAddress() + "/", ""));
                                     img.setAbnormal(0);
                                     userService.insertimg(img);
@@ -348,7 +352,10 @@ public class UpdateImgController {
                                     m = kodoImageupload.ImageuploadKODO(null, username,map);
                                 }else if(key.getStorageType()==5){
                                     m =LocUpdateImg.ImageuploadLOC(null,username, map);
-                                }else{
+                                }else if(key.getStorageType()==6){
+                                    m =cosImageupload.ImageuploadCOS(null,username, map);
+                                }
+                                else{
                                     System.err.println("未获取到对象存储参数，上传失败。");
                                 }
                                 Images img = new Images();
@@ -375,7 +382,7 @@ public class UpdateImgController {
                                     } else {
                                         img.setUserid(u.getId());//用户id
                                     }
-                                    img.setSizes((entry.getValue()) / 1024);
+                                    img.setSizes((entry.getValue()));
                                     img.setImgname(SetText.getSubString(entry.getKey(), key.getRequestAddress() + "/", ""));
                                     img.setAbnormal(0);
                                     userService.insertimg(img);
@@ -399,19 +406,14 @@ public class UpdateImgController {
         }else{
             jsonArray.add(-1);
         }
-
+        return jsonArray.toString();
 /**
  * 错误返回值含义：
  * -1 存储源key未配置
  * -2 目标图片太大或者不存在
  * -3 文件类型不符合要求
  * */
-
-        return jsonArray.toString();
     }
-
-
-
 
     //刪除用戶
     @RequestMapping("/sentence")
@@ -441,7 +443,6 @@ public class UpdateImgController {
         return jsonObject.toString();
     }
 
-    //ajax查询用户是否已经登录
     @RequestMapping(value = "/getsentence")
     @ResponseBody
     public String getsentence(HttpSession session) {

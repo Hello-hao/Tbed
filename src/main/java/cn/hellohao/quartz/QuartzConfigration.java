@@ -60,6 +60,7 @@ public class QuartzConfigration {
         CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
         tigger.setJobDetail(jobDetail.getObject());
         tigger.setCronExpression("0 30 04 * * ?");// 表示每天七点半执行
+        //tigger.setCronExpression(("0 0/3 * * * ?"));//每三分钟
         //tigger.setCronExpression("*/5 * * * * ?");//每五秒执行一次
         //tigger.set
         tigger.setName("myTigger");// trigger的name

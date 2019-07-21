@@ -142,5 +142,29 @@ public class NOSImageupload {
         key = k;
     }
 
+    /**
+     * 客户端接口
+     * */
+    public Map<String, Integer> clientuploadNOS(Map<String, MultipartFile> fileMap, String username) throws Exception {
+
+        File file = null;
+        Map<String, Integer> ImgUrl = new HashMap<>();
+        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+            java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+            String times = format1.format(new Date());
+            file = changeFile(entry.getValue());
+            try {
+                nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), file);
+                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+
+            } catch (Exception e) {
+                System.out.println("上传报错:" + e.getMessage());
+            }
+        }
+        return ImgUrl;
+
+    }
+
 
 }

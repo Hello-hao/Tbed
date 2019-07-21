@@ -6,6 +6,13 @@ import java.util.List;
 
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.auth.COSCredentials;
+import com.qcloud.cos.exception.CosClientException;
+import com.qcloud.cos.exception.CosServiceException;
+import com.qcloud.cos.region.Region;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
 import com.qiniu.storage.BucketManager;
@@ -129,7 +136,24 @@ public class ImgServiceImpl implements ImgService {
             System.err.println(ex.response.toString());
         }
     }
-
+    //删除COS对象存储的图片文件
+    public void delectCOS(Keys key, String fileName) {
+        COSCredentials cred = new BasicCOSCredentials(key.getAccessKey(), key.getAccessSecret());
+        Region region = new Region(key.getEndpoint());
+        ClientConfig clientConfig = new ClientConfig(region);
+        COSClient cosClient= new COSClient(cred, clientConfig);
+        try {
+            // 指定对象所在的存储桶
+            String bucketName = key.getBucketname();
+            // 指定对象在 COS 上的对象键
+            String userkey = fileName;
+             cosClient.deleteObject(key.getBucketname(), userkey);
+        } catch (CosServiceException serverException) {
+            serverException.printStackTrace();
+        } catch (CosClientException clientException) {
+            clientException.printStackTrace();
+        }
+    }
     @Override
     public Integer counts(Integer userid) {
         // TODO Auto-generated method stub

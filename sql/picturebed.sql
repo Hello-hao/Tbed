@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 16/07/2019 18:22:50
+ Date: 21/07/2019 21:53:02
 */
 
 SET NAMES utf8mb4;
@@ -77,7 +77,7 @@ CREATE TABLE `imgdata`  (
   `abnormal` int(2) NULL DEFAULT NULL COMMENT '异常',
   `source` int(2) NULL DEFAULT NULL COMMENT '存储源',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for imgreview
@@ -109,18 +109,23 @@ CREATE TABLE `keys`  (
   `Endpoint` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `Bucketname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `RequestAddress` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `storageType` int(10) NULL DEFAULT NULL,
+  `storageType` int(10) NOT NULL COMMENT '1网易2阿里3又拍4七牛5本地6腾讯',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of keys
 -- ----------------------------
 INSERT INTO `keys` VALUES (1, '', '', '', '', '', 1);
 INSERT INTO `keys` VALUES (2, '11111111', '222222222222', '444444444444', '555555555', 'http://1.1.1', 2);
-INSERT INTO `keys` VALUES (3, '', '', '0', '', '', 3);
-INSERT INTO `keys` VALUES (4, '', '', '', '', '', 4);
+INSERT INTO `keys` VALUES (3, '123', '123', '0', '123', '123', 3);
+INSERT INTO `keys` VALUES (4, '123', '123', '4', '412', 'https://0.0', 4);
 INSERT INTO `keys` VALUES (5, '0', '0', '0', '0', '0', 5);
+INSERT INTO `keys` VALUES (6, '', '', '', '', '', 6);
+INSERT INTO `keys` VALUES (7, '', '', '', '', '', 7);
+INSERT INTO `keys` VALUES (8, '', '', '', '', '', 8);
+INSERT INTO `keys` VALUES (9, '', '', '', '', '', 9);
+INSERT INTO `keys` VALUES (10, '0', '', '0', '0', '0', 10);
 
 -- ----------------------------
 -- Table structure for notice
@@ -164,7 +169,7 @@ CREATE TABLE `user`  (
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
   `isok` int(2) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user

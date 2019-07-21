@@ -4,11 +4,11 @@
     <!-- meta -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <meta name="description" content="Creative Coming Soon Template">
-    <meta name="author" content="Hitesh Jariwala">
-    <meta name="keywords" content="">
+    <meta name="description" content="Hellohao图床是一个基于JAVA-SpringBoot开发的,免费纯粹的图片存放驿站"><!--站点描述-->
+    <meta name="author" content="tc.hellohao.cn">
+    <meta name="keywords" content="图床,图片上传,hellohao图床,开源图床,hellohao"><!--关键词-->
     <!-- title -->
-	<title th:text="${config.getWebname()} +'- 纯粹的图片存放驿站'"></title>
+	<title th:text="${config.getWebname()}"></title>
 
 	<link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
 	<link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
@@ -53,6 +53,20 @@
 			 -moz-border-radius:5px;
 			 cursor:pointer;
 		}
+		#goupdate2{
+			width:120px;
+			height:50px;
+			margin-right: 6%;
+			font-size:1.5em;
+			line-height:50px;
+			text-align:center;
+			float: right;
+			color:#FFF;
+			border:2px solid;
+			border-radius:5px;
+			-moz-border-radius:5px;
+			cursor:pointer;
+		}
 		#goupdate:hover{}
 
 		</style>
@@ -85,8 +99,10 @@
 				<li><a href="javascript:;" class="md-trigger" data-modal="modal-4">注册&nbsp;<span class="glyphicon glyphicon-education" aria-hidden="true"></span></a></li>
 				<li><a class="menu-link" href="https://github.com/Hello-hao/Tbed" target="_blank"
 				>GitHub<i class="fa fa-github"></i></a></li>
-				<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"
-				>关于<i class="fa fa-share-alt"></i></a></li>
+				<li><a href="javascript:;" class="md-trigger" data-modal="modal-2">赞助商&nbsp;<i class="fa fa-share-alt"></i></a></li>
+
+				<!--				<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"-->
+<!--				>关于<i class="fa fa-share-alt"></i></a></li>-->
             </ul>
         </div>
         <div class="cls">
@@ -108,7 +124,9 @@
                 	    	<!-- headline -->
 							<h1 style="font-size: 4.5em;" th:text="${config.getWebname()}"></h1>
 							<a id="goupdate" class="menu-link" data-section="contact" data-nav-title="contact" data-section-pos="-100"
-								data-section-posy="0">立即上传</a>
+								data-section-posy="0"><span class="glyphicon glyphicon-open" aria-hidden="true"></span>立即上传</a>
+							<a id="goupdate2"  onclick="xiazai()">
+								<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>客户端</a>
 
                             <div class="sub-title" id="wordsrotator">
                 		    	<h4>纯粹免费的图片驿站</h4>	
@@ -361,8 +379,26 @@ Technology constantly updated, we will always move forward on the road ahead.
 			</div>
 		</div>
 	</div>
+
+
+	<!--	赞助商-->
+	<div class="md-modal md-effect-3" id="modal-2">
+		<div class="md-content">
+			<h3>服务赞助商</h3>
+			<div>
+				<p></p>
+				<div class="form loginBox">
+					<a href="https://www.maoyuncloud.com/" target="_blank">
+						<img style="max-width: 33.3%;" src="http://cdn.wwery.com/tourist/4c7810718014927.png" />
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="md-overlay"></div>
 
+<!--	http://cdn.wwery.com/tourist/4c7810718014927.png
+-->
 
 	<script th:src="@{/webuploade/js/webuploader.js}"></script>
 	<script th:src="@{/webuploade/js/upload.js}" ></script>
@@ -740,6 +776,24 @@ Technology constantly updated, we will always move forward on the road ahead.
 			$("#fen").html(min);
 			$("#miao").html(sec);
 		}
+		function xiazai(){
+			swal({
+				title: "即将下载客户端",
+				text: "客户端目前支持支Windows系统，Mac后期可能会推出。",
+				icon: "success",
+				buttons: true,
+				buttons: ["取消", "下载"],
+				dangerMode: false,
+			})
+					.then((value) => {
+				if (value) {
+					window.open("https://hellohao.nos-eastchina1.126.net/TbedClient/Hellohao.7z");
+				} else {
+
+				}
+			});
+
+		}
 //回车登录
 		function keyLogin(){
 			if (event.keyCode==13)  //回车键的键值为13
@@ -748,7 +802,6 @@ Technology constantly updated, we will always move forward on the road ahead.
 		}
 
 		//页面模板效果
-
 		(function ($) {
 			"use strict";
 			$.bg_type = 3;
