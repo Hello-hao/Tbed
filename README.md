@@ -135,3 +135,13 @@ java -jar Tbed.jar
 ### 反馈交流
  **如果你遇到BUG可以去我的博客反馈**
 Hellohao博客: [http://www.hellohao.cn/](http://www.hellohao.cn/)
+欢迎加入Hellohao开发者交流群，群聊号码：864800972
+
+### 捐赠开发者
+**如果你也支持Hellohao图床，可以请我喝杯咖啡。我会持续更新Hellohao图床**
+
+**支付宝捐赠：**
+![支付宝](https://hellohao.nos-eastchina1.126.net/BlogImg/donate-zhi.png)
+
+**微信捐赠：**
+![微信](https://hellohao.nos-eastchina1.126.net/BlogImg/donate-wei.png)
