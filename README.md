@@ -140,8 +140,4 @@ Hellohao博客: [http://www.hellohao.cn/](http://www.hellohao.cn/)
 ### 捐赠开发者
 **如果你也支持Hellohao图床，可以请我喝杯咖啡。我会持续更新Hellohao图床**
 
-**支付宝捐赠：**
-![支付宝](https://hellohao.nos-eastchina1.126.net/BlogImg/donate-zhi.png)
-
-**微信捐赠：**
-![微信](https://hellohao.nos-eastchina1.126.net/BlogImg/donate-wei.png)
+![](http://cdn.wwery.com/Hellohao/df2710722111702.jpg)
