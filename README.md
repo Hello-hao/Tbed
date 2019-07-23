@@ -12,6 +12,8 @@
 
 文档地址: [http://doc.wwery.com/](http://doc.wwery.com/)
 
+编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
+
 更多后台功能你可以自己搭建配置使用。
 
 ## 系统预览
@@ -88,9 +90,6 @@ server.port=8088
 
 
 > **项目搭建部署教程：**  [**http://www.hellohao.cn/?p=201**](http://www.hellohao.cn/?p=201 "点击查看搭建文档")
-
-> [**编译包点击下载**](https://github.com/Hello-hao/Tbed/releases "https://github.com/Hello-hao/Tbed/releases") 
-
 
 
 ### 配置文件
