@@ -31,9 +31,10 @@
 ## 更新日志
 
 **2019-07-21**
-2019-7-21更新 
-> 增加腾讯COS对象存储
-> 修复多个GUB
+2019-7-23更新 
+> 增加图片URL格式`用户名/`、`yyyy/MM/dd/`自定义
+> 上传图片返回的带有原图片名
+**本次更新增加数据库字段，需要重新导入新的sql文件，开发者做好备份。**
 
 ## 运行环境
 * JDK 1.8
@@ -88,7 +89,7 @@ server.port=8088
 
 > **项目搭建部署教程：**  [**http://www.hellohao.cn/?p=201**](http://www.hellohao.cn/?p=201 "点击查看搭建文档")
 
-> [**编译包点击下载**](https://share.weiyun.com/5Uwu4lY "点击下载") 　 密码：`8QmG`
+> [**编译包点击下载**](https://github.com/Hello-hao/Tbed/releases "https://github.com/Hello-hao/Tbed/releases") 
 
 
 
