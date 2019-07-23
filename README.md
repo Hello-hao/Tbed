@@ -10,6 +10,8 @@
 
 预览地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
 
+文档地址: [http://doc.wwery.com/](http://doc.wwery.com/)
+
 更多后台功能你可以自己搭建配置使用。
 
 ## 系统预览
