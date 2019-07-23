@@ -22,7 +22,10 @@
                 `imgcountuser` = #{imgcountuser},
             </if>
             <if test="suffix != null">
-                `suffix` = #{suffix}
+                `suffix` = #{suffix},
+            </if>
+            <if test="urltype != null">
+                `urltype` = #{urltype}
             </if>
 
         </set>

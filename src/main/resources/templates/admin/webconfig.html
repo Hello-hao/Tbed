@@ -70,6 +70,7 @@
 <!--                               th:value="${config.getFooted()}"/>-->
 <!--                    </div>-->
 <!--                </div>-->
+
                     <div class="layui-form-item">
                         <label class="layui-form-label">首页背景一</label>
                         <div class="layui-input-block">
@@ -86,6 +87,16 @@
                         </div>
                     </div>
                     <br />
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">每日随机图</label>-->
+<!--                        <div class="layui-input-block">-->
+<!--                            <input id="open" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest"-->
+<!--                                   lay-text="ON|OFF">-->
+<!--                            <span style="color: #DAA5A6;">　采集必应每日壁纸，开启随机背景后，手动设置的首页背景将会失效</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <br />-->
+
 <!--                <div class="layui-form-item">-->
 <!--                    <label class="layui-form-label">友情链接</label>-->
 <!--                    <div class="layui-input-block">-->
@@ -111,7 +122,10 @@
                 </form>
             </div>
 <!--分组3-->
+
+
             <div class="layui-tab-item">
+
                 <h3>游客上传配置</h3>
                 <hr />
                 <div class="layui-inline">
@@ -151,10 +165,19 @@
                         <span style="color: #DAA5A6;">配个类型用“ , ”隔开</span>
                     </div>
                 </div>
-
+                <h3 style="margin-top: 50px;">图片链接格式</h3>
+                <hr />
+                <form class="layui-form " >
+                <div class="laydfdaui-form-item">
+                    <label class="layui-form-label">链接格式</label>
+                    <div class="layui-input-block" id="imgurltype">
+                        <input type="radio" name="urltype" value="1" title="用户名格式：/user/">
+                        <input type="radio" name="urltype" value="2" title="日期格式：/YY/mm/dd/" checked>
+                    </div>
+                </div>
+                </form>
                 <a class="layui-btn" lay-filter="demo2" onclick="scconfig()">保存</a>
             </div>
-
         </div>
     </div>
 </div>
@@ -168,6 +191,14 @@
             var table = layui.table;
             var element = layui.element;
             });
+        $(function () {
+           var usertype = [[${updateConfig.getUrltype()!=null?updateConfig.getUrltype():1}]];
+           if(usertype==2){
+               $('input:radio:input:radio:last').attr('checked', 'true');
+           }else{
+               $('input:radio:first').attr('checked', 'true');
+           }
+        });
         function updateconfig() {
                 var webname = $("#webname").val();
                 var explain = $("#explain").val();
@@ -222,12 +253,13 @@
             var imgcounttourists = $("#imgcounttourists").val();
             var imgcountuser = $("#imgcountuser").val();
             var suffix = $("#suffix").val();
+            var imgurltype = $('#imgurltype input[name="urltype"]:checked ').val();
             if(filesizetourists!=""&&filesizeuser!=""&&imgcounttourists!=""&&imgcountuser!=""&&suffix!=""){
                 $.ajax({
                     type: "POST",
                     url: "/admin/root/scconfig",
                     dataType: "json",
-                    data: {filesizetourists: filesizetourists,filesizeuser:filesizeuser,imgcounttourists:imgcounttourists,imgcountuser:imgcountuser,suffix:suffix},
+                    data: {filesizetourists: filesizetourists,filesizeuser:filesizeuser,imgcounttourists:imgcounttourists,imgcountuser:imgcountuser,suffix:suffix,urltype:imgurltype},
                     success: function (data) {
                         var vals = Number(data);
                         if (vals > 0) {

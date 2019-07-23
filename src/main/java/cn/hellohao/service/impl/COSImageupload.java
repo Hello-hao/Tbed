@@ -1,6 +1,7 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
+import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.utils.ImgUrlUtil;
 import cn.hellohao.utils.Print;
 import com.netease.cloud.auth.BasicCredentials;
@@ -31,11 +32,11 @@ public class COSImageupload {
     static COSClient cosClient;
     static Keys key;
 
-    public Map<String, Integer> ImageuploadCOS(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadCOS(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
         // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
@@ -48,7 +49,11 @@ public class COSImageupload {
                     String userkey =username + "/" + uuid+times + "." + entry.getKey();
                     PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, userkey, file);
                     PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-                    ImgUrl.put(key.getRequestAddress() + "/" + userkey, (int) (entry.getValue().getSize()));
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+
                 } catch (CosServiceException serverException) {
                     serverException.printStackTrace();
                 } catch (CosClientException clientException) {
@@ -57,7 +62,7 @@ public class COSImageupload {
             }
             return ImgUrl;
         }else{
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             //设置Header
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
@@ -73,7 +78,10 @@ public class COSImageupload {
                     String userkey =username + "/" + uuid+times + "." + entry.getKey();
                     PutObjectRequest putObjectRequest = new PutObjectRequest(BarrelName, userkey, file);
                     PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-                    ImgUrl.put(key.getRequestAddress() + "/" + userkey, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
+
+                    ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
                     boolean bb= new File(imgurl).getAbsoluteFile().delete();
                     Print.Normal("删除情况"+bb);
                 } catch (Exception e) {

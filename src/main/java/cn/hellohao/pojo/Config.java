@@ -14,12 +14,13 @@ public class Config {
     private String domain;
     private  String background1;
     private  String background2;
+    private  String sett;
 
 
     public Config() {
     }
 
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu, String domain, String background1, String background2) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu, String domain, String background1, String background2, String sett) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
@@ -33,6 +34,7 @@ public class Config {
         this.domain = domain;
         this.background1 = background1;
         this.background2 = background2;
+        this.sett = sett;
     }
 
     public Integer getId() {
@@ -137,5 +139,13 @@ public class Config {
 
     public void setBackground2(String background2) {
         this.background2 = background2;
+    }
+
+    public String getSett() {
+        return sett;
+    }
+
+    public void setSett(String sett) {
+        this.sett = sett;
     }
 }

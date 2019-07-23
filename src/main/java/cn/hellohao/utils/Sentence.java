@@ -35,14 +35,9 @@ public class Sentence {
 //        }
 //        return str;
 
-
-
-
-
-
-
             String result = "";
-            String urlName = "https://v1.hitokoto.cn/";
+            //String urlName = "https://v1.hitokoto.cn/";
+        String urlName = "http://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1";
             try {
                 URL realURL = new URL(urlName);
                 URLConnection conn = realURL.openConnection();
@@ -65,6 +60,5 @@ public class Sentence {
             }
             return result;
         }
-
 
 }

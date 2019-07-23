@@ -1,6 +1,7 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
+import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.utils.ImgUrlUtil;
 import cn.hellohao.utils.Print;
 import com.aliyun.oss.OSSClient;
@@ -20,10 +21,10 @@ public class OSSImageupload {
     static OSSClient ossClient;
     static Keys key;
 
-    public Map<String, Integer> ImageuploadOSS(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadOSS(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
         if(fileMap2==null){
             File file = null;
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             //设置Header
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
@@ -49,14 +50,17 @@ public class OSSImageupload {
                 // 上传文件流。
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                 ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
-                // 关闭OSSClient。
-                //ossClient.shutdown();
-                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+
+                ReturnImage returnImage = new ReturnImage();
+                returnImage.setImgname(entry.getValue().getOriginalFilename());
+                returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
 
             }
+            //ossClient.shutdown();
             return ImgUrl;
         }else{
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             //设置Header
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
@@ -82,9 +86,13 @@ public class OSSImageupload {
                 // 上传文件流。
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                 ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),new File(imgurl),meta);
-                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), ImgUrlUtil.getFileSize2(new File(imgurl)));
+
+                ReturnImage returnImage = new ReturnImage();
+                returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
                 new File(imgurl).delete();
             }
+            //ossClient.shutdown();
             return ImgUrl;
         }
 

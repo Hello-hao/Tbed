@@ -45,6 +45,9 @@
             <if test="background2 != null">
                 `background2` = #{background2},
             </if>
+            <if test="sett != null">
+                `sett` = #{sett},
+            </if>
 
         </set>
         where id=1

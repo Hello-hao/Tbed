@@ -103,14 +103,10 @@ public class SchedulerTask {
                                 System.err.println("存在色情图片，删除失败");
                             }
                         }
-
                     }
                 }
-
             }
-
         }
-
     }
 
 

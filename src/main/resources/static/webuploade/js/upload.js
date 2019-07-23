@@ -196,34 +196,24 @@
 
         uploader.on( 'uploadSuccess', function(file,response) {
             //alert(response.length);
-            for(var i=0;i<response.length;i++){
-                //console.log(response);
-                $("#address").css('display', 'block');
-                if(response[i]==-1){
-                    arr_url += '未配置存储源，请先后台配置存储源\r\n';
-                    arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
-                    arr_html += '未配置存储源，请先后台配置存储源\r\n';
-                }else{
-                    arr_url += response[i] + '\r\n';
-                    arr_markdown += '![ ](' + response[i] + ')\r\n';
-                    arr_html += '<img src="' + response[i] + '" alt="Image" title="Image" /> \r\n';
-                }
-                // $("#urls").text(arr_url);
-                // $("#markdowns").text(arr_markdown);
-                // $("#htmls").text(arr_html);
-                //urls = arr_url;
-                if(urltypes==1){
-                    $("#urls").text(arr_url);
-                }else if(urltypes==2){
-                    $("#urls").text(arr_markdown);
-                }else{
-                    $("#urls").text(arr_html);
-                }
+            //console.log(response.imgurls)
+            $("#address").css('display', 'block');
+            if(response==-1){
+                arr_url += '未配置存储源，请先后台配置存储源\r\n';
+                arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
+                arr_html += '未配置存储源，请先后台配置存储源\r\n';
+            }else{
+                arr_url += response.imgurls + '\r\n';
+                arr_markdown += '!['+response.imgnames+'](' + response.imgurls + ')\r\n';
+                arr_html += '<img src="' + response.imgurls + '" alt="'+response.imgnames+'" title="'+response.imgnames+'" /> \r\n';
             }
-
-
-
-
+            if(urltypes==1){
+                $("#urls").text(arr_url);
+            }else if(urltypes==2){
+                $("#urls").text(arr_markdown);
+            }else{
+                $("#urls").text(arr_html);
+            }
         });
 
         // 文件上传失败，显示上传出错

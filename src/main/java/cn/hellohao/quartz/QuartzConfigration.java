@@ -1,6 +1,7 @@
 package cn.hellohao.quartz;
 
 import org.quartz.Trigger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
@@ -12,6 +13,10 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 @Configuration
 public class QuartzConfigration {
+    //直接读取properties文件的值
+    @Value("${Expression}")
+    private String Expression;
+
     @Bean(name = "jobDetail")
     public MethodInvokingJobDetailFactoryBean detailFactoryBean(SchedulerTask task) {
         // ScheduleTask为需要执行的任务
@@ -59,7 +64,8 @@ public class QuartzConfigration {
     public CronTriggerFactoryBean cronJobTrigger(MethodInvokingJobDetailFactoryBean jobDetail) {
         CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
         tigger.setJobDetail(jobDetail.getObject());
-        tigger.setCronExpression("0 30 04 * * ?");// 表示每天七点半执行
+        tigger.setCronExpression((Expression));
+        //tigger.setCronExpression("0 30 04 * * ?");// 表示每天七点半执行
         //tigger.setCronExpression(("0 0/3 * * * ?"));//每三分钟
         //tigger.setCronExpression("*/5 * * * * ?");//每五秒执行一次
         //tigger.set

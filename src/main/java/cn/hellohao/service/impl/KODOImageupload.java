@@ -1,6 +1,7 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
+import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.utils.ImgUrlUtil;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -28,11 +29,11 @@ public class KODOImageupload {
     static UploadManager uploadManager;
     static Keys key;
 
-    public Map<String, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username, Map<String, String> fileMap2) throws Exception {
         // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
 
             for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
@@ -46,7 +47,10 @@ public class KODOImageupload {
                     Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
                     //解析上传成功的结果
                     DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                     //System.out.println(putRet.hash);
                 } catch (QiniuException ex) {
                     Response r = ex.response;
@@ -60,7 +64,7 @@ public class KODOImageupload {
             }
             return ImgUrl;
         }else{
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
 
             for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
@@ -73,7 +77,9 @@ public class KODOImageupload {
                     Response response = uploadManager.put(new File(imgurl),username + "/" + uuid+times + "." + entry.getKey(),upToken);
                     //解析上传成功的结果
                     DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
                     //System.out.println(putRet.hash);
                     new File(imgurl).delete();
                 } catch (QiniuException ex) {

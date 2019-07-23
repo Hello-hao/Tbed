@@ -1,5 +1,6 @@
 package cn.hellohao.utils;
 
+import cn.hellohao.pojo.ReturnImage;
 import com.google.gson.Gson;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
@@ -18,11 +19,11 @@ public class LocUpdateImg {
 
 
 
-    public static Map<String, Integer> ImageuploadLOC(Map<String, MultipartFile> fileMap, String username, Map<String, String> fileMap2) throws Exception {
+    public static Map<ReturnImage, Integer> ImageuploadLOC(Map<String, MultipartFile> fileMap, String username, Map<String, String> fileMap2) throws Exception {
         String filePath =File.separator + "HellohaoData" + File.separator;
         if(fileMap2==null){
             File file = null;
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
@@ -36,7 +37,10 @@ public class LocUpdateImg {
                 }
                 try {
                     entry.getValue().transferTo(dest);
-                    ImgUrl.put(username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.err.println("上传失败");
@@ -44,7 +48,7 @@ public class LocUpdateImg {
             }
             return ImgUrl;
         }else{
-            Map<String, Integer> ImgUrl = new HashMap<>();
+            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
 
             for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
@@ -62,8 +66,9 @@ public class LocUpdateImg {
                 file.renameTo(new File(newfilePath));//只移动，源目录不存在文件
                 // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
                 //upyun.setContentMD5(UpYun.md5(new File(imgurl)));
-               // boolean result = upyun.writeFile(username + "/" + uuid+times + "." + entry.getKey(), new File(imgurl), true);
-                    ImgUrl.put( username + "/" + uuid+times + "." + entry.getKey(), ImgUrlUtil.getFileSize2(new File(newfilePath)));
+                ReturnImage returnImage = new ReturnImage();
+                returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put( returnImage, ImgUrlUtil.getFileSize2(new File(newfilePath)));
                 }
                 //new File(imgurl).delete();
             return ImgUrl;
