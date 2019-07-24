@@ -4,7 +4,6 @@
 [![https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat-square)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
 ![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
-![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/hello-hao/Tbed.svg?style=flat-square)
 
 
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
