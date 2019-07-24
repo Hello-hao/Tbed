@@ -5,6 +5,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
 ![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
 ![GitHub tag (latest SemVer)](https://img.shields.io/github/tag/hello-hao/Tbed.svg?style=flat-square)
+![GitHub tag (latest SemVer)](https://github.com/Hello-hao/Tbed/releases?style=flat-square)
 
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
 > 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`等多家对象存储.
