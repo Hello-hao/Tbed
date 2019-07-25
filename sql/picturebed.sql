@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 23/07/2019 20:23:29
+ Date: 25/07/2019 09:33:54
 */
 
 SET NAMES utf8mb4;
@@ -166,7 +166,7 @@ CREATE TABLE `user`  (
   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名',
   `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `email` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '邮箱',
-  `birthder` datetime(0) NULL DEFAULT NULL COMMENT '注册时间',
+  `birthder` date NULL DEFAULT NULL COMMENT '注册时间',
   `level` int(10) NULL DEFAULT NULL COMMENT '等级',
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
   `isok` int(2) NOT NULL,
@@ -176,6 +176,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'admin', 'admin', '2019-06-12 00:00:00', 2, 'admin', 1);
+INSERT INTO `user` VALUES (1, 'admin', 'admin', 'admin', '2019-06-12', 2, 'admin', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
