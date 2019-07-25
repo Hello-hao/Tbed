@@ -92,10 +92,13 @@ public class USSImageupload {
 
     //初始化
     public static void Initialize(Keys k) {
-        // 初始化
-        // 创建UpYun实例。
-        upyun = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
-        key = k;
+        if(k.getEndpoint()!=null && k.getAccessSecret()!=null
+                && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
+            // 初始化
+            // 创建UpYun实例。
+            upyun = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
+            key = k;
+        }
     }
 
 

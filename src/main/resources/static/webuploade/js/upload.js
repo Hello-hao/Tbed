@@ -218,7 +218,11 @@
 
         // 文件上传失败，显示上传出错
         uploader.on( 'uploadError', function( file ) {
-           alert("文件上传失败")
+           //alert("文件上传失败")
+            layui.use('layer', function () {
+                layer = layui.layer;
+                layer.msg("文件上传失败", {icon: 2});
+            });
         });
 
         // uploader.on('filesQueued', function() {
@@ -581,9 +585,27 @@
         });
 
         uploader.onError = function( code ) {
-            if(code=='F_DUPLICATE'){alert('复制速度过快')}
-            else if(code=='Q_EXCEED_NUM_LIMIT'){alert('单次上传数量受限制')}
-            else if(code=='F_EXCEED_SIZE'){alert('图片大小受限制')}
+            if(code=='F_DUPLICATE'){
+                //alert('复制速度过快')
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("复制速度过快", {icon: 2});
+                });
+                }
+            else if(code=='Q_EXCEED_NUM_LIMIT'){
+                //alert('单次上传数量受限制')
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("单次上传数量受限制", {icon: 2});
+                });
+            }
+            else if(code=='F_EXCEED_SIZE'){
+                //alert('图片大小受限制')
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("图片大小受限制", {icon: 2});
+                });
+            }
             else{alert( 'Eroor: ' + code );}
 
         };

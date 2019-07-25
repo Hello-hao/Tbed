@@ -299,6 +299,7 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         //key信息
         model.addAttribute("username", u.getUsername());
+        model.addAttribute("level", u.getLevel());
         return "admin/setuser";
     }
 

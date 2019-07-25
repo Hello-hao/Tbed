@@ -57,14 +57,11 @@ public class UpdateImgController {
         if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
         if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
         if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
-        Boolean b =false;
+        //Boolean b =false;
         Keys key = null;
         if(config.getSourcekey()!=0 && config.getSourcekey()!=5){
             key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
-            b = StringUtils.doNull(key);//判断对象是否有空值
-        }
-        if(b)
-        {
+            //b = StringUtils.doNull(key);//判断对象是否有空值
             if(key.getStorageType()!=0 && key.getStorageType()!=null){
                 if(key.getStorageType()==1){
                     nOSImageupload.Initialize(key);//实例化网易
@@ -87,6 +84,9 @@ public class UpdateImgController {
                 }
             }
         }
+        //if(b){
+
+        //}
         User u = (User) httpSession.getAttribute("user");
         String email = (String) httpSession.getAttribute("email");
         if (email != null) {

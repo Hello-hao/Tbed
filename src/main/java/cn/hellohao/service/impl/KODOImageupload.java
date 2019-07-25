@@ -45,6 +45,7 @@ public class KODOImageupload {
                 //ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
                 try {
                     Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
+                    System.out.println(response);
                     //解析上传成功的结果
                     DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
                     ReturnImage returnImage = new ReturnImage();
@@ -112,19 +113,28 @@ public class KODOImageupload {
 
     //初始化
     public static void Initialize(Keys k) {
-        // 初始化
-        // 创建KODOClient实例。
-        Configuration cfg;
-        //构造一个带指定Zone对象的配置类
-        if(k.getEndpoint().equals("1")){cfg = new Configuration(Zone.zone0());}
-        else if(k.getEndpoint().equals("2")){cfg = new Configuration(Zone.zone1());}
-        else if(k.getEndpoint().equals("3")){cfg = new Configuration(Zone.zone2());}
-        else if(k.getEndpoint().equals("4")){cfg = new Configuration(Zone.zoneNa0());}
-        else{cfg = new Configuration(Zone.zoneAs0());}
-        uploadManager = new UploadManager(cfg);
-        Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
-        upToken = auth.uploadToken(k.getBucketname());
-        key = k;
+        if (k.getEndpoint() != null && k.getAccessSecret() != null && k.getEndpoint() != null
+                && k.getBucketname() != null && k.getRequestAddress() != null) {
+            // 初始化
+            // 创建KODOClient实例。
+            Configuration cfg;
+            //构造一个带指定Zone对象的配置类
+            if (k.getEndpoint().equals("1")) {
+                cfg = new Configuration(Zone.zone0());
+            } else if (k.getEndpoint().equals("2")) {
+                cfg = new Configuration(Zone.zone1());
+            } else if (k.getEndpoint().equals("3")) {
+                cfg = new Configuration(Zone.zone2());
+            } else if (k.getEndpoint().equals("4")) {
+                cfg = new Configuration(Zone.zoneNa0());
+            } else {
+                cfg = new Configuration(Zone.zoneAs0());
+            }
+            uploadManager = new UploadManager(cfg);
+            Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
+            upToken = auth.uploadToken(k.getBucketname());
+            key = k;
+        }
     }
 
     /**

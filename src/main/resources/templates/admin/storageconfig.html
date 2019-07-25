@@ -111,7 +111,6 @@
             $("#Bucketname").val('');
             $("#RequestAddress").val('');
             if(data.value!=5){
-
                 $("#c1").css('display','block');
                 $("#c2").css('display','block');
                 $("#c3").css('display','block');
@@ -163,13 +162,11 @@
                 $("#c5").css('display','none');
                 $("#c6").css('display','block');
             }
-
             if(data.value==6){
                 $("#ysm").text("如：北京地区就写ap-beijing");
             }else{
                 $("#ysm").text("需带有http://或https:");
             }
-
             $.ajax({
                 type: "POST",
                 url: "/admin/root/getkey",
@@ -187,11 +184,21 @@
             });
         });
 
+        //单独写一个ajax,防止select不变
+        $.ajax({
+            type: "POST",
+            url: "/admin/root/getkeyourceype",
+            dataType: "json",
+            success: function (data) {
+                $("#StorageType").find("option[value='" + data + "']").attr("selected", true);
+                form.render();
+            }
+        });
     });
     $(function () {
         var types = [[${StorageType!=null?StorageType:0}]];
         var Endpoint2=null;
-        $("#StorageType").find("option[value='" + types + "']").attr("selected", true);
+        //$("#StorageType").find("option[value='" + types + "']").attr("selected", true);
         if(types==1){
             $("#c3").css('display','block');
             $("#c3-1").css('display','none');

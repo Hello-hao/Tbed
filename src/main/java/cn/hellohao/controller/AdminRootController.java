@@ -1,12 +1,9 @@
 package cn.hellohao.controller;
 
-import cn.hellohao.pojo.Config;
-import cn.hellohao.pojo.EmailConfig;
-import cn.hellohao.pojo.Keys;
-import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
-import cn.hellohao.utils.Print;
 import cn.hellohao.utils.StringUtils;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/admin/root")
@@ -31,6 +29,8 @@ public class AdminRootController {
     private EmailConfigService emailConfigService;
     @Autowired
     private UploadConfigService uploadConfigService;
+    @Autowired
+    private NoticeService noticeService;
 
     //返回对象存储界面
     @RequestMapping(value = "/touser")
@@ -79,6 +79,17 @@ public class AdminRootController {
         Keys key = keysService.selectKeys(storageType);
         jsonArray.add(key);
         return jsonArray.toString();
+    }
+    //获取当前使用的对象存储
+    @PostMapping("/getkeyourceype")
+    @ResponseBody
+    public Integer getkeyourceype() {
+        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Integer ret = 0;
+        if(config.getSourcekey()!=null){
+            ret = config.getSourcekey();
+        }
+        return ret;
     }
 
     @PostMapping("/updatekey")
@@ -164,6 +175,26 @@ public class AdminRootController {
     public Integer scconfig(UploadConfig updateConfig) {
         Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
         return ret;
+    }
+
+    //关于系统
+    @RequestMapping("/about")
+    public String about(HttpSession session,Model model ) {
+        //Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
+        User u = (User) session.getAttribute("user");
+        model.addAttribute("level",u.getLevel());
+        return "admin/about";
+    }
+    //检查更新
+    @PostMapping("/sysupdate")
+    @ResponseBody
+    public Integer sysupdate(String  dates) {
+        HashMap<String, Object> paramMap = new HashMap<>();
+        String urls ="http://tc.hellohao.cn/systemupdate";
+        paramMap.put("dates",dates);
+        String result= HttpUtil.post(urls, paramMap);
+        System.out.println(Integer.parseInt( result ));
+        return Integer.parseInt( result );
     }
 
 }
