@@ -9,7 +9,7 @@
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
 > 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`等多家对象存储.
 > 后台对用户管理。
-> 配置存储源。(目前已经支持`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`，以后会更新更多.)
+> 支持配置多家存储源。
 > 用户注册邮箱验证，以及后台配置邮箱服务器。
 > 以及图片鉴黄配置等操作。
 
@@ -37,11 +37,12 @@
 
 ## 更新日志
 
-**2019-07-23**
-> 增加图片URL格式`用户名/`、`yyyy/MM/dd/`自定义
-> 增加自定义鉴黄周期
-> 上传图片返回的带有原图片名
-**本次更新增加数据库字段，需要重新导入新的sql文件，开发者做好备份。**
+**2019-07-25**
+
+> 修复某些情况下，部署完启动报错
+> 修复添加腾讯COS保存失败500问题。
+> 增加自动监测更新
+**适用本次更新请替换新的properties文件和sql文件**
 
 ## 运行环境
 * JDK 1.8
@@ -116,24 +117,6 @@ spring.http.multipart.location=/data/upload_tmp
 > **项目搭建部署教程：**  [**http://www.hellohao.cn/?p=201**](http://www.hellohao.cn/?p=201 "点击查看搭建文档")
 
 
-### 配置文件
-
-打开 `application.properties` 修改 `MySQL` 和 `服务器端口` 等连接信息改成你服务器的信息.
-
-
-
-```shell
-
-	#数据库账号
-	spring.datasource.username=root
-	#数据库密码
-	spring.datasource.password=root
-	#数据库地址
-	spring.datasource.url=jdbc:mysql://localhost:3306/picturebed?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-	#端口
-	server.port=8088
-
-```
 ### 部署
 前提是你的服务器必须要有`JDK1.8`环境，和`mysql`数据库。如果你是宝塔环境，就会方便一些，在应用商店安装一个`Tomcat8`因该是自带JDK1.8环境。
 把`Tbed.jar`和`application.properties`放到服务器你想存放的目录比如`/home`，注意这两个文件必须要在同一目录下不能分开。
