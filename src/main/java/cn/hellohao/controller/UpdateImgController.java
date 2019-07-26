@@ -79,6 +79,9 @@ public class UpdateImgController {
                 }
             }
         }
+        //if(b){
+
+        //}
         User u = (User) httpSession.getAttribute("user");
         String email = (String) httpSession.getAttribute("email");
         if (email != null) {

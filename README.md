@@ -1,14 +1,26 @@
 # Hellohao图床 - 全新响应式UI
 
 
+[![https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat-square)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
+![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
+
+
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
 > 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`等多家对象存储.
 > 后台对用户管理。
-> 配置存储源。(目前已经支持`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`，以后会更新更多.)
+> 支持配置多家存储源。
 > 用户注册邮箱验证，以及后台配置邮箱服务器。
 > 以及图片鉴黄配置等操作。
 
-预览地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
+
+主站地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
+
+体验地址（用户名/密码均为admin）：[http://129.28.173.126:8088/](http://129.28.173.126:8088/)
+
+文档地址: [http://doc.wwery.com/](http://doc.wwery.com/)
+
+编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
 更多后台功能你可以自己搭建配置使用。
 
@@ -28,10 +40,12 @@
 
 ## 更新日志
 
-**2019-07-21**
-2019-7-21更新 
-> 增加腾讯COS对象存储
-> 修复多个GUB
+**2019-07-25**
+
+> 修复某些情况下，部署完启动报错
+> 修复添加腾讯COS保存失败500问题。
+> 增加自动监测更新
+**适用本次更新请替换新的properties文件和sql文件**
 
 ## 运行环境
 * JDK 1.8
@@ -64,10 +78,29 @@ git clone https://github.com/Hello-hao/Tbed.git
 spring.datasource.username=root
 #数据库密码
 spring.datasource.password=root
-#数据库地址
+#数据库链接地址
 spring.datasource.url=jdbc:mysql://localhost:3306/picturebed?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
 #端口
 server.port=8088
+#鉴黄周期表达式 下方表达式为每天七点半执行
+#不懂请勿乱修改。具体可以参考官方文档http://doc.wwery.com
+Expression=0 30 04 * * ?
+
+
+#下边的配置项不需要修改。
+mybatis.configuration.map-underscore-to-camel-case=true
+mybatis.mapper-locations=classpath:mapper/*.xml
+logging.level.cn.hellohao.dao=debug
+spring.jackson.date-format=yyyy-MM-dd HH:mm:ss
+spring.jackson.time-zone=GMT+8
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
+spring.thymeleaf.cache=false
+multipart.maxFileSize=10240KB
+multipart.maxRequestSize=10240KB
+spring.thymeleaf.mode = LEGACYHTML5
+spring.http.multipart.location=/data/upload_tmp
+
 ```
 
 ### 启动项目
@@ -86,28 +119,7 @@ server.port=8088
 
 > **项目搭建部署教程：**  [**http://www.hellohao.cn/?p=201**](http://www.hellohao.cn/?p=201 "点击查看搭建文档")
 
-> [**编译包点击下载**](https://share.weiyun.com/5Uwu4lY "点击下载") 　 密码：`8QmG`
 
-
-
-### 配置文件
-
-打开 `application.properties` 修改 `MySQL` 和 `服务器端口` 等连接信息改成你服务器的信息.
-
-
-
-```shell
-
-	#数据库账号
-	spring.datasource.username=root
-	#数据库密码
-	spring.datasource.password=root
-	#数据库地址
-	spring.datasource.url=jdbc:mysql://localhost:3306/picturebed?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
-	#端口
-	server.port=8088
-
-```
 ### 部署
 前提是你的服务器必须要有`JDK1.8`环境，和`mysql`数据库。如果你是宝塔环境，就会方便一些，在应用商店安装一个`Tomcat8`因该是自带JDK1.8环境。
 把`Tbed.jar`和`application.properties`放到服务器你想存放的目录比如`/home`，注意这两个文件必须要在同一目录下不能分开。
