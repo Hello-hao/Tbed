@@ -25,7 +25,10 @@
                 `suffix` = #{suffix},
             </if>
             <if test="urltype != null">
-                `urltype` = #{urltype}
+                `urltype` = #{urltype},
+            </if>
+            <if test="isupdate != null">
+                `isupdate` = #{isupdate}
             </if>
 
         </set>

@@ -1,10 +1,7 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.pojo.*;
-import cn.hellohao.service.ConfigService;
-import cn.hellohao.service.KeysService;
-import cn.hellohao.service.UploadConfigService;
-import cn.hellohao.service.UserService;
+import cn.hellohao.service.*;
 import cn.hellohao.service.impl.KODOImageupload;
 import cn.hellohao.service.impl.NOSImageupload;
 import cn.hellohao.service.impl.OSSImageupload;
@@ -12,6 +9,7 @@ import cn.hellohao.service.impl.USSImageupload;
 import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,14 +42,18 @@ public class ClientController {
     private KODOImageupload kodoImageupload;
     @Autowired
     private UploadConfigService uploadConfigService;
+    @Autowired
+    private NoticeService noticeService;
 
-    //@PostMapping(value = "/clientupimg")
+    @Value("${systemupdate}")
+    private String systemupdate;
+
+    @PostMapping(value = "/clientupimg")
     @ResponseBody
     public String clientupimg(@RequestParam("file") List<MultipartFile> file, String email,String pass) throws Exception {
         JSONArray jsonArray = new JSONArray();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-
-        if(email!=null && pass!=null){
+                if(email!=null && pass!=null){
             Integer ret = userService.login(email, pass);
             if (ret > 0) {
                 User user = userService.getUsers(email);
@@ -59,7 +61,6 @@ public class ClientController {
                     User u = userService.getUsers(email);
                     Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
                     Keys key = keysService.selectKeys(config.getSourcekey());
-
                     if(key.getStorageType()!=0 && key.getStorageType()!=null){
                         if(key.getStorageType()==1){
                             nOSImageupload.Initialize(key);//实例化网易
@@ -74,10 +75,14 @@ public class ClientController {
                         }
                     }
                     Print.Normal("客户端：初始化上传。");
-                    Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+                    Boolean b =false;
+                    if(config.getSourcekey()==5){
+                        b =true;
+                    }else{
+                        b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+                    }
                     if(b){
                         long stime = System.currentTimeMillis();
-
                         String userpath = "tourist";
                         if(uploadConfig.getUrltype()==2){
                             java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
@@ -178,7 +183,6 @@ public class ClientController {
                     }
                     Print.Normal(jsonArray.toString());
                 }
-
             }else{
                 //邮箱或密码不正确，登录失败
                 jsonArray.add(-2);
@@ -195,6 +199,15 @@ public class ClientController {
     public String notices() throws Exception {
 
         return "-1";//-1就是没有公告，客户端不显示
+    }
+
+    //主端接口
+    @PostMapping("/systemupdate")
+    @ResponseBody
+    public String sysupdate(String  dates) {
+        Integer i=dates.compareTo(systemupdate);//小于0则需要更新
+        System.out.println(i);
+        return i.toString();
     }
 
 }

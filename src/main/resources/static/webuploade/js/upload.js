@@ -140,37 +140,38 @@
         }
 
         // 实例化
-        uploader = WebUploader.create({
-            pick: {
-                id: '#filePicker',
-                label: '点击选择文件'
-            },
-            formData: {
-                uid: 123
-            },
-            dnd: '#wrapper',
-            paste: '#wrapper',
-            swf: 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Uploader.swf',
-            chunked: false,//分片上传
-            chunkSize: 512 * 1024,
-            server: '/upimg',
-            method:'POST',
-            // runtimeOrder: 'flash',
-            compress: false,//不启用压缩
-            resize: false,//尺寸不改变
-            accept: {
-                title: 'Images',
-                //extensions: 'gif,jpg,jpeg,bmp,png',
-                extensions:suffix,
-                mimeTypes: 'image/*'
-            },
+        if(ykxz==1){
+            uploader = WebUploader.create({
+                pick: {
+                    id: '#filePicker',
+                    label: '点击选择文件'
+                },
+                formData: {
+                    uid: 123
+                },
+                dnd: '#wrapper',
+                paste: '#wrapper',
+                swf: 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Uploader.swf',
+                chunked: false,//分片上传
+                chunkSize: 512 * 1024,
+                server: '/upimg',
+                method:'POST',
+                // runtimeOrder: 'flash',
+                compress: false,//不启用压缩
+                resize: false,//尺寸不改变
+                accept: {
+                    title: 'Images',
+                    //extensions: 'gif,jpg,jpeg,bmp,png',
+                    extensions:suffix,
+                    mimeTypes: 'image/*'
+                },
 
-            // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
-            disableGlobalDnd: true,
-            fileNumLimit: imgcount, //做多允许上传几个
-            //fileSizeLimit: 2000 * 1024 * 1024,    // 200 M  文件总大小
-            fileSingleSizeLimit: filesize    // 50 M  单文件大小
-        });
+                // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
+                disableGlobalDnd: true,
+                fileNumLimit: imgcount, //做多允许上传几个
+                //fileSizeLimit: 2000 * 1024 * 1024,    // 200 M  文件总大小
+                fileSingleSizeLimit: filesize    // 50 M  单文件大小
+            });
 
         // 拖拽时不接受 js, txt 文件。
         uploader.on( 'dndAccept', function( items ) {
@@ -198,11 +199,20 @@
             //alert(response.length);
             //console.log(response.imgurls)
             $("#address").css('display', 'block');
-            if(response==-1){
-                arr_url += '未配置存储源，请先后台配置存储源\r\n';
-                arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
-                arr_html += '未配置存储源，请先后台配置存储源\r\n';
-            }else{
+            if(response.imgurls==-100){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("本站已禁用游客上传,请登录本站。", {icon: 2});
+                });
+                // arr_url += '未配置存储源，请先后台配置存储源\r\n';
+                // arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
+                // arr_html += '未配置存储源，请先后台配置存储源\r\n';
+            }else if(response.imgurls==-1){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("未配置存储源，或存储源配置不正确。", {icon: 2});
+                });
+            } else{
                 arr_url += response.imgurls + '\r\n';
                 arr_markdown += '!['+response.imgnames+'](' + response.imgurls + ')\r\n';
                 arr_html += '<img src="' + response.imgurls + '" alt="'+response.imgnames+'" title="'+response.imgnames+'" /> \r\n';
@@ -218,7 +228,11 @@
 
         // 文件上传失败，显示上传出错
         uploader.on( 'uploadError', function( file ) {
-           alert("文件上传失败")
+           //alert("文件上传失败")
+            layui.use('layer', function () {
+                layer = layui.layer;
+                layer.msg("文件上传失败", {icon: 2});
+            });
         });
 
         // uploader.on('filesQueued', function() {
@@ -244,7 +258,10 @@
         uploader.on('ready', function() {
             window.uploader = uploader;
         });
-
+        }
+        else{
+            $('#urlsc').html('<a style="color: #4ebd87;font-size: 0.9em;cursor:pointer;font-weight: bold;">已禁止游客上传,请登陆后使用</a>')
+        }
         // 当有文件添加进来时执行，负责view的创建
         function addFile( file ) {
             var $li = $( '<li id="' + file.id + '">' +
@@ -581,9 +598,27 @@
         });
 
         uploader.onError = function( code ) {
-            if(code=='F_DUPLICATE'){alert('复制速度过快')}
-            else if(code=='Q_EXCEED_NUM_LIMIT'){alert('单次上传数量受限制')}
-            else if(code=='F_EXCEED_SIZE'){alert('图片大小受限制')}
+            if(code=='F_DUPLICATE'){
+                //alert('复制速度过快')
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("复制速度过快", {icon: 2});
+                });
+                }
+            else if(code=='Q_EXCEED_NUM_LIMIT'){
+                //alert('单次上传数量受限制')
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("单次上传数量受限制", {icon: 2});
+                });
+            }
+            else if(code=='F_EXCEED_SIZE'){
+                //alert('图片大小受限制')
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("图片大小受限制", {icon: 2});
+                });
+            }
             else{alert( 'Eroor: ' + code );}
 
         };

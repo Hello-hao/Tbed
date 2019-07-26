@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 23/07/2019 20:23:29
+ Date: 26/07/2019 17:38:26
 */
 
 SET NAMES utf8mb4;
@@ -149,13 +149,14 @@ CREATE TABLE `uploadconfig`  (
   `imgcountuser` int(10) NULL DEFAULT NULL COMMENT '用户文件总数量, 超出则不允许加入队列',
   `suffix` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支持后缀',
   `urltype` int(2) NULL DEFAULT NULL,
+  `isupdate` int(2) NULL DEFAULT NULL COMMENT '禁止游客上传',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of uploadconfig
 -- ----------------------------
-INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 1);
+INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 1, 1);
 
 -- ----------------------------
 -- Table structure for user
@@ -166,7 +167,7 @@ CREATE TABLE `user`  (
   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名',
   `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `email` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '邮箱',
-  `birthder` datetime(0) NULL DEFAULT NULL COMMENT '注册时间',
+  `birthder` date NULL DEFAULT NULL COMMENT '注册时间',
   `level` int(10) NULL DEFAULT NULL COMMENT '等级',
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
   `isok` int(2) NOT NULL,
@@ -176,6 +177,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'admin', 'admin', '2019-06-12 00:00:00', 2, 'admin', 1);
+INSERT INTO `user` VALUES (1, 'admin', 'admin', 'admin', '2019-06-12', 2, 'admin', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -82,6 +82,14 @@
             <artifactId>cos_api</artifactId>
             <version>5.5.7</version>
         </dependency>
+<!--hutool-->
+        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>4.5.16</version>
+        </dependency>
+
 
         <!--        定时器依赖-->
         <dependency>

@@ -19,9 +19,9 @@
         <div class="layui-form-item">
             <label class="layui-form-label">用户名：</label>
             <div class="layui-input-block">
-                <input id="username" type="text" name="title" autocomplete="off" disabled="disabled" class="layui-input"
-                       th:value="${username}+'（用户名不可修改）'"/>
-            </div>
+                <input id="username" type="text" name="title" autocomplete="off" disabled="true" class="layui-input"
+                       th:value="${username}"/>
+            </div><span id="tishi" style="color: #DAA5A6;display: none;">用户名只可是英文或数字</span>
         </div>
 
         <div class="layui-form-item">
@@ -47,6 +47,7 @@
     </form>
 </div>
 <script>
+    var level = [[${level}]];
     layui.use(['form', 'layedit', 'laydate'], function () {
         var form = layui.form;
 
@@ -55,60 +56,66 @@
             layer.msg(JSON.stringify(data.field));
             return false;
         });
+
+        $(function () {
+            //$('#username').attr("disabled",true);
+            if(level==2){
+                $('#username').attr("disabled",false);
+                $('#tishi').css('display','block');
+            }else{
+                $('#username').attr("disabled",true);
+                $('#tishi').css('display','none');
+            }
+        })
         //监听指定开关
         //监听指定开关
         form.on('switch(switchTest)', function (data) {
-            // layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
-            //     offset: '6px'
-            // });
             if (this.checked == true) {
                 imgreview(1);
             } else {
                 imgreview(0);
             }
-            //layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
         });
 
     });
 
-    //lay-filter="switchTest"
-
-    $(function () {
-
-    });
-
-
     //修改密码
     function change() {
-        //var username = $("#username").val();
+        var username = $("#username").val();
         var newpassword = $("#newpassword").val();
         var registerpassword = $("#registerpassword").val();
-        if ((newpassword != null && newpassword != "") && (registerpassword != null && registerpassword != "")) {
-            if (newpassword == registerpassword) {
-                $.ajax({
-                    type: "POST",
-                    url: "/admin/change",
-                    //data:{username:username,password:newpassword},
-                    data: {password: newpassword},
-                    dataType: "json",
-                    success: function (data) {
-                        if (data > 0) {
-                            layer.msg("修改成功,请重新登录。", {icon: 1});
-                            setTimeout(function () {
-                                //这里写时间到后执行的代码
-                                //window.location.reload();
-                                parent.location.reload();//刷新父元素
-                            }, 2000);
-                        }
-                        if (data == "-1") {
-                            layer.msg("用户名重复。", {icon: 2});
-                        }
-                    }
-                });
-            } else {
-                layer.msg("两次密码输入不一致。", {icon: 2});
-            }
 
+        if ((newpassword != null && newpassword != "") && (registerpassword != null && registerpassword != "")) {
+            var usertype = /^(\d|[a-zA-Z])+$/;
+            if (usertype.test(username) == false || username.length>10) {
+                layer.msg("用户名格式错误", {icon: 2});
+                //return false;
+            }else{
+                if (newpassword == registerpassword) {
+                    $.ajax({
+                        type: "POST",
+                        url: "/admin/change",
+                        //data:{username:username,password:newpassword},
+                        data: {password: newpassword},
+                        dataType: "json",
+                        success: function (data) {
+                            if (data > 0) {
+                                layer.msg("修改成功,请重新登录。", {icon: 1});
+                                setTimeout(function () {
+                                    //这里写时间到后执行的代码
+                                    //window.location.reload();
+                                    parent.location.reload();//刷新父元素
+                                }, 2000);
+                            }
+                            if (data == "-1") {
+                                layer.msg("用户名重复。", {icon: 2});
+                            }
+                        }
+                    });
+                } else {
+                    layer.msg("两次密码输入不一致。", {icon: 2});
+                }
+            }
         } else {
             layer.msg("表单不能为空", {icon: 2});
         }

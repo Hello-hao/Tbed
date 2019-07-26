@@ -94,7 +94,7 @@
 
                 <li class="layui-nav-item" th:if=" ${levels} gt '1'">
                     <a style="font-weight: bold;">
-                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>系统功能</cite>
+                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>开发者设置</cite>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
@@ -135,6 +135,21 @@
                     </dl>
 
                 </li>
+
+                <li class="layui-nav-item" th:if=" ${levels} gt '1'">
+                    <a style="font-weight: bold;">
+                        <i class="layui-icon layui-icon-about"></i>&emsp;<cite>更&nbsp;多</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="6" lay-url="/admin/root/about">
+                                <i class="layui-icon layui-icon-right"></i><cite>关于系统</cite>
+                            </a>
+                        </dd>
+                    </dl>
+
+                </li>
+
             </ul>
         </div>
     </div>

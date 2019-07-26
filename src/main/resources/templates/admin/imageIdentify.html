@@ -71,7 +71,14 @@
                 //     offset: '6px'
                 // });
                 if (this.checked == true) {
-                    imgreview(1);
+                    var appid = $("#appid").val();
+                    var apikey = $("#apikey").val();
+                    var secretkey = $("#secretkey").val();
+                    if (appid != "" && apikey != "" && secretkey != "") {
+                        imgreview(1);
+                    }else{
+                        layer.msg("开启失败，各项内容不能为空", {icon: 2});
+                    }
                 } else {
                     imgreview(0);
                 }

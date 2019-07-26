@@ -114,10 +114,13 @@ public class OSSImageupload {
 
     //初始化
     public static void Initialize(Keys k) {
-        // 初始化
-        // 创建OSSClient实例。
-        ossClient = new OSSClient(k.getEndpoint(), k.getAccessKey(), k.getAccessSecret());
-        key = k;
+        if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
+                && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
+            // 初始化
+            // 创建OSSClient实例。
+            ossClient = new OSSClient(k.getEndpoint(), k.getAccessKey(), k.getAccessSecret());
+            key = k;
+        }
     }
 
 

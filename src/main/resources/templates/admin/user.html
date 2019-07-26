@@ -92,6 +92,8 @@
                                 if (data > 0) {
                                     table.reload('dates');//重新获取表数据
                                     layer.msg('删除成功', {icon: 1});
+                                }else if(data==-1){
+                                    layer.msg('不能删除自己', {icon: 2});
                                 }
                             }
                         });

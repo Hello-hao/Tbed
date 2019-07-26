@@ -66,23 +66,11 @@ public class AdminController {
         Keys key = keysService.selectKeys(config.getSourcekey());
         User u = (User) session.getAttribute("user");
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
-//        if (u.getLevel() > 1) {
-//            //管理员
-//            model.addAttribute("counts", imgService.counts(null));
-//        } else {
-//            //个人用户
-//            //model.addAttribute("counts", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
-//        }
-
-        //model.addAttribute("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
-        //model.addAttribute("counts", imgService.counts(null) );//总数
-        //model.addAttribute("getusertotal", userService.getUserTotal() );
-        //model.addAttribute("imgreviewcount", imgreview.getCount());
         model.addAttribute("username", u.getUsername());
         model.addAttribute("level", u.getLevel());
         model.addAttribute("email", u.getEmail());
         model.addAttribute("loginid", 100);
-        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        //Boolean b = StringUtils.doNull(key);//判断对象是否有空值
 //        if(b){
 //            model.addAttribute("source", key.getStorageType());
 //        }else{
@@ -116,7 +104,12 @@ public class AdminController {
         jsonObject.put("getusertotal", userService.getUserTotal() );
         jsonObject.put("imgreviewcount", imgreview.getCount());
         Keys key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
-        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        Boolean b =false;
+        if(config.getSourcekey()==5){
+            b =true;
+        }else{
+            b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+        }
         if(b){
             jsonObject.put("source", key.getStorageType());
         }else{
@@ -215,7 +208,13 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         Images images = imgService.selectByPrimaryKey(id);
         Keys key = keysService.selectKeys(sourcekey);
-        Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Boolean b =false;
+        if(config.getSourcekey()==5){
+            b =true;
+        }else{
+            b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+        }
         if(b){
             ImgServiceImpl de = new ImgServiceImpl();
             if (key.getStorageType() == 1) {
@@ -254,13 +253,20 @@ public class AdminController {
     @ResponseBody
     public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids) {
         JSONObject jsonObject = new JSONObject();
+
         Integer v = 0;
         ImgServiceImpl de = new ImgServiceImpl();
         User u = (User) session.getAttribute("user");
+        Config config = configService.getSourceype();
         for (int i = 0; i < ids.length; i++) {
             Images images = imgService.selectByPrimaryKey(ids[i]);
             Keys key = keysService.selectKeys(images.getSource());
-            Boolean b = StringUtils.doNull(key);//判断对象是否有空值
+            Boolean b =false;
+            if(config.getSourcekey()==5){
+                b =true;
+            }else{
+                b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+            }
             if(b){
                 if (key.getStorageType() == 1) {
                     de.delect(key, images.getImgname());
@@ -299,6 +305,7 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         //key信息
         model.addAttribute("username", u.getUsername());
+        model.addAttribute("level", u.getLevel());
         return "admin/setuser";
     }
 

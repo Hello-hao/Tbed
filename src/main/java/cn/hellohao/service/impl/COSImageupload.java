@@ -111,36 +111,37 @@ public class COSImageupload {
         return file;
     }
 
-
-
-
     //初始化网易NOS对象存储
     public static void Initialize(Keys k) {
+        if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
+                && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
 // 1 初始化用户身份信息（secretId, secretKey）。
-        String secretId = k.getAccessKey();
-        String secretKey = k.getAccessSecret();
-        COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+            String secretId = k.getAccessKey();
+            String secretKey = k.getAccessSecret();
+            COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
 // 2 设置 bucket 的区域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
 // clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
-        Region region = new Region(k.getEndpoint());
-        ClientConfig clientConfig = new ClientConfig(region);
+            Region region = new Region(k.getEndpoint());
+            ClientConfig clientConfig = new ClientConfig(region);
 // 3 生成 cos 客户端。
-        cosClient= new COSClient(cred, clientConfig);
+            cosClient = new COSClient(cred, clientConfig);
+            System.out.println("==="+cosClient);
 //查询桶
-        try {
-            List<Bucket> buckets = cosClient.listBuckets();
-            for (Bucket bucket : buckets) {
-                if(bucket.getName().equals(k.getBucketname())){
-                    Print.Normal("当前桶名称："+bucket.getName());
-                    BarrelName = bucket.getName();
+            try {
+                List<Bucket> buckets = cosClient.listBuckets();
+                for (Bucket bucket : buckets) {
+                    if (bucket.getName().equals(k.getBucketname())) {
+                        Print.Normal("当前桶名称：" + bucket.getName());
+                        BarrelName = bucket.getName();
+                    }
                 }
+            } catch (CosServiceException serverException) {
+                serverException.printStackTrace();
+            } catch (CosClientException clientException) {
+                clientException.printStackTrace();
             }
-        } catch (CosServiceException serverException) {
-            serverException.printStackTrace();
-        } catch (CosClientException clientException) {
-            clientException.printStackTrace();
+            key = k;
         }
-        key = k;
     }
     /**
      * 客户端接口

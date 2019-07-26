@@ -125,27 +125,29 @@ public class NOSImageupload {
     }
 
 
-
-
     //初始化网易NOS对象存储
     public static void Initialize(Keys k) {
-        // 初始化
-        Credentials credentials = new BasicCredentials(k.getAccessKey(), k.getAccessSecret());
-        nosClient = new NosClient(credentials);
-        nosClient.setEndpoint(k.getEndpoint());
-        // 初始化TransferManager
-        TransferManager transferManager = new TransferManager(nosClient);
-        // 列举桶
-        ArrayList bucketList = new ArrayList();
-        for (Bucket bucket : nosClient.listBuckets()) {
-            bucketList.add(bucket.getName());
-        }
-        for (Object object : bucketList) {
-            if (object.toString().equals(k.getBucketname())) {
-                BarrelName = object.toString();
+        if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
+                && k.getBucketname()!=null && k.getRequestAddress()!=null ){
+            // 初始化
+            Credentials credentials = new BasicCredentials(k.getAccessKey(), k.getAccessSecret());
+            nosClient = new NosClient(credentials);
+            nosClient.setEndpoint(k.getEndpoint());
+            // 初始化TransferManager
+            TransferManager transferManager = new TransferManager(nosClient);
+            // 列举桶
+            ArrayList bucketList = new ArrayList();
+            for (Bucket bucket : nosClient.listBuckets()) {
+                bucketList.add(bucket.getName());
             }
+            for (Object object : bucketList) {
+                if (object.toString().equals(k.getBucketname())) {
+                    BarrelName = object.toString();
+                }
+            }
+            key = k;
         }
-        key = k;
+
     }
 
     /**

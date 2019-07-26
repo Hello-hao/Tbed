@@ -90,7 +90,16 @@
             form.on('switch(switchTest)', function (data) {
 
                 if (this.checked == true) {
-                    emailconfig(1);
+                    var emailname = $("#emailname").val();
+                    var emails = $("#emails").val();
+                    var emailkey = $("#emailkey").val();
+                    var port = $("#port").val();
+                    var emailurl = $("#emailurl").val();
+                    if (emailname != "" && emails != "" && emailkey != "" && port !="" && emailurl !="") {
+                        emailconfig(1);
+                    }else{
+                        layer.msg("开启失败，各项内容均不能为空", {icon: 2});
+                    }
                 } else {
                     emailconfig(0);
                 }
