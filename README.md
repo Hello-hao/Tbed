@@ -13,9 +13,10 @@
 > 用户注册邮箱验证，以及后台配置邮箱服务器。
 > 以及图片鉴黄配置等操作。
 
-体验地址：http://129.28.173.126:8088/
 
 主站地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
+
+体验地址：http://129.28.173.126:8088/（用户名/密码均为admin）
 
 文档地址: [http://doc.wwery.com/](http://doc.wwery.com/)
 
