@@ -22,7 +22,6 @@
 
 编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
-更多后台功能你可以自己搭建配置使用。
 
 ## 系统预览
 
