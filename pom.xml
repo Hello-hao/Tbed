@@ -82,6 +82,12 @@
             <artifactId>cos_api</artifactId>
             <version>5.5.7</version>
         </dependency>
+
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.3</version>
+        </dependency>
 <!--hutool-->
         <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
         <dependency>

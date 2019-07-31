@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.hellohao.utils.Print;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
 import com.qcloud.cos.COSClient;
@@ -19,6 +20,7 @@ import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.util.Auth;
 import com.upyun.UpException;
+import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -152,6 +154,24 @@ public class ImgServiceImpl implements ImgService {
             serverException.printStackTrace();
         } catch (CosClientException clientException) {
             clientException.printStackTrace();
+        }
+    }
+    //删除FTP存储的图片文件
+    public void delectFTP(Keys key, String fileName) {
+        FTPClient ftp = new FTPClient();
+        String[] host = key.getEndpoint().split("\\:");
+        String h = host[0];
+        Integer p = Integer.parseInt(host[1]);
+        try {
+            if(!ftp.isConnected()){
+                ftp.connect(h,p);
+            }
+            //如果是需要认证的服务器，就需要账号和密码来登录
+            ftp.login(key.getAccessKey(), key.getAccessSecret());
+            ftp.deleteFile(fileName);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Print.warning("删除FTP存储的图片失败");
         }
     }
     @Override

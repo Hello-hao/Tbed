@@ -42,6 +42,8 @@ public class UpdateImgController {
     private KODOImageupload kodoImageupload;
     @Autowired
     private COSImageupload cosImageupload;
+    @Autowired
+    private FTPImageupload ftpImageupload;
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
@@ -73,6 +75,8 @@ public class UpdateImgController {
                     KODOImageupload.Initialize(key);
                 }else if(key.getStorageType()==6){
                     COSImageupload.Initialize(key);
+                }else if(key.getStorageType()==7){
+                    FTPImageupload.Initialize(key);
                 }
                 else{
                     Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
@@ -121,6 +125,7 @@ public class UpdateImgController {
     @ResponseBody
     public String upimg( HttpSession session
             , @RequestParam(value = "file", required = false) MultipartFile[] file) throws Exception {
+
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
@@ -152,7 +157,7 @@ public class UpdateImgController {
                     String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);//获取文件后缀
                     if (!multipartFile.isEmpty()) { //判断文件是否为空
                         map.put(lastname, multipartFile);
-                        //multipartFile.getOriginalFilename();  //文件名
+                        System.out.println("===name==="+multipartFile.getOriginalFilename());  //文件名
                         //multipartFile.getSize();  //文件大小
                     }
                 }
@@ -169,6 +174,8 @@ public class UpdateImgController {
                     m = LocUpdateImg.ImageuploadLOC(map, userpath,null);
                 }else if(key.getStorageType()==6){
                     m = cosImageupload.ImageuploadCOS(map, userpath,null);
+                }else if(key.getStorageType()==7){
+                    m =  ftpImageupload.ImageuploadFTP(map, userpath,null);
                 }
                 else{
                     System.err.println("未获取到对象存储参数，上传失败。");
@@ -295,6 +302,8 @@ public class UpdateImgController {
                                         m = LocUpdateImg.ImageuploadLOC(null,userpath,map);
                                     }else if(key.getStorageType()==6){
                                         m = cosImageupload.ImageuploadCOS(null,userpath,map);
+                                    }else if(key.getStorageType()==7){
+                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map);
                                     }
                                     else{
                                         System.err.println("未获取到对象存储参数，上传失败。");
@@ -314,8 +323,8 @@ public class UpdateImgController {
                                             }
                                         }else{
                                             jsonArray.add(entry.getKey().getImgurl());
+                                            img.setImgurl(entry.getKey().getImgurl());
                                         }
-                                        //img.setImgurl(entry.getKey());//图片链接
                                         img.setUpdatetime(times);
                                         img.setSource(key.getStorageType());
                                         if (u == null) {
@@ -377,6 +386,8 @@ public class UpdateImgController {
                                         m =LocUpdateImg.ImageuploadLOC(null,userpath, map);
                                     }else if(key.getStorageType()==6){
                                         m =cosImageupload.ImageuploadCOS(null,userpath, map);
+                                    }else if(key.getStorageType()==7){
+                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map);
                                     }
                                     else{
                                         System.err.println("未获取到对象存储参数，上传失败。");

@@ -229,6 +229,8 @@ public class AdminController {
                 LocUpdateImg.deleteLOCImg(images.getImgname());
             }else if (key.getStorageType() == 6) {
                 de.delectCOS(key, images.getImgname());
+            }else if (key.getStorageType() == 7) {
+                de.delectFTP(key, images.getImgname());
             }else {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
@@ -280,6 +282,8 @@ public class AdminController {
                     LocUpdateImg.deleteLOCImg(images.getImgname());
                 }else if (key.getStorageType() == 6) {
                     de.delectCOS(key, images.getImgname());
+                }else if (key.getStorageType() == 7) {
+                    de.delectFTP(key, images.getImgname());
                 }else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }

@@ -88,6 +88,7 @@
                             <option value="3">又拍USS</option>
                             <option value="4">七牛云KODO</option>
                             <option value="6">腾讯COS</option>
+                            <option value="7">FTP存储</option>
                         </select>
                     </div>
                     <div class="btn-group">
@@ -148,39 +149,6 @@
 
         // 分页
         fenye('/admin/selecttable', 1);//1代表查询所有人
-
-        // $("#myselect").change(function () {
-        //     var opt = $("#myselect").val();
-        //     // 先销毁table中的数据
-        //     $("#table_server").bootstrapTable('destroy');
-        //     fenye('/admin/selecttable', opt);
-        // });
-
-        //获取本站概况
-        // $.ajax({
-        //     type: "POST",
-        //     url: "/admin/getwebconfig",
-        //     dataType: "json",
-        //     success: function (data) {
-        //         $("#counts").text(data.counts);
-        //         $("#getusertotal").text(data.getusertotal);
-        //         $("#imgreviewcount").text(data.imgreviewcount);
-        //         $("#usercount").text(data.usercount);
-        //         var str = "";
-        //         if (data.source == 1) {
-        //             str = "网易NOS";
-        //         } else if (data.source == 2) {
-        //             str = "阿里OSS";
-        //         } else if (data.source == 3) {
-        //             str = "又拍USS";
-        //         } else if (data.source == 4) {
-        //             str = '七牛KODO';
-        //         } else {
-        //             str = '未知';
-        //         }
-        //         $("#source").text(str);
-        //     }
-        // });
     });
     function screening(){
         $("#table_server").bootstrapTable('destroy');
@@ -449,8 +417,9 @@
                             source = '本地存储';
                         }else if (rows.source == 6) {
                             source = '腾讯COS';
-                        }
-                        else {
+                        }else if (rows.source == 7) {
+                            source = 'FTP存储';
+                        }else {
                             source = '未知';
                         }
                         return source;

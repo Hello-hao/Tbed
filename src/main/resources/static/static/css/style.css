@@ -2110,7 +2110,7 @@ table.dataTable thead .sorting:after {
     border-color: #cfdadd;
     border-radius: 2px;
       width: 100%;
-      height: 30px;
+      /*height: 30px;*/
       padding: 6px 12px;
       font-size: 14px;
       line-height: 1.42857143;

@@ -41,6 +41,11 @@ public class StringUtils {
                     && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
                 return true;
             }
+        }else if(sourcekey==7){
+            //FTP
+            if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null && k.getRequestAddress()!=null ) {
+                return true;
+            }
         }
         return false;
     }

@@ -1,35 +1,31 @@
 package cn.hellohao.test;
 
 import cn.hellohao.utils.Print;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.extra.ftp.Ftp;
 
 import java.io.File;
+import java.io.IOException;
 
 public class test1 {
-    private static void deleteDirectory(File file) {
-        if (file.isFile()) {// 表示该文件不是文件夹
-            file.delete();
-        } else {
-            // 首先得到当前的路径
-            String[] childFilePaths = file.list();
-            for (String childFilePath : childFilePaths) {
-                String filePath =File.separator + "HellohaoData" + File.separator;
-                File childFile = new File(filePath  + "admin"+ File.separator);
-                deleteDirectory(childFile);
-            }
-            file.delete();
-        }
-    }
 
     public static void main(String[] args) {
 
-       // Print.warning(System.getProperty("user.dir"));
-        String str = "[FCAF03D4FDFC22D354FD]";
-        str = str.replace("[", "");
-        str = str.replace("]", "");
-        System.out.println(str);
-        String[] arr = str.split("&");
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println(arr[i]);
+//匿名登录（无需帐号密码的FTP服务器）
+        Ftp ftp = new Ftp("hellohao.cn");
+        ftp.init("hellohao.cn",21,"test","test");
+//进入远程目录
+        //ftp.cd("/opt/upload");
+//上传本地文件
+        ftp.upload("/ftp/222222222.jpg", FileUtil.file("C:\\Users\\tiansh\\Desktop\\11.jpg"));
+//下载远程文件
+        //ftp.download("/opt/upload", "test.jpg", FileUtil.file("e:/test2.jpg"));
+
+//关闭连接
+        try {
+            ftp.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
 
