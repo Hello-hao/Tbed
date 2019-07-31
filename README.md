@@ -1,7 +1,7 @@
 # Hellohao图床 - 全新响应式UI
 
 
-[![https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat-square)
+![https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat-square)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
 ![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
 
@@ -22,7 +22,6 @@
 
 编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
-更多后台功能你可以自己搭建配置使用。
 
 ## 系统预览
 
@@ -40,12 +39,12 @@
 
 ## 更新日志
 
-**2019-07-25**
+**2019-07-26**
 
-> 修复某些情况下，部署完启动报错
-> 修复添加腾讯COS保存失败500问题。
-> 增加自动监测更新
-**适用本次更新请替换新的properties文件和sql文件**
+> 添加禁止游客上传开关
+> 修正设置上传参数格式校验
+> 修复用户反馈已知BUG
+**适用本次更新请导入新sql文件，开发者做好备份**
 
 ## 运行环境
 * JDK 1.8
