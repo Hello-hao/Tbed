@@ -22,6 +22,7 @@
 
 编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
+捐赠列表：[http://doc.wwery.com/#/reward?id=捐赠者名单](http://doc.wwery.com/#/reward?id=捐赠者名单)
 
 ## 系统预览
 
