@@ -14,8 +14,8 @@
     <link th:href="@{/static/css/bootstrap-table.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/sweetalert.min.css}" media="all" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" type="text/css" media="all" th:href="@{/static/css/daterangepicker-bs3.css}"  />
-    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
-    <link rel="stylesheet" th:href="@{/css/viewer.css}">
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}" />
+    <link rel="stylesheet" th:href="@{/css/viewer.css}" />
 
     <script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
@@ -28,10 +28,11 @@
     <script th:src="@{/static/js/sweetalert.min.js}"></script>
     <script th:src="@{/layui/layui/layui.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/mustache.min.js}"></script>
-
     <script th:src="@{/static/js/moment.js}"></script>
     <script th:src="@{/static/js/daterangepicker.js}"></script>
     <script th:src="@{/js/viewer.min.js}"></script>
+    <script th:src="@{/static/js/popover.min.js}"></script>
+    <script th:src="@{/js/jquery.qrcode.min.js}"></script>
 
     <!-- 样式 -->
     <style type="text/css">
@@ -46,7 +47,87 @@
             white-space: pre-wrap;
             word-wrap: break-word;
         }
+        .slt{
+            width: auto;
+            height: auto;
+            max-width: 260px;
+            max-height: 130px;
+            border-radius: 5px;
+            box-shadow: 1px 2px 4px #999999;
+            transition: all 0.6s;
+        }
+        .slt:hover{
+            transform: scale(1.2);
+        }
+        .table>tbody>tr>td{
+            border:0px;
+        }
+        tbody>tr{
+            border:1px solid rgb(221, 221, 221);
+        }
+        .table>thead>tr>th{
+            border:0px;
+        }
+        thead>tr{
+            border:1px solid rgb(221, 221, 221);
+        }
 
+        /**/
+        /* 登录、注册标题 */
+        h4{
+            font-size: 20px;
+            line-height: 50px;
+            margin: 0 auto;
+        }
+        label{
+            margin-right: 10px;
+            color: #888;
+        }
+
+        /* 弹出层遮罩 */
+        .layer-mask{
+            display: none;      /* 遮罩默认开始是不显示的 */
+            z-index: 99999;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            opacity: 0.5;       /* 设置透明度为50% */
+        }
+        /* 弹出层窗体 */
+        .layer-pop{
+            display: none;      /* 默认开始是不显示的 */
+            z-index: 100000;
+            position: fixed;
+            top: 0;             /* 设置水平垂直居中 */
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            width: 400px;
+            height: 300px;
+            background: #fff;
+        }
+        /* 弹出层关闭按钮 */
+        .layer-close{
+            float: right;
+            width: 24px;
+            height: 24px;
+            border:3px solid #fff;
+            text-align: center;       /* 设置内容居中显示 */
+            line-height: 24px;        /* 设置内容的高度 */
+            border-radius: 50%;
+            background: #eee;
+            margin: -12px -12px 0 0;
+        }
+        /* 添加鼠标滑过的样式 */
+        .layer-close:hover{
+            cursor: pointer;
+            background: #ccc;
+            color: #fff;
+        }
     </style>
 </head>
 <body>
@@ -55,9 +136,20 @@
 
     <div id="isimgs">
 
-        <table class="table table-bordered ft-table table-hover" id="table_server">
+        <table class="table  ft-table table-hover" id="table_server">
             <hr/>
                 <div class="btn-group">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            展示类型 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="#" onclick="lookurl();">URL地址展示</a></li>
+                            <li><a href="#" onclick="lookslt();">缩略图展示</a></li>
+                        </ul>
+                    </div>
+
                     <div class="btn-group">
                         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
                                 aria-haspopup="true" aria-expanded="false">
@@ -68,7 +160,7 @@
                         </ul>
                     </div>
                     <div class="btn-group" th:if=" ${level} gt '1'">
-                        <span style="margin-left: 70px;line-height: 36px;">列表显示：</span>
+                        <span style="margin-left: 35px;line-height: 36px;">列表显示：</span>
                     </div>
                     <div class="btn-group" th:if=" ${level} gt '1'">
                         <select id="myselect" class="form-control">
@@ -98,11 +190,12 @@
                         <span class="add-on input-group-addon" onclick="thisclear()">
                             <i class="glyphicon glyphicon-repeat" ></i>
                         </span>
-                        <input  type="text" readonly style="width: 200px" name="reservation" id="reservation" class="form-control" />
+                        <input  type="text" readonly style="width: 175px" name="reservation" id="reservation" class="form-control" />
                         <div class="btn-group">
-                            <a style="margin-left: 50px;" type="button" class="btn btn-info" onclick="screening();">筛选</a>
+                            <a style="margin-left: 20px;" type="button" class="btn btn-info" onclick="screening();">筛选</a>
                         </div>
                     </div>
+
                 </div>
         </table>
     </div>
@@ -110,10 +203,35 @@
 </div>
 <hr/>
 <!--<footer class="footer " th:include="footer::foot"></footer>-->
+
+<!-- 弹出层 -->
+<div id="layer-mask" class="layer-mask"></div>           <!--弹出层遮罩-->
+<div id="layer-pop" class="layer-pop">                   <!--弹出层窗体-->
+    <div id="layer-close" class="layer-close">×</div>    <!--弹出层关闭按钮-->
+    <div id="layer-content" class="layer-content"></div> <!--弹出层内容区域-->
+</div>
+
+<div id="loginHtml" style="display: none;">
+    <div class="login" style="text-align: center;">
+<!--        <h4 class="title">登 录</h4>-->
+        <div id="qrcode" style="padding: 18px;">
+            <img id="imgbase64" src="" />
+            <div id="erwmxq">
+                <h3></h3>
+            </div>
+        </div>
+        <div class="item">
+            <label>&nbsp;</label>
+
+        </div>
+    </div>
+</div>
+
 <img id="linshi" style="display:none;" src="#"/>
 </body>
 
 <script type="application/javascript">
+    var kooltype = 1;
     var layer;
     layui.use('layer', function () {
         layer = layui.layer;
@@ -163,6 +281,16 @@
             fenye('/admin/selecttable', myselect,StorageType,null,null);
         }
 
+    }
+    function lookurl() {
+        $("#table_server").bootstrapTable('destroy');
+        kooltype = 1;
+        fenye('/admin/selecttable',1);
+    }
+    function lookslt() {
+        $("#table_server").bootstrapTable('destroy');
+        kooltype = 2;
+        fenye('/admin/selecttable',1);
     }
     function deleall() {
         swal({
@@ -300,32 +428,38 @@
         });
     }
 
-    function lookimgs(urls) {
-        var index=urls.lastIndexOf("\.");
-        var str =urls.substring(index+1,urls.length);
-        if(str=='png' || str=='jpg' || str=='GIF' || str=='bmp' || str=='jpeg'){
-            layer.load(1);
-            var w = 0;
-            var h = 0;
-            var dw = document.body.clientWidth;
-            var dh = document.body.clientHeight;
-            $("#linshi").attr('src', urls);
-            $("#linshi").off("load");
-            $("#linshi").on("load", function () {
-                w = $(this).width();
-                h = $(this).height();
-                layer.closeAll('loading');
-                layer.open({
-                    type: 1,
-                    title: false,
-                    closeBtn: 0,
-                    area: 'auto',
-                    skin: 'layui-layer-nobg', //没有背景色
-                    shadeClose: true,
-                    content: '<div style="width:'+ dw * 0.7 + 'px;height:auto;text-align:center;float:none;margin-left:auto;margin-right:auto;"></div><img style="height: 100%;width: 100%;max-width:' + dw * 0.7 + 'px;max-height: ' + dh * 0.7 + 'px" src="' + urls + '">'
-                });
-            });
-        }
+    function lookimgs(id,urls) {
+        //单张图片预览
+        var viewer = new Viewer(document.getElementById('imgs'+id));
+        document.getElementById('imgs'+id).click();
+
+        // var index=urls.lastIndexOf("\.");
+        // var str =urls.substring(index+1,urls.length);
+        // if(str=='png' || str=='jpg' || str=='GIF' || str=='bmp' || str=='jpeg'){
+        //     layer.load(1);
+        //     var w = 0;
+        //     var h = 0;
+        //     var dw = document.body.clientWidth;
+        //     var dh = document.body.clientHeight;
+        //     $("#linshi").attr('src', urls);
+        //     $("#linshi").off("load");
+        //     $("#linshi").on("load", function () {
+        //         w = $(this).width();
+        //         h = $(this).height();
+        //         layer.closeAll('loading');
+        //         layer.open({
+        //             type: 1,
+        //             title: false,
+        //             closeBtn: 0,
+        //             area: 'auto',
+        //             skin: 'layui-layer-nobg', //没有背景色
+        //             shadeClose: true,
+        //             //content: '<div style="width:'+ dw * 0.7 + 'px;height:auto;text-align:center;float:none;margin-left:auto;margin-right:auto;"></div><img style="height: 100%;width: 100%;max-width:' + dw * 0.7 + 'px;max-height: ' + dh * 0.7 + 'px" src="' + urls + '">'
+        //             content: '<div style="width:'+ dw * 0.7 + 'px;height:auto;text-align:center;float:none;margin-left:auto;margin-right:auto;"></div><img style="height: auto;width: auto;max-width:100%;max-height:100%" src="' + urls + '">'
+        //
+        //         });
+        //     });
+        // }
     }
 
     function fenye(url, selecttype,StorageType,starttime,stoptime) {
@@ -381,7 +515,11 @@
                         var view = {
                             imgurl: rows.imgurl
                         };
-                        var output = Mustache.render('<a style="cursor:pointer;" onclick="lookimgs(\'{{&imgurl}}\')">{{imgurl}}</a>', view);
+                        if(kooltype==1){
+                            var output = Mustache.render('<a style="cursor:pointer;" onclick="lookimgs('+rows.id+',\'{{&imgurl}}\')">{{imgurl}}<img class="slt" style="display: none;" id="imgs'+rows.id+'" src="{{imgurl}}" alt="" /></a>', view);
+                        }else{
+                            var output = Mustache.render('<a style="cursor:pointer;"  onclick="lookimgs('+rows.id+',\'{{&imgurl}}\')"><img class="slt" id="imgs'+rows.id+'" src="{{imgurl}}" alt="" /></a>', view);
+                        }
                         return output;
                         //return "<a style=\"cursor:pointer;\" onclick='lookimgs(\"" + rows.imgurl + "\");'>" + rows.imgurl + "</a>";
                     },
@@ -444,17 +582,24 @@
                     //部门名字
                     title: '操作',
                     formatter: function (value, rows, index) {
-                        var htm = "<a onclick='deleimg(" + rows.id + "," + rows.source + ")' class='btn btn-danger btn-xs'>删除</a>" + "&nbsp;&nbsp;&nbsp;";
-                        htm += '<a onclick="copy(\'' + rows.imgurl +
-                            '\')" class="btn btn-info btn-xs">复制</a>';
+                        var view = {
+                            imgurl: rows.imgurl,
+                            path:rows.imgname,
+                            size:rows.sizes
+                        };
+                        var htm = '<a onclick="copy(\'' + rows.imgurl +
+                            '\')" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-list-alt" title="复制"></span></a>'+ "&nbsp;&nbsp;";//复制
+                        htm += Mustache.render("<a onclick='erwm(\"{{&imgurl}}\",\"{{path}}\",\"{{size}}\")' class='btn btn-success btn-xs'><span title='二维码' class='glyphicon glyphicon-qrcode'></span></a>"+ "&nbsp;&nbsp;", view) ;//二维码
+                        htm += "<a onclick='deleimg(" + rows.id + "," + rows.source + ")' class='btn btn-danger btn-xs'><span title='删除' class='glyphicon glyphicon-trash'></span></a>";//删除
                         return htm;
+                        //<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">Tooltip on bottom</button>
                     },
                     align: 'center'
                 }
             ]
         });
         t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
-            console.log("load success");
+            //console.log("load success");
             $(".pull-right").css("display", "block");
         });
     }
@@ -462,6 +607,41 @@
     function thisclear() {
         $('#reservation').val('');
     }
+
+    function erwm(url,path,size) {
+        var loginHtml = $("#loginHtml").html();          // 获取登录窗体的代码
+        showLayer(loginHtml, 500, 300, closeCallback);   // 显示弹出层
+        var imgbase64 = jrQrcode.getQrBase64(url, '#isimgs');
+        $('#imgbase64').attr("src", imgbase64);
+        //$('#erwmxq').html('<h4 class="title">文件大小：'+size+'K</h4>')
+    }
+        // 弹出层关闭回调函数
+        function closeCallback(){
+            $(".error-msg").html("");
+        }
+        // 关闭弹出层
+        function hideLayer(){
+            $("#layer-mask").hide();             // 隐藏弹出层遮罩
+            $("#layer-pop").hide();              // 隐藏弹出层窗体
+        }
+        // 显示弹出层函数
+        function showLayer(html, width, height, closeCallback){
+            $("#layer-mask").show();             // 显示弹出层遮罩
+            $("#layer-pop").show();              // 显示弹出层窗体
+            $("#layer-pop").css({                // 设置弹出层窗体样式
+                width: width,
+                height: height
+            });
+            $("#layer-content").html(html);      // 填充弹出层窗体内容
+            $("#layer-close").click(function(){
+                hideLayer();                     //关闭弹出层
+                closeCallback();                 //关闭弹出层的回调函数
+            })
+        }
+
+
+
+
 
 </script>
 </html>

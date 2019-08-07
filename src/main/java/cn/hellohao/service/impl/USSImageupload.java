@@ -2,6 +2,7 @@ package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
+import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.ImgUrlUtil;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
@@ -91,23 +92,29 @@ public class USSImageupload {
     }
 
     //初始化
-    public static void Initialize(Keys k) {
+    public static Integer Initialize(Keys k) {
+        int ret = -1;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null
                 && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
-            // 初始化
-            // 创建UpYun实例。
-            upyun = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
-            key = k;
+            if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("")
+                    && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
+                // 初始化
+                // 创建UpYun实例。
+                upyun = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
+                key = k;
+                ret = 1;
+            }
         }
+        return ret;
     }
 
 
     /**
      * 客户端接口
      * */
-    public Map<String, Integer> clientuploadUSS(Map<String, MultipartFile> fileMap, String username) throws Exception {
+    public Map<ReturnImage, Integer> clientuploadUSS(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) throws Exception {
         File file = null;
-        Map<String, Integer> ImgUrl = new HashMap<>();
+        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
         //设置Header
         ObjectMetadata meta = new ObjectMetadata();
         meta.setHeader("Content-Disposition", "inline");
@@ -118,13 +125,24 @@ public class USSImageupload {
             file = changeFile(entry.getValue());
             // 上传文件流。
             System.out.println("客户端：待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-            // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
-            upyun.setContentMD5(UpYun.md5(file));
-            boolean result = upyun.writeFile(username + "/" + uuid+times + "." + entry.getKey(), file, true);
-            if(result){
-                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+            ReturnImage returnImage = new ReturnImage();
+            if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
+                // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
+                upyun.setContentMD5(UpYun.md5(file));
+                boolean result = upyun.writeFile(username + "/" + uuid+times + "." + entry.getKey(), file, true);
+                if(result){
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+
+                    //ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                }else{
+                    System.err.println("上传失败");
+                }
             }else{
-                System.err.println("上传失败");
+                returnImage.setImgname(entry.getValue().getOriginalFilename());
+                returnImage.setImgurl("文件超出系统设定大小，不得超过");
+                ImgUrl.put(returnImage, -1);
             }
         }
         return ImgUrl;

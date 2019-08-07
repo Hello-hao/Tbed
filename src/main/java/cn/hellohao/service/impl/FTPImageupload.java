@@ -2,6 +2,7 @@ package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
+import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.FTPUtils;
 import cn.hellohao.utils.ImgUrlUtil;
 import cn.hellohao.utils.Print;
@@ -100,48 +101,56 @@ public class FTPImageupload {
     }
 
     //初始化FTP对象存储
-    public static void Initialize(Keys k) {
+    public static Integer Initialize(Keys k) {
+        int ret = -1;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null && k.getRequestAddress()!=null ) {
-            FTPClient ftp = new FTPClient();
-            String[] host = k.getEndpoint().split("\\:");
-            String h = host[0];
-            Integer p = Integer.parseInt(host[1]);
-            try {
-                if(!ftp.isConnected()){
-                    ftp.connect(h,p);
-                }
-                //如果是需要认证的服务器，就需要账号和密码来登录
-                ftp.login(k.getAccessKey(), k.getAccessSecret());
-            } catch (IOException e) {
-                e.printStackTrace();
+            if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("") && !k.getRequestAddress().equals("") ) {
+                FTPClient ftp = new FTPClient();
+                int flag = k.getEndpoint().indexOf(":");
+                if(flag>0){
+                    String[] host = k.getEndpoint().split("\\:");
+                    String h = host[0];
+                    Integer p = Integer.parseInt(host[1]);
+                    try {
+                        if(!ftp.isConnected()){
+                            ftp.connect(h,p);
+                        }
+                        //如果是需要认证的服务器，就需要账号和密码来登录
+                        ftp.login(k.getAccessKey(), k.getAccessSecret());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    //获取服务器返回的状态码
+                    int reply = ftp.getReplyCode();
+                    System.out.println(reply);
+                    /*
+                     * 判断是否连接成功
+                     * 所有以2开头的代码是正完成响应。
+                     * FTP服务器将在最终发送一个肯定的完成响应成功完成命令。
+                     */
+                    if (!FTPReply.isPositiveCompletion(reply)) {
+                        try {
+                            ftp.disconnect();
+                        }catch (IOException e){
+                            System.out.println(e);
+                        }
+                        Print.warning("连接失败");
+                        ret = -1;
+                    }
+                    Print.Normal("链接成功");
+                    //boolean isUpload = ftp.storeFile("/ftp/upload.jpg", fis);
+                    ftpClient1 = ftp;
+                    key = k;
+                    ret = 1;
             }
-            //获取服务器返回的状态码
-            int reply = ftp.getReplyCode();
-            System.out.println(reply);
-            /*
-             * 判断是否连接成功
-             * 所有以2开头的代码是正完成响应。
-             * FTP服务器将在最终发送一个肯定的完成响应成功完成命令。
-             */
-            if (!FTPReply.isPositiveCompletion(reply)) {
-                try {
-                    ftp.disconnect();
-                }catch (IOException e){
-                    System.out.println(e);
-                }
-                Print.warning("连接失败");
-                return;
             }
-            Print.Normal("链接成功");
-            //boolean isUpload = ftp.storeFile("/ftp/upload.jpg", fis);
-            ftpClient1 = ftp;
-            key = k;
-        }
+            }
+        return ret;
     }
     /**
      * 客户端接口
      * */
-    public Map<String, Integer> clientuploadCOS(Map<String, MultipartFile> fileMap, String username) throws Exception {
+    public Map<ReturnImage, Integer> clientuploadFTP(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) throws Exception {
         String[] host = key.getEndpoint().split("\\:");
         String h = host[0];
         Integer p = Integer.parseInt(host[1]);
@@ -149,7 +158,7 @@ public class FTPImageupload {
         FTPUtils ftps = new FTPUtils(h, p, key.getAccessKey(), key.getAccessSecret());
         boolean flag = ftps.open();
         File file = null;
-        Map<String, Integer> ImgUrl = new HashMap<>();
+        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
@@ -158,11 +167,22 @@ public class FTPImageupload {
             String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
             ftps.mkDir(File.separator+username);
             if (flag) {
-                ftps.upload(file, File.separator+userkey, "");
                 ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
-                ImgUrl.put(key.getRequestAddress() + File.separator+userkey + username + File.separator+userkey + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
-                ftps.close();
+                if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
+                    ftps.upload(file, File.separator+userkey, "");
+
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    //ImgUrl.put(key.getRequestAddress() + File.separator+userkey + username + File.separator+userkey + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                    ftps.close();
+                }else{
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl("文件超出系统设定大小，不得超过");
+                    ImgUrl.put(returnImage, -1);
+                    ftps.close();
+                }
+
             }
         }
         return ImgUrl;

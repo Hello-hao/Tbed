@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import cn.hellohao.pojo.Config;
 import cn.hellohao.pojo.EmailConfig;
@@ -39,7 +40,7 @@ public class UserController {
 
     @RequestMapping("/register")
     @ResponseBody
-    public String Register(User user) {
+    public String Register(@Valid User user) {
         //取当前时间
         JSONObject jsonObject = new JSONObject();
         EmailConfig emailConfig = emailConfigService.getemail();
@@ -82,9 +83,10 @@ public class UserController {
         return jsonObject.toString();
     }
 
+
     @RequestMapping("/login.do")
     @ResponseBody
-    public String login(HttpServletRequest request, HttpSession httpSession, String email, String password) {
+    public String login( HttpSession httpSession, String email, String password) {
         JSONArray jsonArray = new JSONArray();
 
         Integer ret = userService.login(email, password);

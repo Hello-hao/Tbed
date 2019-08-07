@@ -28,7 +28,10 @@
                 `urltype` = #{urltype},
             </if>
             <if test="isupdate != null">
-                `isupdate` = #{isupdate}
+                `isupdate` = #{isupdate},
+            </if>
+            <if test="api != null">
+                `api` = #{api}
             </if>
 
         </set>

@@ -4,9 +4,9 @@
     <!-- meta -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<!--    <meta name="description" content="Hellohao图床是一个基于JAVA-SpringBoot开发的,免费纯粹的图片存放驿站">&lt;!&ndash;站点描述&ndash;&gt;-->
+<!--    <meta name="description" content="Hellohao图床是一个基于JAVA-SpringBoot开发的,免费纯粹的图片存放驿站">-->
 <!--    <meta name="author" content="tc.hellohao.cn">-->
-<!--    <meta name="keywords" content="图床,图片上传,hellohao图床,开源图床,hellohao">&lt;!&ndash;关键词&ndash;&gt;-->
+<!--    <meta name="keywords" content="图床,图片上传,hellohao图床,开源图床,hellohao">-->
     <!-- title -->
 	<title th:text="${config.getWebname()}"></title>
 
@@ -274,8 +274,8 @@ Technology constantly updated, we will always move forward on the road ahead.
 				<div class="form loginBox">
 					<form method="post" data-remote="true" accept-charset="UTF-8">
 						<div style="font-size: 13px;">
-                                        <span> ●用户名注册后不能修改<br/>
-                                         ●邮箱激活链接如果没有请在【垃圾箱】查找</span>
+                                        <span> > 用户名注册后不能修改<br/>
+                                         > 邮箱激活链接如果没有请在【垃圾箱】查找</span>
 						</div>
 						<hr/>
 						<input id="registerusername" style="border-left:none;border-right:none;border-top:none;border-bottom:none;"  type="text"
@@ -318,7 +318,7 @@ Technology constantly updated, we will always move forward on the road ahead.
 					</form>
 				</div>
 				<div style="width: 100%;height: 30px;">
-					<button class=" btn-sm btn-primary" id="dl" style="float: right;" onclick="loginAjax()">登录</button>
+					<button class=" btn-sm btn-primary" data-loading-text="Loading..." id="dl" style="float: right;" onclick="loginAjax()">登录</button>
 				</div>
 			</div>
 		</div>
@@ -386,6 +386,10 @@ Technology constantly updated, we will always move forward on the road ahead.
 
 		});
 		$(function () {
+			var sc = [[${error}]];
+			if(sc!=1 && sc!=null){
+				alert(sc);
+			}
 			var gg=[[${config.getNotice()}]];
 			var arr=new Array();
 			var arr2=new Array();

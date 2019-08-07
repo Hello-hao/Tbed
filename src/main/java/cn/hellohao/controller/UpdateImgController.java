@@ -6,6 +6,7 @@ import java.util.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
@@ -65,27 +66,28 @@ public class UpdateImgController {
             key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
             //b = StringUtils.doNull(key);//判断对象是否有空值
             if(key.getStorageType()!=0 && key.getStorageType()!=null){
+                int ret =0;
                 if(key.getStorageType()==1){
-                    nOSImageupload.Initialize(key);//实例化网易
+                    ret =nOSImageupload.Initialize(key);//实例化网易
                 }else if (key.getStorageType()==2){
-                    OSSImageupload.Initialize(key);
+                    ret =OSSImageupload.Initialize(key);
                 }else if(key.getStorageType()==3){
-                    USSImageupload.Initialize(key);
+                    ret = USSImageupload.Initialize(key);
                 }else if(key.getStorageType()==4){
-                    KODOImageupload.Initialize(key);
+                    ret = KODOImageupload.Initialize(key);
                 }else if(key.getStorageType()==6){
-                    COSImageupload.Initialize(key);
+                    ret = COSImageupload.Initialize(key);
                 }else if(key.getStorageType()==7){
-                    FTPImageupload.Initialize(key);
+                    ret = FTPImageupload.Initialize(key);
                 }
                 else{
                     Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
                 }
+                if(ret<1){model.addAttribute("error", "当前存储源参数配置不完整，请联系管理员配置存储源。");}
+                else{model.addAttribute("error", 1);}
             }
         }
-        //if(b){
 
-        //}
         User u = (User) httpSession.getAttribute("user");
         String email = (String) httpSession.getAttribute("email");
         if (email != null) {
@@ -114,7 +116,6 @@ public class UpdateImgController {
         Integer isupdate = 1;
         if(uploadConfig.getIsupdate()!=1){
             isupdate = (u == null) ? 0: 1;//如果u等于null那么isupdate就等于0，否则等于1
-            //isupdate=0;
         }
         model.addAttribute("ykxz", isupdate);
         return "index";

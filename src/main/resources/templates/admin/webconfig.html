@@ -125,7 +125,18 @@
 
 
             <div class="layui-tab-item">
-
+                <h3 style="margin-top: 50px;">站点API配置</h3>
+                <hr />
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">图床API</label>
+                        <div class="layui-input-block">
+                            <input id="bedapi" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest2"
+                                   lay-text="开启|关闭">
+                        </div>
+                    </div>
+                </form>
+                <br />
                 <h3>游客上传配置</h3>
                 <hr />
                 <form class="layui-form layui-form-pane" action="">
@@ -185,6 +196,8 @@
                     </div>
                 </div>
                 </form>
+                <br />
+
                 <a class="layui-btn" lay-filter="demo2" onclick="scconfig()">保存</a>
             </div>
         </div>
@@ -195,7 +208,7 @@
 
     <script type="text/javascript">
         var isupval = [[${updateConfig.getIsupdate()}]];
-
+        var isapi = [[${updateConfig.getApi()}]];
         $(function () {
             layui.use(['form','table','element'], function(){
                 var table = layui.table;
@@ -209,11 +222,23 @@
                         isupdate(0);
                     }
                 });
+                form.on('switch(switchTest2)', function (data) {
+                    if (this.checked == true) {
+                        upapi(1);
+                    } else {
+                        upapi(0);
+                    }
+                });
                 });
             if (isupval == 1) {
                 $('#upopen').attr("checked", 'hellohao'); //增加属性
             } else {
                 $('#upopen').removeAttr("checked"); //移除属性
+            }
+            if (isapi == 1) {
+                $('#bedapi').attr("checked", 'hellohao'); //增加属性
+            } else {
+                $('#bedapi').removeAttr("checked"); //移除属性
             }
         });
         $(function () {
@@ -318,6 +343,27 @@
                             layer.msg("游客上传已开启", {icon: 1});
                         } else {
                             layer.msg("游客上传已禁用", {icon: 1});
+                        }
+                    } else {
+                        layer.msg("操作失败，请重新打开页面会后尝试", {icon: 2});
+                    }
+                }
+            });
+        }
+        //设置开启/关闭图床api
+        function upapi(values) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/scconfig",
+                dataType: "text",
+                data: {api: values},
+                success: function (data) {
+                    var vals = Number(data);
+                    if (vals > 0) {
+                        if (values == 1) {
+                            layer.msg("已开启站点API", {icon: 1});
+                        } else {
+                            layer.msg("已禁用站点API", {icon: 1});
                         }
                     } else {
                         layer.msg("操作失败，请重新打开页面会后尝试", {icon: 2});

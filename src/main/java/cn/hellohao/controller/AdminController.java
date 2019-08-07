@@ -38,11 +38,13 @@ public class AdminController {
     private ImgreviewService imgreviewService;
     @Autowired
     private ConfigService configService;
-
+    @Autowired
+    private UploadConfigService uploadConfigService;
 
     @RequestMapping(value = "/goadmin")
     public String goadmin1(HttpSession session, Model model, HttpServletRequest request) {
         User user = (User) session.getAttribute("user");
+        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         if(user!=null){
             if (user.getLevel() == 1) {
                 model.addAttribute("level", "普通用户");
@@ -53,6 +55,7 @@ public class AdminController {
             }
             model.addAttribute("levels", user.getLevel());
             model.addAttribute("username", user.getUsername());
+            model.addAttribute("api", uploadConfig.getApi());
             return "admin/index";
         }else{
             return "redirect:/";
@@ -331,7 +334,17 @@ public class AdminController {
         // -1 用户名重复
         return jsonArray.toString();
     }
-
+    //进入api
+    @RequestMapping(value = "/toapi")
+    public String toapi(HttpSession session, Model model, HttpServletRequest request) {
+        User u = (User) session.getAttribute("user");
+        Config config = configService.getSourceype();
+        //key信息
+        model.addAttribute("username", u.getUsername());
+        model.addAttribute("level", u.getLevel());
+        model.addAttribute("domain", config.getDomain());
+        return "admin/api";
+    }
 
     @GetMapping(value = "/images/{id}")
     @ResponseBody

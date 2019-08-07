@@ -1,6 +1,7 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.pojo.ReturnImage;
+import cn.hellohao.pojo.UploadConfig;
 import com.google.gson.Gson;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
@@ -78,10 +79,10 @@ public class LocUpdateImg {
     /**
      * 客户端接口
      * */
-    public Map<String, Integer> clientuploadKODO(Map<String, MultipartFile> fileMap, String username) throws Exception {
+    public static Map<ReturnImage, Integer> clientuploadFTP(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) {
         String filePath =File.separator + "HellohaoData" + File.separator;
         File file = null;
-        Map<String, Integer> ImgUrl = new HashMap<>();
+        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
@@ -89,16 +90,27 @@ public class LocUpdateImg {
             //file = SetFiles.changeFile(entry.getValue());
             // 上传文件流。
             System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-            File dest = new File(filePath + username + File.separator+ uuid+times + "." + entry.getKey());
-            if (!dest.getParentFile().exists()) {
-                dest.getParentFile().mkdirs();
-            }
-            try {
-                entry.getValue().transferTo(dest);
-                ImgUrl.put(username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
-            } catch (IOException e) {
-                e.printStackTrace();
-                System.err.println("上传失败");
+            ReturnImage returnImage = new ReturnImage();
+            if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
+                File dest = new File(filePath + username + File.separator+ uuid+times + "." + entry.getKey());
+                if (!dest.getParentFile().exists()) {
+                    dest.getParentFile().mkdirs();
+                }
+                try {
+                    entry.getValue().transferTo(dest);
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    //ImgUrl.put(username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.err.println("上传失败");
+                }
+            }else{
+                //ImgUrl.put("文件超出系统设定大小，不得超过"+uploadConfig.getFilesizeuser()+"M", -1);
+                returnImage.setImgname(entry.getValue().getOriginalFilename());
+                returnImage.setImgurl("文件超出系统设定大小，不得超过");
+                ImgUrl.put(returnImage,-1);
             }
         }
         return ImgUrl;

@@ -90,6 +90,13 @@
                             </a>
                         </dd>
                     </dl>
+                    <dl class="layui-nav-child" th:if=" ${api} gt '0'">
+                        <dd>
+                            <a href="#" lay-id="7" lay-url="/admin/toapi">
+                                <i class="layui-icon layui-icon-right"></i><cite>API接口</cite>
+                            </a>
+                        </dd>
+                    </dl>
                 </li>
 
                 <li class="layui-nav-item" th:if=" ${levels} gt '1'">

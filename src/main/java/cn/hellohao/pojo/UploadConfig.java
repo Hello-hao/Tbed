@@ -8,11 +8,12 @@ public class UploadConfig {
     private Integer imgcountuser;
     private Integer urltype;
     private Integer isupdate;
+    private Integer api;
 
     public UploadConfig() {
     }
 
-    public UploadConfig(String suffix, Integer filesizetourists, Integer filesizeuser, Integer imgcounttourists, Integer imgcountuser, Integer urltype, Integer isupdate) {
+    public UploadConfig(String suffix, Integer filesizetourists, Integer filesizeuser, Integer imgcounttourists, Integer imgcountuser, Integer urltype, Integer isupdate, Integer api) {
         this.suffix = suffix;
         this.filesizetourists = filesizetourists;
         this.filesizeuser = filesizeuser;
@@ -20,6 +21,7 @@ public class UploadConfig {
         this.imgcountuser = imgcountuser;
         this.urltype = urltype;
         this.isupdate = isupdate;
+        this.api = api;
     }
 
     public String getSuffix() {
@@ -76,5 +78,13 @@ public class UploadConfig {
 
     public void setIsupdate(Integer isupdate) {
         this.isupdate = isupdate;
+    }
+
+    public Integer getApi() {
+        return api;
+    }
+
+    public void setApi(Integer api) {
+        this.api = api;
     }
 }

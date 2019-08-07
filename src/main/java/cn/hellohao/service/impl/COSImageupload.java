@@ -2,6 +2,7 @@ package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
+import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.ImgUrlUtil;
 import cn.hellohao.utils.Print;
 import com.netease.cloud.auth.BasicCredentials;
@@ -112,56 +113,72 @@ public class COSImageupload {
     }
 
     //初始化网易NOS对象存储
-    public static void Initialize(Keys k) {
+    public static Integer Initialize(Keys k) {
+        int ret = -1;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
                 && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
-// 1 初始化用户身份信息（secretId, secretKey）。
-            String secretId = k.getAccessKey();
-            String secretKey = k.getAccessSecret();
-            COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
-// 2 设置 bucket 的区域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
-// clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
-            Region region = new Region(k.getEndpoint());
-            ClientConfig clientConfig = new ClientConfig(region);
-// 3 生成 cos 客户端。
-            cosClient = new COSClient(cred, clientConfig);
-            System.out.println("==="+cosClient);
-//查询桶
-            try {
-                List<Bucket> buckets = cosClient.listBuckets();
-                for (Bucket bucket : buckets) {
-                    if (bucket.getName().equals(k.getBucketname())) {
-                        Print.Normal("当前桶名称：" + bucket.getName());
-                        BarrelName = bucket.getName();
-                    }
-                }
-            } catch (CosServiceException serverException) {
-                serverException.printStackTrace();
-            } catch (CosClientException clientException) {
-                clientException.printStackTrace();
+            if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
+                    && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
+                // 1 初始化用户身份信息（secretId, secretKey）。
+                String secretId = k.getAccessKey();
+                String secretKey = k.getAccessSecret();
+                COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
+                // 2 设置 bucket 的区域, COS 地域的简称请参照 https://cloud.tencent.com/document/product/436/6224
+                // clientConfig 中包含了设置 region, https(默认 http), 超时, 代理等 set 方法, 使用可参见源码或者常见问题 Java SDK 部分。
+                Region region = new Region(k.getEndpoint());
+                ClientConfig clientConfig = new ClientConfig(region);
+                // 3 生成 cos 客户端。
+                cosClient = new COSClient(cred, clientConfig);
+                BarrelName = k.getBucketname();
+                //查询桶
+//                try {
+//                    List<Bucket> buckets = cosClient.listBuckets();
+//                    for (Bucket bucket : buckets) {
+//                        if (bucket.getName().equals(k.getBucketname())) {
+//                            Print.Normal("当前桶名称：" + bucket.getName());
+//                            BarrelName = bucket.getName();
+//                        }
+//                    }
+//                } catch (CosServiceException serverException) {
+//                    serverException.printStackTrace();
+//                } catch (CosClientException clientException) {
+//                    clientException.printStackTrace();
+//                }
+                key = k;
+                ret = 1;
             }
-            key = k;
         }
+        return ret;
     }
     /**
      * 客户端接口
      * */
-    public Map<String, Integer> clientuploadCOS(Map<String, MultipartFile> fileMap, String username) throws Exception {
+    public Map<ReturnImage, Integer> clientuploadCOS(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) throws Exception {
 
         File file = null;
-        Map<String, Integer> ImgUrl = new HashMap<>();
+        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
             file = changeFile(entry.getValue());
             try {
-                // 指定要上传到 COS 上对象键
-                String userkey =username + "/" + uuid+times + "." + entry.getKey();
-                PutObjectRequest putObjectRequest = new PutObjectRequest(BarrelName, userkey, file);
-                PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-                ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                ReturnImage returnImage = new ReturnImage();
+                if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
+                    // 指定要上传到 COS 上对象键
+                    String userkey =username + "/" + uuid+times + "." + entry.getKey();
+                    PutObjectRequest putObjectRequest = new PutObjectRequest(BarrelName, userkey, file);
+                    PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
 
+//                    ImgUrl.put(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
+                }else{
+                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgurl("文件超出系统设定大小，不得超过");
+                    ImgUrl.put(returnImage, -1);
+                }
             } catch (Exception e) {
                 System.out.println("上传报错:" + e.getMessage());
             }

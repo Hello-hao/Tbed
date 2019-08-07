@@ -231,7 +231,7 @@
            //alert("文件上传失败")
             layui.use('layer', function () {
                 layer = layui.layer;
-                layer.msg("文件上传失败", {icon: 2});
+                layer.msg("文件上传失败，或许你的存储源配置不正确。", {icon: 2});
             });
         });
 
@@ -456,7 +456,7 @@
                 stats = uploader.getStats();
                 if ( stats.uploadFailNum ) {
                     text = '已成功上传' + stats.successNum+ '文件，'+
-                        stats.uploadFailNum + '文件上传失败，<a class="retry" href="#">重新上传</a>失败或<a class="ignore" href="#">忽略</a>'
+                        stats.uploadFailNum + '文件上传失败，<a class="retry" href="#" style="color: #4ebd87;">重新上传</a>失败或<a class="ignore" href="#" style="color: #4ebd87;">忽略</a>'
                 }
 
             } else {
