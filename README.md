@@ -1,13 +1,13 @@
 # Hellohao图床 - 全新响应式UI
 
 
-![https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square](https://img.shields.io/badge/license-MIT-blue.svg?longCache=true&style=flat-square)
+![https://img.shields.io/badge/license-LGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-LGPL-blue.svg?longCache=true&style=flat-square)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
 ![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
 
 
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
-> 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`等多家对象存储.
+> 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`等多家对象存储.
 > 后台对用户管理。
 > 支持配置多家存储源。
 > 用户注册邮箱验证，以及后台配置邮箱服务器。
@@ -142,6 +142,8 @@ java -jar Tbed.jar
 * 首页框架: [Bootstrap](https://www.bootcss.com/)
 * 前端框架: [Layui](https://www.layui.com/)
 
+### 声明
+本程序免费提供给个人用户使用，未经允许不得作为盈利商业使用，如果你想商用，请先与我们联系，分享你的利益。
 
 
 ### 反馈交流
