@@ -34,6 +34,10 @@
 
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/15b3c0807113840.png)
 
+![图床后台管理.png](http://cdn.wwery.com/Hellohao/1a70a0807115019.png)
+
+![图床后台管理.png](http://cdn.wwery.com/Hellohao/6bfad0807115019.png)
+
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/361ea0731102001.png)
 
 ![图床后台管理3.png](https://i.loli.net/2019/06/27/5d13abbbbd76136816.png)
