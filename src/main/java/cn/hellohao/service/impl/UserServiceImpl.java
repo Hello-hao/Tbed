@@ -74,8 +74,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getuserlist() {
-        return userMapper.getuserlist();
+    public List<User> getuserlist(User user) {
+        return userMapper.getuserlist(user);
     }
 
     @Override
@@ -86,5 +86,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUsersMail(String uid) {
         return userMapper.getUsersMail(uid);
+    }
+
+    @Override
+    public Integer setisok(User user) {
+        return userMapper.setisok(user);
     }
 }

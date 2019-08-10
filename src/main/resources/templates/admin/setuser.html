@@ -10,17 +10,26 @@
 <body>
 <div class="layui-main" style="width: 50%;margin-top: 50px;">
     <h2>密码修改</h2>
+    <span id="tishi1" style="color: #DAA5A6;display: none;">只有管理员才能修改邮箱用户名，普通用户不可以修改。</span>
     <br/>
 
     <form class="layui-form layui-form-pane" action="">
 
         <hr/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">邮箱：</label>
+            <div class="layui-input-block">
+                <input id="email" type="text" name="title" autocomplete="off" disabled="true" class="layui-input"
+                       th:value="${user.getEmail()}"/>
+
+            </div>
+        </div>
 
         <div class="layui-form-item">
             <label class="layui-form-label">用户名：</label>
             <div class="layui-input-block">
                 <input id="username" type="text" name="title" autocomplete="off" disabled="true" class="layui-input"
-                       th:value="${username}"/>
+                       th:value="${user.getUsername()}"/>
             </div><span id="tishi" style="color: #DAA5A6;display: none;">用户名只可是英文或数字</span>
         </div>
 
@@ -47,7 +56,7 @@
     </form>
 </div>
 <script>
-    var level = [[${level}]];
+    var level = [[${user.getLevel()}]];
     layui.use(['form', 'layedit', 'laydate'], function () {
         var form = layui.form;
 
@@ -61,13 +70,16 @@
             //$('#username').attr("disabled",true);
             if(level==2){
                 $('#username').attr("disabled",false);
+                $('#email').attr("disabled",false);
                 $('#tishi').css('display','block');
+                $('#tishi1').css('display','block');
             }else{
                 $('#username').attr("disabled",true);
+                $('#email').attr("disabled",true);
+                $('#tishi1').css('display','none');
                 $('#tishi').css('display','none');
             }
         })
-        //监听指定开关
         //监听指定开关
         form.on('switch(switchTest)', function (data) {
             if (this.checked == true) {
@@ -81,6 +93,7 @@
 
     //修改密码
     function change() {
+        var email = $("#email").val();
         var username = $("#username").val();
         var newpassword = $("#newpassword").val();
         var registerpassword = $("#registerpassword").val();
@@ -92,26 +105,30 @@
                 //return false;
             }else{
                 if (newpassword == registerpassword) {
-                    $.ajax({
-                        type: "POST",
-                        url: "/admin/change",
-                        //data:{username:username,password:newpassword},
-                        data: {password: newpassword},
-                        dataType: "json",
-                        success: function (data) {
-                            if (data > 0) {
-                                layer.msg("修改成功,请重新登录。", {icon: 1});
-                                setTimeout(function () {
-                                    //这里写时间到后执行的代码
-                                    //window.location.reload();
-                                    parent.location.reload();//刷新父元素
-                                }, 2000);
+
+                    var ze = /^\w+@\w+(\.[a-zA-Z]{2,3}){1,2}$/;
+                    if (ze.test(email) == true) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/admin/change",
+                            //data:{username:username,password:newpassword},
+                            data: {email:email,username:username,password: newpassword},
+                            dataType: "json",
+                            success: function (data) {
+                                if (data > 0) {
+                                    layer.msg("修改成功,请重新登录。", {icon: 1});
+                                    setTimeout(function () {
+                                        //这里写时间到后执行的代码
+                                        //window.location.reload();
+                                        parent.location.reload();//刷新父元素
+                                    }, 2000);
+                                }
+                                if (data == "-1") {
+                                    layer.msg("用户名重复。", {icon: 2});
+                                }
                             }
-                            if (data == "-1") {
-                                layer.msg("用户名重复。", {icon: 2});
-                            }
-                        }
-                    });
+                        });
+                    }else{layer.msg("邮箱格式不正确。", {icon: 2});}
                 } else {
                     layer.msg("两次密码输入不一致。", {icon: 2});
                 }

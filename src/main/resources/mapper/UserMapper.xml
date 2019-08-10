@@ -69,8 +69,17 @@
     <!-- 修改资料 -->
     <update id="change" parameterType="cn.hellohao.pojo.User">
         <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
-        UPDATE `user` set `password`=#{password} where email=#{email}
+        UPDATE `user` set
+        <if test="email != null">
+            `email` = #{email},
+        </if>
+        <if test="username != null">
+            `username` = #{username},
+        </if>
+        `password` = #{password}
+        where uid=#{uid}
     </update>
+
     <select id="checkUsername" parameterType="string" resultType="integer">
         SELECT count(username) FROM `user` where username=#{username}
     </select>
@@ -85,6 +94,13 @@
         *
         FROM
         user
+        <if test="username != null">
+            where
+            CONCAT(
+            username,
+            email
+            ) LIKE '%${username}%'
+        </if>
         order by birthder desc
     </select>
 
@@ -92,5 +108,10 @@
     <delete id="deleuser" parameterType="integer">
         DELETE FROM user WHERE id=#{id}
     </delete>
+
+    <update id="setisok" parameterType="cn.hellohao.pojo.User">
+        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
+        UPDATE `user` set `isok`=#{isok} where id=#{id}
+    </update>
 
 </mapper>

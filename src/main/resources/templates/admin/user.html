@@ -13,6 +13,13 @@
 </head>
 <body>
 <div class="layui-main">
+    <div class="demoTable" style="margin-top: 15px;">
+        查询用户：
+        <div class="layui-inline">
+            <input class="layui-input" name="id" id="demoReload" placeholder="请输入用户名或邮箱" autocomplete="off">
+        </div>
+        <button class="layui-btn" data-type="reload" onclick="query()">查询</button>
+    </div>
     <br />
     <table id="dates" lay-filter="test"></table>
 </div>
@@ -26,6 +33,7 @@
 <script th:src="@{/layui/layui/layui.js}"></script>
 
     <script type="text/javascript">
+        var tableIns = null;
         /**
          * 禁用 ajax 缓存
          */
@@ -33,17 +41,27 @@
             cache: false
         });
         var table = null;
-        layui.use(['table','layer'], function(){
+        layui.use(['form','table','layer'], function(){
             table = layui.table;
             var layer = layui.layer
-            table.render({
+            var form = layui.form;
+            form.on('checkbox', function (data) {
+                if (this.checked == true) {
+                    var id = $(this).val();
+                    setisko(id,1);
+                } else {
+                    var id = $(this).val();
+                    setisko(id,-1);
+                }
+            });
+            tableIns = table.render({
                 elem: '#dates'
                 ,cache: false//关闭本地磁盘缓存，
                 ,url:'/admin/selectusertable2'
                 //,limit:20 //默认为10
                 ,cols: [ [
-                    {field:'id', width:70, title: '编号', sort: true} //sort：true页面可进行排序操作
-                    ,{field:'username',  title: '用户名'}
+                    //{field:'id', width:70, title: '编号', sort: true}, //sort：true页面可进行排序操作
+                    {field:'username',  title: '用户名'}
                     ,{field:'email',width:170,  title: '邮箱', sort: true}
                     ,{field:'password',width:170,  title: '密码'}
                     ,{field:'birthder',width:170,  title: '注册时间'}
@@ -54,15 +72,24 @@
                             return str;
                         }
                     }
-                    ,{field:'level',width:100,  title: '状态',templet: function(d){
+                    ,{field:'level',width:120,  title: '状态',templet: function(d){
                             var str = '';
-                            if(d.isok==1){str='可用';}
-                            else {str='禁用';}
+                            if(d.isok==1){str = '  <form class="layui-form" action=""><div class="layui-form-item">\n' +
+                                '      <input type="checkbox" checked="checked"  value="'+d.id+'" lay-filter="keyong" name="like[write]" title="可用">\n' +
+                                '  </div></form>';}
+                            else {str = '  <form class="layui-form" action=""><div class="layui-form-item">\n' +
+                                '      <input type="checkbox" value="'+d.id+'"  lay-filter="jinyong" name="like[write]" title="禁用">\n' +
+                                '  </div></form>';}
                             return str;
                         }
                     }
-                    ,{field:'level',width:100,  title: '操作',templet: function(d){
-                            return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>';
+                    ,{field:'level',width:120,  title: '操作',templet: function(d){
+                            //return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>';
+                            return '<div class="layui-btn-group">\n' +
+                                '  <button type="button" class="layui-btn layui-btn-sm"  lay-event="del">\n' +
+                                '    <i class="layui-icon">&#xe640;</i>\n' +
+                                '  </button>\n' +
+                                '</div>';
                         }
                     }
                     //, {title: '操作', fixed: 'right',width:250, align: 'center', toolbar: '#column-toolbar'}
@@ -106,7 +133,36 @@
                 }
             });
         });
-
+        function setisko(id,val) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/setisok",
+                data: {id: id,isok:val},
+                dataType: "json",
+                success: function (data) {
+                    if (data > 0) {
+                        table.reload('dates');//重新获取表数据
+                        layer.msg('设置成功', {icon: 1});
+                    }else if(data==-1){
+                        layer.msg('设置失败', {icon: 2});
+                    }
+                }
+            });
+        }
+        function query(){
+            var data = $('#demoReload').val();
+            //这里以搜索为例
+            tableIns.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    username: data
+                    //,bbb: 'yyy'
+                    //…
+                }
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
     </script>
 </body>
 </html>

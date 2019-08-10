@@ -169,7 +169,7 @@ public class AdminController {
         PageHelper.startPage(pageNum, pageSize);
         List<User> users = null;
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
-            users = userService.getuserlist();// 这是我们的sql
+            users = userService.getuserlist(u);// 这是我们的sql
             // 使用pageInfo包装查询
             PageInfo<User> rolePageInfo = new PageInfo<>(users);//
             return new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
@@ -183,14 +183,16 @@ public class AdminController {
     @RequestMapping(value = "/selectusertable2")
     @ResponseBody
     public Map<String, Object> selectByFy12(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
-                                            @RequestParam(required = false) int limit) {
+                                            @RequestParam(required = false) int limit,String username) {
         User u = (User) session.getAttribute("user");
         // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
         // 从他的下一条sql开始分页
         PageHelper.startPage(page, limit);
         List<User> users = null;
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
-            users = userService.getuserlist();// 这是我们的sql
+            User user = new User();
+            user.setUsername(username);
+            users = userService.getuserlist(user);// 这是我们的sql
             // 使用pageInfo包装查询
             PageInfo<User> rolePageInfo = new PageInfo<>(users);//
             Map<String, Object> map = new HashMap<String, Object>();
@@ -311,8 +313,7 @@ public class AdminController {
     public String tosetuser(HttpSession session, Model model, HttpServletRequest request) {
         User u = (User) session.getAttribute("user");
         //key信息
-        model.addAttribute("username", u.getUsername());
-        model.addAttribute("level", u.getLevel());
+        model.addAttribute("user", u);
         return "admin/setuser";
     }
 
@@ -322,9 +323,17 @@ public class AdminController {
     public String change(HttpSession session, User user) {
         //Integer count = userService.checkUsername(user.getUsername());//查询用户名是否重复
         User u = (User) session.getAttribute("user");
-        user.setEmail(u.getEmail());
+        //user.setEmail(u.getEmail());
+        user.setUid(u.getUid());
         JSONArray jsonArray = new JSONArray();
-        Integer ret = userService.change(user);
+        Integer ret =0;
+        if(u.getLevel()==1){
+            user.setUsername(null);
+            user.setEmail(null);
+            ret = userService.change(user);
+        }else{
+            ret = userService.change(user);
+        }
         jsonArray.add(ret);
         if (u.getEmail() != null && u.getPassword() != null) {
             session.removeAttribute("user");

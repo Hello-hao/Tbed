@@ -26,7 +26,7 @@ public interface UserService {
 
     Integer getUserTotal();
 
-    List<User> getuserlist();
+    List<User> getuserlist(User user);
 
     Integer deleuser(Integer id);
 
@@ -38,4 +38,5 @@ public interface UserService {
     Integer uiduser(String uid);
 
     User getUsersMail(String uid);
+    Integer setisok (User user);
 }

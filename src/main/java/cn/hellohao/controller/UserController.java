@@ -88,7 +88,6 @@ public class UserController {
     @ResponseBody
     public String login( HttpSession httpSession, String email, String password) {
         JSONArray jsonArray = new JSONArray();
-
         Integer ret = userService.login(email, password);
         if (ret > 0) {
             User user = userService.getUsers(email);
@@ -97,8 +96,10 @@ public class UserController {
                 httpSession.setAttribute("email", user.getEmail());
                 httpSession.setAttribute("pass", user.getPassword());
                 jsonArray.add(1);
-            } else {
+            } else if(ret==-1){
                 jsonArray.add(-1);
+            }else {
+                jsonArray.add(-2);
             }
         } else {
             jsonArray.add(0);

@@ -99,6 +99,8 @@
 				<li><a href="javascript:;" class="md-trigger" data-modal="modal-4">注册&nbsp;<span class="glyphicon glyphicon-education" aria-hidden="true"></span></a></li>
 <!--				<li><a class="menu-link" href="https://github.com/Hello-hao/Tbed" target="_blank"-->
 <!--				>GitHub<i class="fa fa-github"></i></a></li>-->
+<!--				<li><a class="menu-link" href="http://www.hellohao.cn" target="_blank"-->
+<!--				>作者<i class="fa fa-github"></i></a></li>-->
 <!--				<li><a href="javascript:;" class="md-trigger" data-modal="modal-2">赞助商&nbsp;<i class="fa fa-share-alt"></i></a></li>-->
 
 <!--								<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"-->
@@ -543,8 +545,10 @@ Technology constantly updated, we will always move forward on the road ahead.
 					} else {
 						dd();
 						if (data == -1) {
-							toastr.error('账号未进行邮箱验证，请先验证邮箱。');
-						} else {
+							toastr.error('您的账号是未激活状态，无法登陆。');
+						} else if(data==-2){
+							toastr.error('您的账号已被冻结。');
+						}else {
 							toastr.error('登录失败，请重试。');
 						}
 						setTimeout(function () {
@@ -726,24 +730,6 @@ Technology constantly updated, we will always move forward on the road ahead.
 			$("#shi").html(hour);
 			$("#fen").html(min);
 			$("#miao").html(sec);
-		}
-		function xiazai(){
-			swal({
-				title: "即将下载客户端",
-				text: "客户端目前支持支Windows系统，Mac后期可能会推出。",
-				icon: "success",
-				buttons: true,
-				buttons: ["取消", "下载"],
-				dangerMode: false,
-			})
-					.then((value) => {
-				if (value) {
-					window.open("https://hellohao.nos-eastchina1.126.net/TbedClient/Hellohao.7z");
-				} else {
-
-				}
-			});
-
 		}
 //回车登录
 		function keyLogin(){

@@ -183,6 +183,16 @@ public class AdminRootController {
         return ret;
     }
 
+    //修改用户激活状态
+    @PostMapping("/setisok")
+    @ResponseBody
+    public String setisok(HttpSession session, User user) {
+        Integer ret = userService.setisok(user);
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(ret);
+        return jsonArray.toString();
+    }
+
     //关于系统
     @RequestMapping("/about")
     public String about(HttpSession session,Model model ) {
