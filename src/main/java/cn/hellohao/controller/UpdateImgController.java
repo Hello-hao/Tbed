@@ -126,7 +126,6 @@ public class UpdateImgController {
     @ResponseBody
     public String upimg( HttpSession session
             , @RequestParam(value = "file", required = false) MultipartFile[] file) throws Exception {
-
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");

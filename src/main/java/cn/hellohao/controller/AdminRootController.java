@@ -6,6 +6,7 @@ import cn.hellohao.utils.StringUtils;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,10 @@ public class AdminRootController {
     private UploadConfigService uploadConfigService;
     @Autowired
     private NoticeService noticeService;
-
+    @Autowired
+    private SysConfigService sysConfigService;
+    @Value("${systemupdate}")
+    private String systemupdate;
     //返回对象存储界面
     @RequestMapping(value = "/touser")
     public String touser() {
@@ -151,8 +155,10 @@ public class AdminRootController {
     public String towebconfig(Model model) {
         Config config = configService.getSourceype();
         UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
+        SysConfig sysConfig = sysConfigService.getstate();
         model.addAttribute("config",config);
         model.addAttribute("updateConfig",updateConfig);
+        model.addAttribute("sysconfig",sysConfig);
         return "admin/webconfig";
     }
     //修改站点配置
@@ -160,7 +166,7 @@ public class AdminRootController {
     @ResponseBody
     public Integer updateconfig(String webname,String explain, String logos,
                                 String footed, String links, String notice,String baidu,
-                                String domain,String background1,String background2 ) {
+                                String domain,String background1,String background2,Integer sett ) {
         Config config = new Config();
         config.setWebname(webname);
         config.setExplain(explain);
@@ -172,6 +178,7 @@ public class AdminRootController {
         config.setDomain(domain);
         config.setBackground1(background1);
         config.setBackground2(background2);
+        config.setSett(sett);
         Integer ret = configService.setSourceype(config);
         return ret;
     }
@@ -192,6 +199,15 @@ public class AdminRootController {
         jsonArray.add(ret);
         return jsonArray.toString();
     }
+    //修改注册开关
+    @PostMapping("/setstate")
+    @ResponseBody
+    public Integer setstate(HttpSession session, SysConfig sysConfig) {
+        Integer ret =-1;
+        ret = sysConfigService.setstate(sysConfig);
+        return ret;
+    }
+
 
     //关于系统
     @RequestMapping("/about")
@@ -199,6 +215,7 @@ public class AdminRootController {
         //Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
         User u = (User) session.getAttribute("user");
         model.addAttribute("level",u.getLevel());
+        model.addAttribute("systemupdate",systemupdate);
         return "admin/about";
     }
     //检查更新

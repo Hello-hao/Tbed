@@ -116,7 +116,7 @@
         <!-- section container -->
         <div class="section-container">
             <!-- home section -->
-            <section class="home-section">
+            <section id="diyi" class="home-section">
         	    	<!-- section background -->
         	    	<div class="bg-container"></div>
                 	<!-- end section background -->
@@ -183,7 +183,7 @@ Technology constantly updated, we will always move forward on the road ahead.
             <!-- end home section -->
             <div class="tlinks">Collect from <a href="/" >网站建设</a></div>
             <!-- contact section -->
-            <section class="contact-section">
+            <section id="dier" class="contact-section">
 				<ul style="  position: absolute;right: 63px;top: 24px;z-index: 9999;">
 					<li class="active">
 						<a class="menu-link" data-section="home" data-nav-title="home"data-section-pos="0" data-section-posy="0">
@@ -202,7 +202,7 @@ Technology constantly updated, we will always move forward on the road ahead.
 								<!--        <div class="form-group">-->
 								<!--图片上传模板-->
 								<div id="wrapper">
-									<div id="container">
+									<div id="container" >
 										<!--头部，相册选择和格式选择-->
 										<div id="uploader">
 											<div class="queueList">
@@ -389,6 +389,12 @@ Technology constantly updated, we will always move forward on the road ahead.
 		});
 		$(function () {
 			var sc = [[${error}]];
+            var sett = [[${config.getSett()}]];
+            if(sett!=1){
+                $('#diyi').removeClass('home-section');
+                $('#dier').addClass('home-section')
+                $('#dier').removeClass('contact-section');
+            }
 			if(sc!=1 && sc!=null){
 				alert(sc);
 			}

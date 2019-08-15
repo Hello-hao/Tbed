@@ -15,11 +15,11 @@
             <li class="layui-this" lay-id="111">首页设置</li>
             <li lay-id="222">百度统计</li>
             <li lay-id="333">上传配置</li>
+            <li lay-id="444">站点配置</li>
 
         </ul>
         <div class="layui-tab-content">
             <div class="layui-tab-item layui-show">
-
                 <form class="layui-form layui-form-pane" action="">
                     <div class="layui-form-item">
                         <label class="layui-form-label">首页公告</label>
@@ -105,8 +105,18 @@
 <!--                    </div>-->
 <!--                </div>-->
 
-
+                    <br />
+                    <form class="layui-form-item " >
+                        <div class="laydfdaui-form-item">
+                            <label class="layui-form-label">首页类型</label>
+                            <div class="layui-input-block" id="sett">
+                                <input type="radio" id="sett1" name="settweb" value="1" title="默认首页" checked>
+                                <input type="radio" id="sett2" name="settweb" value="2" title="精简首页">
+                            </div><span style="color: #DAA5A6;">精简首页：页面加载完直接打开上传页面，没有展示页</span>
+                        </div>
+                    </form>
                 </form>
+                <br />
                 <a class="layui-btn" lay-filter="demo2" onclick="updateconfig()">保存</a>
             </div>
             <div class="layui-tab-item">
@@ -191,8 +201,8 @@
                 <div class="laydfdaui-form-item">
                     <label class="layui-form-label">链接格式</label>
                     <div class="layui-input-block" id="imgurltype">
-                        <input type="radio" name="urltype" value="1" title="用户名格式：/user/">
-                        <input type="radio" name="urltype" value="2" title="日期格式：/YY/mm/dd/" checked>
+                        <input type="radio" id="urltype1" name="urltype" value="1" title="用户名格式：/user/">
+                        <input type="radio"  id="urltype2" name="urltype" value="2" title="日期格式：/YY/mm/dd/" checked>
                     </div>
                 </div>
                 </form>
@@ -200,6 +210,20 @@
 
                 <a class="layui-btn" lay-filter="demo2" onclick="scconfig()">保存</a>
             </div>
+<!--站点设置-->
+            <div class="layui-tab-item">
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">开放注册</label>
+                        <div class="layui-input-block">
+                            <input id="dologo" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest3"
+                                   lay-text="开启|关闭">
+                        </div>
+                    </div>
+                </form>
+                <h3>更多功能陆续开放...</h3>
+            </div>
+
         </div>
     </div>
 </div>
@@ -209,6 +233,7 @@
     <script type="text/javascript">
         var isupval = [[${updateConfig.getIsupdate()}]];
         var isapi = [[${updateConfig.getApi()}]];
+        var state = [[${sysconfig.getRegister()}]];
         $(function () {
             layui.use(['form','table','element'], function(){
                 var table = layui.table;
@@ -229,6 +254,15 @@
                         upapi(0);
                     }
                 });
+
+                form.on('switch(switchTest3)', function (data) {
+                    if (this.checked == true) {
+                        setstate(1);
+                    } else {
+                        setstate(2);
+                    }
+                });
+
                 });
             if (isupval == 1) {
                 $('#upopen').attr("checked", 'hellohao'); //增加属性
@@ -240,14 +274,26 @@
             } else {
                 $('#bedapi').removeAttr("checked"); //移除属性
             }
+            if (state == 1) {
+                $('#dologo').attr("checked", 'hellohao'); //增加属性
+            } else {
+                $('#dologo').removeAttr("checked"); //移除属性
+            }
+
         });
         $(function () {
            var usertype = [[${updateConfig.getUrltype()!=null?updateConfig.getUrltype():1}]];
+            var sett = [[${config.getSett()}]];
            if(usertype==2){
-               $('input:radio:input:radio:last').attr('checked', 'true');
+               $('#urltype2:radio:input:radio:last').attr('checked', 'true');
            }else{
-               $('input:radio:first').attr('checked', 'true');
+               $('#urltype1:radio:first').attr('checked', 'true');
            }
+            if(sett==2){
+                $('#sett2:radio:input:radio:last').attr('checked', 'true');
+            }else{
+                $('#sett1:radio:first').attr('checked', 'true');
+            }
         });
         function updateconfig() {
                 var webname = $("#webname").val();
@@ -259,12 +305,13 @@
                 var domain = $("#domain").val();
                 var background1 = $("#background1").val();
                 var background2 = $("#background2").val();
+                var sett = $('#sett input[name="settweb"]:checked ').val();
                 if (webname != "" && domain!="" ) {
                     $.ajax({
                         type: "POST",
                         url: "/admin/root/updateconfig",
                         dataType: "json",
-                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice,domain:domain,background1:background1,background2:background2},
+                        data: {webname: webname, explain: explain, logos: logos,footed:footed,links:links,notice:notice,domain:domain,background1:background1,background2:background2,sett:sett},
                         success: function (data) {
                             var vals = Number(data);
                             if (vals > 0) {
@@ -364,6 +411,26 @@
                             layer.msg("已开启站点API", {icon: 1});
                         } else {
                             layer.msg("已禁用站点API", {icon: 1});
+                        }
+                    } else {
+                        layer.msg("操作失败，请重新打开页面会后尝试", {icon: 2});
+                    }
+                }
+            });
+        }
+        function setstate(values) {
+            $.ajax({
+                type: "POST",
+                url: "/admin/root/setstate",
+                dataType: "json",
+                data: {register: values},
+                success: function (data) {
+                    var vals = Number(data);
+                    if (vals > 0) {
+                        if (values == 1) {
+                            layer.msg("已开放注册功能", {icon: 1});
+                        } else {
+                            layer.msg("已禁用注册功能", {icon: 1});
                         }
                     } else {
                         layer.msg("操作失败，请重新打开页面会后尝试", {icon: 2});

@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : 129.28.173.126
  Source Server Type    : MySQL
- Source Server Version : 50720
- Source Host           : localhost:3306
+ Source Server Version : 50562
+ Source Host           : 129.28.173.126:3306
  Source Schema         : picturebed
 
  Target Server Type    : MySQL
- Target Server Version : 50720
+ Target Server Version : 50562
  File Encoding         : 65001
 
- Date: 10/08/2019 16:24:06
+ Date: 15/08/2019 16:49:51
 */
 
 SET NAMES utf8mb4;
@@ -35,14 +35,14 @@ CREATE TABLE `config`  (
   `domain` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '站点域名',
   `background1` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '首页背景图',
   `background2` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上传页面背景图',
-  `sett` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `sett` int(2) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 3, 1, 'Hellohao', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao.nos-eastchina1.126.net/%E7%BD%91%E7%AB%99%E7%B4%A0%E6%9D%90/logo2.png', 'Hellohao  切勿上传违反中华人民共和国互联网法律条约资源', '<li><a href=\"http://www.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">作者博客</a></li><li><a href=\"http://bz.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">高清壁纸</a></li><li><a href=\"http://json.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">json格式化</a></li>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://tc.hellohao.cn', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/eb83a0714030248.jpg', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/086650714030248.jpg', NULL);
+INSERT INTO `config` VALUES (1, 1, 1, 'Hellohao', '本站是Hellohao图床测试站，账号/密码：admin，为了更多人测试，切勿修改账号密码，恶意使用永久拉黑IP,并公布于众。', 'https://hellohao.nos-eastchina1.126.net/%E7%BD%91%E7%AB%99%E7%B4%A0%E6%9D%90/logo2.png', 'Hellohao  切勿上传违反中华人民共和国互联网法律条约资源', '<li><a href=\"http://www.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">作者博客</a></li><li><a href=\"http://bz.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">高清壁纸</a></li><li><a href=\"http://json.hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">json格式化</a></li>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://129.28.173.126:8088', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/eb83a0714030248.jpg', 'https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/086650714030248.jpg', 1);
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -78,13 +78,7 @@ CREATE TABLE `imgdata`  (
   `abnormal` int(2) NULL DEFAULT NULL COMMENT '异常',
   `source` int(2) NULL DEFAULT NULL COMMENT '存储源',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
-
--- ----------------------------
--- Records of imgdata
--- ----------------------------
-INSERT INTO `imgdata` VALUES (1, 'admin/09bf60810015053.png', 'http://img.wwery.com/admin/09bf60810015053.png', 1, '2019-08-10', 71, NULL, 3);
-INSERT INTO `imgdata` VALUES (2, 'admin/d5b2c0810025302.png', 'http://img.wwery.com/admin/d5b2c0810025302.png', 1, '2019-08-10', 120, NULL, 3);
+) ENGINE = InnoDB AUTO_INCREMENT = 89 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for imgreview
@@ -103,7 +97,7 @@ CREATE TABLE `imgreview`  (
 -- ----------------------------
 -- Records of imgreview
 -- ----------------------------
-INSERT INTO `imgreview` VALUES (1, NULL, NULL, NULL, 0, 0);
+INSERT INTO `imgreview` VALUES (1, '1111111111111111', '11111111111111111', '111111111111111', 0, 0);
 
 -- ----------------------------
 -- Table structure for keys
@@ -123,13 +117,13 @@ CREATE TABLE `keys`  (
 -- ----------------------------
 -- Records of keys
 -- ----------------------------
-INSERT INTO `keys` VALUES (1, '', '', '', '', '', 1);
-INSERT INTO `keys` VALUES (2, '11111111', '222222222222', '444444444444', '555555555', 'http://1.1.1', 2);
-INSERT INTO `keys` VALUES (3, '', '', '0', '', '', 3);
-INSERT INTO `keys` VALUES (4, '123', '123', '4', '412', 'https://0.0', 4);
+INSERT INTO `keys` VALUES (1, '547046ec6495457783f040df098a8ce3', '255b334a4d174e95a3d9e5938f1966ab', 'https://nos-eastchina1.126.net', 'hellohao', 'https://hellohao.nos-eastchina1.126.net', 1);
+INSERT INTO `keys` VALUES (2, '', '', '', '', '', 2);
+INSERT INTO `keys` VALUES (3, '', '', '', '', '', 3);
+INSERT INTO `keys` VALUES (4, '', '', '', '', '', 4);
 INSERT INTO `keys` VALUES (5, '0', '0', '0', '0', '0', 5);
 INSERT INTO `keys` VALUES (6, '', '', '', '', '', 6);
-INSERT INTO `keys` VALUES (7, '234', '234124', '234124', '', '234142', 7);
+INSERT INTO `keys` VALUES (7, '', '', '', '', '', 7);
 INSERT INTO `keys` VALUES (8, '', '', '', '', '', 8);
 INSERT INTO `keys` VALUES (9, '', '', '', '', '', 9);
 INSERT INTO `keys` VALUES (10, '0', '', '0', '0', '0', 10);
@@ -142,6 +136,26 @@ CREATE TABLE `notice`  (
   `id` int(4) NOT NULL,
   `text` varchar(10000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of notice
+-- ----------------------------
+INSERT INTO `notice` VALUES (1, '2019-07-25');
+
+-- ----------------------------
+-- Table structure for sysconfig
+-- ----------------------------
+DROP TABLE IF EXISTS `sysconfig`;
+CREATE TABLE `sysconfig`  (
+  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `register` int(2) NOT NULL COMMENT '是否可以注册',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of sysconfig
+-- ----------------------------
+INSERT INTO `sysconfig` VALUES (1, 1);
 
 -- ----------------------------
 -- Table structure for uploadconfig
@@ -163,7 +177,7 @@ CREATE TABLE `uploadconfig`  (
 -- ----------------------------
 -- Records of uploadconfig
 -- ----------------------------
-INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 1, 1, 0);
+INSERT INTO `uploadconfig` VALUES (1, 2, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 2, 0, 1);
 
 -- ----------------------------
 -- Table structure for user
@@ -179,7 +193,7 @@ CREATE TABLE `user`  (
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
   `isok` int(2) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user
