@@ -513,7 +513,16 @@ Technology constantly updated, we will always move forward on the road ahead.
 								});
 							});
 						}else if(data.ret ==-3){
-							tanchuang('注册失败','本站禁止用户注册','error');
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('本站禁止用户注册', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 2  // icon
+								});
+							});
 						} else {
 							layui.use('layer', function(){
 								var layer = layui.layer;
@@ -556,8 +565,6 @@ Technology constantly updated, we will always move forward on the road ahead.
 							toastr.error('您的账号是未激活状态，无法登陆。');
 						} else if(data==-2){
 							toastr.error('您的账号已被冻结。');
-						}else if(data==-3){
-							tanchuang('登录失败','本站禁止用户登录','error');
 						}else {
 							toastr.error('登录失败，请重试。');
 						}

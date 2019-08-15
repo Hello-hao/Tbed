@@ -96,9 +96,7 @@ public class UserController {
     @RequestMapping("/login.do")
     @ResponseBody
     public String login( HttpSession httpSession, String email, String password) {
-        SysConfig sysConfig = sysConfigService.getstate();
         JSONArray jsonArray = new JSONArray();
-        if(sysConfig.getRegister()==1){
             Integer ret = userService.login(email, password);
             if (ret > 0) {
                 User user = userService.getUsers(email);
@@ -115,9 +113,6 @@ public class UserController {
             } else {
                 jsonArray.add(0);
             }
-        }else{
-            jsonArray.add(-3);
-        }
 
         return jsonArray.toString();
     }
