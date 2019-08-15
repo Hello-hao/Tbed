@@ -11,8 +11,10 @@ import javax.validation.Valid;
 
 import cn.hellohao.pojo.Config;
 import cn.hellohao.pojo.EmailConfig;
+import cn.hellohao.pojo.SysConfig;
 import cn.hellohao.service.ConfigService;
 import cn.hellohao.service.EmailConfigService;
+import cn.hellohao.service.SysConfigService;
 import cn.hellohao.utils.SendEmail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -37,48 +39,55 @@ public class UserController {
     private EmailConfigService emailConfigService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private SysConfigService sysConfigService;
 
     @RequestMapping("/register")
     @ResponseBody
     public String Register(@Valid User user) {
-        //取当前时间
         JSONObject jsonObject = new JSONObject();
-        EmailConfig emailConfig = emailConfigService.getemail();
-        Integer countusername = userService.countusername(user.getUsername());
-        Integer countmail = userService.countmail(user.getEmail());
-        if (countusername == 0 && countmail == 0) {
-            String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
-            String birthder = df.format(new Date());// new Date()为获取当前系统时间
-            user.setLevel(1);
-            user.setUid(uid);
-            user.setBirthder(birthder);
-            //查询是否启用了邮箱验证。
-            Config config = configService.getSourceype();
-            System.err.println("是否启用了邮箱激活："+emailConfig.getUsing());
-            Integer type = 0;
-            if(emailConfig.getUsing()==1){
-                user.setIsok(0);
-                //初始化邮箱
-                MimeMessage message = SendEmail.Emails(emailConfig);
-                //注册完发激活链接
-                Thread thread = new Thread() {
-                    public void run() {
-                        Integer a = SendEmail.sendEmail(message, user.getUsername(), uid, user.getEmail(),emailConfig,config);
-                    }
-                };
-                thread.start();
-                type = 1;
-            }else{
-                //直接注册
-                user.setIsok(1);
-                type = 2;
+        SysConfig sysConfig = sysConfigService.getstate();
+        if(sysConfig.getRegister()==1){
+            //取当前时间
+            EmailConfig emailConfig = emailConfigService.getemail();
+            Integer countusername = userService.countusername(user.getUsername());
+            Integer countmail = userService.countmail(user.getEmail());
+            if (countusername == 0 && countmail == 0) {
+                String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");//设置日期格式
+                String birthder = df.format(new Date());// new Date()为获取当前系统时间
+                user.setLevel(1);
+                user.setUid(uid);
+                user.setBirthder(birthder);
+                //查询是否启用了邮箱验证。
+                Config config = configService.getSourceype();
+                System.err.println("是否启用了邮箱激活："+emailConfig.getUsing());
+                Integer type = 0;
+                if(emailConfig.getUsing()==1){
+                    user.setIsok(0);
+                    //初始化邮箱
+                    MimeMessage message = SendEmail.Emails(emailConfig);
+                    //注册完发激活链接
+                    Thread thread = new Thread() {
+                        public void run() {
+                            Integer a = SendEmail.sendEmail(message, user.getUsername(), uid, user.getEmail(),emailConfig,config);
+                        }
+                    };
+                    thread.start();
+                    type = 1;
+                }else{
+                    //直接注册
+                    user.setIsok(1);
+                    type = 2;
+                }
+                Integer ret = userService.register(user);
+                jsonObject.put("ret",ret);
+                jsonObject.put("zctype",type);
+            } else {
+                jsonObject.put("ret",-2);
             }
-            Integer ret = userService.register(user);
-            jsonObject.put("ret",ret);
-            jsonObject.put("zctype",type);
-        } else {
-            jsonObject.put("ret",-2);
+        }else{
+            jsonObject.put("ret",-3);
         }
         return jsonObject.toString();
     }
@@ -87,23 +96,29 @@ public class UserController {
     @RequestMapping("/login.do")
     @ResponseBody
     public String login( HttpSession httpSession, String email, String password) {
+        SysConfig sysConfig = sysConfigService.getstate();
         JSONArray jsonArray = new JSONArray();
-        Integer ret = userService.login(email, password);
-        if (ret > 0) {
-            User user = userService.getUsers(email);
-            if (user.getIsok() == 1) {
-                httpSession.setAttribute("user", user);
-                httpSession.setAttribute("email", user.getEmail());
-                httpSession.setAttribute("pass", user.getPassword());
-                jsonArray.add(1);
-            } else if(ret==-1){
-                jsonArray.add(-1);
-            }else {
-                jsonArray.add(-2);
+        if(sysConfig.getRegister()==1){
+            Integer ret = userService.login(email, password);
+            if (ret > 0) {
+                User user = userService.getUsers(email);
+                if (user.getIsok() == 1) {
+                    httpSession.setAttribute("user", user);
+                    httpSession.setAttribute("email", user.getEmail());
+                    httpSession.setAttribute("pass", user.getPassword());
+                    jsonArray.add(1);
+                } else if(ret==-1){
+                    jsonArray.add(-1);
+                }else {
+                    jsonArray.add(-2);
+                }
+            } else {
+                jsonArray.add(0);
             }
-        } else {
-            jsonArray.add(0);
+        }else{
+            jsonArray.add(-3);
         }
+
         return jsonArray.toString();
     }
 

@@ -45,6 +45,8 @@ public class UpdateImgController {
     private COSImageupload cosImageupload;
     @Autowired
     private FTPImageupload ftpImageupload;
+    @Autowired
+    private  SysConfigService sysConfigService;
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
@@ -52,6 +54,7 @@ public class UpdateImgController {
         Print.Normal("当前项目路径："+System.getProperty("user.dir"));
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+        SysConfig sysConfig = sysConfigService.getstate();
         Integer filesizetourists = 0;
         Integer filesizeuser = 0;
         Integer imgcounttourists = 0;
@@ -117,6 +120,7 @@ public class UpdateImgController {
         if(uploadConfig.getIsupdate()!=1){
             isupdate = (u == null) ? 0: 1;//如果u等于null那么isupdate就等于0，否则等于1
         }
+        model.addAttribute("sysconfig",sysConfig);
         model.addAttribute("ykxz", isupdate);
         return "index";
 
@@ -142,7 +146,7 @@ public class UpdateImgController {
                 long stime = System.currentTimeMillis();
                 String userpath = "tourist";
                 if(uploadConfig.getUrltype()==2){
-                    java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
+                    java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                     userpath = dateFormat.format(new Date());
                 }else{
                     if (u != null) {
@@ -243,7 +247,7 @@ public class UpdateImgController {
         User u = (User) session.getAttribute("user");
         String userpath = "tourist";
         if(uploadConfig.getUrltype()==2){
-            java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
+            java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             userpath = dateFormat.format(new Date());
         }else{
             if (u != null) {

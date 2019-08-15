@@ -7,12 +7,12 @@ package cn.hellohao.pojo;
  */
 public class SysConfig {
     private Integer id;
-    private String register;
+    private Integer register;
 
     public SysConfig() {
     }
 
-    public SysConfig(Integer id, String register) {
+    public SysConfig(Integer id, Integer register) {
         this.id = id;
         this.register = register;
     }
@@ -25,11 +25,11 @@ public class SysConfig {
         this.id = id;
     }
 
-    public String getRegister() {
+    public Integer getRegister() {
         return register;
     }
 
-    public void setRegister(String register) {
+    public void setRegister(Integer register) {
         this.register = register;
     }
 }
