@@ -43,6 +43,7 @@ public interface UserMapper {
     Integer uiduser(@Param("uid") String uid);
 
     User getUsersMail(@Param("uid") String uid);
+    Integer setisok (User user);
 
     Integer setisok (User user);
     Integer setmemory(User user);
