@@ -25,4 +25,6 @@ public interface ImgService {
     Integer deleall(Integer id);
 
     List<Images> gettimeimg(String time);
+
+    Integer getusermemory(Integer userid);
 }

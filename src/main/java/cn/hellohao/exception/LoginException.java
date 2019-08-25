@@ -1,7 +1,7 @@
 package cn.hellohao.exception;
 
 /**
- * @author Tiansh
+ * @author Hellohao
  * @version 1.0
  * @date 2019/8/7 9:02
  */

@@ -699,7 +699,7 @@
                 return 'Search';
             },
             formatNoMatches: function formatNoMatches() {
-                return 'No matching records found';
+                return '没有任何数据';
             },
             formatPaginationSwitch: function formatPaginationSwitch() {
                 return 'Hide/Show pagination';

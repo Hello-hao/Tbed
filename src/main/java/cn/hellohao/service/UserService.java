@@ -2,6 +2,7 @@ package cn.hellohao.service;
 
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public interface UserService {
 
     Integer getUserTotal();
 
-    List<User> getuserlist();
+    List<User> getuserlist(User user);
 
     Integer deleuser(Integer id);
 
@@ -38,4 +39,8 @@ public interface UserService {
     Integer uiduser(String uid);
 
     User getUsersMail(String uid);
+    Integer setisok (User user);
+    Integer setmemory(User user);
+    User getUsersid(Integer id);
+    List<User> getuserlistforgroupid(Integer groupid);
 }

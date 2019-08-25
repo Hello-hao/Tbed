@@ -2,10 +2,9 @@ package cn.hellohao.utils;
 
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
-import com.google.gson.Gson;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,19 @@ public class LocUpdateImg {
                     dest.getParentFile().mkdirs();
                 }
                 try {
-                    entry.getValue().transferTo(dest);
+
+                    MultipartFile multipartFile = entry.getValue();
+
+                    FileInputStream fileInputStream = (FileInputStream) multipartFile.getInputStream();
+                    BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
+                    byte[] bs = new byte[1024];
+                    int len;
+                    while ((len = fileInputStream.read(bs)) != -1) {
+                        bos.write(bs, 0, len);
+                    }
+                    bos.flush();
+                    bos.close();
+
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());

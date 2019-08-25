@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.CodeMapper">
+
+
+    <select id="selectCode" parameterType="string" resultType="cn.hellohao.pojo.Code">
+        SELECT
+        *
+        FROM
+        `code`
+            where 1=1
+        <if test="code != null">
+            and `code` = #{code}
+        </if>
+    </select>
+
+    <select id="selectCodekey"  parameterType="string" resultType="cn.hellohao.pojo.Code">
+        SELECT
+        *
+        FROM
+        `code`
+         where code = #{code}
+
+    </select>
+
+    <insert id="addCode" parameterType="cn.hellohao.pojo.Code">
+        insert into `code` (id,value,code) values (null,#{value},#{code})
+    </insert>
+
+    <delete id="deleteCode" parameterType="string">
+        delete from code where code=#{code}
+    </delete>
+
+
+</mapper>

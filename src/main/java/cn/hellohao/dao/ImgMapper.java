@@ -26,4 +26,6 @@ public interface ImgMapper {
     Integer deleall(@Param("id") Integer id);
 
     List<Images> gettimeimg(@Param("time") String time);
+
+    Integer getusermemory(@Param("userid") Integer userid);
 }

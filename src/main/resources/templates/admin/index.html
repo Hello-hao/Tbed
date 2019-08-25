@@ -12,8 +12,14 @@
     <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
     <link rel="stylesheet" th:href="@{/layui/css/admin.css}">
     <style>
-        .layui-logo{
-            font-family: 'Old English Text MT', 'EngraversOldEnglishBT-Bold', 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;
+        body{
+            font-family: K2D, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+        /*.layui-logo{*/
+        /*    font-family: 'Old English Text MT', 'EngraversOldEnglishBT-Bold', 'Lato', "PingFang SC", "Microsoft YaHei", sans-serif;*/
+        /*}*/
+        #titles{
+            font-size: 1.2em;
         }
     </style>
 </head>
@@ -24,13 +30,14 @@
         <!-- logo 区域 -->
         <div class="layui-logo">
             <!--                <img src="images/security.png" alt="logo"/>-->
-            <cite>&nbsp;图床后台管理&emsp;</cite>
+<!--            <cite>&nbsp;图床后台管理&emsp;</cite>-->
+            <span id="titles">&nbsp;&nbsp;<i style="font-size: 1.5em;" class="layui-icon layui-icon-engine">&nbsp;&nbsp;</i>Console</span>
         </div>
         <!-- 头部区域 -->
         <ul class="layui-nav layui-layout-left">
             <li class="layui-nav-item" lay-unselect>
                 <a lay-event="flexible" title="侧边伸缩">
-                    <i class="layui-icon layui-icon-shrink-right"></i>
+                    <i class="layui-icon layui-icon-shrink-right" onclick="cebian()"></i>
                 </a>
             </li>
             <!-- 面包屑 -->
@@ -64,7 +71,7 @@
 
     <!-- 左侧导航区域 -->
     <div class="layui-side">
-        <div class="layui-side-scroll">
+        <div class="layui-side-scroll" style="position: relative;">
             <ul class="layui-nav layui-nav-tree" lay-filter="test" lay-accordion="true">
                 <li class="layui-nav-item">
                     <a lay-url="/table.html" lay-id="home" style="font-weight: bold;">
@@ -72,7 +79,8 @@
                     </a>
                 </li>
 
-                <li class="layui-nav-item">
+
+                <li class="layui-nav-item xiaoguo">
                     <a style="font-weight: bold;">
                         <i class="layui-icon layui-icon-username"></i>&emsp;<cite>个人中心</cite>
                     </a>
@@ -98,27 +106,43 @@
                         </dd>
                     </dl>
                 </li>
-
-                <li class="layui-nav-item" th:if=" ${levels} gt '1'">
+                <li class="layui-nav-item xiaoguo" th:if=" ${levels} gt '1'">
                     <a style="font-weight: bold;">
-                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>开发者设置</cite>
+                        <i class="layui-icon layui-icon-user"></i>&emsp;<cite>用户管理</cite>
                     </a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="1" lay-url="/admin/root/touser">
-                                <i class="layui-icon layui-icon-right"></i><cite>用户管理</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>用户列表</cite>
                             </a>
                         </dd>
                     </dl>
-
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="9" lay-url="/admin/root/group">
+                                <i class="layui-icon layui-icon-right"></i><cite>分发群组</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a href="#" lay-id="8" lay-url="/admin/root/tocode">
+                                <i class="layui-icon layui-icon-right"></i><cite>扩 容 码</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item xiaoguo" th:if=" ${levels} gt '1'">
+                    <a style="font-weight: bold;">
+                        <i class="layui-icon layui-icon-set-sm"></i>&emsp;<cite>系统设置</cite>
+                    </a>
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="2" lay-url="/admin/root/tostorage">
-                                <i class="layui-icon layui-icon-right"></i><cite>对象存储</cite>
+                                <i class="layui-icon layui-icon-right"></i><cite>存储配置</cite>
                             </a>
                         </dd>
                     </dl>
-
                     <dl class="layui-nav-child">
                         <dd>
                             <a href="#" lay-id="11" lay-url="/admin/root/ImageReview">
@@ -140,10 +164,8 @@
                             </a>
                         </dd>
                     </dl>
-
                 </li>
-
-                <li class="layui-nav-item" th:if=" ${levels} gt '1'">
+                <li class="layui-nav-item xiaoguo" th:if=" ${levels} gt '1'">
                     <a style="font-weight: bold;">
                         <i class="layui-icon layui-icon-about"></i>&emsp;<cite>更&nbsp;多</cite>
                     </a>
@@ -154,11 +176,19 @@
                             </a>
                         </dd>
                     </dl>
-
                 </li>
-
             </ul>
+
+            <div id="leftstate" style=" color:#f2f2f2;font-size:10px;height: 10px;position:absolute;bottom:55px; width: 70%;margin-left: 7%;">
+                <div class="layui-progress layui-progress-big"  lay-filter="datasize"  style="height: 12px;position:absolute;bottom:20px; width: 100%;margin-left: 3%;" >
+                    <div class="layui-progress-bar layui-bg-blue" lay-percent="100%" style="height: 12px;width: 160px;"></div>
+                </div>
+                <h3 STYLE="text-align: center;" id="ncqk">当前空间：1024M/1024M</h3>
+                <h3 STYLE="text-align: center;"><a style="color: #1E9FFF;font-weight: bold;cursor:pointer;" onclick="kuorong()" title="获取更大空间">扩&nbsp;容</a></h3>
+            </div>
+
         </div>
+
     </div>
 
     <div class="layui-body">
@@ -198,11 +228,23 @@
 <script th:src="@{/layui/js/jquery.js}"></script>
 <script th:src="@{/layui/js/zadmin.js}"></script>
 <script>
-    layui.use(['form', 'layedit', 'laydate'], function () {
+    var usermemory = Number([[${usermemory}]]);
+    var memory = Number([[${memory}]]);
+    var ret = (usermemory/memory)*100;
+    layui.use(['form', 'layedit', 'laydate','element'], function () {
         var form = layui.form
             , layer = layui.layer
-
+        var element = layui.element;
+        if(memory==-1){
+            element.progress('datasize', '100%');
+            $('#ncqk').text('当前空间：'+usermemory+'M/无限制');
+        }else{
+            element.progress('datasize', ret+'0%');
+            $('#ncqk').text('当前空间：'+usermemory+'M/'+memory+'M');
+        }
     });
+
+
     function exit() {
         $.ajax({
             type: "POST",
@@ -214,7 +256,42 @@
             }
         });
     }
-
+function kuorong() {
+    layer.open({
+        type: 1,
+        title:'空间扩容',
+        shadeClose: true,
+        skin: 'layui-layer-rim', //加上边框
+        area: ['420px', '240px'], //宽高
+        content: '<div style="width: 360px;"><br /><br /><div class="layui-form-item">\n' +
+            '  <label class="layui-form-label">扩容码：</label>\n' +
+            '  <div class="layui-input-block">\n' +
+            '  <input type="text" name="title" id="krm"  required lay-verify="required" placeholder="请输入你的扩容码" autocomplete="off" class="layui-input">  ' +
+            '<span style="color: #DAA5A6; font-size: 12px;">扩容码为一次性，只能扩容一次，切勿泄露。</span><br/><br/><button type="button" onclick="kr()" style="float: right;" class="layui-btn layui-btn-radius layui-btn-normal" onclick="">激 活</button>'+
+            '  </div>\n' +
+            '</div></div>'
+    });
+}
+function kr() {
+    var krm = $('#krm').val();
+    $.ajax({
+        type: "POST",
+        url: "/admin/kuorong",
+        dataType: "json",
+        data:{codestring:krm},
+        success: function (data) {
+            console.log(data)
+            if(data.ret>0){
+                layer.msg('扩容成功，当前总空间：'+data.sizes+'M', {icon: 1});
+            }else if(data.ret ==-1){
+                layer.msg('很抱歉，该扩容码不存在', {icon: 2});
+            }else{
+                layer.msg('很网络超时，请刷新页面后重新尝试', {icon: 2});
+            }
+            //parent.location.reload();//刷新父元素
+        }
+    });
+}
 </script>
 </body>
 

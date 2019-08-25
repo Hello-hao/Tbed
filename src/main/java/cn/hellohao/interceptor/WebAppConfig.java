@@ -34,6 +34,8 @@ public class WebAppConfig implements WebMvcConfigurer {
         registry.addInterceptor(interceptorConfig).addPathPatterns("/admin/**");
         registry.addInterceptor(interceptorConfigTwo).addPathPatterns("/admin/root/**");
 
+
+
     }
 
 }

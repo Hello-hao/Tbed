@@ -12,6 +12,7 @@ import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.IPPortUtil;
 import cn.hellohao.utils.*;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import com.alibaba.fastjson.JSONArray;
 
@@ -45,79 +48,88 @@ public class UpdateImgController {
     private COSImageupload cosImageupload;
     @Autowired
     private FTPImageupload ftpImageupload;
+    @Autowired
+    private ImgService imgService;
+
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
-        Print.Normal("欢迎使用Hellohao图床源码。者也许是最好用的java图床项目。");
-        Print.Normal("当前项目路径："+System.getProperty("user.dir"));
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        Integer filesizetourists = 0;
-        Integer filesizeuser = 0;
-        Integer imgcounttourists = 0;
-        Integer imgcountuser = 0;
-        if(uploadConfig.getFilesizetourists()!=null){filesizetourists = uploadConfig.getFilesizetourists();}
-        if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
-        if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
-        if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
-        //Boolean b =false;
-        Keys key = null;
-        if(config.getSourcekey()!=0 && config.getSourcekey()!=5){
-            key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
-            //b = StringUtils.doNull(key);//判断对象是否有空值
-            if(key.getStorageType()!=0 && key.getStorageType()!=null){
-                int ret =0;
-                if(key.getStorageType()==1){
-                    ret =nOSImageupload.Initialize(key);//实例化网易
-                }else if (key.getStorageType()==2){
-                    ret =OSSImageupload.Initialize(key);
-                }else if(key.getStorageType()==3){
-                    ret = USSImageupload.Initialize(key);
-                }else if(key.getStorageType()==4){
-                    ret = KODOImageupload.Initialize(key);
-                }else if(key.getStorageType()==6){
-                    ret = COSImageupload.Initialize(key);
-                }else if(key.getStorageType()==7){
-                    ret = FTPImageupload.Initialize(key);
+        //boolean b = VerificationDomain.verification();
+        boolean b = true;
+        if(b){
+            Print.Normal("欢迎使用Hellohao图床源码。者也许是最好用的java图床项目。");
+            Print.Normal("当前项目路径："+System.getProperty("user.dir"));
+            Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+            UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+            User u = (User) httpSession.getAttribute("user");
+            String email = (String) httpSession.getAttribute("email");
+            Integer filesizetourists = 0;
+            Integer filesizeuser = 0;
+            Integer imgcounttourists = 0;
+            Integer imgcountuser = 0;
+            if(uploadConfig.getFilesizetourists()!=null){filesizetourists = uploadConfig.getFilesizetourists();}
+            if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
+            if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
+            if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
+            //Boolean b =false;
+            Keys key = null;
+            Integer Sourcekey = GetCurrentSource.GetSource(u==null?null:u.getId());
+            if(Sourcekey!=0 && Sourcekey!=5){
+                key= keysService.selectKeys(Sourcekey);//然后根据类型再查询key
+                //b = StringUtils.doNull(key);//判断对象是否有空值
+                if(key.getStorageType()!=0 && key.getStorageType()!=null){
+                    int ret =0;
+                    if(key.getStorageType()==1){
+                        ret =nOSImageupload.Initialize(key);//实例化网易
+                    }else if (key.getStorageType()==2){
+                        ret =OSSImageupload.Initialize(key);
+                    }else if(key.getStorageType()==3){
+                        ret = USSImageupload.Initialize(key);
+                    }else if(key.getStorageType()==4){
+                        ret = KODOImageupload.Initialize(key);
+                    }else if(key.getStorageType()==6){
+                        ret = COSImageupload.Initialize(key);
+                    }else if(key.getStorageType()==7){
+                        ret = FTPImageupload.Initialize(key);
+                    }
+                    else{
+                        Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
+                    }
+                    if(ret<1){model.addAttribute("error", "当前存储源参数配置不完整，请联系管理员配置存储源。");}
+                    else{model.addAttribute("error", 1);}
                 }
-                else{
-                    Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
-                }
-                if(ret<1){model.addAttribute("error", "当前存储源参数配置不完整，请联系管理员配置存储源。");}
-                else{model.addAttribute("error", 1);}
             }
-        }
+            if (email != null) {
+                //登陆成功
+                Integer ret = userService.login(u.getEmail(), u.getPassword());
+                if (ret > 0) {
+                    User user = userService.getUsers(u.getEmail());
+                    model.addAttribute("username", user.getUsername());
+                    model.addAttribute("level", user.getLevel());
+                    model.addAttribute("loginid", 100);
+                    model.addAttribute("imgcount", imgcountuser);
+                    model.addAttribute("filesize", filesizeuser*1024*1024);
 
-        User u = (User) httpSession.getAttribute("user");
-        String email = (String) httpSession.getAttribute("email");
-        if (email != null) {
-            //登陆成功
-            Integer ret = userService.login(u.getEmail(), u.getPassword());
-            if (ret > 0) {
-                User user = userService.getUsers(u.getEmail());
-                model.addAttribute("username", user.getUsername());
-                model.addAttribute("level", user.getLevel());
-                model.addAttribute("loginid", 100);
-                model.addAttribute("imgcount", imgcountuser);
-                model.addAttribute("filesize", filesizeuser*1024*1024);
-
+                } else {
+                    model.addAttribute("loginid", -1);
+                    model.addAttribute("imgcount", imgcounttourists);
+                }
             } else {
-                model.addAttribute("loginid", -1);
+                model.addAttribute("loginid", -2);
                 model.addAttribute("imgcount", imgcounttourists);
+                model.addAttribute("filesize", filesizetourists*1024*1024);
             }
-        } else {
-            model.addAttribute("loginid", -2);
-            model.addAttribute("imgcount", imgcounttourists);
-            model.addAttribute("filesize", filesizetourists*1024*1024);
+            model.addAttribute("suffix", uploadConfig.getSuffix());
+            model.addAttribute("config", config);
+            model.addAttribute("uploadConfig", uploadConfig);
+            Integer isupdate = 1;
+            if(uploadConfig.getIsupdate()!=1){
+                isupdate = (u == null) ? 0: 1;//如果u等于null那么isupdate就等于0，否则等于1
+            }
+            model.addAttribute("ykxz", isupdate);
+        }else{
+            return "index";
         }
-        model.addAttribute("suffix", uploadConfig.getSuffix());
-        model.addAttribute("config", config);
-        model.addAttribute("uploadConfig", uploadConfig);
-        Integer isupdate = 1;
-        if(uploadConfig.getIsupdate()!=1){
-            isupdate = (u == null) ? 0: 1;//如果u等于null那么isupdate就等于0，否则等于1
-        }
-        model.addAttribute("ykxz", isupdate);
         return "index";
 
     }
@@ -126,20 +138,40 @@ public class UpdateImgController {
     @ResponseBody
     public String upimg( HttpSession session
             , @RequestParam(value = "file", required = false) MultipartFile[] file) throws Exception {
-
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-        Keys key = keysService.selectKeys(config.getSourcekey());
+        Integer usermemory =0;
+        Integer memory =0;
+        Integer Sourcekey=0;
+        //User tmpuser =  userService.getUsers(u.getEmail());
+        //GetCurrentSource getCurrentSource = new GetCurrentSource();
+        if(u==null){
+            Sourcekey = GetCurrentSource.GetSource(null);
+            memory = uploadConfig.getVisitormemory();
+            usermemory= imgService.getusermemory(0);
+            if(usermemory==null){usermemory = 0;}
+        }else{
+            Sourcekey = GetCurrentSource.GetSource(u.getId());
+            memory = userService.getUsers(u.getEmail()).getMemory();
+            usermemory= imgService.getusermemory(u.getId());
+            if(usermemory==null){usermemory = 0;}
+        }
+        Keys key = keysService.selectKeys(Sourcekey);//config.getSourcekey()
         Boolean b =false;
-        if(config.getSourcekey()==5){
+        if(Sourcekey==5){
             b =true;
         }else{
-            b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+            b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
         }
             if(b){
+                int tmp = usermemory/1024;
+                if(memory==-1){//证明未做限制
+                    tmp = -2;
+                }
+                if(tmp<memory){
                 long stime = System.currentTimeMillis();
                 String userpath = "tourist";
                 if(uploadConfig.getUrltype()==2){
@@ -216,7 +248,9 @@ public class UpdateImgController {
                     long etime = System.currentTimeMillis();
                     System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
                 }
-
+                }else{
+                    jsonObject.put("imgurls",-5);//可用空间不足
+                }
             }else{
                 jsonObject.put("imgurls",-1);
             }
@@ -242,30 +276,40 @@ public class UpdateImgController {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         String userpath = "tourist";
         if(uploadConfig.getUrltype()==2){
             java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
             userpath = dateFormat.format(new Date());
-        }else{
-            if (u != null) {
-                userpath = u.getUsername();
-            }
-        }
+        }else{if (u != null) { userpath = u.getUsername();}}
         JSONArray jsonArray = new JSONArray();
-        Keys key = keysService.selectKeys(config.getSourcekey());
+
+        Keys key = keysService.selectKeys(Sourcekey);
         long imgsize = ImgUrlUtil.getFileLength(imgurl);
         Integer youke = uploadConfig.getFilesizetourists();
         Integer yonghu = uploadConfig.getFilesizeuser();
         String uuid= UUID.randomUUID().toString().replace("-", "");
         Boolean bo =false;
-        if(config.getSourcekey()==5){
+        if(Sourcekey==5){
             bo =true;
+        }else{bo = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
+        }
+        //容量判断
+        Integer usermemory =0;
+        Integer memory =0;
+        if(u==null){
+            memory = uploadConfig.getVisitormemory();
+            usermemory= imgService.getusermemory(0);
+            if(usermemory==null){usermemory = 0;}
         }else{
-            bo = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+            memory = userService.getUsers(u.getEmail()).getMemory();
+            usermemory= imgService.getusermemory(u.getId());
+            if(usermemory==null){usermemory = 0;}
         }
         //先判断对象存储key是不是null
         Print.warning("上传地址是："+request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
             if(bo){
+                if(usermemory/1024<memory){
                 long stime = System.currentTimeMillis();
                 //判断是会员还是游客
                 if(u!=null){
@@ -438,6 +482,9 @@ public class UpdateImgController {
                         jsonArray.add(-2);
                     }
                 }
+            }else{
+                    jsonArray.add(-5);
+            }
             }else{
                 jsonArray.add(-1);
             }

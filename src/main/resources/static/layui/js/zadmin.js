@@ -47,8 +47,10 @@ layui.use(['element', 'layer'], function () {
             var elem = $(".layui-layout-admin");
             var flag = elem.hasClass("admin-nav-mini");
             if (flag) {
-                elem.removeClass("admin-nav-mini")
+                $('#leftstate').css('display','block');
+                elem.removeClass("admin-nav-mini");
             } else {
+                $('#leftstate').css('display','none');
                 elem.addClass("admin-nav-mini");
             }
         },
@@ -253,6 +255,7 @@ layui.use(['element', 'layer'], function () {
         if ($(this).hasClass("layui-nav-itemed")) {
             flag = true;
         }
+
         $("div.layui-side-scroll .layui-nav-item").removeClass("layui-nav-itemed").removeClass("layui-this");
         if ($(this).has("dl").length) {//如果有子菜单，显示下拉样式
             if (flag) {

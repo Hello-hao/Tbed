@@ -21,11 +21,11 @@
             <if test="explain != null">
                 `explain` = #{explain},
             </if>
-            <if test="logos != null">
-                `logos` = #{logos},
+            <if test="video != null">
+                `video` = #{video},
             </if>
-            <if test="footed != null">
-                `footed` = #{footed},
+            <if test="backtype != null">
+                `backtype` = #{backtype},
             </if>
             <if test="links != null">
                 `links` = #{links},

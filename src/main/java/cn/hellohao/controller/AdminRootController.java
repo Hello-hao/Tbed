@@ -2,15 +2,18 @@ package cn.hellohao.controller;
 
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
+import cn.hellohao.utils.GetCurrentSource;
 import cn.hellohao.utils.StringUtils;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
@@ -31,6 +34,15 @@ public class AdminRootController {
     private UploadConfigService uploadConfigService;
     @Autowired
     private NoticeService noticeService;
+    @Autowired
+    private SysConfigService sysConfigService;
+    @Autowired
+    private GroupService groupService;
+    //@Autowired
+    //private UserGroupService userGroupService;
+
+    @Value("${systemupdate}")
+    private String systemupdate;
 
     //返回对象存储界面
     @RequestMapping(value = "/touser")
@@ -41,23 +53,23 @@ public class AdminRootController {
     //返回对象存储界面
     @RequestMapping(value = "tostorage")
     public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        Keys  key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
-        Boolean b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+        User u = (User) session.getAttribute("user");
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
+        Keys  key= keysService.selectKeys(Sourcekey);//然后根据类型再查询key
+        Boolean b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
         Integer StorageType = 0;
-        if(config.getSourcekey()!=5){
+        if(Sourcekey!=5){
             if(b){
                 //key信息
                 model.addAttribute("AccessKey", key.getAccessKey());
                 model.addAttribute("AccessSecret", key.getAccessSecret());
-
                 model.addAttribute("Endpoint", key.getEndpoint());
                 model.addAttribute("Bucketname", key.getBucketname());
                 model.addAttribute("RequestAddress", key.getRequestAddress());
-                model.addAttribute("StorageType", config.getSourcekey());
+                model.addAttribute("StorageType", Sourcekey);
             }
             //如果是4就是七牛
-            if(config.getSourcekey()==4){
+            if(Sourcekey==4){
                 model.addAttribute("Endpoint2", key.getEndpoint());
             }else{
                 model.addAttribute("Endpoint2", 0);
@@ -71,7 +83,7 @@ public class AdminRootController {
         return "admin/storageconfig";
     }
 
-    //根据下拉框选的存储源查询对应的key
+
     @PostMapping("/getkey")
     @ResponseBody
     public String getkey(Integer storageType) {
@@ -80,14 +92,15 @@ public class AdminRootController {
         jsonArray.add(key);
         return jsonArray.toString();
     }
-    //获取当前使用的对象存储
+
     @PostMapping("/getkeyourceype")
     @ResponseBody
-    public Integer getkeyourceype() {
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+    public Integer getkeyourceype(HttpSession session) {
+        User u = (User) session.getAttribute("user");
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         Integer ret = 0;
-        if(config.getSourcekey()!=null){
-            ret = config.getSourcekey();
+        if(Sourcekey!=null){
+            ret = Sourcekey;
         }
         return ret;
     }
@@ -118,9 +131,9 @@ public class AdminRootController {
             jsonArray.add("-1");
         }else{
             Integer ret = userService.deleuser(id);
+            //userGroupService.deleusergroup(id);
             jsonArray.add(ret);
         }
-
         return jsonArray.toString();
     }
 
@@ -132,7 +145,7 @@ public class AdminRootController {
         return "admin/emailconfig";
     }
 
-    //修改邮箱验证
+
     @PostMapping("/updateemail")
     @ResponseBody
     public Integer updateemail(HttpSession session,String emails, String emailkey, String emailurl, String port, String emailname, Integer using ) {
@@ -146,32 +159,28 @@ public class AdminRootController {
         Integer ret = emailConfigService.updateemail(emailConfig);
         return ret;
     }
-    //跳转系统配置页面
+
     @RequestMapping(value = "/towebconfig")
-    public String towebconfig(Model model) {
+    public String towebconfig(HttpSession session,Model model) {
         Config config = configService.getSourceype();
+        User u = (User) session.getAttribute("user");
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
+        SysConfig sysConfig = sysConfigService.getstate();
         model.addAttribute("config",config);
         model.addAttribute("updateConfig",updateConfig);
+        model.addAttribute("sysconfig",sysConfig);
+        model.addAttribute("group",Sourcekey);
         return "admin/webconfig";
     }
     //修改站点配置
     @PostMapping("/updateconfig")
     @ResponseBody
-    public Integer updateconfig(String webname,String explain, String logos,
-                                String footed, String links, String notice,String baidu,
-                                String domain,String background1,String background2 ) {
-        Config config = new Config();
-        config.setWebname(webname);
-        config.setExplain(explain);
-        config.setLogos(logos);
-        config.setFooted(footed);
-        config.setLinks(links);
-        config.setNotice(notice);
-        config.setBaidu(baidu);
-        config.setDomain(domain);
-        config.setBackground1(background1);
-        config.setBackground2(background2);
+//    public Integer updateconfig(String webname,String explain, String video,
+//                                Integer backtype, String links, String notice,String baidu,
+//                                String domain,String background1,String background2 ) {
+        public Integer updateconfig(Config config ) {
+
         Integer ret = configService.setSourceype(config);
         return ret;
     }
@@ -183,12 +192,61 @@ public class AdminRootController {
         return ret;
     }
 
+    //修改用户激活状态
+    @PostMapping("/setisok")
+    @ResponseBody
+    public String setisok(HttpSession session, User user) {
+        Integer ret = userService.setisok(user);
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(ret);
+        return jsonArray.toString();
+    }
+    //修改资料
+    @PostMapping("/setmemory")
+    @ResponseBody
+    public String setmemory(HttpSession session, User user) {
+        Integer ret = userService.setmemory(user);
+        JSONArray jsonArray = new JSONArray();
+        jsonArray.add(ret);
+        return jsonArray.toString();
+    }
+
+    //修改注册开关
+    @PostMapping("/setstate")
+    @ResponseBody
+    public Integer setstate(HttpSession session, SysConfig sysConfig) {
+        Integer ret =-1;
+        ret = sysConfigService.setstate(sysConfig);
+        return ret;
+    }
+
+    @RequestMapping(value = "/modifyuser")
+    public String modifyuser(Model model,String uid,Integer id) {
+    User user = userService.getUsersMail(uid);
+        model.addAttribute("memory",user.getMemory());
+        model.addAttribute("groupid",user.getGroupid());
+        model.addAttribute("uid",uid);
+        model.addAttribute("id",id);
+        return "admin/modifyuser";
+    }
+
+    @PostMapping("/settstoragetype")
+    @ResponseBody
+    public Integer settstoragetype(Integer storagetype) {
+        Config config = new Config();
+        config.setSourcekey(storagetype);
+        Integer val = configService.setSourceype(config);
+        return val;
+    }
+
+
     //关于系统
     @RequestMapping("/about")
     public String about(HttpSession session,Model model ) {
         //Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
         User u = (User) session.getAttribute("user");
         model.addAttribute("level",u.getLevel());
+        model.addAttribute("systemupdate",systemupdate);
         return "admin/about";
     }
     //检查更新

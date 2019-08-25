@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=8">
+
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>分发群组</title>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+
+</head>
+<body>
+<div class="layui-main">
+<!--    <div class="demoTable" style="margin-top: 15px;">-->
+<!--        查询用户：-->
+<!--        <div class="layui-inline">-->
+<!--            <input class="layui-input" name="id" id="demoReload" placeholder="请输入用户名或邮箱" autocomplete="off">-->
+<!--        </div>-->
+<!--        <button class="layui-btn" data-type="reload" onclick="query()">查询</button>-->
+<!--    </div>-->
+    <br />
+    <h3><span style="color: #DAA5A6;">注意：默认群组不可删除，游客或者未分配的注册用户都将会存入默认群组的存储源。</span></h3>
+    <h3><span style="color: #DAA5A6;">增加群组选择存储源时，必须保证你的存储源配置项已经填写完整，否则会出错。</span></h3>
+    <br />
+    <table id="datas" lay-filter="group"  lay-data="datas"></table>
+</div>
+
+
+<script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
+<script th:src="@{/layui/layui/layui.js}"></script>
+<script>
+    var tableIns = null;
+    var table = null;
+    layui.use(['form','table','layer'], function(){
+        table = layui.table;
+        var layer = layui.layer;
+        var form = layui.form;
+
+        tableIns = table.render({
+            elem: '#datas'
+            ,cache: false//关闭本地磁盘缓存，
+            ,toolbar: '<div class="layui-btn-group">\n' +
+                '  <button type="button" lay-event="add" class="layui-btn layui-btn-sm">\n' +
+                '    <i class="layui-icon">&#xe654;</i>\n' +
+                '  </button>\n' +
+                '</div>' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            ,defaultToolbar:['filter', 'print']
+            ,url:'/admin/root/getgrouplist'
+            //,limit:20 //默认为10
+            ,cols: [ [
+               // {type: 'checkbox', fixed: 'left' ,width:50}
+                {field:'id', width:70, title: '编号', sort: true}, //sort：true页面可进行排序操作
+                {field:'groupname',width:270,  title: '分组名称'}
+                ,{field:'keyid',  title: '所属存储源',templet: function(d){
+                        var source = '';
+                        if (d.keyid == 1) {
+                            source = '网易NOS';
+                        } else if (d.keyid  == 2) {
+                            source = '阿里OSS';
+                        } else if (d.keyid  == 3) {
+                            source = '又拍USS';
+                        } else if (d.keyid  == 4) {
+                            source = '七牛KODO';
+                        } else if (d.keyid  == 5) {
+                            source = '本地存储';
+                        }else if (d.keyid  == 6) {
+                            source = '腾讯COS';
+                        }else if (d.keyid  == 7) {
+                            source = 'FTP存储';
+                        }else {
+                            source = '未知';
+                        }
+                        return source;
+                    }
+                 }
+                ,{field:'level',width:120,  title: '操作',templet: function(d){
+                        //return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>';
+                        return '<div class="layui-btn-group">\n' +
+                            '  <button type="button" class="layui-btn layui-btn-sm"  lay-event="xiugai">\n' +
+                            '    <i class="layui-icon">&#xe642;</i>\n' +
+                            '  </button>\n' +
+                            '  <button type="button" lay-filter="delete" class="layui-btn layui-btn-sm"  lay-event="del">\n' +
+                            '    <i class="layui-icon">&#xe640;</i>\n' +
+                            '  </button>\n' +
+                            '</div>';
+                    }
+                }
+                //, {title: '操作', fixed: 'right',width:250, align: 'center', toolbar: '#column-toolbar'}
+            ] ]
+            ,username:'sousuo'
+            ,page: true
+            ,done:function(res, curr, count){
+                //数据的回调用，可不写
+            }
+        });
+
+        table.on('tool(group)', function(obj){
+            var event = obj.event;
+            var data = obj.data;
+                if(event === 'del'){
+                    layer.confirm('删除该群组后，该群组下的所有用户将会自动恢复到默认群组，确认删除该群组吗？', function(index){
+                        //obj.del(); //删除对应行（tr）的DOM结构
+                        delectgroup(data.id)
+                        layer.close(index);
+                    });
+                }else if(event === 'xiugai'){
+                    layer.open({
+                        type: 2,
+                        title:'分发群组',
+                        shadeClose: true,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['420px', '300px'], //宽高
+                        content: '/admin/root/modifygroup?id='+data.id
+                        ,end:function(){
+                            table.reload('datas');//重新获取表数据
+                        }
+                    });
+                }
+        });
+
+        //监听头工具栏事件
+            table.on('toolbar(group)', function(obj){
+               // var tc = table.checkStatus('tableid');//通过指定的table初始化id获取选中的数据
+            var checkStatus = table.checkStatus(obj.config.id)
+                ,data = checkStatus.data; //获取选中的数据
+                switch(obj.event){
+                case 'add':
+                    layer.open({
+                        type: 2,
+                        title:'用户容量',
+                        shadeClose: true,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['420px', '340px'], //宽高
+                        content: '/admin/root/addgroup'
+                        ,end:function(){
+                            table.reload('datas');//重新获取表数据
+                        }
+
+                    });
+                    break;
+            };
+        });
+
+    });
+function delectgroup(id) {
+    var index= layer.msg('加载中', {
+        icon: 16
+        ,shade: 0.01
+    });
+    $.ajax({
+        type: "POST",
+        url: "/admin/root/delegroup",
+        data: {id:id},
+        dataType: "json",
+        success: function (data) {
+            if (data > 0) {
+                table.reload('datas');//重新获取表数据
+                layer.msg('删除成功', {icon: 1});
+            }else if(data==-1){
+                layer.msg('默认分组不可以删除', {icon: 2});
+            }else{
+                layer.msg('删除失败，请刷新页面尝试重试', {icon: 2});
+            }
+        }
+    });
+    layer.close(index);
+}
+function generate(code) {
+    layer.msg('加载中', {
+        icon: 16
+        ,shade: 0.01
+    });
+    var sizeval = $('#sizeval').val();
+    var counts = $('#counts').val();
+    $.ajax({
+        type: "POST",
+        url: "/admin/root/addcode",
+        data: {value:sizeval,counts:counts},
+        dataType: "json",
+        success: function (data) {
+            if (data > 0) {
+                table.reload('datas');//重新获取表数据
+                layer.msg('添加成功', {icon: 1});
+            }else{
+                layer.msg('添加失败', {icon: 2});
+            }
+        }
+    });
+    layer.closeAll();
+}
+
+function xiugai() {
+
+}
+</script>
+</body>
+</html>

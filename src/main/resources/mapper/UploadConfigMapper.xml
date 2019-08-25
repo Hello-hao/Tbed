@@ -31,7 +31,13 @@
                 `isupdate` = #{isupdate},
             </if>
             <if test="api != null">
-                `api` = #{api}
+                `api` = #{api},
+            </if>
+            <if test="visitormemory != null">
+                `visitormemory` = #{visitormemory},
+            </if>
+            <if test="usermemory != null">
+                `usermemory` = #{usermemory}
             </if>
 
         </set>

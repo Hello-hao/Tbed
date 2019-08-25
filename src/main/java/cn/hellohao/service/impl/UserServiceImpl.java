@@ -1,11 +1,15 @@
 package cn.hellohao.service.impl;
 
+import cn.hellohao.dao.CodeMapper;
+import cn.hellohao.exception.CodeException;
+import cn.hellohao.utils.Print;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import cn.hellohao.dao.UserMapper;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.UserService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -14,6 +18,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private CodeMapper codeMapper;
 
     @Override
     public Integer register(User user) {
@@ -74,8 +80,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getuserlist() {
-        return userMapper.getuserlist();
+    public List<User> getuserlist(User user) {
+        return userMapper.getuserlist(user);
     }
 
     @Override
@@ -86,5 +92,37 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUsersMail(String uid) {
         return userMapper.getUsersMail(uid);
+    }
+
+    @Override
+    public Integer setisok(User user) {
+        return userMapper.setisok(user);
+    }
+
+    @Override
+    public Integer setmemory(User user) {
+        return userMapper.setmemory(user);
+    }
+
+    @Override
+    public User getUsersid(Integer id) {
+        return userMapper.getUsersid(id);
+    }
+
+    @Override
+    public List<User> getuserlistforgroupid(Integer groupid) {
+        return userMapper.getuserlistforgroupid(groupid);
+    }
+
+    @Transactional//默认遇到throw new RuntimeException(“…”);会回滚
+    public Integer usersetmemory(User user,String codestring) {
+        Integer ret = userMapper.setmemory(user);
+        if(ret<=0){
+            Print.warning("用户空间没有设置成功。回滚");
+            throw new CodeException("用户之没有设置成功。");
+        }else{
+            ret = codeMapper.deleteCode(codestring);
+        }
+        return ret;
     }
 }

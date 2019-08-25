@@ -75,5 +75,9 @@
     <select id="gettimeimg" parameterType="string" resultType="cn.hellohao.pojo.Images">
         SELECT * from  imgdata WHERE  updatetime>=#{time}
     </select>
+<!--查询指定用户总内存-->
+    <select id="getusermemory" parameterType="integer" resultType="integer">
+        SELECT sum(sizes) FROM `imgdata` where userid = #{userid}
+    </select>
 
 </mapper>

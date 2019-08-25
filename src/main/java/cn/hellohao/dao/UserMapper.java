@@ -30,7 +30,7 @@ public interface UserMapper {
 
     Integer getUserTotal();
 
-    List<User> getuserlist();
+    List<User> getuserlist(User user);
 
     //刪除用戶
     Integer deleuser(@Param("id") Integer id);
@@ -43,5 +43,11 @@ public interface UserMapper {
     Integer uiduser(@Param("uid") String uid);
 
     User getUsersMail(@Param("uid") String uid);
+
+    Integer setisok (User user);
+    Integer setmemory(User user);
+    User getUsersid(@Param("id") Integer id);
+
+    List<User> getuserlistforgroupid(@Param("groupid") Integer groupid);
 
 }

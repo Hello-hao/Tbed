@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.UserGroupMapper">
+
+
+    <select id="useridgetusergroup" parameterType="integer" resultType="cn.hellohao.pojo.UserGroup">
+        SELECT
+        *
+        FROM
+        `usergroup`
+            where 1=1
+        <if test="userid != null">
+            and `userid` = #{userid}
+        </if>
+    </select>
+
+    <select id="idgetusergroup"  parameterType="integer" resultType="cn.hellohao.pojo.UserGroup">
+        SELECT
+        *
+        FROM
+        `usergroup`
+         where id = #{id}
+
+    </select>
+
+    <insert id="addusergroup" parameterType="cn.hellohao.pojo.UserGroup">
+        insert into `usergroup` (id,userid,groupid) values (null,#{userid},#{groupid})
+    </insert>
+
+    <update id="updateusergroup" parameterType="cn.hellohao.pojo.UserGroup">
+        UPDATE `usergroup` SET  groupid = #{groupid} where userid = #{userid}
+    </update>
+
+    <update id="updateusergroupdefault" parameterType="integer">
+        UPDATE `usergroup` SET  groupid = 1 where groupid =  #{groupid}
+    </update>
+
+    <delete id="deleusergroup" parameterType="integer">
+        delete from `usergroup` where userid=#{userid}
+    </delete>
+
+
+</mapper>

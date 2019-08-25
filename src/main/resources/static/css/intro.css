@@ -1,0 +1,42 @@
+
+    body{
+        background-color:gray;
+    }
+    h1{
+        color:rgb(225,223,220);
+        /*margin-top:160px;*/
+        margin-top:18%;
+        font-size:80px;
+    }
+    h3{
+        color:rgb(225,223,220);
+    }
+    img{
+        /*width:30px;*/
+        /*height:30px;*/
+    }
+    video#bgvid {
+        position: fixed; right: 0; bottom: 0;
+        min-width: 100%; min-height: 100%;
+        width: auto; height: auto; z-index: -100;
+        background-size: cover;
+    }
+    .box{
+        width:100%;
+    }
+    .wForm{
+        margin-top: 10px;
+    }
+
+    .wBtn{
+        margin-top: 20px;
+        width: 200px;
+        height: 80px;
+        border-radius: 130px;
+        opacity: 0.9;
+        font-size: 26px;
+    }
+
+
+
+

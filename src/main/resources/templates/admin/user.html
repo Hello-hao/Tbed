@@ -13,6 +13,13 @@
 </head>
 <body>
 <div class="layui-main">
+    <div class="demoTable" style="margin-top: 15px;">
+        查询用户：
+        <div class="layui-inline">
+            <input class="layui-input" name="id" id="demoReload" placeholder="请输入用户名或邮箱" autocomplete="off">
+        </div>
+        <button class="layui-btn" data-type="reload" onclick="query()">查询</button>
+    </div>
     <br />
     <table id="dates" lay-filter="test"></table>
 </div>
@@ -26,6 +33,7 @@
 <script th:src="@{/layui/layui/layui.js}"></script>
 
     <script type="text/javascript">
+        var tableIns = null;
         /**
          * 禁用 ajax 缓存
          */
@@ -33,20 +41,31 @@
             cache: false
         });
         var table = null;
-        layui.use(['table','layer'], function(){
+        layui.use(['form','table','layer'], function(){
             table = layui.table;
-            var layer = layui.layer
-            table.render({
+            var layer = layui.layer;
+            var form = layui.form;
+            form.on('checkbox', function (data) {
+                if (this.checked == true) {
+                    var id = $(this).val();
+                    setisko(id,1);
+                } else {
+                    var id = $(this).val();
+                    setisko(id,-1);
+                }
+            });
+
+            tableIns = table.render({
                 elem: '#dates'
                 ,cache: false//关闭本地磁盘缓存，
+                ,defaultToolbar:['filter', 'print']
                 ,url:'/admin/selectusertable2'
                 //,limit:20 //默认为10
                 ,cols: [ [
-                    {field:'id', width:70, title: '编号', sort: true} //sort：true页面可进行排序操作
-                    ,{field:'username',  title: '用户名'}
-                    ,{field:'email',width:170,  title: '邮箱', sort: true}
+                    {field:'username',  title: '用户名'}
+                    ,{field:'email',width:170,  title: '邮箱'}
                     ,{field:'password',width:170,  title: '密码'}
-                    ,{field:'birthder',width:170,  title: '注册时间'}
+                    ,{field:'birthder',width:120,  title: '注册时间',sort: true}
                     ,{field:'level',width:100,  title: '等级',templet: function(d){
                             var str = '';
                             if(d.level==1){str='普通用户';}
@@ -54,19 +73,38 @@
                             return str;
                         }
                     }
-                    ,{field:'level',width:100,  title: '状态',templet: function(d){
+                    ,{field:'memory',width:120,  title: '可用容量',templet: function(d){
                             var str = '';
-                            if(d.isok==1){str='可用';}
-                            else {str='禁用';}
+                            if(d.memory==-1){str='无限制';}
+                            else{str=d.memory;}
+                            return str+" M";
+                        }
+                    }
+                    ,{field:'level',width:120,  title: '状态',templet: function(d){
+                            var str = '';
+                            if(d.isok==1){str = '  <form class="layui-form" action=""><div class="layui-form-item">\n' +
+                                '      <input type="checkbox" checked="checked"  value="'+d.id+'" lay-filter="keyong" name="like[write]" title="可用">\n' +
+                                '  </div></form>';}
+                            else {str = '  <form class="layui-form" action=""><div class="layui-form-item">\n' +
+                                '      <input type="checkbox" value="'+d.id+'"  lay-filter="jinyong" name="like[write]" title="禁用">\n' +
+                                '  </div></form>';}
                             return str;
                         }
                     }
-                    ,{field:'level',width:100,  title: '操作',templet: function(d){
-                            return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>';
+                    ,{field:'level',width:110,  title: '操作',templet: function(d){
+                            //return '<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>';
+                            return '<div class="layui-btn-group">\n' +
+                                '  <button type="button" class="layui-btn layui-btn-sm" lay-event="memory">\n' +
+                                '    <i class="layui-icon">&#xe642;</i>\n' +
+                                '  </button>\n' +
+                                '  <button type="button" class="layui-btn layui-btn-sm"  lay-event="del">\n' +
+                                '    <i class="layui-icon">&#xe640;</i>\n' +
+                                '  </button>\n' +
+                                '</div>';
                         }
                     }
-                    //, {title: '操作', fixed: 'right',width:250, align: 'center', toolbar: '#column-toolbar'}
                 ] ]
+                ,username:'sousuo'
                 ,page: true
                 ,done:function(res, curr, count){
                     //数据的回调用，可不写
@@ -77,8 +115,25 @@
             table.on('tool', function (obj) {
                 var data = obj.data;
                 var event = obj.event;
-                if (event === 'keyong') {
-                    //alert("可用")
+                if (event === 'memory') {
+                    layer.open({
+                        type: 2,
+                        title:'用户容量',
+                        shadeClose: true,
+                        skin: 'layui-layer-rim', //加上边框
+                        area: ['420px', '300px'], //宽高
+                        // content: '<div style="width: 360px;"><br /><br /><div class="layui-form-item">\n' +
+                        //     '  <label class="layui-form-label">用户容量(M)</label>\n' +
+                        //     '  <div class="layui-input-block">\n' +
+                        //     '  <input type="text" name="title" id="tests" value="'+data.memory+'" required lay-verify="required" placeholder="请输入正整数" autocomplete="off" class="layui-input">  ' +
+                        //         '<span style="color: #DAA5A6;">输入“-1”则为无限制,请输入整数</span><br/><br/><button type="button" class="layui-btn layui-btn-radius layui-btn-normal" onclick="rongliang('+data.id+')">保 存</button>'+
+                        //     '  </div>\n' +
+                        //     '</div></div>'
+                        content: '/admin/root/modifyuser?uid='+data.uid+'&id='+data.id
+                        ,end:function(){
+                            table.reload('dates');//重新获取表数据
+                        }
+                    });
                 }else if (event === 'del') {
                     var index = layer.confirm('确定删除此用户？', {
                         btn: ['删除','取消'] //按钮
@@ -106,7 +161,54 @@
                 }
             });
         });
+function setisko(id,val) {
+    $.ajax({
+        type: "POST",
+        url: "/admin/root/setisok",
+        data: {id: id,isok:val},
+        dataType: "json",
+        success: function (data) {
+            if (data > 0) {
+                table.reload('dates');//重新获取表数据
+                layer.msg('设置成功', {icon: 1});
+            }else if(data==-1){
+                layer.msg('设置失败', {icon: 2});
+            }
+        }
+    });
+}
+function rongliang(id) {
+    var memory = $('#tests').val();
+    $.ajax({
+        type: "POST",
+        url: "/admin/root/setmemory",
+        data: {id: id,memory:memory},
+        dataType: "json",
+        success: function (data) {
+            if (data > 0) {
+                table.reload('dates');//重新获取表数据
+                layer.msg('保存成功', {icon: 1});
+            }else{
+                layer.msg('保存失败', {icon: 2});
+            }
+        }
+    });
+}
 
+        function query(){
+    var data = $('#demoReload').val();
+            //这里以搜索为例
+            tableIns.reload({
+                where: { //设定异步数据接口的额外参数，任意设
+                    username: data
+                    //,bbb: 'yyy'
+                    //…
+                }
+                ,page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            });
+        }
     </script>
 </body>
 </html>

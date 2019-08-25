@@ -4,8 +4,8 @@
 
     <!-- 用户注册 -->
     <insert id="register" parameterType="cn.hellohao.pojo.User">
-        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok)
-        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok} )
+        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok,memory,groupid)
+        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok},#{memory},#{groupid}   )
     </insert>
     <!--  查询是否有username  -->
     <select id="countusername" parameterType="string" resultType="integer">
@@ -20,7 +20,7 @@
         where email = #{email}
     </select>
     <!--  uid查询用户并修改  -->
-    <update id="uiduser" parameterType="string">
+    <update id="uiduser" parameterType="cn.hellohao.pojo.User">
         <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
         UPDATE `user` set `isok`=1 where uid=#{uid}
     </update>
@@ -42,9 +42,26 @@
         birthder,
         LEVEL,
         uid,
-        isok
+        isok,
+        memory,
+        groupid
         FROM user
         WHERE email = #{email}
+    </select>
+    <!-- 查询当前用户:根据id -->
+    <select id="getUsersid" parameterType="integer" resultType="cn.hellohao.pojo.User">
+        SELECT id,
+               username,
+               email,
+               password,
+               birthder,
+               LEVEL,
+               uid,
+               isok,
+               memory,
+               groupid
+        FROM user
+        WHERE id = #{id}
     </select>
     <!-- 查询当前用户:根据uid -->
     <select id="getUsersMail" parameterType="string" resultType="cn.hellohao.pojo.User">
@@ -55,7 +72,9 @@
         birthder,
         LEVEL,
         uid,
-        isok
+        isok,
+        memory,
+        groupid
         FROM user
         WHERE uid = #{uid}
     </select>
@@ -69,8 +88,27 @@
     <!-- 修改资料 -->
     <update id="change" parameterType="cn.hellohao.pojo.User">
         <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
-        UPDATE `user` set `password`=#{password} where email=#{email}
+        UPDATE `user`
+        <set>
+            <if test="email != null">
+                `email` = #{email},
+            </if>
+            <if test="username != null">
+                `username` = #{username},
+            </if>
+            <if test="password != null">
+            `password` = #{password},
+            </if>
+            <if test="memory != null">
+                `memory` = #{memory},
+            </if>
+            <if test="groupid != null">
+                `groupid` = #{groupid}
+            </if>
+        </set>
+        where uid=#{uid}
     </update>
+
     <select id="checkUsername" parameterType="string" resultType="integer">
         SELECT count(username) FROM `user` where username=#{username}
     </select>
@@ -85,6 +123,13 @@
         *
         FROM
         user
+        <if test="username != null">
+            where
+            CONCAT(
+            username,
+            email
+            ) LIKE '%${username}%'
+        </if>
         order by birthder desc
     </select>
 
@@ -92,5 +137,18 @@
     <delete id="deleuser" parameterType="integer">
         DELETE FROM user WHERE id=#{id}
     </delete>
+
+    <update id="setisok" parameterType="cn.hellohao.pojo.User">
+        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
+        UPDATE `user` set `isok`=#{isok} where id=#{id}
+    </update>
+    <update id="setmemory" parameterType="cn.hellohao.pojo.User">
+        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
+        UPDATE `user` set `memory`=#{memory} where id=#{id}
+    </update>
+
+    <select id="getuserlistforgroupid" parameterType="integer" resultType="cn.hellohao.pojo.User">
+        select * from user where groupid=#{groupid}
+    </select>
 
 </mapper>

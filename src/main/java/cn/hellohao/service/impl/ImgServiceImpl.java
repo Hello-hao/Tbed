@@ -206,4 +206,9 @@ public class ImgServiceImpl implements ImgService {
     public List<Images> gettimeimg(String time) {
         return imgMapper.gettimeimg(time);
     }
+
+    @Override
+    public Integer getusermemory(Integer userid) {
+        return imgMapper.getusermemory(userid);
+    }
 }

@@ -13,11 +13,12 @@ public class SendEmail {
 
     public static MimeMessage Emails(EmailConfig emailConfig) {
         Properties p = new Properties();
+        p.setProperty("mail.smtp.auth", "true");
         p.setProperty("mail.smtp.host", emailConfig.getEmailurl());
         p.setProperty("mail.smtp.port", emailConfig.getPort());
         p.setProperty("mail.smtp.socketFactory.port", emailConfig.getPort());
-        p.setProperty("mail.smtp.auth", "true");
-        p.setProperty("mail.smtp.socketFactory.class", "SSL_FACTORY");
+        p.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        //p.setProperty("mail.smtp.socketFactory.class", "SSL_FACTORY");
 
         Session session = Session.getInstance(p, new Authenticator() {
             // 设置认证账户信息

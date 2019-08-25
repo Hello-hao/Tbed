@@ -6,8 +6,8 @@ public class Config {
     private Integer emails;
     private String webname;
     private String explain;
-    private String logos;
-    private String footed;
+    private String video;
+    private Integer backtype;
     private String links;
     private String notice;
     private String baidu;
@@ -20,14 +20,14 @@ public class Config {
     public Config() {
     }
 
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String logos, String footed, String links, String notice, String baidu, String domain, String background1, String background2, String sett) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
         this.webname = webname;
         this.explain = explain;
-        this.logos = logos;
-        this.footed = footed;
+        this.video = video;
+        this.backtype = backtype;
         this.links = links;
         this.notice = notice;
         this.baidu = baidu;
@@ -77,20 +77,20 @@ public class Config {
         this.explain = explain;
     }
 
-    public String getLogos() {
-        return logos;
+    public String getVideo() {
+        return video;
     }
 
-    public void setLogos(String logos) {
-        this.logos = logos;
+    public void setVideo(String video) {
+        this.video = video;
     }
 
-    public String getFooted() {
-        return footed;
+    public Integer getBacktype() {
+        return backtype;
     }
 
-    public void setFooted(String footed) {
-        this.footed = footed;
+    public void setBacktype(Integer backtype) {
+        this.backtype = backtype;
     }
 
     public String getLinks() {

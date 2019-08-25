@@ -212,6 +212,11 @@
                     layer = layui.layer;
                     layer.msg("未配置存储源，或存储源配置不正确。", {icon: 2});
                 });
+            }else if(response.imgurls==-5){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("上传失败，可用空间不足", {icon: 2});
+                });
             } else{
                 arr_url += response.imgurls + '\r\n';
                 arr_markdown += '!['+response.imgnames+'](' + response.imgurls + ')\r\n';

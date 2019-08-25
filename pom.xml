@@ -10,21 +10,19 @@
     </parent>
     <groupId>cn.hellohao</groupId>
     <artifactId>Tbed</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>Pro</version>
     <name>Tbed</name>
     <description>Hellohao Picture Bed for Spring Boot</description>
 
     <properties>
         <java.version>1.8</java.version>
+        <docker.image.prefix>springboot</docker.image.prefix>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
-
-
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -174,6 +172,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
         </plugins>
     </build>
 

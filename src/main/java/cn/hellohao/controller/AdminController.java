@@ -4,7 +4,10 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.ImgServiceImpl;
+import cn.hellohao.service.impl.UserServiceImpl;
+import cn.hellohao.utils.GetCurrentSource;
 import cn.hellohao.utils.LocUpdateImg;
+import cn.hellohao.utils.Print;
 import cn.hellohao.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -35,16 +38,24 @@ public class AdminController {
     @Autowired
     private UserService userService;
     @Autowired
+    private UserServiceImpl userServiceImpl;
+    @Autowired
     private ImgreviewService imgreviewService;
     @Autowired
     private ConfigService configService;
     @Autowired
     private UploadConfigService uploadConfigService;
+    @Autowired
+    private CodeService codeService;
+
 
     @RequestMapping(value = "/goadmin")
     public String goadmin1(HttpSession session, Model model, HttpServletRequest request) {
         User user = (User) session.getAttribute("user");
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+        Integer usermemory = imgService.getusermemory(user.getId());
+        if(usermemory==null){usermemory=0;}
+        User u = userService.getUsers(user.getEmail());
         if(user!=null){
             if (user.getLevel() == 1) {
                 model.addAttribute("level", "普通用户");
@@ -56,32 +67,33 @@ public class AdminController {
             model.addAttribute("levels", user.getLevel());
             model.addAttribute("username", user.getUsername());
             model.addAttribute("api", uploadConfig.getApi());
+
+            model.addAttribute("memory",u.getMemory());//单位M
+            if(usermemory==null){
+                model.addAttribute("usermemory", 0);//单位M
+            }else{
+                float d = (float) (Math.round((usermemory/1024.0F) * 100.0) / 100.0);
+                //Print.Normal();
+                model.addAttribute("usermemory", d);//单位M
+            }
             return "admin/index";
         }else{
             return "redirect:/";
         }
     }
 
-    // 进入后台页面
     @RequestMapping(value = "/admin")
     public String goadmin(HttpSession session, Model model) {
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-        Keys key = keysService.selectKeys(config.getSourcekey());
+        Config config = configService.getSourceype();
         User u = (User) session.getAttribute("user");
-        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
         model.addAttribute("username", u.getUsername());
         model.addAttribute("level", u.getLevel());
         model.addAttribute("email", u.getEmail());
         model.addAttribute("loginid", 100);
-        //Boolean b = StringUtils.doNull(key);//判断对象是否有空值
-//        if(b){
-//            model.addAttribute("source", key.getStorageType());
-//        }else{
-//            model.addAttribute("source", 456);
-//        }
+
         return "admin/table";
     }
-    // 进入后台页面
+
     @RequestMapping(value = "/tosurvey")
     public String admin2(HttpSession session, Model model) {
         User u = (User) session.getAttribute("user");
@@ -94,24 +106,25 @@ public class AdminController {
         model.addAttribute("jdk", jdk);
         return "admin/survey";
     }
-    //获取本站概况
+
     @RequestMapping(value = "/getwebconfig")
     @ResponseBody
     public String getwebconfig(HttpSession session) {
         JSONObject jsonObject = new JSONObject();
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Config config = configService.getSourceype();
         User u = (User) session.getAttribute("user");
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
-        jsonObject.put("usercount", imgService.countimg(u.getId()));//这个是根据用户id查询他的图片数
-        jsonObject.put("counts", imgService.counts(null) );//总数
+        jsonObject.put("usercount", imgService.countimg(u.getId()));
+        jsonObject.put("counts", imgService.counts(null) );
         jsonObject.put("getusertotal", userService.getUserTotal() );
         jsonObject.put("imgreviewcount", imgreview.getCount());
-        Keys key= keysService.selectKeys(config.getSourcekey());//然后根据类型再查询key
+        Keys key= keysService.selectKeys(Sourcekey);
         Boolean b =false;
-        if(config.getSourcekey()==5){
+        if(Sourcekey==5){
             b =true;
         }else{
-            b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+            b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
         }
         if(b){
             jsonObject.put("source", key.getStorageType());
@@ -169,7 +182,7 @@ public class AdminController {
         PageHelper.startPage(pageNum, pageSize);
         List<User> users = null;
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
-            users = userService.getuserlist();// 这是我们的sql
+            users = userService.getuserlist(u);// 这是我们的sql
             // 使用pageInfo包装查询
             PageInfo<User> rolePageInfo = new PageInfo<>(users);//
             return new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
@@ -183,14 +196,16 @@ public class AdminController {
     @RequestMapping(value = "/selectusertable2")
     @ResponseBody
     public Map<String, Object> selectByFy12(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
-                                            @RequestParam(required = false) int limit) {
+                                            @RequestParam(required = false) int limit,String username) {
         User u = (User) session.getAttribute("user");
         // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
         // 从他的下一条sql开始分页
         PageHelper.startPage(page, limit);
         List<User> users = null;
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
-            users = userService.getuserlist();// 这是我们的sql
+            User user = new User();
+            user.setUsername(username);
+            users = userService.getuserlist(user);// 这是我们的sql
             // 使用pageInfo包装查询
             PageInfo<User> rolePageInfo = new PageInfo<>(users);//
             Map<String, Object> map = new HashMap<String, Object>();
@@ -211,12 +226,12 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         Images images = imgService.selectByPrimaryKey(id);
         Keys key = keysService.selectKeys(sourcekey);
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         Boolean b =false;
-        if(config.getSourcekey()==5){
+        if(Sourcekey==5){
             b =true;
         }else{
-            b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+            b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
         }
         if(b){
             ImgServiceImpl de = new ImgServiceImpl();
@@ -262,15 +277,15 @@ public class AdminController {
         Integer v = 0;
         ImgServiceImpl de = new ImgServiceImpl();
         User u = (User) session.getAttribute("user");
-        Config config = configService.getSourceype();
+        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         for (int i = 0; i < ids.length; i++) {
             Images images = imgService.selectByPrimaryKey(ids[i]);
             Keys key = keysService.selectKeys(images.getSource());
             Boolean b =false;
-            if(config.getSourcekey()==5){
+            if(Sourcekey==5){
                 b =true;
             }else{
-                b = StringUtils.doNull(config.getSourcekey(),key);//判断对象是否有空值
+                b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
             }
             if(b){
                 if (key.getStorageType() == 1) {
@@ -311,8 +326,7 @@ public class AdminController {
     public String tosetuser(HttpSession session, Model model, HttpServletRequest request) {
         User u = (User) session.getAttribute("user");
         //key信息
-        model.addAttribute("username", u.getUsername());
-        model.addAttribute("level", u.getLevel());
+        model.addAttribute("user", u);
         return "admin/setuser";
     }
 
@@ -320,11 +334,18 @@ public class AdminController {
     @PostMapping("/change")
     @ResponseBody
     public String change(HttpSession session, User user) {
-        //Integer count = userService.checkUsername(user.getUsername());//查询用户名是否重复
         User u = (User) session.getAttribute("user");
-        user.setEmail(u.getEmail());
+        //user.setEmail(u.getEmail());
+        user.setUid(u.getUid());
         JSONArray jsonArray = new JSONArray();
-        Integer ret = userService.change(user);
+        Integer ret =0;
+        if(u.getLevel()==1){
+            user.setUsername(null);
+            user.setEmail(null);
+            ret = userService.change(user);
+        }else{
+            ret = userService.change(user);
+        }
         jsonArray.add(ret);
         if (u.getEmail() != null && u.getPassword() != null) {
             session.removeAttribute("user");
@@ -345,6 +366,40 @@ public class AdminController {
         model.addAttribute("domain", config.getDomain());
         return "admin/api";
     }
+
+
+    @PostMapping(value = "/kuorong")
+    @ResponseBody
+    public String kuorong(HttpSession session, String codestring) {
+        User u = (User) session.getAttribute("user");
+        JSONObject jsonObject = new JSONObject();
+        User u1 = userService.getUsers(u.getEmail());
+        Integer ret =0;
+        Integer sizes = 0;
+        if(u!=null){
+            //List<Code> code = codeService.selectCode(codestring);
+            Code c = codeService.selectCodekey(codestring);
+            Print.warning(c);
+            if(c!=null) {
+                User user = new User();
+                sizes = c.getValue()+u1.getMemory();
+                user.setMemory(c.getValue()+u1.getMemory());
+                user.setId(u.getId());
+                ret = userServiceImpl.usersetmemory(user,codestring);
+                if(ret>0){ ret = 1; }
+            }else{
+                //扩容码不存在
+                ret=-1;
+            }
+        }else{
+            //登录过期
+            session.invalidate();
+        }
+        jsonObject.put("sizes",sizes);
+        jsonObject.put("ret",ret);
+        return jsonObject.toString();
+    }
+
 
     @GetMapping(value = "/images/{id}")
     @ResponseBody

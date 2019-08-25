@@ -47,6 +47,8 @@ public class ClientController {
     private COSImageupload cosImageupload;
     @Autowired
     private FTPImageupload ftpImageupload;
+    @Autowired
+    private DomainService domainService;
 
     @Value("${systemupdate}")
     private String systemupdate;
@@ -65,7 +67,8 @@ public class ClientController {
                     if (user.getIsok() == 1) {
                         User u = userService.getUsers(email);
                         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
-                        Keys key = keysService.selectKeys(config.getSourcekey());
+                        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
+                        Keys key = keysService.selectKeys(Sourcekey);
                         if (key.getStorageType() != 0 && key.getStorageType() != null) {
                             if (key.getStorageType() == 1) {
                                 nOSImageupload.Initialize(key);//实例化网易
@@ -85,10 +88,10 @@ public class ClientController {
                         }
                         Print.Normal("客户端：初始化上传。");
                         Boolean b = false;
-                        if (config.getSourcekey() == 5) {
+                        if (Sourcekey == 5) {
                             b = true;
                         } else {
-                            b = StringUtils.doNull(config.getSourcekey(), key);//判断对象是否有空值
+                            b = StringUtils.doNull(Sourcekey, key);//判断对象是否有空值
                         }
                         if (b) {
                             long stime = System.currentTimeMillis();
