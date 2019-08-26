@@ -36,11 +36,9 @@
 
 ## 系统预览
 
+![Hellohao.png](http://cdn.wwery.com/Hellohao/6071c0825062730.png)
 
-![ ](https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/814900714064158.png)
-
-
-![ ](https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/611550714064158.png)
+![Hellohao2.png](http://cdn.wwery.com/Hellohao/eeeed0825062727.png)
 
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/c208e0825054822.png)
 ![图床后台管理2.png](http://cdn.wwery.com/Hellohao/6c7690825054822.png)
