@@ -14,11 +14,11 @@ public class AfterServiceStarted implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Print.Normal("================================================");
-        Print.Normal("||   Hellohao-Pro图床启动成功                ||");
-        Print.Normal("||   作者博客：Http://www.hellohao.cn        ||");
-        Print.Normal("||   也许这将是最好用的图床                   ||");
-        Print.Normal("=================================================");
+//        Print.Normal("______________________________________________");
+//        Print.Normal("              Hellohao-Pro                ");
+//        Print.Normal("     Successful startup of the program      ");
+//        Print.Normal("     is OK!  Open http://your ip:port       ");
+//        Print.Normal("______________________________________________");
         //getLinuxLocalIp();
 
     }

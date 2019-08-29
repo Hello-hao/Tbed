@@ -40,7 +40,7 @@
                         <label class="layui-form-label">站点域名</label>
                         <div class="layui-input-block">
                             <input id="domain" type="text" name="title" autocomplete="off" placeholder="站点域名" class="layui-input"
-                                   th:value="${config.getDomain()}"/><span style="color: #DAA5A6;">填写访问本站的域名或IP,否则开启邮箱激活不能正常使用。需带有http://或https://</span>
+                                   th:value="${config.getDomain()}"/><span style="color: #DAA5A6;">填写访问本站的域名或IP,需带有http://或https://,否则开启邮箱激活和本地存储不能正常使用。如：http://127.0.0.1:8088,IP需带端口,最后不需要加/</span>
                         </div>
                     </div>
                     <br />
@@ -94,20 +94,20 @@
 <!--                    </div>-->
 <!--                    <br />-->
 
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">友情链接</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <textarea id="links" name="links" placeholder="请输入内容" class="layui-textarea" th:text="${config.getLinks()}"></textarea>-->
-<!--                        <span style="color: #DAA5A6;">友链格式（否则会显示异常）：<xmp><li><a src="地址">网站名</a></li></xmp></span>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <div class="layui-form-item">
+                    <label class="layui-form-label">备案显示</label>
+                    <div class="layui-input-block">
+                        <textarea id="links" name="links" placeholder="备案号，可用html代码" class="layui-textarea" th:text="${config.getLinks()}"></textarea>
+                        <span style="color: #DAA5A6;">不填写，则不显示<xmp></xmp></span>
+                    </div>
+                </div>
 
                     <br />
                     <form class="layui-form-item " >
                         <div class="laydfdaui-form-item">
                             <label class="layui-form-label">背景类型</label>
                             <div class="layui-input-block" id="backtype">
-                                <input type="radio" id="backtype1" name="isbacktype" value="1" title="图片壁纸" checked>
+                                <input type="radio" id="backtype1" name="isbacktype" value="1" title="图片壁纸">
                                 <input type="radio" id="backtype2" name="isbacktype" value="2" title="视频壁纸">
                             </div>
                         </div>
@@ -115,7 +115,7 @@
                         <div class="laydfdaui-form-item">
                             <label class="layui-form-label">首页类型</label>
                             <div class="layui-input-block" id="sett">
-                                <input type="radio" id="sett11" name="settweb" value="1" title="默认首页" checked>
+                                <input type="radio" id="sett11" name="settweb" value="1" title="默认首页">
                                 <input type="radio" id="sett22" name="settweb" value="2" title="精简首页">
                             </div><span style="color: #DAA5A6;">精简首页：页面加载完直接打开上传页面，没有展示页</span>
                         </div>
@@ -328,10 +328,11 @@
            }else{
                $('#backtype1:radio:first').attr('checked', 'true');
            }
-            if(sett==1){
-                $('#sett1:radio:first').attr('checked', 'true');
+
+            if(sett != 1){
+                $('#sett22:radio:input:radio:last').attr('checked', 'true');
             }else{
-                $('#sett2:radio:input:radio:last').attr('checked', 'true');
+                $('#sett11:radio:first').attr('checked', 'true');
             }
 
             $.ajax({

@@ -3,7 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>本站概况</title>
+    <title>图片列表</title>
     <link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
     <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"/>
@@ -188,7 +188,7 @@
                         <span class="add-on input-group-addon" onclick="thisclear()">
                             <i class="glyphicon glyphicon-repeat" ></i>
                         </span>
-                        <input  type="text" readonly style="width: 175px" name="reservation" id="reservation" class="form-control" />
+                        <input  type="text" readonly style="width: 168px" name="reservation" id="reservation" class="form-control" />
                         <div class="btn-group">
                             <a style="margin-left: 20px;" type="button" class="btn btn-info" onclick="screening();">筛选</a>
                         </div>
@@ -532,7 +532,8 @@
                     //EMAIL
                     title: '大小',
                     formatter: function (value, rows, index) {
-                        return rows.sizes + "k";
+                        return getSize(rows.sizes*1024);
+                        //return rows.sizes + "k";
                     },
                     align: 'center'
                 },
@@ -637,7 +638,14 @@
             })
         }
 
-
+        //自动判断B K M
+    function getSize(bytes) {
+        if (bytes === 0) return '0 B';
+        var k = 1024;
+        sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+        i = Math.floor(Math.log(bytes) / Math.log(k));
+        return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+    }
 
 
 

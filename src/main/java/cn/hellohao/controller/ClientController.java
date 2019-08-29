@@ -224,6 +224,21 @@ public class ClientController {
 
         return "-1";//-1就是没有公告，客户端不显示
     }
-
+    //主端接口
+    @PostMapping("/systemupdate")
+    @ResponseBody
+    public String sysupdate(String  dates) {
+        Integer i=dates.compareTo(systemupdate);//小于0则需要更新
+        System.out.println(i);
+        return i.toString();
+    }
+    //主端接口
+    @PostMapping("/getdomain")
+    @ResponseBody
+    public String getdomain(String  domain) {
+        Integer count = domainService.getDomain(domain);
+        //System.out.println(i);
+        return count.toString();
+    }
 
 }

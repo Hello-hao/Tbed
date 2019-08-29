@@ -5,10 +5,7 @@ import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.ImgServiceImpl;
 import cn.hellohao.service.impl.UserServiceImpl;
-import cn.hellohao.utils.GetCurrentSource;
-import cn.hellohao.utils.LocUpdateImg;
-import cn.hellohao.utils.Print;
-import cn.hellohao.utils.StringUtils;
+import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -19,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -202,12 +200,19 @@ public class AdminController {
         // 从他的下一条sql开始分页
         PageHelper.startPage(page, limit);
         List<User> users = null;
+        List<User> users2 = new ArrayList<>();
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
             User user = new User();
             user.setUsername(username);
             users = userService.getuserlist(user);// 这是我们的sql
+            for (User user1 : users) {
+                User uu = new User();
+                uu = user1;
+                uu.setPassword(Base64Encryption.decryptBASE64(user1.getPassword()));
+                users2.add(uu);
+            }
             // 使用pageInfo包装查询
-            PageInfo<User> rolePageInfo = new PageInfo<>(users);//
+            PageInfo<User> rolePageInfo = new PageInfo<>(users2);//
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("code", 0);
             map.put("msg", "");
@@ -335,16 +340,21 @@ public class AdminController {
     @ResponseBody
     public String change(HttpSession session, User user) {
         User u = (User) session.getAttribute("user");
+        User us = new User();
         //user.setEmail(u.getEmail());
-        user.setUid(u.getUid());
+        us.setEmail(user.getEmail());
+        us.setUsername(user.getUsername());
+        us.setPassword(Base64Encryption.encryptBASE64(user.getPassword().getBytes()));
+        us.setUid(u.getUid());
+        //user.setUid(u.getUid());
         JSONArray jsonArray = new JSONArray();
         Integer ret =0;
         if(u.getLevel()==1){
-            user.setUsername(null);
-            user.setEmail(null);
-            ret = userService.change(user);
+            us.setUsername(null);
+            us.setEmail(null);
+            ret = userService.change(us);
         }else{
-            ret = userService.change(user);
+            ret = userService.change(us);
         }
         jsonArray.add(ret);
         if (u.getEmail() != null && u.getPassword() != null) {

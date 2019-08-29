@@ -2,7 +2,9 @@ package cn.hellohao.controller;
 
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
+import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.GetCurrentSource;
+import cn.hellohao.utils.Print;
 import cn.hellohao.utils.StringUtils;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
@@ -21,7 +23,8 @@ import java.util.HashMap;
 @Controller
 @RequestMapping("/admin/root")
 public class AdminRootController {
-
+    @Autowired
+    private NOSImageupload nOSImageupload;
     @Autowired
     private ConfigService configService;
     @Autowired
@@ -112,12 +115,36 @@ public class AdminRootController {
         Config config = new Config();
         config.setSourcekey(key.getStorageType());
         Integer val = configService.setSourceype(config);
-        if (val > 0) {
-            Integer ret = keysService.updateKey(key);
-            jsonArray.add(ret);
-        } else {
-            jsonArray.add(0);
+        //if (val > 0) {
+        Integer ret = -2;
+        //修改完初始化
+        if(key.getStorageType()==1){
+            ret =nOSImageupload.Initialize(key);//实例化网易
+        }else if (key.getStorageType()==2){
+            ret = OSSImageupload.Initialize(key);
+        }else if(key.getStorageType()==3){
+            ret = USSImageupload.Initialize(key);
+        }else if(key.getStorageType()==4){
+            ret = KODOImageupload.Initialize(key);
+        }else if(key.getStorageType()==6){
+            ret = COSImageupload.Initialize(key);
+        }else if(key.getStorageType()==7){
+            ret = FTPImageupload.Initialize(key);
         }
+        else{
+            Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
+        }
+        if(ret>0){
+            ret = keysService.updateKey(key);
+        }
+
+        //-1 对象存储有参数为空,初始化失败
+        //0，保存失败
+        //1 正确
+        jsonArray.add(ret);
+        //} else {
+            //jsonArray.add(0);
+       // }
         return jsonArray.toString();
     }
 

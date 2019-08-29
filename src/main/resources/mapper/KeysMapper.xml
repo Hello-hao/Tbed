@@ -6,11 +6,19 @@
     <!-- 查询对象存储key-->
     <select id="selectKeys" parameterType="integer" resultType="cn.hellohao.pojo.Keys">
         SELECT
-        *
+            *
         FROM
-        `keys`
+            `keys`
         WHERE
-        storageType = #{storageType}
+            storageType = #{storageType}
+    </select>
+
+    <!-- 查询对象存储key-->
+    <select id="getKeys" parameterType="integer" resultType="cn.hellohao.pojo.Keys">
+        SELECT
+            *
+        FROM
+            `keys`
     </select>
 
     <update id="updateKey" parameterType="cn.hellohao.pojo.Keys">

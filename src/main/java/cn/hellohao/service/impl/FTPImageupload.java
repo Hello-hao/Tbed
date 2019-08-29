@@ -134,10 +134,10 @@ public class FTPImageupload {
                         }catch (IOException e){
                             System.out.println(e);
                         }
-                        Print.warning("连接失败");
+                        //Print.warning("连接失败");
                         ret = -1;
                     }
-                    Print.Normal("链接成功");
+                    //Print.Normal("链接成功");
                     //boolean isUpload = ftp.storeFile("/ftp/upload.jpg", fis);
                     ftpClient1 = ftp;
                     key = k;

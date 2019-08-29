@@ -25,6 +25,7 @@
 	<!--	<link th:href="@{/static/css/popover.css}" media="all" rel="stylesheet" type="text/css"/>-->
 	<link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
 	<link rel="stylesheet" th:href="@{/css/intro.css}">
+	<link rel="stylesheet" th:href="@{/css/verify.css}">
 
 	<script th:src="@{/static/js/toastr.min.js}" type="text/javascript"></script>
 	<script th:src="@{/static/js/login-register.js}"></script>
@@ -69,7 +70,9 @@
 			cursor:pointer;
 		}
 		#goupdate:hover{}
-
+		#beian a{
+			color: #fff;
+		}
 	</style>
 </head>
 <body class="simple">
@@ -181,6 +184,17 @@
 					</div>
 					<!-- end countdown container -->
 				</div>
+
+				<div id="beian" style="text-align: center;">
+					<br />
+					<span th:utext="${config.getLinks()}">
+					<a href="http://www.hellohao.cn">Hellohao©技术支持</a>
+					</span>
+					<br />
+					<br />
+					<br />
+				</div>
+
 			</div>
 			<!-- end content -->
 		</section>
@@ -293,6 +307,11 @@
 						   name="password">
 					<input id="registerpassword_confirmation" style="color:#000;background-color:#fff;padding: 18px 25px 22px 25px; border-left:none;border-right:none;border-top:none;border-bottom: none;"  type="text"
 						   placeholder="重复密码" name="password_confirmation">
+					<div class="form-group">
+						<br />
+						<div id="mpanel2" ></div>
+						<hr />
+					</div>
 				</form>
 			</div>
 			<div style="width: 100%;height: 30px;">
@@ -312,15 +331,16 @@
 			<div class="form loginBox">
 				<form id="login" onkeydown="keyLogin();">
 					<div class="form-group">
-						<label for="loginemail">Email address</label>
 						<input id="loginemail" type="email" style=" border-left:none;border-right:none;border-top:none;border-bottom:1px solid #0F2543;"  placeholder="Email">
 					</div>
 					<div class="form-group">
-						<label for="loginpassword">Password</label>
 						<input id="loginpassword" type="password" style="color:#000;background-color:#fff;padding: 18px 25px 22px 25px;width: 100%; border-left:none;border-right:none;border-top:none;border-bottom:1px solid #0F2543;"   placeholder="Password">
 						<hr />
 					</div>
-
+					<div class="form-group">
+						<div id="mpanel1" ></div>
+						<hr />
+					</div>
 				</form>
 			</div>
 			<div style="width: 100%;height: 30px;">
@@ -365,13 +385,15 @@
 <script th:src="@{/webuploade/js/modalEffects.js}"></script>
 <!-- bootstrap -->
 <script type="text/javascript" th:src="@{js/bootstrap.min.js}"></script>
-<!-- other plugins -->
 <script type="text/javascript" th:src="@{js/plugins.min.js}"></script>
-<!-- google map -->
-<!-- main js -->
 <script type="text/javascript" th:src="@{js/main_constellation.js}"></script>
+<script th:src="@{/js/verify.js}"></script>
 
 <script th:inline="javascript">
+	var verification = false;
+	var zcverification = false;
+	var logotmp = 0;
+	var zctmp = 0;
 	var arr_url = "";
 	var arr_markdown = "";
 	var arr_html = "";
@@ -381,8 +403,6 @@
 	var imgcount = [[${imgcount}]];
 	var suffix= [[${suffix}]];
 
-	// var bg1 = [[${config.getBackground1()}]];
-	// var bg2 = [[${config.getBackground2()}]];
 	$(document).ready(function () {
 		$(".jb").fadeToggle();
 		//$("#page-header").fadeToggle("slow");
@@ -410,7 +430,8 @@
 		setInterval(clock,1000);//首页动态时间
 		if(backtype==1){
 			$(".bg-container-static").css('background', 'url('+[[${config.getBackground2()}]]+') no-repeat');
-			$(".bg-container-static").css('background-position', '50% 50%');
+			$(".bg-container-static").css({'background-position':'50% 50%','height':'100%','width':'100%','overflow':'hidden','background-size':'cover'});
+
 		}
 		//设置页面资料
 		var webname = [[${config.getWebname()}]];
@@ -459,121 +480,151 @@
 		//toastr.info("欢迎使用Hellohao图床！");
 	});
 
+
 	function zhuce(mail, registerusername, registerpassword) {
-		//验证成功
-		$.ajax({
-			type: "POST",
-			url: "/user/register",
-			data: {email: mail, username: registerusername, password: registerpassword},
-			dataType: "json",
-			success: function (data) {
-				if (data.ret > 0) {
-					if (data.zctype == 1) {
-						layui.use('layer', function(){
-							var layer = layui.layer;
-							layer.alert('注册成功，请前往邮箱激活你的账号，注意！激活邮件如果迟迟未收到，有可能在您的【垃圾箱】中。', {
-								skin: 'layui-layer-molv' //样式类名 自定义样式
-								,closeBtn: 0  // 是否显示关闭按钮
-								,anim: 1 //动画类型
-								,btn: ['确定'] //按钮
-								,icon: 1  // icon
-								,yes:function(){
-									window.location.reload();
-								}
+		if(zcverification){
+			//验证成功
+			$.ajax({
+				type: "POST",
+				url: "/user/register",
+				data: {email: mail, username: registerusername, password: registerpassword,zctmp:zctmp},
+				dataType: "json",
+				success: function (data) {
+					if (data.ret > 0) {
+						if (data.zctype == 1) {
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('注册成功，请前往邮箱激活你的账号，注意！激活邮件如果迟迟未收到，有可能在您的【垃圾箱】中。', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 1  // icon
+									,yes:function(){
+										window.location.reload();
+									}
+								});
 							});
-						});
+						} else {
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('注册成功，快去登录体验吧。', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 1  // icon
+									,yes:function(){
+										window.location.reload();
+									}
+								});
+							});
+						}
 					} else {
-						layui.use('layer', function(){
-							var layer = layui.layer;
-							layer.alert('注册成功，快去登录体验吧。', {
-								skin: 'layui-layer-molv' //样式类名 自定义样式
-								,closeBtn: 0  // 是否显示关闭按钮
-								,anim: 1 //动画类型
-								,btn: ['确定'] //按钮
-								,icon: 1  // icon
-								,yes:function(){
-									window.location.reload();
-								}
+						if (data.ret == -2) {
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('注册失败，用户名或邮箱重复且用户名只能为字母数字，请重试。', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 2  // icon
+								});
 							});
-						});
+						} else if(data.ret == -3){
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('本站关闭了注册功能。', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 2  // icon
+								});
+							});
+						}else if(data.ret == -4){
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('非法注册，请刷新页面后重新尝试。', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 2  // icon
+								});
+							});
+						}else {
+							layui.use('layer', function(){
+								var layer = layui.layer;
+								layer.alert('注册失败，请重试。', {
+									skin: 'layui-layer-molv' //样式类名 自定义样式
+									,closeBtn: 0  // 是否显示关闭按钮
+									,anim: 1 //动画类型
+									,btn: ['确定'] //按钮
+									,icon: 2  // icon
+								});
+							});
+						}
+						setTimeout(function () {
+						}, 2000);
 					}
-				} else {
-					if (data.ret == -2) {
-						layui.use('layer', function(){
-							var layer = layui.layer;
-							layer.alert('注册失败，用户名或邮箱重复且用户名只能为字母数字，请重试。', {
-								skin: 'layui-layer-molv' //样式类名 自定义样式
-								,closeBtn: 0  // 是否显示关闭按钮
-								,anim: 1 //动画类型
-								,btn: ['确定'] //按钮
-								,icon: 2  // icon
-							});
-						});
-					} else if(data.ret == -3){
-						layui.use('layer', function(){
-							var layer = layui.layer;
-							layer.alert('本站关闭了注册功能。', {
-								skin: 'layui-layer-molv' //样式类名 自定义样式
-								,closeBtn: 0  // 是否显示关闭按钮
-								,anim: 1 //动画类型
-								,btn: ['确定'] //按钮
-								,icon: 2  // icon
-							});
-						});
-					}else {
-						layui.use('layer', function(){
-							var layer = layui.layer;
-							layer.alert('注册失败，请重试。', {
-								skin: 'layui-layer-molv' //样式类名 自定义样式
-								,closeBtn: 0  // 是否显示关闭按钮
-								,anim: 1 //动画类型
-								,btn: ['确定'] //按钮
-								,icon: 2  // icon
-							});
-						});
-					}
-					setTimeout(function () {
-					}, 2000);
+					again(2);
 				}
-			}
-		});
+			});
+		}else{
+
+		}
+
 	}
 
 	//登录
 	function loginAjax() {
 		var loginemail = $("#loginemail").val();
 		var loginpassword = $("#loginpassword").val();
-		//验证成功
-		$.ajax({
-			type: "POST",
-			url: "/user/login.do",
-			data: {email: loginemail, password: loginpassword},
-			dataType: "json",
-			success: function (data) {
-				$('#loginModal').modal('hide');
-				if (data == 1) {
-					toastr.success("登录成功。");
-					setTimeout(function () {
-						window.location.reload();
-					}, 1000);
-				} else {
-					dd();
-					if (data == -1) {
-						$('#dlts').text('您的账号是未激活状态，无法登陆。');
-						toastr.error('您的账号是未激活状态，无法登陆。');
-					} else if(data==-2){
-						$('#dlts').text('您的账号已被冻结。');
-						toastr.error('您的账号已被冻结。');
-					}else {
-						$('#dlts').text('登录失败，你的邮箱或密码不正确，请重试。');
-						toastr.error('登录失败，你的邮箱或者尼玛不正确，请重试。');
+		if(verification){
+			//验证成功
+			$.ajax({
+				type: "POST",
+				url: "/user/login",
+				data: {email: loginemail, password: loginpassword,logotmp:logotmp},
+				dataType: "json",
+				success: function (data) {
+					$('#loginModal').modal('hide');
+					if (data == 1) {
+						toastr.success("登录成功。");
+						setTimeout(function () {
+							window.location.reload();
+						}, 1000);
+					} else {
+						dd();
+						if (data == -1) {
+							$('#dlts').text('您的账号是未激活状态，无法登陆。');
+							toastr.error('您的账号是未激活状态，无法登陆。');
+							again();
+						} else if(data==-2){
+							$('#dlts').text('您的账号已被冻结。');
+							toastr.error('您的账号已被冻结。');
+							again(1);
+						}else if(data==-3){
+							$('#dlts').text('非法登录，请刷新页面重新尝试。');
+							toastr.error('非法登录，请刷新页面重新尝试。');
+							again(1);
+						}
+						else {
+							$('#dlts').text('登录失败，你的邮箱或密码不正确，请重试。');
+							toastr.error('登录失败，你的邮箱或者密码不正确，请重试。');
+							again(1);
+						}
+						setTimeout(function () {
+							//window.location.reload();
+						}, 2000);
 					}
-					setTimeout(function () {
-						//window.location.reload();
-					}, 2000);
 				}
-			}
-		});
+			});
+		}else{
+			$('#dlts').text('请滑动验证码进行验证，才可登录。');
+		}
 	}
 
 	function exit() {
@@ -775,9 +826,6 @@
 		//document.getElementById()
 	}
 
-
-	//https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Pexels.mp4
-
 	//页面模板效果
 	(function ($) {
 		var backtype = [[${config.getBacktype()}]];
@@ -814,7 +862,115 @@
 	})(jQuery);
 
 
+	$('#mpanel1').slideVerify({
+		type : 1,		//类型
+		vOffset : 5,	//误差量，根据需求自行调整
+		barSize : {
+			width : '100%',
+			height : '40px',
+		},
+		ready : function() {
+		},
+		success : function() {
+			verification = true;
+			var myDate = new Date(); 
+			var tmp = Number(myDate.getMinutes()+''+myDate.getSeconds());
+			logotmp = (tmp-500+1+2+3-4);
+			$.ajax({
+				type: "POST",
+				url: "/user/verification",
+				data:{tmp:logotmp,type:1},
+				dataType: "json",
+				success: function (data) {}
+			});
+			},
+			error : function() {}
+	});
+	$('#mpanel2').slideVerify({
+		type : 1,		//类型
+		vOffset : 5,	//误差量，根据需求自行调整
+		barSize : {
+			width : '100%',
+			height : '40px',
+		},
+		ready : function() {
+		},
+		success : function() {
+			zcverification = true;
+			var myDate = new Date();
+			var tmp = Number(myDate.getMinutes()+''+myDate.getSeconds());
+			zctmp = (tmp-500+1+2+3-4);
+			$.ajax({
+				type: "POST",
+				url: "/user/verification",
+				data:{tmp:zctmp,type:2},
+				dataType: "json",
+				success: function (data) {}
+			});
+		},
+		error : function() {}
+	});
+	function again(v) {
+		if(v==1){
+			logotmp=0;
+			verification = false;
+			$('#mpanel1').html('');
+			$('#mpanel1').slideVerify({
+				type : 1,		//类型
+				vOffset : 5,	//误差量，根据需求自行调整
+				barSize : {
+					width : '100%',
+					height : '40px',
+				},
+				ready : function() {
+				},
+				success : function() {
+					verification = true;
+					var myDate = new Date();
+					var tmp = Number(myDate.getMinutes()+''+myDate.getSeconds());
+					logotmp = (tmp-500+1+2+3-4);
+					$.ajax({
+						type: "POST",
+						url: "/user/verification",
+						data:{tmp:logotmp,type:1},
+						dataType: "json",
+						success: function (data) {}
+					});
+				},
+				error : function() {}
+			});
+		}
+		if(v==2){
+			zctmp=0;
+			zcverification = false;
+			$('#mpanel2').html('');
+			$('#mpanel2').slideVerify({
+				type : 1,		//类型
+				vOffset : 5,	//误差量，根据需求自行调整
+				barSize : {
+					width : '100%',
+					height : '40px',
+				},
+				ready : function() {
+				},
+				success : function() {
+					verification = true;
+					var myDate = new Date();
+					var tmp = Number(myDate.getMinutes()+''+myDate.getSeconds());
+					zctmp = (tmp-500+1+2+3-4);
+					$.ajax({
+						type: "POST",
+						url: "/user/verification",
+						data:{tmp:zctmp,type:2},
+						dataType: "json",
+						success: function (data) {}
+					});
+				},
+				error : function() {}
+			});
+		}
 
+	}
 
 </script>
 

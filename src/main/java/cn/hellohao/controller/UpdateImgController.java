@@ -72,33 +72,7 @@ public class UpdateImgController {
             if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
             if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
             //Boolean b =false;
-            Keys key = null;
-            Integer Sourcekey = GetCurrentSource.GetSource(u==null?null:u.getId());
-            if(Sourcekey!=0 && Sourcekey!=5){
-                key= keysService.selectKeys(Sourcekey);//然后根据类型再查询key
-                //b = StringUtils.doNull(key);//判断对象是否有空值
-                if(key.getStorageType()!=0 && key.getStorageType()!=null){
-                    int ret =0;
-                    if(key.getStorageType()==1){
-                        ret =nOSImageupload.Initialize(key);//实例化网易
-                    }else if (key.getStorageType()==2){
-                        ret =OSSImageupload.Initialize(key);
-                    }else if(key.getStorageType()==3){
-                        ret = USSImageupload.Initialize(key);
-                    }else if(key.getStorageType()==4){
-                        ret = KODOImageupload.Initialize(key);
-                    }else if(key.getStorageType()==6){
-                        ret = COSImageupload.Initialize(key);
-                    }else if(key.getStorageType()==7){
-                        ret = FTPImageupload.Initialize(key);
-                    }
-                    else{
-                        Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
-                    }
-                    if(ret<1){model.addAttribute("error", "当前存储源参数配置不完整，请联系管理员配置存储源。");}
-                    else{model.addAttribute("error", 1);}
-                }
-            }
+            //Integer Sourcekey = GetCurrentSource.GetSource(u==null?null:u.getId());//查询当当前用户或者游客使用的数据源
             if (email != null) {
                 //登陆成功
                 Integer ret = userService.login(u.getEmail(), u.getPassword());
@@ -140,14 +114,12 @@ public class UpdateImgController {
             , @RequestParam(value = "file", required = false) MultipartFile[] file) throws Exception {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Config config = configService.getSourceype();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
         Integer usermemory =0;
         Integer memory =0;
         Integer Sourcekey=0;
-        //User tmpuser =  userService.getUsers(u.getEmail());
-        //GetCurrentSource getCurrentSource = new GetCurrentSource();
         if(u==null){
             Sourcekey = GetCurrentSource.GetSource(null);
             memory = uploadConfig.getVisitormemory();
@@ -524,15 +496,6 @@ public class UpdateImgController {
             }
         }
         return jsonObject.toString();
-    }
-
-    @RequestMapping(value = "/getsentence")
-    @ResponseBody
-    public String getsentence(HttpSession session) {
-        JSONObject jsonObject = new JSONObject();
-        String yiyan = Sentence.getURLContent();
-
-        return yiyan;
     }
 
 

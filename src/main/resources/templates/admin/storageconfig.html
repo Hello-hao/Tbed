@@ -318,7 +318,9 @@
                 success: function (data) {
                     if (data > 0) {
                         layer.msg("保存成功", {icon: 1});
-                    } else {
+                    } else if(data==-1){
+                        layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+                    }else{
                         layer.msg("保存失败", {icon: 2});
                     }
                 }
@@ -340,7 +342,9 @@
                     success: function (data) {
                         if (data > 0) {
                             layer.msg("保存成功", {icon: 1});
-                        } else {
+                        } else if(data==-1){
+                            layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+                        }else{
                             layer.msg("保存失败", {icon: 2});
                         }
                     }
@@ -366,7 +370,9 @@
                     success: function (data) {
                         if (data > 0) {
                             layer.msg("保存成功", {icon: 1});
-                        } else {
+                        } else if(data==-1){
+                            layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+                        }else{
                             layer.msg("保存失败", {icon: 2});
                         }
                     }
