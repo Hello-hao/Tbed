@@ -36,30 +36,20 @@
 
 ## 系统预览
 
-![Hellohao图床 - 纯粹的图片存放驿站1.png](https://i.loli.net/2019/07/14/5d2afe02837ec88282.png)
+![Hellohao.png](http://cdn.wwery.com/Hellohao/6071c0825062730.png)
 
-![Hellohao图床 - 纯粹的图片存放驿站.png](https://i.loli.net/2019/07/14/5d2afe108630341050.png)
+![Hellohao2.png](http://cdn.wwery.com/Hellohao/eeeed0825062727.png)
 
-![图床后台管理1.png](https://i.loli.net/2019/06/27/5d13abbbd94d288839.png)
-
-![图床后台管理.png](http://cdn.wwery.com/Hellohao/15b3c0807113840.png)
-
-![图床后台管理.png](http://cdn.wwery.com/Hellohao/1a70a0807115019.png)
-
-![图床后台管理.png](http://cdn.wwery.com/Hellohao/6bfad0807115019.png)
-
-![图床后台管理.png](http://cdn.wwery.com/Hellohao/361ea0731102001.png)
-
-![图床后台管理3.png](https://i.loli.net/2019/06/27/5d13abbbbd76136816.png)
-
-![图床后台管理4.png](https://i.loli.net/2019/06/27/5d13abbbbe12320316.png)
+![图床后台管理.png](http://cdn.wwery.com/Hellohao/c208e0825054822.png)
+![图床后台管理2.png](http://cdn.wwery.com/Hellohao/6c7690825054822.png)
+![图床后台管理3.png](http://cdn.wwery.com/Hellohao/2a79b0825054822.png)
+![图床后台管理4.png](http://cdn.wwery.com/Hellohao/5c1800825054824.png)
 
 ## 更新日志
 
-**2019-08-15**
-	- 添加首页简洁模式
-	- 添加开放/关闭网站注册
-	- 优化部分核心功能算法
+**2019-08-25**
+	- 很多功能，不一一列举
+
 
 ## 运行环境
 * JDK 1.8
