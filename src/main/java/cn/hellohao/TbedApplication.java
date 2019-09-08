@@ -23,18 +23,6 @@ public class TbedApplication {
 
 public static void main(String[] args) {
     SpringApplication.run(TbedApplication.class, args);
-
-    Scanner scanner = new Scanner(System.in);
-//    Print.Normal("请输入密钥：");
-//        String in = scanner.nextLine();
-//        if(in.equals("111")){
-//            Print.Normal("正确，进入");
-//        }else{
-//            Print.warning("错误，退出");
-//        }
-
-
-
     }
     /**
      * 文件上传配置

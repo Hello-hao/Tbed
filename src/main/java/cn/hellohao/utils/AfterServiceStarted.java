@@ -14,7 +14,7 @@ public class AfterServiceStarted implements ApplicationRunner {
      */
     @Override
     public void run(ApplicationArguments args) throws Exception {
-//        Print.Normal("______________________________________________");
+        Print.Normal("______________________________________________");
 //        Print.Normal("              Hellohao-Pro                ");
 //        Print.Normal("     Successful startup of the program      ");
 //        Print.Normal("     is OK!  Open http://your ip:port       ");

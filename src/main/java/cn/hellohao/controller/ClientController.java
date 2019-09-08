@@ -61,13 +61,15 @@ public class ClientController {
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         if (uploadConfig.getApi() == 1) {
             if (email != null && pass != null) {
-                Integer ret = userService.login(email, pass);
+                Integer ret = userService.login(email, Base64Encryption.encryptBASE64(pass.getBytes()));
                 if (ret > 0) {
                     User user = userService.getUsers(email);
                     if (user.getIsok() == 1) {
                         User u = userService.getUsers(email);
                         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+
                         Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
+
                         Keys key = keysService.selectKeys(Sourcekey);
                         if (key.getStorageType() != 0 && key.getStorageType() != null) {
                             if (key.getStorageType() == 1) {

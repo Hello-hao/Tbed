@@ -248,7 +248,24 @@ public class UpdateImgController {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
+
+        Integer usermemory =0;
+        Integer memory =0;
+        Integer Sourcekey=0;
+        if(u==null){
+            Sourcekey = GetCurrentSource.GetSource(null);
+            memory = uploadConfig.getVisitormemory();
+            usermemory= imgService.getusermemory(0);
+            if(usermemory==null){usermemory = 0;}
+        }else{
+            Sourcekey = GetCurrentSource.GetSource(u.getId());
+            memory = userService.getUsers(u.getEmail()).getMemory();
+            usermemory= imgService.getusermemory(u.getId());
+            if(usermemory==null){usermemory = 0;}
+        }
+
+
+        //Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         String userpath = "tourist";
         if(uploadConfig.getUrltype()==2){
             java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
@@ -266,9 +283,9 @@ public class UpdateImgController {
             bo =true;
         }else{bo = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
         }
-        //容量判断
-        Integer usermemory =0;
-        Integer memory =0;
+//        //容量判断
+//        Integer usermemory =0;
+//        Integer memory =0;
         if(u==null){
             memory = uploadConfig.getVisitormemory();
             usermemory= imgService.getusermemory(0);
