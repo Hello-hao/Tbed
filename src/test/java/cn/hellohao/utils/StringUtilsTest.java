@@ -1,20 +1,14 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.pojo.Keys;
-import cn.hellohao.utils.StringUtils;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.junit.rules.Timeout;
 
 public class StringUtilsTest {
 
   @Rule public final ExpectedException thrown = ExpectedException.none();
-
-  @Rule public final Timeout globalTimeout = new Timeout(10000);
-
-  // Test written by Diffblue Cover.
 
   @Test
   public void concatDomainAndPathInputNotNullNotNullOutputNotNull() {

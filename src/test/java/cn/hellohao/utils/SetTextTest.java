@@ -1,6 +1,5 @@
 package cn.hellohao.utils;
 
-import cn.hellohao.utils.SetText;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -10,8 +9,6 @@ import org.junit.rules.Timeout;
 public class SetTextTest {
 
   @Rule public final ExpectedException thrown = ExpectedException.none();
-
-  @Rule public final Timeout globalTimeout = new Timeout(10000);
 
   // Test written by Diffblue Cover.
   @Test
