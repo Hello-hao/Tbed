@@ -142,12 +142,11 @@ java -jar Tbed.jar
 项目运行起来不要关闭xshell窗口，否则项目将不能访问。可以使用一些后台命令把项目锁定后台。如`nohup`或`screen`
 
 
-### 技术选型
+### PC客户端
 
+![khd.gif](http://cdn.wwery.com/Hellohao/b1bb70927045346.gif)
 
-#### 前端
-* 首页框架: [Bootstrap](https://www.bootcss.com/)
-* 前端框架: [Layui](https://www.layui.com/)
+如果你想让自己的图床拥有自己的客户端，可以加下方群，联系群主帮你对接（前提是你使用的是Hellohao图床程序搭建的网站。）
 
 ### 声明
 本程序免费提供给个人用户使用，未经允许不得作为盈利商业使用，如果你想商用，请先与我们联系，分享你的利益。
