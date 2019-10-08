@@ -99,9 +99,37 @@ public class AdminController {
         String isarch = System.getProperty("os.arch");
         String jdk = System.getProperty("java.version");
         model.addAttribute("username", u.getUsername());
+        model.addAttribute("levels", u.getLevel());
         model.addAttribute("sysetmname",sysetmname);
         model.addAttribute("isarch", isarch);
         model.addAttribute("jdk", jdk);
+
+        //空间大小
+        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+        Integer usermemory = imgService.getusermemory(u.getId());
+        if(usermemory==null){usermemory=0;}
+        User user = userService.getUsers(u.getEmail());
+        if(u!=null){
+            if (u.getLevel() == 1) {
+                model.addAttribute("level", "普通用户");
+            } else if (u.getLevel() == 2) {
+                model.addAttribute("level", "管理员");
+            } else {
+                model.addAttribute("level", "未 知");
+            }
+            model.addAttribute("levels", u.getLevel());
+            model.addAttribute("username", u.getUsername());
+            model.addAttribute("api", uploadConfig.getApi());
+
+            model.addAttribute("memory",user.getMemory());//单位M
+            if(usermemory==null){
+                model.addAttribute("usermemory", 0);//单位M
+            }else{
+                float d = (float) (Math.round((usermemory/1024.0F) * 100.0) / 100.0);
+                //Print.Normal();
+                model.addAttribute("usermemory", d);//单位M
+            }
+        }
         return "admin/survey";
     }
 
@@ -170,49 +198,21 @@ public class AdminController {
         return new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
     }
 
+
     //获取用户信息列表
     @RequestMapping(value = "/selectusertable")
-    @ResponseBody
-    public PageResultBean<User> selectByFy1(HttpSession session, Integer pageNum, Integer pageSize) {
-        User u = (User) session.getAttribute("user");
-        // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
-        // 从他的下一条sql开始分页
-        PageHelper.startPage(pageNum, pageSize);
-        List<User> users = null;
-        if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
-            users = userService.getuserlist(u);// 这是我们的sql
-            // 使用pageInfo包装查询
-            PageInfo<User> rolePageInfo = new PageInfo<>(users);//
-            return new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
-        } else {
-            return null;
-        }
-    }
-
-
-    //获取用户信息列表
-    @RequestMapping(value = "/selectusertable2")
     @ResponseBody
     public Map<String, Object> selectByFy12(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
                                             @RequestParam(required = false) int limit,String username) {
         User u = (User) session.getAttribute("user");
-        // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
-        // 从他的下一条sql开始分页
         PageHelper.startPage(page, limit);
         List<User> users = null;
-        List<User> users2 = new ArrayList<>();
         if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
             User user = new User();
             user.setUsername(username);
             users = userService.getuserlist(user);// 这是我们的sql
-            for (User user1 : users) {
-                User uu = new User();
-                uu = user1;
-                uu.setPassword(Base64Encryption.decryptBASE64(user1.getPassword()));
-                users2.add(uu);
-            }
             // 使用pageInfo包装查询
-            PageInfo<User> rolePageInfo = new PageInfo<>(users2);//
+            PageInfo<User> rolePageInfo = new PageInfo<>(users);//
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("code", 0);
             map.put("msg", "");

@@ -11,6 +11,8 @@ import java.util.UUID;
 import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.utils.DateUtils;
+import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.ImgUrlUtil;
 import cn.hellohao.utils.Print;
 import com.netease.cloud.services.nos.model.ObjectMetadata;
@@ -42,7 +44,8 @@ public class NOSImageupload {
     static NosClient nosClient;
     static Keys key;
 
-    public Map<ReturnImage, Integer> Imageupload(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> Imageupload(Map<String, MultipartFile> fileMap, String username,
+                                                 Map<String, String> fileMap2,Integer setday) throws Exception {
         // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
@@ -57,7 +60,10 @@ public class NOSImageupload {
                 returnImage.setImgname(entry.getValue().getOriginalFilename());
                 returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                 ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-
+                if(setday>0){
+                    String deleimg = DateUtils.plusDay(setday);
+                    DeleImg.charu(username + "/" + uuid+times + "." + entry.getKey()+"-"+deleimg+"-"+"1");
+                }
             }
             return ImgUrl;
         }else{
@@ -94,6 +100,10 @@ public class NOSImageupload {
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "-" + deleimg + "-" + "1");
+                    }
 
                     boolean bb= new File(imgurl).getAbsoluteFile().delete();
                     Print.Normal("删除情况"+bb);

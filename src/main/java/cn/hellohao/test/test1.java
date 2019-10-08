@@ -17,14 +17,14 @@ import java.util.Date;
 
 public class test1 {
     public static void main(String[] args) throws  Exception {
-        readFile(File.separator + "HellohaoData"+File.separator+"db.db");
-        //charu();
+        readFile(File.separator + "HellohaoData"+File.separator+"img.ini");
+        //charu("Hellohao/b3da10930021007.png|");
     }
 
-    public static void charu() {
+    public static void charu(String src) {
         String filePath =File.separator + "HellohaoData" ;
         File file = new File(filePath);
-        File file1 = new File(filePath+File.separator+"db.db");
+        File file1 = new File(filePath+File.separator+"img.ini");
         if(!file.exists()){
             file.mkdirs();
         }
@@ -43,7 +43,7 @@ public class test1 {
             e.printStackTrace();
         }
         PrintWriter pw = new PrintWriter(fw);
-        pw.println("666666");
+        pw.println(src);//插入每行的内容
         pw.flush();
         try {
             fw.flush();

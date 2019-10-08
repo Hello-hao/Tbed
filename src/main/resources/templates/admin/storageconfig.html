@@ -149,6 +149,7 @@
                     $("#c3 label").text('地区代码');
                     $("#keyusername").text('SecretId');
                     $("#keypass").text('SecretKey');
+                    $("#ysm").text("如：北京地区就写ap-beijing");
                 }else if(data.value==7){
                     //$("#c3").css('display','none');
                     $("#c3-1").css('display','none');
@@ -156,12 +157,16 @@
                     $("#keyusername").text('FTP账号');
                     $("#keypass").text('FTP密码');
                     $("#c3 label").text('FTP地址');
+                    $("#c3 label").text('FTP地址');
+                    $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
+
                 }else{
                     $("#c3").css('display','block');
                     $("#c3-1").css('display','none');
                     $("#keyusername").text('AccessKey');
                     $("#keypass").text('AccessSecret');
                     $("#c3 label").text('Endpoint');
+                    $("#ysm").text('需带有http://或https://');
                 }
             }else{
                 $("#c1").css('display','none');
@@ -171,19 +176,21 @@
                 $("#c4").css('display','none');
                 $("#c5").css('display','none');
                 $("#c6").css('display','block');
-            }
-            if(data.value==6){
-                $("#ysm").text("如：北京地区就写ap-beijing");
-            }else{
-                $("#ysm").text("需带有http://或https:");
-            }
-            if(data.value==7){
-                $("#c3 label").text('FTP地址');
-                $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
-            }else{
                 $("#c3 label").text('Endpoint');
                 $("#ysm").text('需带有http://或https://');
             }
+            // if(data.value==6){
+            //     $("#ysm").text("如：北京地区就写ap-beijing");
+            // }else{
+            //     $("#ysm").text("需带有http://或https:");
+            // }
+            // if(data.value==7){
+            //     $("#c3 label").text('FTP地址');
+            //     $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
+            // }else{
+            //     $("#c3 label").text('Endpoint');
+            //     $("#ysm").text('需带有http://或https://');
+            // }
             $.ajax({
                 type: "POST",
                 url: "/admin/root/getkey",
@@ -260,30 +267,20 @@
             $("#c3 label").text('地区代码');
             $("#keyusername").text('SecretId');
             $("#keypass").text('SecretKey');
+            $("#ysm").text("如：北京地区就写ap-beijing");
         }else if(types==7){
-            //$("#c3").css('display','none');
             $("#c3-1").css('display','none');
             $("#c4").css('display','none');
-            //$("#c3 label").text('地区代码');
             $("#keyusername").text('FTP账号');
             $("#keypass").text('FTP密码');
+            $("#c3 label").text('FTP地址');
+            $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
+
         }else{
             $("#c3").css('display','block');
             $("#c3-1").css('display','none');
             $("#keyusername").text('AccessKey');
             $("#keypass").text('AccessSecret');
-            $("#c3 label").text('Endpoint');
-        }
-
-        if(types==6){
-            $("#ysm").text("如：北京地区就写ap-beijing");
-        }else{
-            $("#ysm").text("需带有http://或https:");
-        }
-        if(types==7){
-            $("#c3 label").text('FTP地址');
-            $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
-        }else{
             $("#c3 label").text('Endpoint');
             $("#ysm").text('需带有http://或https://');
         }

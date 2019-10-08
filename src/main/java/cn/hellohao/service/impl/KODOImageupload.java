@@ -3,6 +3,8 @@ package cn.hellohao.service.impl;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.utils.DateUtils;
+import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.ImgUrlUtil;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -30,7 +32,8 @@ public class KODOImageupload {
     static UploadManager uploadManager;
     static Keys key;
 
-    public Map<ReturnImage, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username, Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username,
+                                                     Map<String, String> fileMap2,Integer setday) throws Exception {
         // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
@@ -53,7 +56,10 @@ public class KODOImageupload {
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                    //System.out.println(putRet.hash);
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
+                    }
                 } catch (QiniuException ex) {
                     Response r = ex.response;
                     System.err.println(r.toString());
@@ -67,7 +73,6 @@ public class KODOImageupload {
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-
             for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
@@ -82,6 +87,10 @@ public class KODOImageupload {
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
+                    }
                     new File(imgurl).delete();
                 } catch (QiniuException ex) {
                     Response r = ex.response;

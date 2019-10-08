@@ -87,8 +87,6 @@ public class ImgServiceImpl implements ImgService {
         if (isExist) {
             nosClient.deleteObject(tname, fileName);
         }
-
-
     }
 
     //删除OSS对象存储的图片文件

@@ -3193,7 +3193,6 @@ var count2 = 0;
         };
     
         $.extend( Transport.prototype, {
-    
             // 添加Blob, 只能添加一次，最后一次有效。
             appendBlob: function( key, blob, filename ) {
                 var me = this,
@@ -3216,6 +3215,7 @@ var count2 = 0;
             // 添加其他字段
             append: function( key, value ) {
                 if ( typeof key === 'object' ) {
+
                     $.extend( this._formData, key );
                 } else {
                     this._formData[ key ] = value;
@@ -3982,6 +3982,7 @@ var count2 = 0;
     
             // 做上传操作。
             _doSend: function( block ) {
+
                 var me = this,
                     owner = me.owner,
                     opts = me.options,

@@ -2,6 +2,7 @@
 
 (function( $ ){
     // 当domReady的时候开始初始化
+    var d = 0;
     $(function() {
         var $wrap = $('#uploader'),
 
@@ -147,11 +148,12 @@
                     label: '点击选择文件'
                 },
                 formData: {
-                    uid: 123
+                    setday:isday
                 },
                 dnd: '#wrapper',
                 paste: '#wrapper',
-                swf: 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Uploader.swf',
+                //swf: 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Uploader.swf',
+                swf: '/webuploade/Uploader.sw',
                 chunked: false,//分片上传
                 chunkSize: 512 * 1024,
                 server: '/upimg',
@@ -256,10 +258,10 @@
             label: '继续添加'
         });
         // 添加“添加下一个”模型的按钮，
-        /*uploader.addButton({
-            id: '#addModel',
-            label: '添加下一个'
-        });*/
+        // uploader.addButton({
+        //     id: '#addModel',
+        //     label: '添加下一个'
+        // });
         uploader.on('ready', function() {
             window.uploader = uploader;
         });
@@ -453,9 +455,8 @@
 
         function updateStatus() {
             var text = '', stats;
-
             if ( state === 'ready' ) {
-                text = '选中' + fileCount + '张图片，共' +
+                text = '<a onclick="setday()" id="setday">图片期限</a>&nbsp;选中' + fileCount + '张图片，共' +
                         WebUploader.formatSize( fileSize ) + '。';
             } else if ( state === 'confirm' ) {
                 stats = uploader.getStats();
@@ -475,7 +476,12 @@
                 }
             }
 
-            $info.html( text );
+            $info.html( text);
+            if(isday>0){
+                $('#setday').text(isday+'天后销毁');
+            }else{
+                $('#setday').text('图片期限');
+            }
         }
 
         function setState( val ) {

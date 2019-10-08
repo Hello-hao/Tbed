@@ -19,7 +19,8 @@ public class LocUpdateImg {
 
 
 
-    public static Map<ReturnImage, Integer> ImageuploadLOC(Map<String, MultipartFile> fileMap, String username, Map<String, String> fileMap2) throws Exception {
+    public static Map<ReturnImage, Integer> ImageuploadLOC(Map<String, MultipartFile> fileMap, String username,
+                                                           Map<String, String> fileMap2,Integer setday) throws Exception {
         String filePath =File.separator + "HellohaoData" + File.separator;
         if(fileMap2==null){
             File file = null;
@@ -51,6 +52,10 @@ public class LocUpdateImg {
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "5");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.err.println("上传失败");
@@ -76,6 +81,10 @@ public class LocUpdateImg {
                 ReturnImage returnImage = new ReturnImage();
                 returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put( returnImage, ImgUrlUtil.getFileSize2(new File(newfilePath)));
+                if(setday>0) {
+                    String deleimg = DateUtils.plusDay(setday);
+                    DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "5");
+                }
                 }
                 //new File(imgurl).delete();
             return ImgUrl;

@@ -3,9 +3,7 @@ package cn.hellohao.service.impl;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.FTPUtils;
-import cn.hellohao.utils.ImgUrlUtil;
-import cn.hellohao.utils.Print;
+import cn.hellohao.utils.*;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.stereotype.Service;
@@ -22,7 +20,8 @@ public class FTPImageupload {
     static FTPClient ftpClient1 ;
     static Keys key;
 
-    public Map<ReturnImage, Integer> ImageuploadFTP(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadFTP(Map<String, MultipartFile> fileMap, String username,
+                                                    Map<String, String> fileMap2,Integer setday) throws Exception {
         String[] host = key.getEndpoint().split("\\:");
         String h = host[0];
         Integer p = Integer.parseInt(host[1]);
@@ -52,7 +51,10 @@ public class FTPImageupload {
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "7");
+                    }
                     ftps.close();
                 }
 
@@ -76,6 +78,10 @@ public class FTPImageupload {
                     returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
                     Print.Normal("Url上传成功返回地址");
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "7");
+                    }
                     ftps.close();
                 }
                 boolean bb= new File(imgurl).getAbsoluteFile().delete();

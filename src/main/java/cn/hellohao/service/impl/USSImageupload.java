@@ -3,6 +3,8 @@ package cn.hellohao.service.impl;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.utils.DateUtils;
+import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.ImgUrlUtil;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
@@ -21,7 +23,8 @@ public class USSImageupload {
     static UpYun upyun;
     static Keys key;
 
-    public Map<ReturnImage, Integer> ImageuploadUSS(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadUSS(Map<String, MultipartFile> fileMap, String username,
+                                                    Map<String, String> fileMap2,Integer setday) throws Exception {
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
@@ -43,6 +46,10 @@ public class USSImageupload {
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "3");
+                    }
                 }else{
                     System.err.println("上传失败");
                 }
@@ -68,6 +75,11 @@ public class USSImageupload {
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "3");
+                    }
+
                 }else{
                     System.err.println("上传失败");
                 }

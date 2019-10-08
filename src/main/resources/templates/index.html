@@ -10,6 +10,7 @@
 	<!-- title -->
 	<title th:text="${config.getWebname()}"></title>
 
+<!--	<title th:text="Hellohao图床"></title>-->
 	<link rel="shortcut icon" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico" type="image/x-icon"/>
 	<link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico">
 	<!-- CSS IMPORT -->
@@ -73,6 +74,13 @@
 		#beian a{
 			color: #fff;
 		}
+		#setday{
+			cursor: pointer;
+			color: #4ebc86;
+			font-weight: 600;
+			font-family: 黑体;
+			text-shadow: 5px 2px 6px #000;
+		}
 	</style>
 </head>
 <body class="simple">
@@ -108,10 +116,10 @@
 <!--			<li><a class="menu-link" href="http://www.hellohao.cn" target="_blank"-->
 <!--			>作者<i class="fa fa-github"></i></a></li>-->
 
-			<!--				<li><a href="javascript:;" class="md-trigger" data-modal="modal-2">赞助商&nbsp;<i class="fa fa-share-alt"></i></a></li>-->
+<!--							<li><a href="javascript:;" class="md-trigger" data-modal="modal-2">赞助商&nbsp;<i class="fa fa-share-alt"></i></a></li>-->
 
-			<!--								<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"-->
-			<!--				>关于<i class="fa fa-share-alt"></i></a></li>-->
+<!--											<li><a class="menu-link" onclick="tanchuang('亲爱的开发者','全新的响应式图床站，如果你也喜欢，希望给我一个Star。\n Hellohao开发者交流群：864800972','success');"-->
+<!--							>关于<i class="fa fa-share-alt"></i></a></li>-->
 		</ul>
 	</div>
 	<div class="cls">
@@ -134,8 +142,8 @@
 					<h1 style="font-size: 4.5em;" th:text="${config.getWebname()}"></h1>
 					<a id="goupdate" class="menu-link" data-section="contact" data-nav-title="contact" data-section-pos="-100"
 					   data-section-posy="0"><span class="glyphicon glyphicon-open" aria-hidden="true"></span>立即上传</a>
-					<!--							<a id="goupdate2"  onclick="xiazai()">-->
-					<!--								<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>客户端</a>-->
+<!--					<a id="goupdate2"  onclick="xiazai()">-->
+<!--						<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>客户端</a>-->
 
 					<div class="sub-title" id="wordsrotator">
 						<h4>纯粹免费的图片驿站</h4>
@@ -390,6 +398,7 @@
 <script th:src="@{/js/verify.js}"></script>
 
 <script th:inline="javascript">
+	var isday = 0;
 	var verification = false;
 	var zcverification = false;
 	var logotmp = 0;
@@ -640,7 +649,11 @@
 	}
 
 	function imgsc() {
-		swal("输入图片URL地址：", {
+		var str = '输入图片URL地址：';
+		if(isday>0){
+			str = '输入图片URL地址：('+isday+'天后将会自动销毁)';
+		}
+		swal(str, {
 			content: "input",
 			//buttons: true
 		})
@@ -701,7 +714,7 @@
 					type: "POST",
 					url: "/upurlimg",
 					dataType: "json",
-					data: {imgurl: result},
+					data: {imgurl: result,setday:isday},
 					success: function (data) {
 						for(var i=0;i<data.length;i++){
 
@@ -813,7 +826,7 @@
 		})
 				.then((value) => {
 			if (value) {
-				window.open("https://hellohao.cn");
+				window.open("http://img.wwery.com/HellohaoApps/PC/Hellohao%E5%9B%BE%E5%BA%8A_beta.exe");
 			} else {
 			}
 		});
@@ -849,7 +862,6 @@
 		$.enable_wordrotator = true; 									//-- enabling wordrotator on headline text
 		$.wordrotator_words = ['<h2>也许...</h2>', '<h2>这将是你用过最好用的图床站</h2>']; //-- Array of words, for headline text
 		$.is_changing_section = false;
-
 
 		var sett = [[${config.getSett()}]];
 		if(sett!=1){
@@ -971,7 +983,34 @@
 		}
 
 	}
+function setday() {
+	swal("输入图片期限（天）,到期自动销毁图片,最高365天：\n(输入0为永久保存)", {
+		content: "input",
+	})
+		.then((value) => {
+		var result =value;
+	var reg=/^[0-9]\d*$/;
+	if(result!=null && result!="" ){
+		if(reg.test(result)){
+			if(result<=365){
+				isday = result;
+// 初始化以后添加
+				uploader.options.formData.setday = isday;
+			}else{
+				swal('输入天数有误，最大不可超过365天');
+			}
+		}else{
+			swal('输入格式不正确，只可输入0-9之间正整数');
+		}
+	}
+	if(isday>0){
+		$('#setday').text(isday+'天后销毁');
+	}else{
+		$('#setday').text('图片期限');
+	}
 
+});
+}
 </script>
 
 </body>

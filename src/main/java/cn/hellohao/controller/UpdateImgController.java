@@ -111,7 +111,7 @@ public class UpdateImgController {
     @RequestMapping(value = "/upimg")
     @ResponseBody
     public String upimg( HttpSession session
-            , @RequestParam(value = "file", required = false) MultipartFile[] file) throws Exception {
+            , @RequestParam(value = "file", required = false) MultipartFile[] file,Integer setday) throws Exception {
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         Config config = configService.getSourceype();
@@ -156,6 +156,7 @@ public class UpdateImgController {
                 }
                 Map<String, MultipartFile> map = new HashMap<>();
                 for (MultipartFile multipartFile : file) {
+
                     // 获取ImageReader对象的迭代器
                     //获取文件名
                     String fileName = multipartFile.getOriginalFilename();
@@ -168,19 +169,19 @@ public class UpdateImgController {
                 }
                 Map<ReturnImage, Integer> m = null;
                 if(key.getStorageType()==1){
-                    m = nOSImageupload.Imageupload(map, userpath,null);
+                    m = nOSImageupload.Imageupload(map, userpath,null,setday);
                 }else if (key.getStorageType()==2){
-                    m = ossImageupload.ImageuploadOSS(map, userpath,null);
+                    m = ossImageupload.ImageuploadOSS(map, userpath,null,setday);
                 }else if(key.getStorageType()==3){
-                    m = ussImageupload.ImageuploadUSS(map, userpath,null);
+                    m = ussImageupload.ImageuploadUSS(map, userpath,null,setday);
                 }else if(key.getStorageType()==4){
-                    m = kodoImageupload.ImageuploadKODO(map, userpath,null);
+                    m = kodoImageupload.ImageuploadKODO(map, userpath,null,setday);
                 }else if(key.getStorageType()==5){
-                    m = LocUpdateImg.ImageuploadLOC(map, userpath,null);
+                    m = LocUpdateImg.ImageuploadLOC(map, userpath,null,setday);
                 }else if(key.getStorageType()==6){
-                    m = cosImageupload.ImageuploadCOS(map, userpath,null);
+                    m = cosImageupload.ImageuploadCOS(map, userpath,null,setday);
                 }else if(key.getStorageType()==7){
-                    m =  ftpImageupload.ImageuploadFTP(map, userpath,null);
+                    m =  ftpImageupload.ImageuploadFTP(map, userpath,null,setday);
                 }
                 else{
                     System.err.println("未获取到对象存储参数，上传失败。");
@@ -218,6 +219,7 @@ public class UpdateImgController {
                     img.setAbnormal(0);
                     userService.insertimg(img);
                     long etime = System.currentTimeMillis();
+
                     System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
                 }
                 }else{
@@ -244,7 +246,7 @@ public class UpdateImgController {
 //根据网络图片url上传
     @PostMapping(value = "/upurlimg")
     @ResponseBody
-    public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request) throws Exception {
+    public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request,Integer setday) throws Exception {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
@@ -263,8 +265,6 @@ public class UpdateImgController {
             usermemory= imgService.getusermemory(u.getId());
             if(usermemory==null){usermemory = 0;}
         }
-
-
         //Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         String userpath = "tourist";
         if(uploadConfig.getUrltype()==2){
@@ -325,19 +325,19 @@ public class UpdateImgController {
                                     map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
                                     Map<ReturnImage, Integer> m = null;
                                     if(key.getStorageType()==1){
-                                        m = nOSImageupload.Imageupload(null, userpath,map);
+                                        m = nOSImageupload.Imageupload(null, userpath,map,setday);
                                     }else if (key.getStorageType()==2){
-                                        m = ossImageupload.ImageuploadOSS(null, userpath,map);
+                                        m = ossImageupload.ImageuploadOSS(null, userpath,map,setday);
                                     }else if(key.getStorageType()==3){
-                                        m = ussImageupload.ImageuploadUSS(null, userpath,map);
+                                        m = ussImageupload.ImageuploadUSS(null, userpath,map,setday);
                                     }else if(key.getStorageType()==4){
-                                        m = kodoImageupload.ImageuploadKODO(null, userpath,map);
+                                        m = kodoImageupload.ImageuploadKODO(null, userpath,map,setday);
                                     }else if(key.getStorageType()==5){
-                                        m = LocUpdateImg.ImageuploadLOC(null,userpath,map);
+                                        m = LocUpdateImg.ImageuploadLOC(null,userpath,map,setday);
                                     }else if(key.getStorageType()==6){
-                                        m = cosImageupload.ImageuploadCOS(null,userpath,map);
+                                        m = cosImageupload.ImageuploadCOS(null,userpath,map,setday);
                                     }else if(key.getStorageType()==7){
-                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map);
+                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map,setday);
                                     }
                                     else{
                                         System.err.println("未获取到对象存储参数，上传失败。");
@@ -409,19 +409,19 @@ public class UpdateImgController {
                                     map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
                                     Map<ReturnImage, Integer> m = null;
                                     if(key.getStorageType()==1){
-                                        m = nOSImageupload.Imageupload(null, userpath,map);
+                                        m = nOSImageupload.Imageupload(null, userpath,map,setday);
                                     }else if (key.getStorageType()==2){
-                                        m = ossImageupload.ImageuploadOSS(null, userpath,map);
+                                        m = ossImageupload.ImageuploadOSS(null, userpath,map,setday);
                                     }else if(key.getStorageType()==3){
-                                        m = ussImageupload.ImageuploadUSS(null, userpath,map);
+                                        m = ussImageupload.ImageuploadUSS(null, userpath,map,setday);
                                     }else if(key.getStorageType()==4){
-                                        m = kodoImageupload.ImageuploadKODO(null, userpath,map);
+                                        m = kodoImageupload.ImageuploadKODO(null, userpath,map,setday);
                                     }else if(key.getStorageType()==5){
-                                        m =LocUpdateImg.ImageuploadLOC(null,userpath, map);
+                                        m =LocUpdateImg.ImageuploadLOC(null,userpath, map,setday);
                                     }else if(key.getStorageType()==6){
-                                        m =cosImageupload.ImageuploadCOS(null,userpath, map);
+                                        m =cosImageupload.ImageuploadCOS(null,userpath, map,setday);
                                     }else if(key.getStorageType()==7){
-                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map);
+                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map,setday);
                                     }
                                     else{
                                         System.err.println("未获取到对象存储参数，上传失败。");
@@ -477,7 +477,6 @@ public class UpdateImgController {
             }else{
                 jsonArray.add(-1);
             }
-
         return jsonArray.toString();
 /**
  * 错误返回值含义：
@@ -514,7 +513,6 @@ public class UpdateImgController {
         }
         return jsonObject.toString();
     }
-
 
     @RequestMapping("/err")
     public String err() {

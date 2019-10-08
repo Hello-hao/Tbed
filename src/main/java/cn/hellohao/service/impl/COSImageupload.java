@@ -3,6 +3,8 @@ package cn.hellohao.service.impl;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.utils.DateUtils;
+import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.ImgUrlUtil;
 import cn.hellohao.utils.Print;
 import com.netease.cloud.auth.BasicCredentials;
@@ -33,7 +35,8 @@ public class COSImageupload {
     static COSClient cosClient;
     static Keys key;
 
-    public Map<ReturnImage, Integer> ImageuploadCOS(Map<String, MultipartFile> fileMap, String username,Map<String, String> fileMap2) throws Exception {
+    public Map<ReturnImage, Integer> ImageuploadCOS(Map<String, MultipartFile> fileMap, String username,
+                                                    Map<String, String> fileMap2,Integer setday) throws Exception {
         // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
@@ -54,6 +57,10 @@ public class COSImageupload {
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "6");
+                    }
 
                 } catch (CosServiceException serverException) {
                     serverException.printStackTrace();
@@ -81,8 +88,11 @@ public class COSImageupload {
                     PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
-
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "6");
+                    }
                     boolean bb= new File(imgurl).getAbsoluteFile().delete();
                     Print.Normal("删除情况"+bb);
                 } catch (Exception e) {

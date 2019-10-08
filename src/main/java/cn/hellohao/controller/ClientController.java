@@ -196,7 +196,7 @@ public class ClientController {
                                     } else {
                                         img.setUserid(u.getId());//用户id
                                     }
-                                    img.setSizes((entry.getValue()));
+                                    img.setSizes((entry.getValue())/1024);
                                     img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
                                     img.setAbnormal(0);
                                     //-1证明超出大小，
