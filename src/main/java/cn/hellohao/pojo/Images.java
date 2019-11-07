@@ -12,8 +12,9 @@ public class Images {
     private String imgurl;
     private Integer userid;
     private Integer sizes = 0;
-    private Integer abnormal;
+    private String abnormal;
     private Integer source;
+    private Integer imgtype;
     private String updatetime;
     private String username;
     private Integer storageType;
@@ -25,7 +26,7 @@ public class Images {
         super();
     }
 
-    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, Integer abnormal, Integer source, String updatetime, String username, Integer storageType, String starttime, String stoptime) {
+    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, String abnormal, Integer source, Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime) {
         this.id = id;
         this.imgname = imgname;
         this.imgurl = imgurl;
@@ -33,6 +34,7 @@ public class Images {
         this.sizes = sizes;
         this.abnormal = abnormal;
         this.source = source;
+        this.imgtype = imgtype;
         this.updatetime = updatetime;
         this.username = username;
         this.storageType = storageType;
@@ -80,11 +82,11 @@ public class Images {
         this.sizes = sizes;
     }
 
-    public Integer getAbnormal() {
+    public String getAbnormal() {
         return abnormal;
     }
 
-    public void setAbnormal(Integer abnormal) {
+    public void setAbnormal(String abnormal) {
         this.abnormal = abnormal;
     }
 
@@ -94,6 +96,14 @@ public class Images {
 
     public void setSource(Integer source) {
         this.source = source;
+    }
+
+    public Integer getImgtype() {
+        return imgtype;
+    }
+
+    public void setImgtype(Integer imgtype) {
+        this.imgtype = imgtype;
     }
 
     public String getUpdatetime() {
@@ -135,11 +145,6 @@ public class Images {
     public void setStoptime(String stoptime) {
         this.stoptime = stoptime;
     }
-//    @Mapper
-//    public static interface ConfigMapper {
-//        Config getSourceype();
-//        Integer setSourceype(@Param("sourcekey") Integer sourcekey);
-//    }
 }
 	
 		

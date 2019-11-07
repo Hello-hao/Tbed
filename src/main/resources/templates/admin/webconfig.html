@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <title>系统配置</title>
     <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <style>
+        .layui-tab {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
 <div class="layui-main">
@@ -241,18 +247,35 @@
                         </div>
                     </div>
                 </form>
-<!--                <form class="layui-form">-->
-<!--                    <label class="layui-form-label">默认群组</label>-->
-<!--                    <div class="layui-input-inline" style="width: 250px;">-->
-<!--                        <select id="group"  name="quiz1" style="max-height: 360px;" lay-filter="group">-->
-
-<!--                        </select>-->
-<!--                    </div>-->
-<!--                </form>-->
-                <h3>更多功能陆续开放...</h3>
+                <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">站点关键词</label>
+                    <div class="layui-input-block">
+                        <input id="webkeywords" th:value="${config.getWebkeywords()}" type="text" name="title" required  lay-verify="required" placeholder="配置站点关键词" autocomplete="off" class="layui-input">
+                        <span style="color: #DAA5A6;">多个关键词用(英文)“ , ”隔开</span>
+                    </div>
+                </div>
+                </form>
+                <form class="layui-form layui-form-pane" action="">
+                <div class="layui-form-item">
+                    <label class="layui-form-label">站点图标</label>
+                    <div class="layui-input-block">
+                        <input id="webfavicons" th:value="${config.getWebfavicons()}" type="text" name="title" required  lay-verify="required" placeholder="站点(favicon)图标链接URL" autocomplete="off" class="layui-input">
+                        <span style="color: #DAA5A6;">填写站点(favicon)图标的,大小控制在64×64以内，需是.ico格式的链接</span>
+                    </div>
+                </div>
+                </form>
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">站点描述</label>
+                        <div class="layui-input-block">
+                            <textarea id="webms" name="webms" placeholder="请输入站点标描述，这样有利于搜索引擎" class="layui-textarea" th:text="${config.getWebms()}"></textarea>
+                            <span style="color: #DAA5A6;"><xmp>添加网站统计的JS代码，不需要要添加<script>标签</script></xmp></span>
+                        </div>
+                    </div>
+                </form>
                 <br />
-
-<!--                <a class="layui-btn" lay-filter="demo2" style="float: right;margin-right: 50px;" onclick="webset()">保存</a>-->
+                <a class="layui-btn" lay-filter="demo2" style="float: right;margin-right: 50px;" onclick="updateconfig()">保存</a>
             </div>
         </div>
     </div>
@@ -363,12 +386,16 @@
                 var background1 = $("#background1").val();
                 var background2 = $("#background2").val();
                 var sett = $('#sett input[name="settweb"]:checked ').val();
+                var webms = $("#webms").val();
+                var webkeywords = $("#webkeywords").val();
+                var webfavicons = $("#webfavicons").val();
                 if (webname != "" && domain!="" ) {
                     $.ajax({
                         type: "POST",
                         url: "/admin/root/updateconfig",
                         dataType: "json",
-                        data: {webname: webname, explain: explain, video: video,backtype:backtype,links:links,notice:notice,domain:domain,background1:background1,background2:background2,sett:sett},
+                        data: {webname: webname, explain: explain, video: video,backtype:backtype,links:links,notice:notice,
+                            domain:domain,background1:background1,background2:background2,sett:sett,webms:webms,webkeywords:webkeywords,webfavicons:webfavicons},
                         success: function (data) {
                             var vals = Number(data);
                             if (vals > 0) {

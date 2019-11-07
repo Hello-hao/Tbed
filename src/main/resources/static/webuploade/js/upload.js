@@ -148,7 +148,8 @@
                     label: '点击选择文件'
                 },
                 formData: {
-                    setday:isday
+                    setday:isday,
+                    upurlk:qq
                 },
                 dnd: '#wrapper',
                 paste: '#wrapper',
@@ -219,7 +220,17 @@
                     layer = layui.layer;
                     layer.msg("上传失败，可用空间不足", {icon: 2});
                 });
-            } else{
+            } else if(response.imgurls==403){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("非法调用，请刷新页面后重试", {icon: 2});
+                });
+            }else if(response.imgurls==-6){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("图片超出大小。", {icon: 2});
+                });
+            }else{
                 arr_url += response.imgurls + '\r\n';
                 arr_markdown += '!['+response.imgnames+'](' + response.imgurls + ')\r\n';
                 arr_html += '<img src="' + response.imgurls + '" alt="'+response.imgnames+'" title="'+response.imgnames+'" /> \r\n';

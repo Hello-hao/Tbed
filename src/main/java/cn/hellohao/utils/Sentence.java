@@ -1,5 +1,7 @@
 package cn.hellohao.utils;
 
+import com.alibaba.fastjson.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,22 +21,6 @@ public class Sentence {
      */
 
     public static String getURLContent() {
-//        String str = "";
-//        try {
-//            URL url = new URL("https://v1.hitokoto.cn/");
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
-//            String line;
-//            while ((line = reader.readLine()) != null) {
-//                str += line;
-//            }
-//            reader.close();
-//        } catch (MalformedURLException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return str;
-
             String result = "";
             //String urlName = "https://v1.hitokoto.cn/";
         String urlName = "http://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1";
@@ -60,5 +46,27 @@ public class Sentence {
             }
             return result;
         }
+
+        //获取真实ip
+    public static String getIPs(){
+        String str = "";
+        try {
+            URL url = new URL("https://api.asilu.com/geo/");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                str += line;
+            }
+            reader.close();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//所有数据在str
+        JSONObject ips = JSONObject.parseObject(str);
+        return ips.get("ip").toString();
+    }
+
 
 }

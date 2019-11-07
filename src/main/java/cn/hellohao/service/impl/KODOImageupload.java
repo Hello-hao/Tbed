@@ -49,7 +49,6 @@ public class KODOImageupload {
                 //ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
                 try {
                     Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                    System.out.println(response);
                     //解析上传成功的结果
                     DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
                     ReturnImage returnImage = new ReturnImage();

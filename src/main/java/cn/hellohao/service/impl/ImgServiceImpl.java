@@ -186,8 +186,8 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer setabnormal(String imgname) {
-        return imgMapper.setabnormal(imgname);
+    public Integer setabnormal(String imgname,String abnormal) {
+        return imgMapper.setabnormal(imgname,abnormal);
     }
 
     @Override

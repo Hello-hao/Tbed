@@ -26,9 +26,6 @@ public class ImageReview {
         client.setSocketTimeoutInMillis(60000);
     }
 
-    public static void main(String[] args) {
-
-    }
     //开始调用鉴黄。
     public static void imgJB(Map<String, Integer> imgmap, String requestAddress, Keys key, Imgreview imgreview) {
         ImgServiceImpl imgService = SpringContextHolder.getBean(ImgServiceImpl.class);

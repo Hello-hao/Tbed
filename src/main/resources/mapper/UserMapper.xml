@@ -81,8 +81,8 @@
 
     <!-- 插入图片信息 -->
     <insert id="insertimg" parameterType="cn.hellohao.pojo.Images">
-        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source)
-        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},null,#{source})
+        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype)
+        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype})
     </insert>
 
     <!-- 修改资料 -->

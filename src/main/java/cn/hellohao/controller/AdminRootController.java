@@ -81,8 +81,6 @@ public class AdminRootController {
             model.addAttribute("StorageType", 5);//切换到本地
             model.addAttribute("Endpoint2", 0);
         }
-
-
         return "admin/storageconfig";
     }
 
@@ -203,10 +201,7 @@ public class AdminRootController {
     //修改站点配置
     @PostMapping("/updateconfig")
     @ResponseBody
-//    public Integer updateconfig(String webname,String explain, String video,
-//                                Integer backtype, String links, String notice,String baidu,
-//                                String domain,String background1,String background2 ) {
-        public Integer updateconfig(Config config ) {
+    public Integer updateconfig(Config config ) {
 
         Integer ret = configService.setSourceype(config);
         return ret;
@@ -284,7 +279,7 @@ public class AdminRootController {
         String urls ="http://tc.hellohao.cn/systemupdate";
         paramMap.put("dates",dates);
         String result= HttpUtil.post(urls, paramMap);
-        System.out.println(Integer.parseInt( result ));
+//        System.out.println(Integer.parseInt( result ));
         return Integer.parseInt( result );
     }
 

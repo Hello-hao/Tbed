@@ -48,6 +48,15 @@
             <if test="sett != null">
                 `sett` = #{sett},
             </if>
+            <if test="webms != null">
+                `webms` = #{webms},
+            </if>
+            <if test="webkeywords != null">
+                `webkeywords` = #{webkeywords},
+            </if>
+            <if test="webfavicons != null">
+                `webfavicons` = #{webfavicons},
+            </if>
 
         </set>
         where id=1

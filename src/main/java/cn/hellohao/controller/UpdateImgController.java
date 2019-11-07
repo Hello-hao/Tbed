@@ -51,6 +51,7 @@ public class UpdateImgController {
     @Autowired
     private ImgService imgService;
 
+    private Integer updatekey;
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession) {
@@ -104,6 +105,9 @@ public class UpdateImgController {
         }else{
             return "index";
         }
+        Random random = new Random();
+        updatekey = random.nextInt(10000);
+        model.addAttribute("updatekey", updatekey);
         return "index";
 
     }
@@ -111,7 +115,8 @@ public class UpdateImgController {
     @RequestMapping(value = "/upimg")
     @ResponseBody
     public String upimg( HttpSession session
-            , @RequestParam(value = "file", required = false) MultipartFile[] file,Integer setday) throws Exception {
+            , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer setday,String upurlk) throws Exception {
+        java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
         Config config = configService.getSourceype();
@@ -120,363 +125,283 @@ public class UpdateImgController {
         Integer usermemory =0;
         Integer memory =0;
         Integer Sourcekey=0;
+        Integer maxsize = 0;
+        String userpath = "tourist";
+        Boolean b =false;
+
+        if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=updatekey){
+            jsonObject.put("imgurls",403);//非法调用
+            return jsonObject.toString();
+        }
         if(u==null){
             Sourcekey = GetCurrentSource.GetSource(null);
             memory = uploadConfig.getVisitormemory();
+            maxsize = uploadConfig.getFilesizetourists();
             usermemory= imgService.getusermemory(0);
             if(usermemory==null){usermemory = 0;}
         }else{
+            userpath = u.getUsername();
             Sourcekey = GetCurrentSource.GetSource(u.getId());
             memory = userService.getUsers(u.getEmail()).getMemory();
+            maxsize = uploadConfig.getFilesizeuser();
             usermemory= imgService.getusermemory(u.getId());
             if(usermemory==null){usermemory = 0;}
         }
-        Keys key = keysService.selectKeys(Sourcekey);//config.getSourcekey()
-        Boolean b =false;
-        if(Sourcekey==5){
-            b =true;
-        }else{
-            b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
+        //查询到如果使用目录格式是日期，就重新给userpath赋值
+        if(uploadConfig.getUrltype()==2){
+            userpath = dateFormat.format(new Date());
         }
-            if(b){
-                int tmp = usermemory/1024;
-                if(memory==-1){//证明未做限制
-                    tmp = -2;
-                }
-                if(tmp<memory){
-                long stime = System.currentTimeMillis();
-                String userpath = "tourist";
-                if(uploadConfig.getUrltype()==2){
-                    java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
-                    userpath = dateFormat.format(new Date());
+        Keys key = keysService.selectKeys(Sourcekey);
+        if(Sourcekey==5){b =true;}
+        else{b = StringUtils.doNull(Sourcekey,key);}//判断对象是否有空值
+        if(!b){
+            jsonObject.put("imgurls",-1);//存储源不完整
+            return jsonObject.toString();
+        }
+        //如果memory为-1说明无限制给值-2就行，
+        int tmp =memory==-1? -2:(usermemory/1024);
+        if(tmp>=memory){
+            jsonObject.put("imgurls",-5);//可用空间不足
+            return jsonObject.toString();
+        }
+        long stime = System.currentTimeMillis();
+        Map<String, MultipartFile> map = new HashMap<>();
+        //for (MultipartFile multipartFile : file) {
+        Print.Normal("文件大小："+multipartFile.getSize());
+        if(multipartFile.getSize()>maxsize*1024*1024){
+            jsonObject.put("imgurls",-6);//超出设定大小
+            return jsonObject.toString();
+        }
+        // 获取ImageReader对象的迭代器
+        String fileName = multipartFile.getOriginalFilename();
+        String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);//获取文件后缀
+        if (!multipartFile.isEmpty()) { //判断文件是否为空
+            map.put(lastname, multipartFile);
+        }
+        //}
+        Map<ReturnImage, Integer> m = null;
+        m = GetSource.storageSource(key.getStorageType(),map, userpath,null,setday);
+        //开始存数据
+        Images img = new Images();
+        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+        Print.Normal("上传图片的时间是："+df.format(new Date()));
+        for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
+            if(key.getStorageType()==5){
+                if(config.getDomain()!=null){
+                    jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                    jsonObject.put("imgnames",entry.getKey().getImgname());
+                    img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
                 }else{
-                    if (u != null) {
-                        userpath = u.getUsername();
-                    }
-                }
-                Map<String, MultipartFile> map = new HashMap<>();
-                for (MultipartFile multipartFile : file) {
-
-                    // 获取ImageReader对象的迭代器
-                    //获取文件名
-                    String fileName = multipartFile.getOriginalFilename();
-                    String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);//获取文件后缀
-                    if (!multipartFile.isEmpty()) { //判断文件是否为空
-                        map.put(lastname, multipartFile);
-                        System.out.println("===name==="+multipartFile.getOriginalFilename());  //文件名
-                        //multipartFile.getSize();  //文件大小
-                    }
-                }
-                Map<ReturnImage, Integer> m = null;
-                if(key.getStorageType()==1){
-                    m = nOSImageupload.Imageupload(map, userpath,null,setday);
-                }else if (key.getStorageType()==2){
-                    m = ossImageupload.ImageuploadOSS(map, userpath,null,setday);
-                }else if(key.getStorageType()==3){
-                    m = ussImageupload.ImageuploadUSS(map, userpath,null,setday);
-                }else if(key.getStorageType()==4){
-                    m = kodoImageupload.ImageuploadKODO(map, userpath,null,setday);
-                }else if(key.getStorageType()==5){
-                    m = LocUpdateImg.ImageuploadLOC(map, userpath,null,setday);
-                }else if(key.getStorageType()==6){
-                    m = cosImageupload.ImageuploadCOS(map, userpath,null,setday);
-                }else if(key.getStorageType()==7){
-                    m =  ftpImageupload.ImageuploadFTP(map, userpath,null,setday);
-                }
-                else{
-                    System.err.println("未获取到对象存储参数，上传失败。");
-                }
-                Images img = new Images();
-                SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-                String times = df.format(new Date());
-                System.out.println("上传图片的时间是："+times);
-                for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
-                    if(key.getStorageType()==5){
-                        if(config.getDomain()!=null){
-                            jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                            jsonObject.put("imgnames",entry.getKey().getImgname());
-                            img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
-                        }else{
-                            jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                            jsonObject.put("imgnames",entry.getKey().getImgname());
-                            img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
-                        }
-                    }else{
-                        jsonObject.put("imgurls",entry.getKey().getImgurl());
-                        jsonObject.put("imgnames",entry.getKey().getImgname());
-                        img.setImgurl(entry.getKey().getImgurl());//图片链接
-                    }
-                    jsonArray.add(jsonObject);
-                    img.setUpdatetime(times);
-                    img.setSource(key.getStorageType());
-                    if (u == null) {
-                        img.setUserid(0);
-                    } else {
-                        img.setUserid(u.getId());//用户id
-                    }
-                    img.setSizes((entry.getValue()) / 1024);
-                    img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                    img.setAbnormal(0);
-                    userService.insertimg(img);
-                    long etime = System.currentTimeMillis();
-
-                    System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
-                }
-                }else{
-                    jsonObject.put("imgurls",-5);//可用空间不足
+                    jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                    jsonObject.put("imgnames",entry.getKey().getImgname());
+                    img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
                 }
             }else{
-                jsonObject.put("imgurls",-1);
+                jsonObject.put("imgurls",entry.getKey().getImgurl());
+                jsonObject.put("imgnames",entry.getKey().getImgname());
+                img.setImgurl(entry.getKey().getImgurl());//图片链接
             }
-
-        //开辟新进程鉴黄。现在已经改成定时器
-        //查询鉴黄功能是否启动，1为启用
-//        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
-//        if (imgreview.getUsing() == 1) {
-//            //上传完成后开辟新的线程进行图片鉴黄。
-//            JianHuangThread thread = new JianHuangThread(imgreviewService, key, u, m);
-//            thread.start();
-//        }
-        System.out.println(jsonArray.toString());
+            jsonArray.add(jsonObject);
+            img.setUpdatetime(df.format(new Date()));
+            img.setSource(key.getStorageType());
+            img.setUserid(u == null?0:u.getId());
+            img.setSizes((entry.getValue()) / 1024);
+            img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+            img.setImgtype(setday>0?1:0);
+            userService.insertimg(img);
+            long etime = System.currentTimeMillis();
+            Print.Normal("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
+            //多线程插入ip值
+            GetIPS getIPS = new GetIPS();
+            getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+            Thread thread = new Thread(getIPS);
+            thread.start();
+        }
         return jsonObject.toString();
     }
-
-
 
 //根据网络图片url上传
     @PostMapping(value = "/upurlimg")
     @ResponseBody
-    public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request,Integer setday) throws Exception {
+    public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request,Integer setday,String upurlk) throws Exception {
         Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
-
         Integer usermemory =0;
         Integer memory =0;
         Integer Sourcekey=0;
+        String userpath = "tourist";
         if(u==null){
             Sourcekey = GetCurrentSource.GetSource(null);
             memory = uploadConfig.getVisitormemory();
             usermemory= imgService.getusermemory(0);
             if(usermemory==null){usermemory = 0;}
         }else{
+            userpath = u.getUsername();
             Sourcekey = GetCurrentSource.GetSource(u.getId());
             memory = userService.getUsers(u.getEmail()).getMemory();
             usermemory= imgService.getusermemory(u.getId());
             if(usermemory==null){usermemory = 0;}
         }
-        //Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
-        String userpath = "tourist";
         if(uploadConfig.getUrltype()==2){
             java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
             userpath = dateFormat.format(new Date());
-        }else{if (u != null) { userpath = u.getUsername();}}
+        }
         JSONArray jsonArray = new JSONArray();
-
+        //判断非法调用
+        if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=updatekey){
+            jsonArray.add(-403);//非法调用
+            return jsonArray.toString();
+        }
         Keys key = keysService.selectKeys(Sourcekey);
         long imgsize = ImgUrlUtil.getFileLength(imgurl);
         Integer youke = uploadConfig.getFilesizetourists();
         Integer yonghu = uploadConfig.getFilesizeuser();
         String uuid= UUID.randomUUID().toString().replace("-", "");
         Boolean bo =false;
-        if(Sourcekey==5){
-            bo =true;
-        }else{bo = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
-        }
-//        //容量判断
-//        Integer usermemory =0;
-//        Integer memory =0;
-        if(u==null){
-            memory = uploadConfig.getVisitormemory();
-            usermemory= imgService.getusermemory(0);
-            if(usermemory==null){usermemory = 0;}
-        }else{
-            memory = userService.getUsers(u.getEmail()).getMemory();
-            usermemory= imgService.getusermemory(u.getId());
-            if(usermemory==null){usermemory = 0;}
+        bo = Sourcekey==5?true:StringUtils.doNull(Sourcekey,key);
+        if(!bo){
+            jsonArray.add(-1);//存储源不完整
+            return jsonArray.toString();
         }
         //先判断对象存储key是不是null
         Print.warning("上传地址是："+request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
-            if(bo){
-                if(usermemory/1024<memory){
+                if(usermemory/1024>=memory) {
+                    jsonArray.add(-5);
+                    return jsonArray.toString();
+                }
                 long stime = System.currentTimeMillis();
                 //判断是会员还是游客
                 if(u!=null){
                     //判断文件大小
-                    if(imgsize>0 && imgsize<=(yonghu*1024*1024)){
-                        try{
-                            boolean bl =ImgUrlUtil.downLoadFromUrl(imgurl,
-                                    uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
-                            if(bl==true){
-                                FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
-                                byte[] b = new byte[3];
-                                is.read(b, 0, b.length);
-                                String xxx = ImgUrlUtil.bytesToHexString(b);
-                                xxx = xxx.toUpperCase();
-                                System.out.println("头文件是：" + xxx);
-                                String ooo = TypeDict.checkType(xxx);
-                                System.out.println("后缀名是：" + ooo);
-                                if(is!=null){
-                                    is.close();
-                                }
-                                //判断文件头是否是图片
-                                if(!ooo.equals("0000")){
-                                    Map<String, String> map = new HashMap<>();
-                                    map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
-                                    Map<ReturnImage, Integer> m = null;
-                                    if(key.getStorageType()==1){
-                                        m = nOSImageupload.Imageupload(null, userpath,map,setday);
-                                    }else if (key.getStorageType()==2){
-                                        m = ossImageupload.ImageuploadOSS(null, userpath,map,setday);
-                                    }else if(key.getStorageType()==3){
-                                        m = ussImageupload.ImageuploadUSS(null, userpath,map,setday);
-                                    }else if(key.getStorageType()==4){
-                                        m = kodoImageupload.ImageuploadKODO(null, userpath,map,setday);
-                                    }else if(key.getStorageType()==5){
-                                        m = LocUpdateImg.ImageuploadLOC(null,userpath,map,setday);
-                                    }else if(key.getStorageType()==6){
-                                        m = cosImageupload.ImageuploadCOS(null,userpath,map,setday);
-                                    }else if(key.getStorageType()==7){
-                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map,setday);
-                                    }
-                                    else{
-                                        System.err.println("未获取到对象存储参数，上传失败。");
-                                    }
-                                    Images img = new Images();
-                                    SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-                                    String times = df.format(new Date());
-                                    System.out.println("上传图片的时间是："+times);
-                                    for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
-                                        if(key.getStorageType()==5){
-                                            if(config.getDomain()!=null){
-                                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
-                                            }else{
-                                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
-                                            }
-                                        }else{
-                                            jsonArray.add(entry.getKey().getImgurl());
-                                            img.setImgurl(entry.getKey().getImgurl());
-                                        }
-                                        img.setUpdatetime(times);
-                                        img.setSource(key.getStorageType());
-                                        if (u == null) {
-                                            img.setUserid(0);//用户id
-                                        } else {
-                                            img.setUserid(u.getId());//用户id
-                                        }
-                                        img.setSizes((entry.getValue()));
-                                        img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                        img.setAbnormal(0);
-                                        userService.insertimg(img);
-                                        long etime = System.currentTimeMillis();
-                                        System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
-                                    }
-                                }else{
-                                    jsonArray.add(-3);
-                                }
-                            }
-                        }catch (Exception e) {
-                            // TODO: handle exception
-                            Print.warning(e.toString());
-                            jsonArray.add(-4);
-                        }
-                    }else{
+                    if(imgsize>0 && imgsize>=(yonghu*1024*1024)) {
                         //文件过大
                         jsonArray.add(-2);
+                        return jsonArray.toString();
+                    }
+                    try{
+                        boolean bl =ImgUrlUtil.downLoadFromUrl(imgurl,
+                                uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        if(bl==true){
+                            FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                            byte[] b = new byte[3];
+                            is.read(b, 0, b.length);
+                            String xxx = ImgUrlUtil.bytesToHexString(b);
+                            xxx = xxx.toUpperCase();
+                            if(is!=null){is.close();}
+                            //判断文件头是否是图片
+                            if(TypeDict.checkType(xxx).equals("0000")) {
+                                jsonArray.add(-3);//不是图片格式
+                                return jsonArray.toString();
+                            }
+                            Map<String, String> map = new HashMap<>();
+                            map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                            Map<ReturnImage, Integer> m = null;
+                            m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
+                            Images img = new Images();
+                            SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+                            String times = df.format(new Date());
+                            System.out.println("上传图片的时间是："+times);
+                            for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
+                                if(key.getStorageType()==5){
+                                    if(config.getDomain()!=null){
+                                        jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                                        img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                    }else{
+                                        jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                                        img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                    }
+                                }else{
+                                    jsonArray.add(entry.getKey().getImgurl());
+                                    img.setImgurl(entry.getKey().getImgurl());
+                                }
+                                img.setUpdatetime(times);
+                                img.setSource(key.getStorageType());
+                                img.setUserid(u == null?0:u.getId());
+                                img.setSizes((entry.getValue()));
+                                img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                                //img.setAbnormal(Sentence.getIPs());
+                                //多线程插入ip值
+                                GetIPS getIPS = new GetIPS();
+                                getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                                Thread thread = new Thread(getIPS);
+                                thread.start();
+                                if(setday>0){img.setImgtype(1);}
+                                else{img.setImgtype(0);}
+                                userService.insertimg(img);
+                                long etime = System.currentTimeMillis();
+                                System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
+                            }
+                        }
+                    }catch (Exception e) {
+                        Print.warning(e.toString());
+                        jsonArray.add(-4);
                     }
                 }else{
-                    if(imgsize>0 && imgsize<=(youke*1024*1024)){
-                        try{
-                            boolean bl = ImgUrlUtil.downLoadFromUrl(imgurl,
-                                    uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
-                            if(bl==true){
-                                FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
-                                byte[] b = new byte[3];
-                                is.read(b, 0, b.length);
-                                String xxx = ImgUrlUtil.bytesToHexString(b);
-                                xxx = xxx.toUpperCase();
-                                //System.out.println("头文件是：" + xxx);
-                                String ooo = TypeDict.checkType(xxx);
-                                //System.out.println("后缀名是：" + ooo);
-                                if(is!=null){
-                                    is.close();
-                                }
-                                //判断文件头是否是图片
-                                if(!xxx.equals("0000")){
-                                    Map<String, String> map = new HashMap<>();
-                                    map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
-                                    Map<ReturnImage, Integer> m = null;
-                                    if(key.getStorageType()==1){
-                                        m = nOSImageupload.Imageupload(null, userpath,map,setday);
-                                    }else if (key.getStorageType()==2){
-                                        m = ossImageupload.ImageuploadOSS(null, userpath,map,setday);
-                                    }else if(key.getStorageType()==3){
-                                        m = ussImageupload.ImageuploadUSS(null, userpath,map,setday);
-                                    }else if(key.getStorageType()==4){
-                                        m = kodoImageupload.ImageuploadKODO(null, userpath,map,setday);
-                                    }else if(key.getStorageType()==5){
-                                        m =LocUpdateImg.ImageuploadLOC(null,userpath, map,setday);
-                                    }else if(key.getStorageType()==6){
-                                        m =cosImageupload.ImageuploadCOS(null,userpath, map,setday);
-                                    }else if(key.getStorageType()==7){
-                                        m =  ftpImageupload.ImageuploadFTP(null,userpath,map,setday);
-                                    }
-                                    else{
-                                        System.err.println("未获取到对象存储参数，上传失败。");
-                                    }
-                                    Images img = new Images();
-                                    SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-                                    String times = df.format(new Date());
-                                    System.out.println("上传图片的时间是："+times);
-                                    for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
-                                        if(key.getStorageType()==5){
-                                            if(config.getDomain()!=null){
-                                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
-                                            }else{
-                                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
-                                            }
-                                        }else{
-                                            jsonArray.add(entry.getKey().getImgurl());
-                                        }
-                                        //img.setImgurl(entry.getKey());//图片链接
-                                        img.setUpdatetime(times);
-                                        img.setSource(key.getStorageType());
-                                        if (u == null) {
-                                            img.setUserid(0);//用户id
-                                        } else {
-                                            img.setUserid(u.getId());//用户id
-                                        }
-                                        img.setSizes((entry.getValue()));
-                                        img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                        img.setAbnormal(0);
-                                        userService.insertimg(img);
-                                        long etime = System.currentTimeMillis();
-                                        System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
-                                    }
-                                }else{
-                                    jsonArray.add(-3);
-                                }
-                            }
-                        }catch (Exception e) {
-                            // TODO: handle exception
-                            Print.warning(e.toString());
-                            jsonArray.add(-4);
-                        }
-                    }else{
+                    if(imgsize>0 && imgsize>=(youke*1024*1024)){
                         //文件过大
                         jsonArray.add(-2);
+                        return jsonArray.toString();
+                    }
+                    try{
+                        boolean bl = ImgUrlUtil.downLoadFromUrl(imgurl,
+                                uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        if(bl==true){
+                            FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                            byte[] b = new byte[3];
+                            is.read(b, 0, b.length);
+                            String xxx = ImgUrlUtil.bytesToHexString(b);
+                            xxx = xxx.toUpperCase();
+                            if(is!=null){is.close(); }
+                            //判断文件头是否是图片
+                            if(xxx.equals("0000")) {
+                                jsonArray.add(-3);
+                                return jsonArray.toString();
+                            }
+                            Map<String, String> map = new HashMap<>();
+                            map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+
+                            Map<ReturnImage, Integer> m = null;
+                            m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
+                            Images img = new Images();
+                            SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
+                            String times = df.format(new Date());
+                            System.out.println("上传图片的时间是："+times);
+                            for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
+                                if(key.getStorageType()==5){
+                                    if(config.getDomain()!=null){
+                                        jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                                        img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                    }else{
+                                        jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                                        img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                    }
+                                }else{
+                                    jsonArray.add(entry.getKey().getImgurl());
+                                    img.setImgurl(entry.getKey().getImgurl());//图片链接
+                                }
+                                img.setUpdatetime(times);
+                                img.setSource(key.getStorageType());
+                                img.setUserid(u == null?0:u.getId());
+                                img.setSizes((entry.getValue()));
+                                img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                                img.setImgtype(setday>0?1:0);
+                                userService.insertimg(img);
+                                long etime = System.currentTimeMillis();
+                                System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
+                                //多线程插入ip值
+                                GetIPS getIPS = new GetIPS();
+                                getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                                Thread thread = new Thread(getIPS);
+                                thread.start();
+                            }
+                        }
+                    }catch (Exception e) {
+                        Print.warning(e.toString());
+                        jsonArray.add(-4);
                     }
                 }
-            }else{
-                    jsonArray.add(-5);
-            }
-            }else{
-                jsonArray.add(-1);
-            }
+
         return jsonArray.toString();
 /**
  * 错误返回值含义：

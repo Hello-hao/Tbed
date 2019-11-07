@@ -12,7 +12,8 @@
         a.updatetime,
         a.sizes,
         a.abnormal,
-        a.source
+        a.source,
+        a.imgtype
         FROM
         imgdata a
         LEFT JOIN user b ON a.userid = b.id
@@ -58,9 +59,9 @@
         </if>
     </select>
 
-    <!-- 根据图片名字标记非法提示 -->
+    <!-- 根据图片名字标记IP -->
     <update id="setabnormal" parameterType="string">
-         UPDATE imgdata set abnormal=1 where imgname=#{imgname}
+         UPDATE imgdata set abnormal=#{abnormal} where imgname=#{imgname}
     </update>
     <!-- 非法图片删除他  根据名称-->
     <delete id="deleimgname" parameterType="string">

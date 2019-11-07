@@ -18,7 +18,7 @@ public interface ImgService {
 
     Integer counts(Integer userid);
 
-    Integer setabnormal(String imgname);
+    Integer setabnormal(String imgname,String abnormal);
 
     Integer deleimgname(String imgname);
 

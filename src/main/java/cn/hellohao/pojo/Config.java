@@ -15,12 +15,13 @@ public class Config {
     private  String background1;
     private  String background2;
     private  String sett;
-
+    private String webms;
+    private String webkeywords;
+    private String webfavicons;
 
     public Config() {
     }
-
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett, String webms, String webkeywords, String webfavicons) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
@@ -35,6 +36,9 @@ public class Config {
         this.background1 = background1;
         this.background2 = background2;
         this.sett = sett;
+        this.webms = webms;
+        this.webkeywords = webkeywords;
+        this.webfavicons = webfavicons;
     }
 
     public Integer getId() {
@@ -147,5 +151,29 @@ public class Config {
 
     public void setSett(String sett) {
         this.sett = sett;
+    }
+
+    public String getWebms() {
+        return webms;
+    }
+
+    public void setWebms(String webms) {
+        this.webms = webms;
+    }
+
+    public String getWebkeywords() {
+        return webkeywords;
+    }
+
+    public void setWebkeywords(String webkeywords) {
+        this.webkeywords = webkeywords;
+    }
+
+    public String getWebfavicons() {
+        return webfavicons;
+    }
+
+    public void setWebfavicons(String webfavicons) {
+        this.webfavicons = webfavicons;
     }
 }

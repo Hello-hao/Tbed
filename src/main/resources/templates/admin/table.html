@@ -36,6 +36,9 @@
 
     <!-- 样式 -->
     <style type="text/css">
+        #table_server{
+            height: inherit;
+        }
         .kv-main {
             padding: 13px;
         }
@@ -134,7 +137,7 @@
 </head>
 <body>
 
-<div class="container kv-main">
+<div class="container kv-main" style="max-width: 1200px;">
     <div id="isimgs">
         <table class="table  ft-table table-hover" id="table_server">
             <hr/>
@@ -293,6 +296,7 @@
         fenye('/admin/selecttable',1);
     }
     function deleall() {
+        console.log("批量删除");
         swal({
                 title: "确认删除选中图片？",
                 text: "删除后将无法恢复，请谨慎操作。",
@@ -322,6 +326,7 @@
     }
 
     function deleallimg(ids) {
+        console.log("单个删除");
         layer.load(1);
         $.ajax({
             type: "POST",
@@ -477,8 +482,8 @@
             showColumns: "true",//是否显示 内容列下拉框
             pageNumber: 1,//如果设置了分页，首页页码
             // showPaginationSwitch:true,//是否显示 数据条数选择框
-            pageSize: 10,//如果设置了分页，页面数据条数
-            pageList: [5, 10, 20, 40],	//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
+            pageSize: 20,//如果设置了分页，页面数据条数
+            pageList: [20, 40, 80, 160],	//如果设置了分页，设置可供选择的页面数据条数。设置为All 则显示所有记录。
             paginationPreText: '‹',//指定分页条中上一页按钮的图标或文字,这里是<
             paginationNextText: '›',//指定分页条中下一页按钮的图标或文字,这里是>
             // singleSelect: false,//设置True 将禁止多选
@@ -541,7 +546,7 @@
                 },
                 {
                     //EMAIL
-                    title: '存储源',
+                    title: 'IP地址',
                     formatter: function (value, rows, index) {
                         var source = '';
                         if (rows.source == 1) {
@@ -561,7 +566,8 @@
                         }else {
                             source = '未知';
                         }
-                        return source;
+                        //return source;
+                        return rows.abnormal;
                     },
                     align: 'center'
                 },
@@ -576,6 +582,21 @@
                             names = rows.username;
                         }
                         return names;
+                    },
+                    align: 'center'
+                },
+                {
+                    //EMAIL
+                    title: '性质',
+                    formatter: function (value, rows, index) {
+                        var type = "";
+                        console.log(rows.imgtype)
+                        if (rows.imgtype == 1) {
+                            type = "临时";
+                        } else {
+                            type = "永久";
+                        }
+                        return type;
                     },
                     align: 'center'
                 },
