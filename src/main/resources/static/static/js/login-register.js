@@ -120,6 +120,9 @@ function pos() {
 
 //验证邮箱
 function ismail() {
+    $("#userzc").css('display','none');
+    $("#zctishi").css('display','block');
+
     var registerusername = $("#registerusername").val();
     var mail = $("#registeremail").val();
     var registerpassword = $("#registerpassword").val();

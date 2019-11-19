@@ -6,8 +6,8 @@
 	<meta name="keywords" th:content="${config.getWebkeywords()}" />
 	<meta name="description" th:content="${config.getWebms()}" />
 	<meta name="author" content="Hellohao" />
-<!--	<title th:text="${config.getWebname()}"></title>-->
-	<title th:text="Hellohao图床"></title>
+	<title th:text="${config.getWebname()}"></title>
+<!--	<title th:text="Hellohao图床"></title>-->
 	<link rel="shortcut icon" th:href="${config.getWebfavicons()}" type="image/x-icon"/>
 	<link rel="icon" type="image/ico" th:href="${config.getWebfavicons()}" />
 	<link rel="stylesheet" th:href="@{css/style.css}" type="text/css" />
@@ -140,10 +140,10 @@
 			</a></li>
 			<li><a href="javascript:;" class="md-trigger" data-modal="modal-3">登录&nbsp;<span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
 			<li><a href="javascript:;" class="md-trigger" data-modal="modal-4">注册&nbsp;<span class="glyphicon glyphicon-education" aria-hidden="true"></span></a></li>
-			<li><a class="menu-link" href="https://github.com/Hello-hao/Tbed" target="_blank"
-			>GitHub<i class="fa fa-github"></i></a></li>
-			<li><a class="menu-link" href="http://www.hellohao.cn" target="_blank"
-			>作者<i class="fa fa-github"></i></a></li>
+<!--			<li><a class="menu-link" href="https://github.com/Hello-hao/Tbed" target="_blank"-->
+<!--			>GitHub<i class="fa fa-github"></i></a></li>-->
+<!--			<li><a class="menu-link" href="http://www.hellohao.cn" target="_blank"-->
+<!--			>作者<i class="fa fa-github"></i></a></li>-->
 
 <!--							<li><a href="javascript:;" class="md-trigger" data-modal="modal-2">赞助商&nbsp;<i class="fa fa-share-alt"></i></a></li>-->
 
@@ -163,8 +163,8 @@
 					<h1 style="font-size: 4.5em;" th:text="${config.getWebname()}"></h1>
 					<a id="goupdate" class="menu-link goupdate" data-section="contact" data-nav-title="contact" data-section-pos="-100"
 					   data-section-posy="0"><span class="glyphicon glyphicon-open" aria-hidden="true"></span>立即上传</a>
-					<a id="goupdate2"  onclick="xiazai()" class="goupdate">
-						<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>客户端</a>
+<!--					<a id="goupdate2"  onclick="xiazai()" class="goupdate">-->
+<!--						<span class="glyphicon glyphicon-th-large" aria-hidden="true"></span>客户端</a>-->
 					<div class="sub-title" id="wordsrotator">
 						<h4>纯粹免费的图片驿站</h4>
 					</div>
@@ -316,8 +316,9 @@
 				</form>
 			</div>
 			<div style="width: 100%;height: 30px;">
+				<p id="zctishi" style="color: #000;font-weight: 700; display: none;">正在注册，请稍等...</p>
 				<br />
-				<button class=" btn-sm btn-primary" style="float: right;" onclick="ismail();">注册</button>
+				<button class=" btn-sm btn-primary" style="float: right;" id="userzc" onclick="ismail();">注册</button>
 			</div>
 		</div>
 	</div>
@@ -402,7 +403,7 @@
 	var filesize = [[${filesize}]];
 	var imgcount = [[${imgcount}]];
 	var suffix= [[${suffix}]];
-	var qq =$.base64.encode([[${updatekey}]]);
+	var qq ='hellohao-code-yz';
 	$(document).ready(function () {
 		$(".jb").fadeToggle();
 		//$("#page-header").fadeToggle("slow");
@@ -479,6 +480,7 @@
 	});
 
 	function zhuce(mail, registerusername, registerpassword) {
+		//$("#userzc").removeClass("disabled");
 		if(zcverification){
 			//验证成功
 			$.ajax({
@@ -488,6 +490,7 @@
 				dataType: "json",
 				success: function (data) {
 					if (data.ret > 0) {
+						$("#zctishi").text('注册成功');
 						if (data.zctype == 1) {
 							layui.use('layer', function(){
 								var layer = layui.layer;
@@ -995,6 +998,7 @@ function setday() {
 	}
 });
 }
+
 </script>
 
 </body>

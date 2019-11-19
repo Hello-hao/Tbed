@@ -197,10 +197,7 @@
         });
 
         // 文件上传成功
-
         uploader.on( 'uploadSuccess', function(file,response) {
-            //alert(response.length);
-            //console.log(response.imgurls)
             $("#address").css('display', 'block');
             if(response.imgurls==-100){
                 layui.use('layer', function () {
@@ -609,6 +606,7 @@
                     break;
 
                 case 'startUpload':
+                    uploader.options.formData.upurlk = GetDateStr(new Date());
                     setState( 'uploading' );
                     break;
 
@@ -671,3 +669,12 @@
     });
 
 })( jQuery );
+
+function GetDateStr(dd) {
+    var a = dd.getFullYear();
+    var b = dd.getMonth();
+    var c = dd.getDate();
+    var d = dd.getHours();
+    var e = dd.getMinutes();
+    return $.base64.encode((a+b+c+d+e)+"");
+}

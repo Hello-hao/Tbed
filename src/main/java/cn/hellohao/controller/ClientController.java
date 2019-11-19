@@ -56,7 +56,9 @@ public class ClientController {
 
     @PostMapping(value = "/clientupimg")
     @ResponseBody
-    public ResultBean clientupimg(@RequestParam("file") List<MultipartFile> file, String email, String pass) throws Exception {
+    public ResultBean clientupimg(HttpServletRequest request,@RequestParam("file") List<MultipartFile> file, String email, String pass) throws Exception {
+        String userip = GetIPS.getIpAddr(request);
+        Print.Normal("上传者ip:"+userip);
         ResultBean resultBean = null;
         JSONArray jsonArray = new JSONArray();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
@@ -165,12 +167,7 @@ public class ClientController {
                                     }
                                     img.setSizes((entry.getValue()));
                                     img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                    //img.setAbnormal(Sentence.getIPs());
-                                    //多线程插入ip值
-                                    GetIPS getIPS = new GetIPS();
-                                    getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                    Thread thread = new Thread(getIPS);
-                                    thread.start();
+                                    img.setAbnormal(userip);
                                     img.setImgtype(0);
                                     //-1证明超出大小，
                                     if (entry.getValue() != -1) {
@@ -205,12 +202,7 @@ public class ClientController {
                                     }
                                     img.setSizes((entry.getValue())/1024);
                                     img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                    //img.setAbnormal(Sentence.getIPs());
-                                    //多线程插入ip值
-                                    GetIPS getIPS = new GetIPS();
-                                    getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                    Thread thread = new Thread(getIPS);
-                                    thread.start();
+                                    img.setAbnormal(userip);
                                     img.setImgtype(0);
                                     //-1证明超出大小，
                                     if (entry.getValue() != -1) {
@@ -237,6 +229,8 @@ public class ClientController {
     @ResponseBody
     public ResultBean clientupurlimg( String imgurl, HttpServletRequest request, Integer setday,
                            String email,String pass) throws Exception {
+        String userip = GetIPS.getIpAddr(request);
+        Print.Normal("上传者ip:"+userip);
         ResultBean resultBean = null;
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         if (uploadConfig.getApi() == 1) {
@@ -359,12 +353,7 @@ public class ClientController {
                                                     }
                                                     img.setSizes((entry.getValue()));
                                                     img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                                    //img.setAbnormal(Sentence.getIPs());
-                                                    //多线程插入ip值
-                                                    GetIPS getIPS = new GetIPS();
-                                                    getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                                    Thread thread = new Thread(getIPS);
-                                                    thread.start();
+                                                    img.setAbnormal(userip);
                                                     img.setImgtype(0);
                                                     userService.insertimg(img);
                                                     long etime = System.currentTimeMillis();
@@ -450,12 +439,7 @@ public class ClientController {
                                                     }
                                                     img.setSizes((entry.getValue()));
                                                     img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                                    //img.setAbnormal(Sentence.getIPs());
-                                                    //多线程插入ip值
-                                                    GetIPS getIPS = new GetIPS();
-                                                    getIPS.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-                                                    Thread thread = new Thread(getIPS);
-                                                    thread.start();
+                                                    img.setAbnormal(userip);
                                                     img.setImgtype(0);
                                                     userService.insertimg(img);
                                                     long etime = System.currentTimeMillis();
