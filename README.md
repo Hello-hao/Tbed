@@ -1,10 +1,8 @@
 # Hellohao图床 - 全新响应式UI
 
-
 ![https://img.shields.io/badge/license-GNU-blue.svg?style=flat-square](https://img.shields.io/badge/license-GNU-blue.svg?longCache=true&style=flat-square)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
 ![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
-
 
 > 这是一个基于多家对象存储源的Spring Boot开源图床项目。
 > 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`等多家对象存储.
@@ -14,16 +12,17 @@
 > 以及图片鉴黄配置等操作。
 
 ## 主要功能支持：
- - 支持 图片拖拽、截图软件直接(Ctrl+V)和图片URL地址上传。
- - 对接本地、网易、阿里、又拍、七牛、腾讯、FTP等各大对象存储平台。
- - 图片定期暂存（到期自动删除）
- - 支持链接生成二维码。
- - 支持开启/关闭API接口。
- - URL列表、缩略图。查看原图等功能。
- - 图片鉴黄配置（开启后，每天固定时间进行非法图片监测）
- - 游客、用户的上传管理
- - 邮箱注册激活。
- - 站点样式设置和上传规则配置等。
+
+- 支持 图片拖拽、截图软件直接(Ctrl+V)和图片URL地址上传。
+- 对接本地、网易、阿里、又拍、七牛、腾讯、FTP等各大对象存储平台。
+- 图片定期暂存（到期自动删除）
+- 支持链接生成二维码。
+- 支持开启/关闭API接口。
+- URL列表、缩略图。查看原图等功能。
+- 图片鉴黄配置（开启后，每天固定时间进行非法图片监测）
+- 游客、用户的上传管理
+- 邮箱注册激活。
+- 站点样式设置和上传规则配置等。
 
 主站地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
 
@@ -57,23 +56,28 @@
 √ 加固系统安全性验证，防止一些非法操作。
 
 √ 优化后台上传图片算法。
+
 #### 修复
+
 修复上传时总是提示非法调用问题
 修复系统部署的严重BUG
 修复上传者IP地址显示准确问题
 修复注册用户BUG
 
 #### 注意：
- - 如果你的图床已经在使用了。直接执行 `patch.sql` 补丁sql即可,不用清空之前的数据。
- - 如果你是2019年09月份之前的版本，或者第一次安装本程序需要执行 `picturebed.sql` 完成sql文件
+
+- 如果你的图床已经在使用了。直接执行 `patch.sql` 补丁sql即可,不用清空之前的数据。
+- 如果你是2019年09月份之前的版本，或者第一次安装本程序需要执行 `picturebed.sql` 完成sql文件
 
 
 
 ## 运行环境
-* JDK 1.8
-* MySQL
 
-## 项目编译
+- JDK 1.8
+- MySQL
+
+## 一：项目编译
+
 (如果你的目的是为了部署自己的图床项目，可以下滑直接用编译包按照部署教程，直接可以部署。)
 
 ### 下载项目
@@ -126,6 +130,7 @@ spring.http.multipart.location=/data/upload_tmp
 ```
 
 ### 启动项目
+
 在完成了上述步骤后，找到 TbedApplication 启动类, 启动即可.
 
 初始用户名：admin
@@ -136,16 +141,24 @@ spring.http.multipart.location=/data/upload_tmp
 
 
 
-## 也可以直接下载编译包部署到你的服务器
-
+## 二：编译包直接部署
 
 > **项目搭建部署教程：**  [**http://www.hellohao.cn/?p=201**](http://www.hellohao.cn/?p=201 "点击查看搭建文档")
 
-
 ### 部署
-前提是你的服务器必须要有`JDK1.8`环境，和`mysql`数据库。如果你是宝塔环境，就会方便一些，在应用商店安装一个`Tomcat8`因该是自带JDK1.8环境。
+
+前提是你的服务器必须要有`JDK1.8`环境，和`mysql`数据库。
+
+```shell
+ #JDK安装命令
+ yum install java-1.8*
+```
+
+如果你是宝塔环境，也可以在应用商店安装一个`Tomcat8`因该是自带JDK1.8环境。
+
 把`Tbed.jar`和`application.properties`放到服务器你想存放的目录比如`/home`，注意这两个文件必须要在同一目录下不能分开。
 依次运行如下命令：
+
 ```shell
 cd /home
 
@@ -154,8 +167,7 @@ java -jar Tbed.jar
 
 然后访问`http://服务器IP:8088/`即可。
 注意：上边的`/home`是你的jar包和application.properties文件放的目录。
-项目运行起来不要关闭xshell窗口，否则项目将不能访问。可以使用一些后台命令把项目锁定后台。如`nohup`或`screen`
-
+项目运行起来不要关闭xshell窗口，否则项目将不能访问。可以使用一些后台命令把项目锁定后台。如`nohup`或`screen`，推荐使用`screen`
 
 ### PC客户端
 
@@ -164,16 +176,18 @@ java -jar Tbed.jar
 如果你想让自己的图床拥有自己的客户端，可以加下方群，联系群主帮你对接（前提是你使用的是Hellohao图床程序搭建的网站。）
 
 ### 声明
+
 本程序免费提供给个人用户使用，未经允许不得作为盈利商业使用，如果你想商用，请先与我们联系，分享你的利益。
 
-
 ### 反馈交流
+
  **如果你遇到BUG可以去我的博客反馈**
 Hellohao博客: [http://www.hellohao.cn/](http://www.hellohao.cn/)
 
 欢迎加入Hellohao开发者交流群，群聊号码：**864800972**
 
 ### 捐赠开发者
+
 **如果你也支持Hellohao图床，可以请我喝杯咖啡。我会持续更新Hellohao图床**
 
 ![](http://cdn.wwery.com/Hellohao/df2710722111702.jpg)
