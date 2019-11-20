@@ -1,7 +1,7 @@
 # Hellohao图床 - 全新响应式UI
 
 
-![https://img.shields.io/badge/license-LGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-LGPL-blue.svg?longCache=true&style=flat-square)
+![https://img.shields.io/badge/license-GNU-blue.svg?style=flat-square](https://img.shields.io/badge/license-GNU-blue.svg?longCache=true&style=flat-square)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3b39480c887b42f1875c0210817b500f)](https://www.codacy.com/app/hello-hao/Tbed?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=hello-hao/Tbed&amp;utm_campaign=Badge_Grade)
 ![https://img.shields.io/badge/springboot-2.0.6-orange.svg?style=flat-square](https://img.shields.io/badge/springboot-2.0.4-yellow.svg?longCache=true&style=popout-square)
 
@@ -48,15 +48,24 @@
 
 ## 更新日志
 
-**2019-11-7**
+**2019-11-18**
 
-**√ 增加上传者ip记录** 
+√ 增加上传者ip记录
 
-**√ 增加临时期限照片显示。**
+√ 增加临时期限照片显示。
 
-**√ 加固系统安全性验证，防止一些非法操作。**
+√ 加固系统安全性验证，防止一些非法操作。
 
-**√ 优化后台上传图片算法。**
+√ 优化后台上传图片算法。
+#### 修复
+修复上传时总是提示非法调用问题
+修复系统部署的严重BUG
+修复上传者IP地址显示准确问题
+修复注册用户BUG
+
+#### 注意：
+ - 如果你的图床已经在使用了。直接执行 `patch.sql` 补丁sql即可,不用清空之前的数据。
+ - 如果你是2019年09月份之前的版本，或者第一次安装本程序需要执行 `picturebed.sql` 完成sql文件
 
 
 
