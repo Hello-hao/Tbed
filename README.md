@@ -35,6 +35,8 @@
 
 捐赠列表：[http://doc.wwery.com/#/reward?id=捐赠者名单](http://doc.wwery.com/#/reward?id=捐赠者名单)
 
+全套部署视频教程：[https://www.bilibili.com/video/av79137056/](https://www.bilibili.com/video/av79137056/)
+
 ## 系统预览
 
 ![Hellohao.png](http://cdn.wwery.com/Hellohao/6071c0825062730.png)
