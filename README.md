@@ -1,6 +1,7 @@
 # Hellohao图床 - 全新响应式UI
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
+![Eclipse Marketplace](https://img.shields.io/eclipse-marketplace/l/notepad4e?color=orange&logo=AGPL)
 
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 
