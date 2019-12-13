@@ -4,7 +4,7 @@
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
-> 这是一个基于多家对象存储源的Spring Boot开源图床项目。
+> 这是一个基于多家对象存储源的SpringBoot开源图床项目。
 > 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`等多家对象存储.
 > 后台对用户管理。
 > 支持配置多家存储源。
