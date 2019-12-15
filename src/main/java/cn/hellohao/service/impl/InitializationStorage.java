@@ -45,14 +45,9 @@ public class InitializationStorage implements CommandLineRunner {
                 }else if(key.getStorageType()==7){
                     ret = FTPImageupload.Initialize(key);
                 }
-                else{
-                    //Print.warning("未获取到存储参数，或者使用存储源是本地的。");
-                }
-//                if(ret<1){model.addAttribute("error", "当前存储源参数配置不完整，请联系管理员配置存储源。");}
-//                else{model.addAttribute("error", 1);}
             }
         }
-Print.Normal("初始化完成");
+        Print.Normal("初始化完成");
     }
 
     public void sout(){

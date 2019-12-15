@@ -7,10 +7,8 @@ import java.util.Collection;
 import java.util.Map;
 
 public class StringUtils {
-    //接受当前使用的存储源id，在根据id进行非空判断
     public static Boolean doNull(Integer sourcekey,Keys k) {
         if(sourcekey==1){
-            //网易
             if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
                     && k.getBucketname()!=null && k.getRequestAddress()!=null ){
                 if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
@@ -19,7 +17,6 @@ public class StringUtils {
                 }
             }
         }else if(sourcekey==2){
-            //阿里
             if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
                     && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
                 if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
@@ -28,7 +25,6 @@ public class StringUtils {
                 }
             }
         }else if(sourcekey==3){
-            //又拍
             if(k.getEndpoint()!=null && k.getAccessSecret()!=null
                     && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
                 if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("")
@@ -37,7 +33,6 @@ public class StringUtils {
                 }
             }
         }else if(sourcekey==4){
-            //七牛
             if (k.getEndpoint() != null && k.getAccessSecret() != null && k.getEndpoint() != null
                     && k.getBucketname() != null && k.getRequestAddress() != null) {
                 if (!k.getEndpoint().equals("") && !k.getAccessSecret() .equals("") && !k.getEndpoint() .equals("")
@@ -45,19 +40,15 @@ public class StringUtils {
                     return true;
                 }
             }
-
         }else if(sourcekey==6){
-            //腾讯
             if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
                     && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
                 if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
                         && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
                     return true;
                 }
-
             }
         }else if(sourcekey==7){
-            //FTP
             if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null && k.getRequestAddress()!=null ) {
                 if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("") && !k.getRequestAddress().equals("") ) {
                     return true;
@@ -66,7 +57,6 @@ public class StringUtils {
         }
         return false;
     }
-
 
     /**
      * 移除 URL 中的第一个 '/'
@@ -78,7 +68,6 @@ public class StringUtils {
         }
         return path;
     }
-
     /**
      * 移除 URL 中的最后一个 '/'
      * @return 如 path = '/folder1/file1/', 返回 '/folder1/file1'
@@ -100,13 +89,9 @@ public class StringUtils {
         if (path != null && path.length() > 1 && path.charAt(0) != '/') {
             path = '/' + path;
         }
-
         if (domain.charAt(domain.length() - 1) == '/') {
             domain = domain.substring(0, domain.length() - 2);
         }
-
         return domain + path;
     }
-
-
 }

@@ -10,7 +10,7 @@
 <body>
 <div class="layui-main" style="width: 50%;margin-top: 50px;">
     <h2>存储源Key配置</h2>
-    <span id="hostsm" style="color: #DAA5A6;">此配置仅为保存存储源key信息，若要使用指定存储源，请在【用户管理】-【分发群组】进行指定配置</span>
+    <span style="color: #DAA5A6;">此配置仅为保存存储源key信息，若要使用指定存储源，请在【用户管理】-【分发群组】进行指定配置</span>
     <br/>
     <br/>
     <br/>
@@ -31,10 +31,7 @@
                 </select>
             </div>
         </div>
-
-
         <hr/>
-
         <div class="layui-form-item" id="c1">
             <label class="layui-form-label" id="keyusername">AccessKey</label>
             <div class="layui-input-block">
@@ -42,7 +39,6 @@
                        class="layui-input" th:value="${AccessKey}"/>
             </div>
         </div>
-
         <div class="layui-form-item" id="c2">
             <label class="layui-form-label" id="keypass">AccessSecret</label>
             <div class="layui-input-block">
@@ -50,7 +46,6 @@
                        class="layui-input" th:value="${AccessSecret}"/>
             </div>
         </div>
-
         <div class="layui-form-item" id="c3">
             <label class="layui-form-label" >Endpoint</label>
             <div class="layui-input-block">
@@ -73,7 +68,6 @@
                 </select>
             </div>
         </div>
-
         <div class="layui-form-item" id="c4">
             <label class="layui-form-label">存储桶名称</label>
             <div class="layui-input-block">
@@ -89,8 +83,6 @@
                 <span id="hostsm" style="color: #DAA5A6;">需带有http://或https://</span>
             </div>
         </div>
-
-
         <div class="layui-form-item">
             <h3 id="c6" style="display: none;color: #DAA5A6;">确保站点设置中：【站点域名】已经填写。</h3>
             <br />
@@ -121,7 +113,6 @@
                 $("#c4").css('display','block');
                 $("#c5").css('display','block');
                 $("#c6").css('display','none');
-
                 if(data.value==1){
                     $("#c3").css('display','block');
                     $("#c3-1").css('display','none');
@@ -179,18 +170,6 @@
                 $("#c3 label").text('Endpoint');
                 $("#ysm").text('需带有http://或https://');
             }
-            // if(data.value==6){
-            //     $("#ysm").text("如：北京地区就写ap-beijing");
-            // }else{
-            //     $("#ysm").text("需带有http://或https:");
-            // }
-            // if(data.value==7){
-            //     $("#c3 label").text('FTP地址');
-            //     $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
-            // }else{
-            //     $("#c3 label").text('Endpoint');
-            //     $("#ysm").text('需带有http://或https://');
-            // }
             $.ajax({
                 type: "POST",
                 url: "/admin/root/getkey",
@@ -207,8 +186,6 @@
                 }
             });
         });
-
-        //单独写一个ajax,防止select不变
         $.ajax({
             type: "POST",
             url: "/admin/root/getkeyourceype",
@@ -222,7 +199,6 @@
     $(function () {
         var types = [[${StorageType!=null?StorageType:0}]];
         var Endpoint2=null;
-        //$("#StorageType").find("option[value='" + types + "']").attr("selected", true);
         if(types==1){
             $("#c3").css('display','block');
             $("#c3-1").css('display','none');
@@ -241,7 +217,6 @@
             $("#keyusername").text('操作员名称');
             $("#keypass").text('操作员密码');
             $("#c3 label").text('Endpoint');
-
         }else if(types==4){
             Endpoint2 = [[${Endpoint2}]];
             $("#c3").css('display','none');
@@ -284,10 +259,7 @@
             $("#c3 label").text('Endpoint');
             $("#ysm").text('需带有http://或https://');
         }
-
     });
-
-    //保存KEY
     function issave() {
         var AccessKey = $("#AccessKey").val();
         var AccessSecret = $("#AccessSecret").val();
@@ -379,7 +351,6 @@
             }
         }
     }
-
 </script>
 </body>
 </html>

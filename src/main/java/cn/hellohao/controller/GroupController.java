@@ -53,14 +53,11 @@ public class GroupController {
     public Map<String, Object> getgrouplist(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
                                            @RequestParam(required = false) int limit) {
         User u = (User) session.getAttribute("user");
-        // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
-        // 从他的下一条sql开始分页
         PageHelper.startPage(page, limit);
         List<Group> group = null;
-        if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
+        if (u.getLevel() > 1) {
             group = groupService.grouplist();
-            // 使用pageInfo包装查询
-            PageInfo<Group> rolePageInfo = new PageInfo<>(group);//
+            PageInfo<Group> rolePageInfo = new PageInfo<>(group);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("code", 0);
             map.put("msg", "");
@@ -86,7 +83,7 @@ public class GroupController {
         if(b){
             ret = groupService.addgroup(group);
         }else{
-            ret = -1;//该存储源key配置不完整
+            ret = -1;
         }
         return ret;
     }
@@ -114,10 +111,6 @@ public class GroupController {
     @PostMapping("/updateuser")
     @ResponseBody
     public Integer updateuser(User user) {
-//        UserGroup userGroup = new UserGroup();
-//        userGroup.setUserid(user.getId());
-//        userGroup.setGroupid(user.getGroupid());
-        //userGroupService.updateusergroup(userGroup);
         Integer ret = userService.change(user);
         return ret;
     }
@@ -126,9 +119,6 @@ public class GroupController {
     @ResponseBody
     public Integer updategroup(Group group) {
         Integer ret = groupService.setgroup(group);
-//        if(ret>0){
-//            groupService.setgroup(group);
-//        }
         return ret;
     }
 

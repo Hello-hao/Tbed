@@ -13,7 +13,6 @@ public class SetFiles {
         String prefix = fileName.substring(fileName.lastIndexOf("."));
         // todo 修改临时文件文件名
         File file = File.createTempFile(fileName, prefix);
-        // MultipartFile to File
         multipartFile.transferTo(file);
         return file;
     }

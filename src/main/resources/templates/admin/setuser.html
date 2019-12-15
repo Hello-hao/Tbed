@@ -12,19 +12,15 @@
     <h2>密码修改</h2>
     <span id="tishi1" style="color: #DAA5A6;display: none;">只有管理员才能修改邮箱用户名，普通用户不可以修改。</span>
     <br/>
-
     <form class="layui-form layui-form-pane" action="">
-
         <hr/>
         <div class="layui-form-item">
             <label class="layui-form-label">邮箱：</label>
             <div class="layui-input-block">
                 <input id="email" type="text" name="title" autocomplete="off" disabled="true" class="layui-input"
                        th:value="${user.getEmail()}"/>
-
             </div>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label">用户名：</label>
             <div class="layui-input-block">
@@ -32,7 +28,6 @@
                        th:value="${user.getUsername()}"/>
             </div><span id="tishi" style="color: #DAA5A6;display: none;">用户名只可是英文或数字</span>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label">密码：</label>
             <div class="layui-input-block">
@@ -40,7 +35,6 @@
                        class="layui-input"/>
             </div>
         </div>
-
         <div class="layui-form-item">
             <label class="layui-form-label">确认密码：</label>
             <div class="layui-input-block">
@@ -48,8 +42,6 @@
                        class="layui-input"/>
             </div>
         </div>
-
-
         <div class="layui-form-item">
             <a class="layui-btn" lay-submit="" lay-filter="demo2" onclick="change()">保存</a>
         </div>
@@ -59,13 +51,11 @@
     var level = [[${user.getLevel()}]];
     layui.use(['form', 'layedit', 'laydate'], function () {
         var form = layui.form;
-
         //监听提交
         form.on('submit(formDemo)', function (data) {
             layer.msg(JSON.stringify(data.field));
             return false;
         });
-
         $(function () {
             if(level==2){
                 $('#username').attr("disabled",false);
@@ -80,7 +70,6 @@
             }
         })
         //监听指定开关
-        //监听指定开关
         form.on('switch(switchTest)', function (data) {
             if (this.checked == true) {
                 imgreview(1);
@@ -88,21 +77,16 @@
                 imgreview(0);
             }
         });
-
     });
-
-    //修改密码
     function change() {
         var email = $("#email").val();
         var username = $("#username").val();
         var newpassword = $("#newpassword").val();
         var registerpassword = $("#registerpassword").val();
-
         if ((newpassword != null && newpassword != "") && (registerpassword != null && registerpassword != "")) {
             var usertype = /^(\d|[a-zA-Z])+$/;
             if (usertype.test(username) == false || username.length>10) {
                 layer.msg("用户名格式错误", {icon: 2});
-                //return false;
             }else{
                 if (newpassword == registerpassword) {
                     var ze = /^\w+@\w+(\.[a-zA-Z]{2,3}){1,2}$/;
@@ -117,8 +101,6 @@
                                 if (data > 0) {
                                     layer.msg("修改成功,请重新登录。", {icon: 1});
                                     setTimeout(function () {
-                                        //这里写时间到后执行的代码
-                                        //window.location.reload();
                                         parent.location.reload();//刷新父元素
                                     }, 2000);
                                 }
@@ -135,8 +117,6 @@
         } else {
             layer.msg("表单不能为空", {icon: 2});
         }
-
-
     }
 
 </script>

@@ -29,24 +29,12 @@ import cn.hellohao.pojo.Keys;
 
 @Service
 public class NOSImageupload {
-    //直接读取properties文件的值
-//	@Value("${AccessKey}")
-//	private String AccessKey;
-//	@Value("${AccessSecret}")
-//	private String AccessSecret;
-//	@Value("${Endpoint}")
-//	private String Endpoint;
-//	@Value("${Bucketname}")
-//	private String Bucketname;
-//	@Value("${RequestAddress}")
-//	private String RequestAddress;
     static String BarrelName;
     static NosClient nosClient;
     static Keys key;
 
     public Map<ReturnImage, Integer> Imageupload(Map<String, MultipartFile> fileMap, String username,
                                                  Map<String, String> fileMap2,Integer setday) throws Exception {
-        // 要上传文件的路径
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
@@ -68,7 +56,6 @@ public class NOSImageupload {
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            //设置Header
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
             for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
@@ -76,7 +63,6 @@ public class NOSImageupload {
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 String imgurl = entry.getValue();
-
                 String head = "";
                 if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
                     head = "image/jpeg";
@@ -93,10 +79,7 @@ public class NOSImageupload {
                 File file = new File(imgurl);
                 FileInputStream fileInputStream = new FileInputStream(file);
                 try {
-                    //nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), new File(imgurl));
-                    //new FileInputStream(file)
                     nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), fileInputStream,meta);
-
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
@@ -104,11 +87,10 @@ public class NOSImageupload {
                         String deleimg = DateUtils.plusDay(setday);
                         DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "-" + deleimg + "-" + "1");
                     }
-
                     boolean bb= new File(imgurl).getAbsoluteFile().delete();
                     Print.Normal("删除情况"+bb);
                 } catch (Exception e) {
-                    System.out.println("上传报错:" + e.getMessage());
+                    System.err.println("上传报错:" + e.getMessage());
                 }
                 if(fileInputStream!=null){
                     fileInputStream.close();

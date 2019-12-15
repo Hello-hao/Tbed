@@ -66,13 +66,13 @@
             border:0px;
         }
         tbody>tr{
-            border:1px solid rgb(221, 221, 221);
+            /*border:1px solid rgb(221, 221, 221);*/
         }
         .table>thead>tr>th{
             border:0px;
         }
         thead>tr{
-            border:1px solid rgb(221, 221, 221);
+            /*border:1px solid rgb(221, 221, 221);*/
         }
 
         /**/
@@ -205,18 +205,13 @@
 
 </div>
 <hr/>
-<!--<footer class="footer " th:include="footer::foot"></footer>-->
-
-<!-- 弹出层 -->
-<div id="layer-mask" class="layer-mask"></div>           <!--弹出层遮罩-->
-<div id="layer-pop" class="layer-pop" style="border-radius: 5px;">                   <!--弹出层窗体-->
-    <div id="layer-close" class="layer-close">×</div>    <!--弹出层关闭按钮-->
-    <div id="layer-content" class="layer-content"></div> <!--弹出层内容区域-->
+<div id="layer-mask" class="layer-mask"></div>
+<div id="layer-pop" class="layer-pop" style="border-radius: 5px;">
+    <div id="layer-close" class="layer-close">×</div>
+    <div id="layer-content" class="layer-content"></div>
 </div>
-
 <div id="loginHtml" style="display: none;">
     <div class="login" style="text-align: center;">
-<!--        <h4 class="title">登 录</h4>-->
         <div id="qrcode" style="padding: 18px;">
             <img id="imgbase64" src="" />
             <div id="erwmxq">
@@ -225,26 +220,20 @@
         </div>
         <div class="item">
             <label>&nbsp;</label>
-
         </div>
     </div>
 </div>
-
 <img id="linshi" style="display:none;" src="#"/>
 </body>
-
 <script type="application/javascript">
     var kooltype = 1;
     var layer;
     layui.use('layer', function () {
         layer = layui.layer;
     });
-
     var t;
     $(function () {
         var loginid = [[${loginid}]];
-        //var source = [[${source}]];
-       // $("#source").text(str);
         toastr.options.positionClass = 'toast-bottom-right';
         toastr.options = {
             closeButton: true,//是否显示关闭按钮
@@ -261,14 +250,10 @@
             showMethod: "fadeIn",
             hideMethod: "fadeOut"
         };
-//日历表单
         $(document).ready(function() {
             $('#reservation').daterangepicker(null, function(start, end, label) {
-                //console.log(start.toISOString(), end.toISOString(), label);
             });
         });
-
-        // 分页
         fenye('/admin/selecttable', 1);//1代表查询所有人
     });
     function screening(){
@@ -283,7 +268,6 @@
         }else{
             fenye('/admin/selecttable', myselect,StorageType,null,null);
         }
-
     }
     function lookurl() {
         $("#table_server").bootstrapTable('destroy');
@@ -296,7 +280,6 @@
         fenye('/admin/selecttable',1);
     }
     function deleall() {
-        console.log("批量删除");
         swal({
                 title: "确认删除选中图片？",
                 text: "删除后将无法恢复，请谨慎操作。",
@@ -319,15 +302,11 @@
                         });
                         deleallimg(ids);
                     }
-                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
-                    //return;
                 }
             });
     }
-
     function deleallimg(ids) {
-        console.log("单个删除");
-        layer.load(1);
+        var loading = layer.msg('正在删除', {icon: 16, shade: 0.3, time:0});
         $.ajax({
             type: "POST",
             url: "/admin/deleallimg",
@@ -335,7 +314,7 @@
             dataType: "json",
             success: function (data) {
                 if (data.val > 0) {
-                    layer.closeAll('loading');
+                    layer.close(loading);
                     $("#table_server").bootstrapTable('refresh', t);
                     swal({
                             title: "删除成功",
@@ -350,25 +329,18 @@
                         },
                         function (isConfirm) {
                             if (isConfirm) {
-                                //swal("我知道了！", "你已经点确认了。","success");
-                            } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
                             }
                         });
-
                 } else {
-                    layer.closeAll('loading');
-                    //swal("删除失败", "您所选的图片没有完全删除","error");
+                    layer.close(loading);
                     $("#table_server").bootstrapTable('refresh', t);
                 }
                 $("#imgcount").text(data.count);
                 $("#usercount").text(data.usercount);
                 $("#imgreviewcount").text(data.imgreviewcount);
-
-
             }
         });
     }
-
     function exit() {
         $.ajax({
             type: "POST",
@@ -380,7 +352,6 @@
             }
         });
     }
-
     //删除
     function deleimg(id, sourcekey) {
         swal({
@@ -411,9 +382,7 @@
                             }
                         }
                     });
-                } else {//swal("取消！", "你的虚拟文件是安全的:)","error");
-                    return;
-                }
+                } else {return;}
             });
     }
 
@@ -437,34 +406,6 @@
         //单张图片预览
         var viewer = new Viewer(document.getElementById('imgs'+id));
         document.getElementById('imgs'+id).click();
-
-        // var index=urls.lastIndexOf("\.");
-        // var str =urls.substring(index+1,urls.length);
-        // if(str=='png' || str=='jpg' || str=='GIF' || str=='bmp' || str=='jpeg'){
-        //     layer.load(1);
-        //     var w = 0;
-        //     var h = 0;
-        //     var dw = document.body.clientWidth;
-        //     var dh = document.body.clientHeight;
-        //     $("#linshi").attr('src', urls);
-        //     $("#linshi").off("load");
-        //     $("#linshi").on("load", function () {
-        //         w = $(this).width();
-        //         h = $(this).height();
-        //         layer.closeAll('loading');
-        //         layer.open({
-        //             type: 1,
-        //             title: false,
-        //             closeBtn: 0,
-        //             area: 'auto',
-        //             skin: 'layui-layer-nobg', //没有背景色
-        //             shadeClose: true,
-        //             //content: '<div style="width:'+ dw * 0.7 + 'px;height:auto;text-align:center;float:none;margin-left:auto;margin-right:auto;"></div><img style="height: 100%;width: 100%;max-width:' + dw * 0.7 + 'px;max-height: ' + dh * 0.7 + 'px" src="' + urls + '">'
-        //             content: '<div style="width:'+ dw * 0.7 + 'px;height:auto;text-align:center;float:none;margin-left:auto;margin-right:auto;"></div><img style="height: auto;width: auto;max-width:100%;max-height:100%" src="' + urls + '">'
-        //
-        //         });
-        //     });
-        // }
     }
 
     function fenye(url, selecttype,StorageType,starttime,stoptime) {
@@ -504,16 +445,6 @@
             columns: [{
                 checkbox: true
             },
-                // {
-                //     title: '#',//表的列名<input id="isall" type="checkbox" onclick="checkboxOnclick(this)">
-                //     formatter: function (value, rows, index) {
-                //         //return index+1; //序号正序排序从1开始
-                //         var pageSize = $('#table_server').bootstrapTable('getOptions').pageSize;//通过表的#id 可以得到每页多少条
-                //         var pageNumber = $('#table_server').bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
-                //         return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
-                //     },
-                //     align: 'center'//水平居中
-                // },
                 {
                     title: '链接',
                     formatter: function (value, rows, index) {
@@ -526,7 +457,6 @@
                             var output = Mustache.render('<a style="cursor:pointer;"  onclick="lookimgs('+rows.id+',\'{{&imgurl}}\')"><img class="slt" id="imgs'+rows.id+'" src="{{imgurl}}" alt="" /></a>', view);
                         }
                         return output;
-                        //return "<a style=\"cursor:pointer;\" onclick='lookimgs(\"" + rows.imgurl + "\");'>" + rows.imgurl + "</a>";
                     },
                     align: 'center'
                 },
@@ -536,43 +466,20 @@
                     align: 'center'
                 },
                 {
-                    //EMAIL
                     title: '大小',
                     formatter: function (value, rows, index) {
                         return getSize(rows.sizes*1024);
-                        //return rows.sizes + "k";
                     },
                     align: 'center'
                 },
                 {
-                    //EMAIL
                     title: 'IP地址',
                     formatter: function (value, rows, index) {
-                        var source = '';
-                        if (rows.source == 1) {
-                            source = '网易NOS';
-                        } else if (rows.source == 2) {
-                            source = '阿里OSS';
-                        } else if (rows.source == 3) {
-                            source = '又拍USS';
-                        } else if (rows.source == 4) {
-                            source = '七牛KODO';
-                        } else if (rows.source == 5) {
-                            source = '本地存储';
-                        }else if (rows.source == 6) {
-                            source = '腾讯COS';
-                        }else if (rows.source == 7) {
-                            source = 'FTP存储';
-                        }else {
-                            source = '未知';
-                        }
-                        //return source;
                         return rows.abnormal;
                     },
                     align: 'center'
                 },
                 {
-                    //EMAIL
                     title: '用户',
                     formatter: function (value, rows, index) {
                         var names = "";
@@ -586,7 +493,6 @@
                     align: 'center'
                 },
                 {
-                    //EMAIL
                     title: '性质',
                     formatter: function (value, rows, index) {
                         var type = "";
@@ -601,7 +507,6 @@
                     align: 'center'
                 },
                 {
-                    //部门名字
                     title: '操作',
                     formatter: function (value, rows, index) {
                         var view = {
@@ -614,54 +519,44 @@
                         htm += Mustache.render("<a onclick='erwm(\"{{&imgurl}}\",\"{{path}}\",\"{{size}}\")' class='btn btn-success btn-xs'><span title='二维码' class='glyphicon glyphicon-qrcode'></span></a>"+ "&nbsp;&nbsp;", view) ;//二维码
                         htm += "<a onclick='deleimg(" + rows.id + "," + rows.source + ")' class='btn btn-danger btn-xs'><span title='删除' class='glyphicon glyphicon-trash'></span></a>";//删除
                         return htm;
-                        //<button type="button" class="btn btn-default" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom">Tooltip on bottom</button>
                     },
                     align: 'center'
                 }
             ]
         });
-        t.on('load-success.bs.table', function (data) {//table加载成功后的监听函数
-            //console.log("load success");
+        t.on('load-success.bs.table', function (data) {
             $(".pull-right").css("display", "block");
         });
     }
-
     function thisclear() {
         $('#reservation').val('');
     }
-
     function erwm(url,path,size) {
-        var loginHtml = $("#loginHtml").html();          // 获取登录窗体的代码
-        showLayer(loginHtml, 500, 300, closeCallback);   // 显示弹出层
+        var loginHtml = $("#loginHtml").html();
+        showLayer(loginHtml, 500, 300, closeCallback);
         var imgbase64 = jrQrcode.getQrBase64(url, '#isimgs');
         $('#imgbase64').attr("src", imgbase64);
-        //$('#erwmxq').html('<h4 class="title">文件大小：'+size+'K</h4>')
     }
-        // 弹出层关闭回调函数
         function closeCallback(){
             $(".error-msg").html("");
         }
-        // 关闭弹出层
         function hideLayer(){
-            $("#layer-mask").hide();             // 隐藏弹出层遮罩
-            $("#layer-pop").hide();              // 隐藏弹出层窗体
+            $("#layer-mask").hide();
+            $("#layer-pop").hide();
         }
-        // 显示弹出层函数
         function showLayer(html, width, height, closeCallback){
-            $("#layer-mask").show();             // 显示弹出层遮罩
-            $("#layer-pop").show();              // 显示弹出层窗体
-            $("#layer-pop").css({                // 设置弹出层窗体样式
+            $("#layer-mask").show();
+            $("#layer-pop").show();
+            $("#layer-pop").css({
                 width: width,
                 height: height
             });
-            $("#layer-content").html(html);      // 填充弹出层窗体内容
+            $("#layer-content").html(html);
             $("#layer-close").click(function(){
-                hideLayer();                     //关闭弹出层
-                closeCallback();                 //关闭弹出层的回调函数
+                hideLayer();
+                closeCallback();
             })
         }
-
-        //自动判断B K M
     function getSize(bytes) {
         if (bytes === 0) return '0 B';
         var k = 1024;
@@ -669,8 +564,6 @@
         i = Math.floor(Math.log(bytes) / Math.log(k));
         return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
     }
-
-
 
 </script>
 </html>

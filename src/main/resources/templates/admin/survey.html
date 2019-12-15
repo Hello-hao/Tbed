@@ -3,18 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-
     <title>本站概况</title>
-
     <meta name="keywords" content="">
     <meta name="description" content="">
-
     <link rel="icon" type="image/ico" href="https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/static/css/font-awesome.css}" rel="stylesheet">
     <link th:href="@{/static/css/custom.css}" rel="stylesheet">
-<!--    <link th:href="@{/static/css/animate.css}" rel="stylesheet">-->
     <link th:href="@{/static/css/style.css}" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
 <style>
@@ -31,7 +26,6 @@
     <div class="row" style="width: 95%; margin: 0 auto;margin-top: 50px;" th:if=" ${levels} eq '1'">
         <h2 class="font-bold"> </h2>
     </div>
-
     <div class="wrapper wrapper-content animated fadeInRight"  th:if=" ${levels} gt '1'">
         <div class="row" style="width: 95%; margin: 0 auto;">
             <div class="col-sm-3">
@@ -48,10 +42,10 @@
                 </div>
             </div>
             <div class="col-sm-3">
-                <div class="widget style1 navy-bg">
+                <div class="widget style1 navy-bg" style="background-color: #4ebd87;">
                     <div class="row">
                         <div class="col-xs-4">
-                            <i class="glyphicon glyphicon-user fa-5x" style="font-size: 4.0em;"></i>
+                            <i class="glyphicon glyphicon-user fa-5x" style="font-size: 3.6em;"></i>
                         </div>
                         <div class="col-xs-8 text-right">
                             <span> 用户总数 </span>
@@ -60,12 +54,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-sm-3">
                 <div class="widget style1 yellow-bg">
                     <div class="row">
                         <div class="col-xs-4">
-                            <i class="glyphicon glyphicon-remove-sign fa-5x" style="font-size: 4.0em;"></i>
+                            <i class="glyphicon glyphicon-remove-sign fa-5x" style="font-size: 3.6em;"></i>
                         </div>
                         <div class="col-xs-8 text-right">
                             <span>非法图片拦截 </span>
@@ -74,7 +67,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-sm-3">
                 <div class="widget style1 lazur-bg">
                     <div class="row">
@@ -82,14 +74,13 @@
                             <i class="glyphicon glyphicon-tasks fa-5x" style="font-size: 4.0em;"></i>
                         </div>
                         <div class="col-xs-8 text-right">
-                            <span>对象存储源 </span>
+                            <span>游客使用量(M)</span>
                             <h2 class="font-bold" id="source">未知</h2>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
         </div>
         <div class="row"  style="margin-top: 50px;width: 95%; margin: 0 auto;">
                 <h2 class="font-bold">我的信息</h2>             
@@ -105,13 +96,11 @@
                                     <div class="layui-progress-bar layui-bg-blue" lay-percent="100%" style="height: 12px;width: 160px;"></div>
                                 </div>
                                 <h3 STYLE="text-align: center;" id="ncqk">当前空间：1024M/1024M</h3>
-<!--                                <h3 STYLE="text-align: center;"><a style="color: #1E9FFF;font-weight: bold;cursor:pointer;" onclick="kuorong()" title="获取更大空间">扩&nbsp;容</a></h3>-->
                             </div>
                         </h3>
                         <h3 class="m-xs">
                             <a class="layui-btn layui-btn-sm layui-btn-radius layui-btn-danger" onclick="kuorong()" title="获取更大空间">扩&nbsp;容</a>
                         </h3>
-<!--                        <small> </small>-->
                     </div>
                     <div class="flot-chart">
                         <div class="flot-chart-content" id="flot-chart1"></div>
@@ -122,7 +111,6 @@
                 <div class="widget lazur-bg no-padding">
                     <div class="p-m">
                         <h1 class="m-xs" id="usercount">0</h1>
-
                         <h3 class="font-bold no-margins">
                             我的图片总数
                         </h3>
@@ -167,7 +155,6 @@
             </div>
         </div>
         <div class="row">
-            
         </div>
 
     <!-- 全局js -->
@@ -206,37 +193,19 @@
                     $("#imgreviewcount").text(data.imgreviewcount);
                     $("#usercount").text(data.usercount);
                     var str = "";
-                    if (data.source == 1) {
-                        str = "网易NOS";
-                    } else if (data.source == 2) {
-                        str = "阿里OSS";
-                    } else if (data.source == 3) {
-                        str = "又拍USS";
-                    } else if (data.source == 4) {
-                        str = '七牛KODO';
-                    } else if (data.source == 5) {
-                        str = '本地存储';
-                    }else if (data.source == 6) {
-                        str = '腾云COS';
-                    }else if (data.source == 7) {
-                        str = 'FTP存储';
-                    }else {
-                        str = '未知';
+                    if (data.VisitorUpload == 1) {
+                        if(data.VisitorMemory==-1){
+                            str ='无限制';
+                        }else{
+                            str = data.UsedSize+"/"+data.VisitorMemory;
+                        }
+                    } else{
+                        str = "禁用";
                     }
                     $("#source").text(str);
                 }
             });
-            // $.ajax({
-            //     type: "GET",
-            //     url: "/getsentence",
-            //     dataType: "json",
-            //     success: function (data) {
-            //         $("#ly").text(data.hitokoto);
-            //     }
-            // });
         })
-
-
         $(document).ready(function () {
             var d1 = [ [1262304000000, 6], [1264982400000, 3057], [1267401600000, 20434], [1270080000000, 31982], [1272672000000, 26602], [1275350400000, 27826], [1277942400000, 24302], [1280620800000, 24237], [1283299200000, 21004], [1285891200000, 12144], [1288569600000, 10577], [1291161600000, 10295] ];
             var d2 = [ [1262304000000, 5], [1264982400000, 200], [1267401600000, 1605], [1270080000000, 6129], [1272672000000, 11643], [1275350400000, 19055], [1277942400000, 30062], [1280620800000, 39197], [1283299200000, 37000], [1285891200000, 27000], [1288569600000, 21000], [1291161600000, 17000] ];
@@ -429,15 +398,14 @@
                 return ("夜里好！")
             }
         }
-
         //扩容
         function kuorong() {
             layer.open({
                 type: 1,
                 title:'空间扩容',
                 shadeClose: true,
-                skin: 'layui-layer-rim', //加上边框
-                area: ['420px', '240px'], //宽高
+                skin: 'layui-layer-rim',
+                area: ['420px', '240px'],
                 content: '<div style="width: 360px;"><br /><br /><div class="layui-form-item">\n' +
                     '  <label class="layui-form-label">扩容码：</label>\n' +
                     '  <div class="layui-input-block">\n' +
@@ -464,7 +432,6 @@
                     }else{
                         layer.msg('很网络超时，请刷新页面后重新尝试', {icon: 2});
                     }
-                    //parent.location.reload();//刷新父元素
                 }
             });
         }

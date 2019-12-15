@@ -46,7 +46,6 @@ public class GetCurrentSource {
             Group group = groupService.idgrouplist(1);
             ret = group.getKeyid();
         }else{
-            //UserGroup userGroup = userGroupService.useridgetusergroup(userid);
             User user = userService.getUsersid(userid);
             Group group = groupService.idgrouplist(user.getGroupid());
             ret = group.getKeyid();

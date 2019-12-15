@@ -1979,7 +1979,7 @@ table.dataTable thead .sorting:after {
 }
 
 .widget.style1 h2 {
-    font-size: 30px;
+    /*font-size: 30px;*/
 }
 
 .widget h2,

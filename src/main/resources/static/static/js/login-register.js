@@ -74,12 +74,15 @@ function shakeModal(val) {
     }else if(val==3){
         $('#zcts').text('密码输入不一致');
         //$('.error').addClass('alert alert-danger').html("密码输入不一致");
+    }else if(val==4){
+        $('#zcts').text('密码不能为空');
     }else if(val==5){
         $('#zcts').text('邮箱不能为空');
         //$('.error').addClass('alert alert-danger').html("邮箱不能为空");
+    }else if(val==6){
+        $('#zcts').text('未通过验证码校验');
     }else{
-        $('#zcts').text('密码不能为空');
-        //$('.error').addClass('alert alert-danger').html("密码不能为空");
+        $('#zcts').text('');
     }
 
     $('input[type="password"]').val('');
@@ -131,15 +134,21 @@ function ismail() {
     var ze2 = /^(\d|[a-zA-Z])+$/;
     if (ze2.test(registerusername) == false || registerusername.length>10) {
         shakeModal(1);
+        $("#userzc").css('display','block');
+        $("#zctishi").css('display','none');
         return false;
     }
     if (mail == "") {
         shakeModal(5);
+        $("#userzc").css('display','block');
+        $("#zctishi").css('display','none');
         return false;
     }
     var ze = /^\w+@\w+(\.[a-zA-Z]{2,3}){1,2}$/;
     if (ze.test(mail) == false) {
         shakeModal(2);
+        $("#userzc").css('display','block');
+        $("#zctishi").css('display','none');
         return false;
     }
 
@@ -149,10 +158,14 @@ function ismail() {
             return true;
         } else {
             shakeModal(3);
+            $("#userzc").css('display','block');
+            $("#zctishi").css('display','none');
             return false;
         }
     }else{
         shakeModal(4);
+        $("#userzc").css('display','block');
+        $("#zctishi").css('display','none');
         return false;
     }
 }

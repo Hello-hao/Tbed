@@ -29,7 +29,6 @@ public class SendEmail {
         });
         session.setDebug(true);
         MimeMessage message = new MimeMessage(session);
-        System.err.println("邮件初始化完成");
         return message;
     }
 
@@ -75,12 +74,10 @@ public class SendEmail {
             message.setFrom(new InternetAddress(emailConfig.getEmails(), emailConfig.getEmailname(), "UTF-8"));
             // 收件人和抄送人
             message.setRecipients(Message.RecipientType.TO, email);
-            // 内容(这个内容还不能乱写,有可能会被SMTP拒绝掉;多试几次吧)
             message.setSubject(emailConfig.getEmailname()+"账号激活");//标题
             message.setContent(texts, "text/html;charset=UTF-8");//内容
             message.setSentDate(new Date());
             message.saveChanges();
-            System.out.println("准备发送");
             Transport.send(message);
             return 1;
         } catch (MessagingException e) {

@@ -12,7 +12,6 @@ import java.util.Map;
  * @version 1.0
  * @date 2019/11/7 17:12
  */
-//通过type判断是哪一个存储源
 public class GetSource {
     public static Map<ReturnImage, Integer>  storageSource(Integer type, Map<String, MultipartFile> fileMap, String userpath,
                                                            Map<String, String> filename,Integer setday){
@@ -22,7 +21,6 @@ public class GetSource {
         KODOImageupload kodoImageupload = SpringContextHolder.getBean(KODOImageupload.class);
         COSImageupload cosImageupload = SpringContextHolder.getBean(COSImageupload.class);
         FTPImageupload ftpImageupload = SpringContextHolder.getBean(FTPImageupload.class);
-
         Map<ReturnImage, Integer> m = null;
         try {
             if(type==1){

@@ -17,8 +17,6 @@ public class LocUpdateImg {
         file.delete();
     }
 
-
-
     public static Map<ReturnImage, Integer> ImageuploadLOC(Map<String, MultipartFile> fileMap, String username,
                                                            Map<String, String> fileMap2,Integer setday) throws Exception {
         String filePath =File.separator + "HellohaoData" + File.separator;
@@ -29,7 +27,6 @@ public class LocUpdateImg {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
-                //file = SetFiles.changeFile(entry.getValue());
                 // 上传文件流。
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                 File dest = new File(filePath + username + File.separator+ uuid+times + "." + entry.getKey());
@@ -47,7 +44,6 @@ public class LocUpdateImg {
                     }
                     bos.flush();
                     bos.close();
-
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
@@ -75,8 +71,7 @@ public class LocUpdateImg {
                 if(!targetFile.getParentFile().exists()) {
                     targetFile.mkdirs();
                 }
-
-                file.renameTo(new File(newfilePath));//只移动，源目录不存在文件
+                file.renameTo(new File(newfilePath));
                 // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
                 ReturnImage returnImage = new ReturnImage();
                 returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
@@ -86,7 +81,6 @@ public class LocUpdateImg {
                     DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "5");
                 }
                 }
-                //new File(imgurl).delete();
             return ImgUrl;
             }
         }
@@ -102,8 +96,6 @@ public class LocUpdateImg {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            //file = SetFiles.changeFile(entry.getValue());
-            // 上传文件流。
             System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
            ReturnImage returnImage = new ReturnImage();
             if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
@@ -111,16 +103,6 @@ public class LocUpdateImg {
                 if (!dest.getParentFile().exists()) {
                     dest.getParentFile().mkdirs();
                 }
-//                try {
-//                    entry.getValue().transferTo(dest);
-//                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-//                    returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
-//                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                    System.err.println("上传失败");
-//                }
-
                 try {
                     MultipartFile multipartFile = entry.getValue();
                     FileInputStream fileInputStream = (FileInputStream) multipartFile.getInputStream();
@@ -132,8 +114,6 @@ public class LocUpdateImg {
                     }
                     bos.flush();
                     bos.close();
-
-                    //ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
@@ -141,7 +121,6 @@ public class LocUpdateImg {
                     e.printStackTrace();
                     System.err.println("上传失败");
                 }
-
             }else{
                 returnImage.setImgname(entry.getValue().getOriginalFilename());
                 returnImage.setImgurl("文件超出系统设定大小，不得超过");

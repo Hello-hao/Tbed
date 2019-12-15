@@ -39,8 +39,6 @@ public class IPPortUtil {
         } catch (Exception e) {
             e.printStackTrace();
         }
- 
- 
         byte[] ipAddr = addr.getAddress();
         String ipAddrStr = "";
         for (int i = 0; i < ipAddr.length; i++) {

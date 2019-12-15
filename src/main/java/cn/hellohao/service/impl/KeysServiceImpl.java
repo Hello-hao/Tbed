@@ -21,7 +21,6 @@ public class KeysServiceImpl implements KeysService {
         return keysMapper.selectKeys(storageType);
     }
 
-
     @Override
     public Integer updateKey(Keys key) {
         // TODO Auto-generated method stub

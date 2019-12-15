@@ -1,30 +1,27 @@
 package cn.hellohao.controller;
 
-import java.io.FileInputStream;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
-import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
-import cn.hellohao.utils.IPPortUtil;
 import cn.hellohao.utils.*;
-import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.alibaba.fastjson.JSONArray;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Controller
 public class UpdateImgController {
@@ -51,16 +48,12 @@ public class UpdateImgController {
     @Autowired
     private ImgService imgService;
 
-    //private Integer updatekey;
+    private String[] iparr;
 
     @RequestMapping({"/", "/index"})
-    public String indexImg(Model model, HttpSession httpSession,HttpServletRequest request) {
-        //boolean b = VerificationDomain.verification();
-        boolean b = true;
-        if(b){
-            Print.Normal("欢迎使用Hellohao图床源码。者也许是最好用的java图床项目。");
+    public String indexImg(Model model, HttpSession httpSession, HttpServletRequest request, HttpServletResponse response) {
             Print.Normal("当前项目路径："+System.getProperty("user.dir"));
-            Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+            Config config = configService.getSourceype();
             UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
             User u = (User) httpSession.getAttribute("user");
             String email = (String) httpSession.getAttribute("email");
@@ -72,10 +65,7 @@ public class UpdateImgController {
             if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
             if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
             if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
-            //Boolean b =false;
-            //Integer Sourcekey = GetCurrentSource.GetSource(u==null?null:u.getId());//查询当当前用户或者游客使用的数据源
             if (email != null) {
-                //登陆成功
                 Integer ret = userService.login(u.getEmail(), u.getPassword());
                 if (ret > 0) {
                     User user = userService.getUsers(u.getEmail());
@@ -84,7 +74,6 @@ public class UpdateImgController {
                     model.addAttribute("loginid", 100);
                     model.addAttribute("imgcount", imgcountuser);
                     model.addAttribute("filesize", filesizeuser*1024*1024);
-
                 } else {
                     model.addAttribute("loginid", -1);
                     model.addAttribute("imgcount", imgcounttourists);
@@ -99,17 +88,10 @@ public class UpdateImgController {
             model.addAttribute("uploadConfig", uploadConfig);
             Integer isupdate = 1;
             if(uploadConfig.getIsupdate()!=1){
-                isupdate = (u == null) ? 0: 1;//如果u等于null那么isupdate就等于0，否则等于1
+                isupdate = (u == null) ? 0: 1;
             }
-            model.addAttribute("ykxz", isupdate);
-        }else{
-            return "index";
-        }
-        Random random = new Random();
-        //updatekey = random.nextInt(10000);
-        //model.addAttribute("updatekey", updatekey);
+            model.addAttribute("VisitorUpload", isupdate);
         return "index";
-
     }
 
     @RequestMapping(value = "/upimg")
@@ -126,64 +108,66 @@ public class UpdateImgController {
         User u = (User) session.getAttribute("user");
         Integer usermemory =0;
         Integer memory =0;
-        Integer Sourcekey=0;
+        Integer sourcekey=0;
         Integer maxsize = 0;
         String userpath = "tourist";
         Boolean b =false;
-
+        if(uploadConfig.getBlacklist()!=null){
+            iparr = uploadConfig.getBlacklist().split(";");
+            for (String s : iparr) {
+                if(s.equals(userip)){
+                    jsonObject.put("imgurls",911);
+                    return jsonObject.toString();
+                }
+            }
+        }
         if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=yzupdate()){
-            jsonObject.put("imgurls",403);//非法调用
+            jsonObject.put("imgurls",403);
             return jsonObject.toString();
         }
         if(u==null){
-            Sourcekey = GetCurrentSource.GetSource(null);
+            sourcekey = GetCurrentSource.GetSource(null);
             memory = uploadConfig.getVisitormemory();
             maxsize = uploadConfig.getFilesizetourists();
             usermemory= imgService.getusermemory(0);
             if(usermemory==null){usermemory = 0;}
         }else{
             userpath = u.getUsername();
-            Sourcekey = GetCurrentSource.GetSource(u.getId());
+            sourcekey = GetCurrentSource.GetSource(u.getId());
             memory = userService.getUsers(u.getEmail()).getMemory();
             maxsize = uploadConfig.getFilesizeuser();
             usermemory= imgService.getusermemory(u.getId());
             if(usermemory==null){usermemory = 0;}
         }
-        //查询到如果使用目录格式是日期，就重新给userpath赋值
         if(uploadConfig.getUrltype()==2){
             userpath = dateFormat.format(new Date());
         }
-        Keys key = keysService.selectKeys(Sourcekey);
-        if(Sourcekey==5){b =true;}
-        else{b = StringUtils.doNull(Sourcekey,key);}//判断对象是否有空值
+        Keys key = keysService.selectKeys(sourcekey);
+        if(sourcekey==5){b =true;}
+        else{b = StringUtils.doNull(sourcekey,key);}
         if(!b){
-            jsonObject.put("imgurls",-1);//存储源不完整
+            jsonObject.put("imgurls",-1);
             return jsonObject.toString();
         }
-        //如果memory为-1说明无限制给值-2就行，
-        int tmp =memory==-1? -2:(usermemory/1024);
+        int tmp =(memory==-1? -2:(usermemory/1024));
         if(tmp>=memory){
-            jsonObject.put("imgurls",-5);//可用空间不足
+            jsonObject.put("imgurls",-5);
             return jsonObject.toString();
         }
         long stime = System.currentTimeMillis();
         Map<String, MultipartFile> map = new HashMap<>();
-        //for (MultipartFile multipartFile : file) {
         Print.Normal("文件大小："+multipartFile.getSize());
         if(multipartFile.getSize()>maxsize*1024*1024){
-            jsonObject.put("imgurls",-6);//超出设定大小
+            jsonObject.put("imgurls",-6);
             return jsonObject.toString();
         }
-        // 获取ImageReader对象的迭代器
         String fileName = multipartFile.getOriginalFilename();
-        String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);//获取文件后缀
-        if (!multipartFile.isEmpty()) { //判断文件是否为空
+        String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);
+        if (!multipartFile.isEmpty()) {
             map.put(lastname, multipartFile);
         }
-        //}
         Map<ReturnImage, Integer> m = null;
         m = GetSource.storageSource(key.getStorageType(),map, userpath,null,setday);
-        //开始存数据
         Images img = new Images();
         SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
         Print.Normal("上传图片的时间是："+df.format(new Date()));
@@ -192,7 +176,7 @@ public class UpdateImgController {
                 if(config.getDomain()!=null){
                     jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
                     jsonObject.put("imgnames",entry.getKey().getImgname());
-                    img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
+                    img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());
                 }else{
                     jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
                     jsonObject.put("imgnames",entry.getKey().getImgname());
@@ -201,7 +185,7 @@ public class UpdateImgController {
             }else{
                 jsonObject.put("imgurls",entry.getKey().getImgurl());
                 jsonObject.put("imgnames",entry.getKey().getImgname());
-                img.setImgurl(entry.getKey().getImgurl());//图片链接
+                img.setImgurl(entry.getKey().getImgurl());
             }
             jsonArray.add(jsonObject);
             img.setUpdatetime(df.format(new Date()));
@@ -222,13 +206,23 @@ public class UpdateImgController {
     @PostMapping(value = "/upurlimg")
     @ResponseBody
     public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request,Integer setday,String upurlk) throws Exception {
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        JSONArray jsonArray = new JSONArray();
+        Config config = configService.getSourceype();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
         Integer usermemory =0;
         Integer memory =0;
         Integer Sourcekey=0;
         String userpath = "tourist";
+        String userip = GetIPS.getIpAddr(request);
+        Print.Normal("上传者ip:"+userip);
+        iparr = uploadConfig.getBlacklist().split(";");
+        for (String s : iparr) {
+            if(s.equals(userip)){
+                jsonArray.add(911);
+                return jsonArray.toString();
+            }
+        }
         if(u==null){
             Sourcekey = GetCurrentSource.GetSource(null);
             memory = uploadConfig.getVisitormemory();
@@ -245,10 +239,8 @@ public class UpdateImgController {
             java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
             userpath = dateFormat.format(new Date());
         }
-        JSONArray jsonArray = new JSONArray();
-        //判断非法调用
         if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=yzupdate()){
-            jsonArray.add(-403);//非法调用
+            jsonArray.add(-403);
             return jsonArray.toString();
         }
         Keys key = keysService.selectKeys(Sourcekey);
@@ -259,23 +251,18 @@ public class UpdateImgController {
         Boolean bo =false;
         bo = Sourcekey==5?true:StringUtils.doNull(Sourcekey,key);
         if(!bo){
-            jsonArray.add(-1);//存储源不完整
+            jsonArray.add(-1);
             return jsonArray.toString();
         }
-        //先判断对象存储key是不是null
         Print.warning("上传地址是："+request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
-        String userip = GetIPS.getIpAddr(request);
-        Print.Normal("上传者ip:"+userip);
+
         if(usermemory/1024>=memory) {
             jsonArray.add(-5);
             return jsonArray.toString();
         }
         long stime = System.currentTimeMillis();
-        //判断是会员还是游客
         if(u!=null){
-            //判断文件大小
             if(imgsize>0 && imgsize>=(yonghu*1024*1024)) {
-                //文件过大
                 jsonArray.add(-2);
                 return jsonArray.toString();
             }
@@ -289,7 +276,6 @@ public class UpdateImgController {
                     String xxx = ImgUrlUtil.bytesToHexString(b);
                     xxx = xxx.toUpperCase();
                     if(is!=null){is.close();}
-                    //判断文件头是否是图片
                     if(TypeDict.checkType(xxx).equals("0000")) {
                         jsonArray.add(-3);//不是图片格式
                         return jsonArray.toString();
@@ -348,14 +334,12 @@ public class UpdateImgController {
                     String xxx = ImgUrlUtil.bytesToHexString(b);
                     xxx = xxx.toUpperCase();
                     if(is!=null){is.close(); }
-                    //判断文件头是否是图片
                     if(xxx.equals("0000")) {
                         jsonArray.add(-3);
                         return jsonArray.toString();
                     }
                     Map<String, String> map = new HashMap<>();
                     map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
-
                     Map<ReturnImage, Integer> m = null;
                     m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
                     Images img = new Images();
@@ -366,14 +350,14 @@ public class UpdateImgController {
                         if(key.getStorageType()==5){
                             if(config.getDomain()!=null){
                                 jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());
                             }else{
                                 jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
                                 img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
                             }
                         }else{
                             jsonArray.add(entry.getKey().getImgurl());
-                            img.setImgurl(entry.getKey().getImgurl());//图片链接
+                            img.setImgurl(entry.getKey().getImgurl());
                         }
                         img.setUpdatetime(times);
                         img.setSource(key.getStorageType());
@@ -392,7 +376,6 @@ public class UpdateImgController {
                 jsonArray.add(-4);
             }
         }
-
         return jsonArray.toString();
 /**
  * 错误返回值含义：
@@ -402,7 +385,6 @@ public class UpdateImgController {
  * */
     }
 
-    //刪除用戶
     @RequestMapping("/sentence")
     @ResponseBody
     public String sentence(HttpSession session, Integer id) {
@@ -429,14 +411,22 @@ public class UpdateImgController {
         }
         return jsonObject.toString();
     }
+
+    @GetMapping(value = "/images/{id}")
+    @ResponseBody
+    public Images selectByFy(@PathVariable("id") Integer id) {
+        return imgService.selectByPrimaryKey(id);
+    }
+
+
     private Integer yzupdate(){
         Calendar cal = Calendar.getInstance();
         int y=cal.get(Calendar.YEAR);
         int m=cal.get(Calendar.MONTH);
         int d=cal.get(Calendar.DATE);
-        int h=cal.get(Calendar.HOUR_OF_DAY);
-        int mm=cal.get(Calendar.MINUTE);
-        return y+m+d+h+mm;
+        //int h=cal.get(Calendar.HOUR_OF_DAY);
+        //int mm=cal.get(Calendar.MINUTE);
+        return y+m+d+999;
     }
 
     @RequestMapping("/err")

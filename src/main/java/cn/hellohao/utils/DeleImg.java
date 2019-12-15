@@ -4,11 +4,6 @@ package cn.hellohao.utils;
 import java.io.*;
 
 public class DeleImg {
-    public static void main(String[] args) throws  Exception {
-        readFile(File.separator + "HellohaoData"+File.separator+"img.ini");
-        //charu();
-    }
-
     public static void charu(String imgUrlText) {
         String filePath =File.separator + "HellohaoData" ;
         File file = new File(filePath);

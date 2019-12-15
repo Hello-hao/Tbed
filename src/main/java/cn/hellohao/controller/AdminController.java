@@ -71,7 +71,6 @@ public class AdminController {
                 model.addAttribute("usermemory", 0);//单位M
             }else{
                 float d = (float) (Math.round((usermemory/1024.0F) * 100.0) / 100.0);
-                //Print.Normal();
                 model.addAttribute("usermemory", d);//单位M
             }
             return "admin/index";
@@ -137,25 +136,20 @@ public class AdminController {
     @ResponseBody
     public String getwebconfig(HttpSession session) {
         JSONObject jsonObject = new JSONObject();
-        Config config = configService.getSourceype();
+        //Config config = configService.getSourceype();
+        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
         jsonObject.put("usercount", imgService.countimg(u.getId()));
         jsonObject.put("counts", imgService.counts(null) );
-        jsonObject.put("getusertotal", userService.getUserTotal() );
+        jsonObject.put("getusertotal", userService.getUserTotal());
         jsonObject.put("imgreviewcount", imgreview.getCount());
-        Keys key= keysService.selectKeys(Sourcekey);
-        Boolean b =false;
-        if(Sourcekey==5){
-            b =true;
+        if(uploadConfig.getIsupdate()!=1){
+            jsonObject.put("VisitorUpload", 0);//是否禁用了游客上传
         }else{
-            b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
-        }
-        if(b){
-            jsonObject.put("source", key.getStorageType());
-        }else{
-            jsonObject.put("source", 456);
+            jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
+            jsonObject.put("UsedSize", (imgService.getusermemory(0)/1024));//访客已用大小
+            jsonObject.put("VisitorMemory", uploadConfig.getVisitormemory());//访客共大小
         }
         return jsonObject.toString();
     }
@@ -178,28 +172,25 @@ public class AdminController {
                 img.setStoptime(stoptime);
             }
         }
-        // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
-        // 从他的下一条sql开始分页
         PageHelper.startPage(pageNum, pageSize);
         List<Images> images = null;
-        if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
+        if (u.getLevel() > 1) {
             if (selecttype == 1) {
-                images = imgService.selectimg(img);// 这是我们的sql
+                images = imgService.selectimg(img);
             } else {
                 img.setUserid(u.getId());
-                images = imgService.selectimg(img);// 这是我们的sql
+                images = imgService.selectimg(img);
             }
         } else {
             img.setUserid(u.getId());
-            images = imgService.selectimg(img);// 这是我们的sql
+            images = imgService.selectimg(img);
         }
-        // 使用pageInfo包装查询
-        PageInfo<Images> rolePageInfo = new PageInfo<>(images);//
+        PageInfo<Images> rolePageInfo = new PageInfo<>(images);
         return new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
     }
 
 
-    //获取用户信息列表
+
     @RequestMapping(value = "/selectusertable")
     @ResponseBody
     public Map<String, Object> selectByFy12(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
@@ -207,12 +198,11 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         PageHelper.startPage(page, limit);
         List<User> users = null;
-        if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
+        if (u.getLevel() > 1) {
             User user = new User();
             user.setUsername(username);
-            users = userService.getuserlist(user);// 这是我们的sql
-            // 使用pageInfo包装查询
-            PageInfo<User> rolePageInfo = new PageInfo<>(users);//
+            users = userService.getuserlist(user);
+            PageInfo<User> rolePageInfo = new PageInfo<>(users);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("code", 0);
             map.put("msg", "");
@@ -273,12 +263,10 @@ public class AdminController {
         return jsonObject.toString();
     }
 
-    //批量删除图片
     @PostMapping("/deleallimg")
     @ResponseBody
     public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids) {
         JSONObject jsonObject = new JSONObject();
-
         Integer v = 0;
         ImgServiceImpl de = new ImgServiceImpl();
         User u = (User) session.getAttribute("user");
@@ -326,27 +314,22 @@ public class AdminController {
         return jsonObject.toString();
     }
 
-    //进入修改密码页面
     @RequestMapping(value = "/tosetuser")
     public String tosetuser(HttpSession session, Model model, HttpServletRequest request) {
         User u = (User) session.getAttribute("user");
-        //key信息
         model.addAttribute("user", u);
         return "admin/setuser";
     }
 
-    //修改资料
     @PostMapping("/change")
     @ResponseBody
     public String change(HttpSession session, User user) {
         User u = (User) session.getAttribute("user");
         User us = new User();
-        //user.setEmail(u.getEmail());
         us.setEmail(user.getEmail());
         us.setUsername(user.getUsername());
         us.setPassword(Base64Encryption.encryptBASE64(user.getPassword().getBytes()));
         us.setUid(u.getUid());
-        //user.setUid(u.getUid());
         JSONArray jsonArray = new JSONArray();
         Integer ret =0;
         if(u.getLevel()==1){
@@ -359,7 +342,6 @@ public class AdminController {
         jsonArray.add(ret);
         if (u.getEmail() != null && u.getPassword() != null) {
             session.removeAttribute("user");
-            //刷新view
             session.invalidate();
         }
         // -1 用户名重复
@@ -387,7 +369,6 @@ public class AdminController {
         Integer ret =0;
         Integer sizes = 0;
         if(u!=null){
-            //List<Code> code = codeService.selectCode(codestring);
             Code c = codeService.selectCodekey(codestring);
             Print.warning(c);
             if(c!=null) {
@@ -398,7 +379,6 @@ public class AdminController {
                 ret = userServiceImpl.usersetmemory(user,codestring);
                 if(ret>0){ ret = 1; }
             }else{
-                //扩容码不存在
                 ret=-1;
             }
         }else{
@@ -409,7 +389,6 @@ public class AdminController {
         jsonObject.put("ret",ret);
         return jsonObject.toString();
     }
-
 
     @GetMapping(value = "/images/{id}")
     @ResponseBody

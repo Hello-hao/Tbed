@@ -18,23 +18,19 @@ public class ImageReviewController {
 
     @RequestMapping(value = "/root/ImageReview")
     public String ForwardImageReview(Model model) {
-        //查询百度鉴黄的key
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
         model.addAttribute("appid", imgreview.getAppId());
         model.addAttribute("apikey", imgreview.getApiKey());
         model.addAttribute("secretkey", imgreview.getSecretKey());
         model.addAttribute("using", imgreview.getUsing());
-
         return "admin/imageIdentify";
     }
 
-    //鉴黄功能开关
     @RequestMapping(value = "/root/ImgreviewSwitch")
     @ResponseBody
     public String ImgreviewSwitch(String appId, String apiKey, String secretKey, Integer using) {
         Imgreview imgreview = new Imgreview();
         imgreview.setId(1);//目前就一种鉴黄功能所以设死了
-        //if(using!=null&&using.equals("")){
         imgreview.setUsing(using);
         imgreview.setAppId(appId);
         imgreview.setApiKey(apiKey);

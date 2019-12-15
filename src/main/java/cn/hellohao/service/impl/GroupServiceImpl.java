@@ -45,7 +45,6 @@ public class GroupServiceImpl implements GroupService {
         Integer ret = 0;
         ret = groupMapper.delegroup(id);
         if(ret>0){
-            //userGroupMapper.updateusergroupdefault(id);
             List<User> userList = userMapper.getuserlistforgroupid(id);
             for (User user : userList) {
                 User u = new User();

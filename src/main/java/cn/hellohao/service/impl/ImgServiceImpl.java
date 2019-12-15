@@ -60,7 +60,6 @@ public class ImgServiceImpl implements ImgService {
     public Images selectByPrimaryKey(Integer id) {
         return imgMapper.selectByPrimaryKey(id);
     }
-
     //删除对象存储的图片文件
     public void delect(Keys key, String fileName) {
         // 初始化
@@ -79,7 +78,6 @@ public class ImgServiceImpl implements ImgService {
             tname = object.toString();
             //查看桶的ACL
             CannedAccessControlList acl = nosClient.getBucketAcl(object.toString());
-            // bucket权限
         }
         //这种方法不能删除指定文件夹下的文件
         boolean isExist = nosClient.doesObjectExist(tname, fileName, null);
@@ -88,22 +86,14 @@ public class ImgServiceImpl implements ImgService {
             nosClient.deleteObject(tname, fileName);
         }
     }
-
-    //删除OSS对象存储的图片文件
     public void delectOSS(Keys key, String fileName) {
-        // 初始化
-// Endpoint以杭州为例，其它Region请按实际情况填写。
         String endpoint = key.getEndpoint();
-// 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建RAM账号。
         String accessKeyId = key.getAccessKey();
         String accessKeySecret = key.getAccessSecret();
         String bucketName = key.getBucketname();
         String objectName = fileName;
-// 创建OSSClient实例。
         OSSClient ossClient = new OSSClient(endpoint, accessKeyId, accessKeySecret);
-// 删除文件。
         ossClient.deleteObject(bucketName, objectName);
-// 关闭OSSClient。
         ossClient.shutdown();
     }
     //删除USS对象存储的图片文件
@@ -117,10 +107,8 @@ public class ImgServiceImpl implements ImgService {
             e.printStackTrace();
         }
     }
-    //删除KODO对象存储的图片文件
     public void delectKODO(Keys key, String fileName) {
         Configuration cfg;
-        //构造一个带指定Zone对象的配置类
         if(key.getEndpoint().equals("1")){cfg = new Configuration(Zone.zone0());}
         else if(key.getEndpoint().equals("2")){cfg = new Configuration(Zone.zone1());}
         else if(key.getEndpoint().equals("3")){cfg = new Configuration(Zone.zone2());}
@@ -143,9 +131,7 @@ public class ImgServiceImpl implements ImgService {
         ClientConfig clientConfig = new ClientConfig(region);
         COSClient cosClient= new COSClient(cred, clientConfig);
         try {
-            // 指定对象所在的存储桶
             String bucketName = key.getBucketname();
-            // 指定对象在 COS 上的对象键
             String userkey = fileName;
              cosClient.deleteObject(key.getBucketname(), userkey);
         } catch (CosServiceException serverException) {
@@ -154,7 +140,6 @@ public class ImgServiceImpl implements ImgService {
             clientException.printStackTrace();
         }
     }
-    //删除FTP存储的图片文件
     public void delectFTP(Keys key, String fileName) {
         FTPClient ftp = new FTPClient();
         String[] host = key.getEndpoint().split("\\:");
@@ -164,7 +149,6 @@ public class ImgServiceImpl implements ImgService {
             if(!ftp.isConnected()){
                 ftp.connect(h,p);
             }
-            //如果是需要认证的服务器，就需要账号和密码来登录
             ftp.login(key.getAccessKey(), key.getAccessSecret());
             ftp.deleteFile(fileName);
         } catch (IOException e) {
@@ -177,7 +161,6 @@ public class ImgServiceImpl implements ImgService {
         // TODO Auto-generated method stub
         return imgMapper.counts(userid);
     }
-
 
     @Override
     public Integer countimg(Integer userid) {

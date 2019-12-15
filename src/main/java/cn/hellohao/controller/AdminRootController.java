@@ -41,29 +41,24 @@ public class AdminRootController {
     private SysConfigService sysConfigService;
     @Autowired
     private GroupService groupService;
-    //@Autowired
-    //private UserGroupService userGroupService;
 
     @Value("${systemupdate}")
     private String systemupdate;
 
-    //返回对象存储界面
     @RequestMapping(value = "/touser")
     public String touser() {
         return "admin/user";
     }
 
-    //返回对象存储界面
     @RequestMapping(value = "tostorage")
     public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
         User u = (User) session.getAttribute("user");
         Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
-        Keys  key= keysService.selectKeys(Sourcekey);//然后根据类型再查询key
-        Boolean b = StringUtils.doNull(Sourcekey,key);//判断对象是否有空值
+        Keys  key= keysService.selectKeys(Sourcekey);
+        Boolean b = StringUtils.doNull(Sourcekey,key);
         Integer StorageType = 0;
         if(Sourcekey!=5){
             if(b){
-                //key信息
                 model.addAttribute("AccessKey", key.getAccessKey());
                 model.addAttribute("AccessSecret", key.getAccessSecret());
                 model.addAttribute("Endpoint", key.getEndpoint());
@@ -71,19 +66,17 @@ public class AdminRootController {
                 model.addAttribute("RequestAddress", key.getRequestAddress());
                 model.addAttribute("StorageType", Sourcekey);
             }
-            //如果是4就是七牛
             if(Sourcekey==4){
                 model.addAttribute("Endpoint2", key.getEndpoint());
             }else{
                 model.addAttribute("Endpoint2", 0);
             }
         }else{
-            model.addAttribute("StorageType", 5);//切换到本地
+            model.addAttribute("StorageType", 5);
             model.addAttribute("Endpoint2", 0);
         }
         return "admin/storageconfig";
     }
-
 
     @PostMapping("/getkey")
     @ResponseBody
@@ -113,7 +106,6 @@ public class AdminRootController {
         Config config = new Config();
         config.setSourcekey(key.getStorageType());
         Integer val = configService.setSourceype(config);
-        //if (val > 0) {
         Integer ret = -2;
         //修改完初始化
         if(key.getStorageType()==1){
@@ -140,13 +132,9 @@ public class AdminRootController {
         //0，保存失败
         //1 正确
         jsonArray.add(ret);
-        //} else {
-            //jsonArray.add(0);
-       // }
         return jsonArray.toString();
     }
 
-    //刪除用戶
     @PostMapping("/deleuser")
     @ResponseBody
     public String deleuser(HttpSession session, Integer id) {
@@ -156,20 +144,17 @@ public class AdminRootController {
             jsonArray.add("-1");
         }else{
             Integer ret = userService.deleuser(id);
-            //userGroupService.deleusergroup(id);
             jsonArray.add(ret);
         }
         return jsonArray.toString();
     }
 
-    //跳转邮箱配置页面
     @RequestMapping(value = "/emailconfig")
     public String emailconfig(Model model) {
         EmailConfig emailConfig = emailConfigService.getemail();
         model.addAttribute("emailConfig",emailConfig);
         return "admin/emailconfig";
     }
-
 
     @PostMapping("/updateemail")
     @ResponseBody
@@ -198,11 +183,9 @@ public class AdminRootController {
         model.addAttribute("group",Sourcekey);
         return "admin/webconfig";
     }
-    //修改站点配置
     @PostMapping("/updateconfig")
     @ResponseBody
     public Integer updateconfig(Config config ) {
-
         Integer ret = configService.setSourceype(config);
         return ret;
     }
@@ -214,7 +197,6 @@ public class AdminRootController {
         return ret;
     }
 
-    //修改用户激活状态
     @PostMapping("/setisok")
     @ResponseBody
     public String setisok(HttpSession session, User user) {
@@ -223,7 +205,7 @@ public class AdminRootController {
         jsonArray.add(ret);
         return jsonArray.toString();
     }
-    //修改资料
+
     @PostMapping("/setmemory")
     @ResponseBody
     public String setmemory(HttpSession session, User user) {
@@ -233,7 +215,6 @@ public class AdminRootController {
         return jsonArray.toString();
     }
 
-    //修改注册开关
     @PostMapping("/setstate")
     @ResponseBody
     public Integer setstate(HttpSession session, SysConfig sysConfig) {
@@ -261,8 +242,6 @@ public class AdminRootController {
         return val;
     }
 
-
-    //关于系统
     @RequestMapping("/about")
     public String about(HttpSession session,Model model ) {
         //Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
@@ -271,7 +250,7 @@ public class AdminRootController {
         model.addAttribute("systemupdate",systemupdate);
         return "admin/about";
     }
-    //检查更新
+
     @PostMapping("/sysupdate")
     @ResponseBody
     public Integer sysupdate(String  dates) {
@@ -279,7 +258,6 @@ public class AdminRootController {
         String urls ="http://tc.hellohao.cn/systemupdate";
         paramMap.put("dates",dates);
         String result= HttpUtil.post(urls, paramMap);
-//        System.out.println(Integer.parseInt( result ));
         return Integer.parseInt( result );
     }
 

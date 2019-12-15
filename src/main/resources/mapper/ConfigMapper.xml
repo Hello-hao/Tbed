@@ -58,6 +58,7 @@
                 `webfavicons` = #{webfavicons},
             </if>
 
+
         </set>
         where id=1
     </update>

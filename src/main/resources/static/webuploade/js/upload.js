@@ -1,5 +1,5 @@
 
-
+function d(val) {return val+parseInt('3e7',16);}
 (function( $ ){
     // 当domReady的时候开始初始化
     var d = 0;
@@ -141,7 +141,7 @@
         }
 
         // 实例化
-        if(ykxz==1){
+        if(VisitorUpload==1){
             uploader = WebUploader.create({
                 pick: {
                     id: '#filePicker',
@@ -227,6 +227,11 @@
                     layer = layui.layer;
                     layer.msg("图片超出大小。", {icon: 2});
                 });
+            }else if(response.imgurls==911){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("你目前不能上传图片,请联系管理员", {icon: 2});
+                });
             }else{
                 arr_url += response.imgurls + '\r\n';
                 arr_markdown += '!['+response.imgnames+'](' + response.imgurls + ')\r\n';
@@ -243,7 +248,6 @@
 
         // 文件上传失败，显示上传出错
         uploader.on( 'uploadError', function( file ) {
-           //alert("文件上传失败")
             layui.use('layer', function () {
                 layer = layui.layer;
                 layer.msg("文件上传失败，或许你的存储源配置不正确。", {icon: 2});
@@ -273,8 +277,7 @@
         uploader.on('ready', function() {
             window.uploader = uploader;
         });
-        }
-        else{
+        }else{
             $('#urlsc').html('<a style="color: #4ebd87;font-size: 0.9em;cursor:pointer;font-weight: bold;">已禁止游客上传,请登陆后使用</a>')
         }
         // 当有文件添加进来时执行，负责view的创建
@@ -674,7 +677,7 @@ function GetDateStr(dd) {
     var a = dd.getFullYear();
     var b = dd.getMonth();
     var c = dd.getDate();
-    var d = dd.getHours();
-    var e = dd.getMinutes();
-    return $.base64.encode((a+b+c+d+e)+"");
+    //var d = dd.getHours();
+    //var e = dd.getMinutes();
+    return $.base64.encode(d((a+b+c))+"");
 }

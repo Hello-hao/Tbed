@@ -66,6 +66,9 @@ layui.use(['element', 'layer'], function () {
                 layer.close(index);
                 layer.msg("清理成功");
             });
+        },
+        GoMain(){
+            window.location.href = "/";
         }
     };
 

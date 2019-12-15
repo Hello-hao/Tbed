@@ -32,27 +32,23 @@ public class CodeController {
     private CodeService codeService;
 
 
-    //返回code界面
     @RequestMapping(value = "/tocode")
     public String tocode() {
 
         return "admin/code";
     }
 
-    //获取code列表
     @RequestMapping(value = "/selectcodelist")
     @ResponseBody
     public Map<String, Object> selectcodel(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
                                             @RequestParam(required = false) int limit) {
         User u = (User) session.getAttribute("user");
-        // 使用Pagehelper传入当前页数和页面显示条数会自动为我们的select语句加上limit查询
-        // 从他的下一条sql开始分页
         PageHelper.startPage(page, limit);
         List<Code> codes = null;
-        if (u.getLevel() > 1) { //根据用户等级查询管理员查询所有的信息
+        if (u.getLevel() > 1) {
             codes = codeService.selectCode(null);
             // 使用pageInfo包装查询
-            PageInfo<Code> rolePageInfo = new PageInfo<>(codes);//
+            PageInfo<Code> rolePageInfo = new PageInfo<>(codes);
             Map<String, Object> map = new HashMap<String, Object>();
             map.put("code", 0);
             map.put("msg", "");
@@ -67,7 +63,6 @@ public class CodeController {
     @RequestMapping("/deletecodes")
     @ResponseBody
     public Integer deletecodes(HttpSession session, @RequestParam("arr[]") String[] arr){
-        //JSONObject jsonObject = new JSONObject();
         Integer v = 0;
         User u = (User) session.getAttribute("user");
         for (int i = 0; i < arr.length; i++) {
@@ -81,6 +76,7 @@ public class CodeController {
             Integer v =  codeService.deleteCode(code);
         return v;
     }
+
     @RequestMapping("/addcode")
     @ResponseBody
     public Integer addcode(Integer value,Integer counts){
@@ -90,10 +86,8 @@ public class CodeController {
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("hhmmss");
             Integer number = (int)(Math.random()*100000)+1;
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);
-
             code.setValue(value);
             code.setCode(SecureUtil.sha256(number+format1.format(new Date())+uuid));
-            //code.setCode(SecureUtil.md5(format1.format(new Date())+number+value));
             codeService.addCode(code);
             val = 1;
         }

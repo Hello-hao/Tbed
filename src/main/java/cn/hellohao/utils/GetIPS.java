@@ -13,17 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 public class GetIPS implements Runnable {
     private String imgname ;
 
-
     public void setImgname(String imgname) {
         this.imgname = imgname;
     }
-
     @Override
     public void run() {
         ImgServiceImpl imgService = SpringContextHolder.getBean(ImgServiceImpl.class);
-        //imgService.setabnormal(imgname,Sentence.getIPs());
     }
-
     public static void runxc(String imgnames){
         GetIPS getIPS = new GetIPS();
         getIPS.setImgname(imgnames);

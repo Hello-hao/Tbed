@@ -141,12 +141,12 @@ TABLE OF CONTENTS
     /*-- ================================ --
     4.0 window.load FUNCTION
     /*-- ================================ --*/
-    $(window).load(function (e) {
+    //$(window).load(function (e) {
+    $(window).ready(function (e) {
         //-- 4.1 hide preloader & show home section
         var delay = setTimeout(function () {
             $('.preloader-container').addClass('is-hidden');
             $('.page-container').addClass('is-visible');
-
             //-- show logo, menu & home section content
             $('.img-logo, nav, .home-section .left-side, .home-section .right-side').addClass('is-visible');
 

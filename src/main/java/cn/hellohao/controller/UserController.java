@@ -50,7 +50,6 @@ public class UserController {
     public String Register(@Valid User u,Integer zctmp) {
         JSONObject jsonObject = new JSONObject();
         if((zctmp-number2)==(istmp2-number2)){
-            //取当前时间
             User user = new User();
             UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
             EmailConfig emailConfig = emailConfigService.getemail();
@@ -70,13 +69,11 @@ public class UserController {
                     user.setEmail(u.getEmail());
                     user.setUsername(u.getUsername());
                     user.setPassword(Base64Encryption.encryptBASE64(u.getPassword().getBytes()));
-                    //查询是否启用了邮箱验证。
                     Config config = configService.getSourceype();
                     System.err.println("是否启用了邮箱激活："+emailConfig.getUsing());
                     Integer type = 0;
                     if(emailConfig.getUsing()==1){
                         user.setIsok(0);
-                        //初始化邮箱
                         MimeMessage message = SendEmail.Emails(emailConfig);
                         //注册完发激活链接
                         Thread thread = new Thread() {
@@ -93,11 +90,6 @@ public class UserController {
                     }
                     Integer ret = userService.register(user);
                     if(ret>0){
-//                    UserGroup userGroup = new UserGroup();
-//                    User user1 = userService.getUsersMail(uid);
-//                    userGroup.setUserid(user1.getId());
-//                    userGroup.setGroupid(1);
-//                    userGroupService.addusergroup(userGroup);
                     }
                     jsonObject.put("ret",ret);
                     jsonObject.put("zctype",type);
@@ -152,7 +144,6 @@ public class UserController {
             session.removeAttribute(user.getEmail());
             session.removeAttribute(user.getPassword());
             session.removeAttribute("user");
-
         }
         //刷新view
         session.invalidate();
@@ -164,7 +155,7 @@ public class UserController {
     //邮箱激活
     @RequestMapping(value = "/activation.do", method = RequestMethod.GET)
     public String activation(Model model, HttpServletRequest request, HttpSession session, String activation, String username) {
-        Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
+        Config config = configService.getSourceype();
         Integer ret = 0;
         User user = userService.getUsersMail(activation);
         model.addAttribute("config", config);
@@ -172,13 +163,10 @@ public class UserController {
             Integer setisok = userService.uiduser(activation);
             model.addAttribute("setisok", ret);
             model.addAttribute("username", username);
-
             return "isok";
         } else {
             return "redirect:/index";
-            //return "isok";
         }
-
     }
     @PostMapping(value = "/verification")
     @ResponseBody
@@ -194,7 +182,6 @@ public class UserController {
             istmp2 = tmp;
             Print.Normal(tmp-number2);
         }
-
         return 1;
     }
 

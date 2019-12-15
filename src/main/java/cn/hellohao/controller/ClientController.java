@@ -112,7 +112,6 @@ public class ClientController {
                             Map<String, MultipartFile> map = new HashMap<>();
                             for (MultipartFile multipartFile : file) {
                                 //获取文件名
-                                System.out.println(multipartFile.toString());
                                 String fileName = multipartFile.getOriginalFilename();
                                 String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);//获取文件后缀
                                 if (!multipartFile.isEmpty()) { //判断文件是否为空
@@ -213,7 +212,6 @@ public class ClientController {
                                     jsonArray.add(jsonObject);
                                 }
                             }
-                            //上传成功
                             resultBean = ResultBean.success(jsonArray);
                         } else {resultBean = ResultBean.error(-1, "服务器内部错误，请联系管理员");}
                     }
@@ -221,7 +219,6 @@ public class ClientController {
             } else {resultBean = ResultBean.error(-3, "邮箱密码为空");}
         }
         else{resultBean = ResultBean.error(-4, "管理员关闭了API接口");}
-        //return jsonArray.toString();
         return resultBean;
     }
 
@@ -280,14 +277,11 @@ public class ClientController {
                         usermemory= imgService.getusermemory(u.getId());
                         if(usermemory==null){usermemory = 0;}
                     }
-                    //先判断对象存储key是不是null
                     Print.warning("上传地址是："+request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
                     if(bo){
                         if(usermemory/1024<memory){
                             long stime = System.currentTimeMillis();
-                            //判断是会员还是游客
                             if(u!=null){
-                                //判断文件大小
                                 if(imgsize>0 && imgsize<=(yonghu*1024*1024)){
                                     try{
                                         boolean bl =ImgUrlUtil.downLoadFromUrl(imgurl,
@@ -298,13 +292,10 @@ public class ClientController {
                                             is.read(b, 0, b.length);
                                             String xxx = ImgUrlUtil.bytesToHexString(b);
                                             xxx = xxx.toUpperCase();
-                                            System.out.println("头文件是：" + xxx);
                                             String ooo = TypeDict.checkType(xxx);
-                                            System.out.println("后缀名是：" + ooo);
                                             if(is!=null){
                                                 is.close();
                                             }
-                                            //判断文件头是否是图片
                                             if(!ooo.equals("0000")){
                                                 Map<String, String> map = new HashMap<>();
                                                 map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
@@ -347,9 +338,9 @@ public class ClientController {
                                                     img.setUpdatetime(times);
                                                     img.setSource(key.getStorageType());
                                                     if (u == null) {
-                                                        img.setUserid(0);//用户id
+                                                        img.setUserid(0);
                                                     } else {
-                                                        img.setUserid(u.getId());//用户id
+                                                        img.setUserid(u.getId());
                                                     }
                                                     img.setSizes((entry.getValue()));
                                                     img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
@@ -370,7 +361,6 @@ public class ClientController {
                                         resultBean = ResultBean.error(-4,"该文件不支持上传");
                                     }
                                 }else{
-                                    //文件过大
                                     resultBean = ResultBean.error(-2,"文件过大");
                                 }
                             }else{
@@ -384,13 +374,10 @@ public class ClientController {
                                             is.read(b, 0, b.length);
                                             String xxx = ImgUrlUtil.bytesToHexString(b);
                                             xxx = xxx.toUpperCase();
-                                            //System.out.println("头文件是：" + xxx);
                                             String ooo = TypeDict.checkType(xxx);
-                                            //System.out.println("后缀名是：" + ooo);
                                             if(is!=null){
                                                 is.close();
                                             }
-                                            //判断文件头是否是图片
                                             if(!xxx.equals("0000")){
                                                 Map<String, String> map = new HashMap<>();
                                                 map.put(ooo, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
@@ -445,7 +432,6 @@ public class ClientController {
                                                     long etime = System.currentTimeMillis();
                                                     System.out.println("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
                                                 }
-                                                //上传成功
                                                 resultBean = ResultBean.success(jsonArray);
                                             }else{
                                                 resultBean = ResultBean.error(-3,"文件类型不符合要求");
@@ -457,7 +443,6 @@ public class ClientController {
                                         resultBean = ResultBean.error(-4,"文件类型不符合要求");
                                     }
                                 }else{
-                                    //文件过大
                                     resultBean = ResultBean.error(-2,"图片太大或不存在");
                                 }
                             }
@@ -504,7 +489,6 @@ Print.Normal(resultBean.toString());
     @GetMapping (value = "/notices")
     @ResponseBody
     public String notices() throws Exception {
-
         return "-1";//-1就是没有公告，客户端不显示
     }
     //主端接口
@@ -512,7 +496,6 @@ Print.Normal(resultBean.toString());
     @ResponseBody
     public String sysupdate(String  dates) {
         Integer i=dates.compareTo(systemupdate);//小于0则需要更新
-        System.out.println(i);
         return i.toString();
     }
     //主端接口
@@ -520,7 +503,6 @@ Print.Normal(resultBean.toString());
     @ResponseBody
     public String getdomain(String  domain) {
         Integer count = domainService.getDomain(domain);
-        //System.out.println(i);
         return count.toString();
     }
 

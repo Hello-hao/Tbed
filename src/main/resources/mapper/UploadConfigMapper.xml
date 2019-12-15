@@ -37,7 +37,10 @@
                 `visitormemory` = #{visitormemory},
             </if>
             <if test="usermemory != null">
-                `usermemory` = #{usermemory}
+                `usermemory` = #{usermemory},
+            </if>
+            <if test="blacklist != null">
+                `blacklist` = #{blacklist}
             </if>
 
         </set>

@@ -57,14 +57,6 @@
                                th:value="${config.getExplain()}"/>
                     </div>
                 </div>
-<!--                <div class="layui-form-item">-->
-<!--                    <label class="layui-form-label">底部版权</label>-->
-<!--                    <div class="layui-input-block">-->
-<!--                        <input id="footed" type="text" name="title" autocomplete="off" placeholder="底部版权" class="layui-input"-->
-<!--                               th:value="${config.getFooted()}"/>-->
-<!--                    </div>-->
-<!--                </div>-->
-
                     <br />
                         <div class="layui-form-item">
                             <label class="layui-form-label">视频背景</label>
@@ -99,7 +91,6 @@
 <!--                        </div>-->
 <!--                    </div>-->
 <!--                    <br />-->
-
                 <div class="layui-form-item">
                     <label class="layui-form-label">备案显示</label>
                     <div class="layui-input-block">
@@ -107,7 +98,6 @@
                         <span style="color: #DAA5A6;">不填写，则不显示<xmp></xmp></span>
                     </div>
                 </div>
-
                     <br />
                     <form class="layui-form-item " >
                         <div class="laydfdaui-form-item">
@@ -143,8 +133,6 @@
                 </form>
             </div>
 <!--分组3-->
-
-
             <div class="layui-tab-item">
                 <h3 style="margin-top: 50px;">站点API配置</h3>
                 <hr />
@@ -231,6 +219,16 @@
                         <input type="radio" id="urltype2" name="urltype" value="2" title="日期格式：/YY/mm/dd/" checked>
                     </div>
                 </div>
+                </form>
+                <hr />
+                <form class="layui-form layui-form-pane" action="">
+                    <div class="layui-form-item">
+                        <label class="layui-form-label">IP黑名单</label>
+                        <div class="layui-input-block">
+                            <textarea id="blacklist" name="blacklist" placeholder="127.0.0.1;127.0.0.2" class="layui-textarea" th:text="${updateConfig.getBlacklist()}"></textarea>
+                            <span style="color: #DAA5A6;"><xmp>多个IP用;（英文分号）隔开 例如：127.0.0.1;127.0.0.2 否则无法生效</xmp></span>
+                        </div>
+                    </div>
                 </form>
                 <br />
 
@@ -357,7 +355,6 @@
             }else{
                 $('#sett11:radio:first').attr('checked', 'true');
             }
-
             $.ajax({
                 type: "POST",
                 url: "/admin/root/getgrouplist",
@@ -372,8 +369,6 @@
                     form.render('select');
                 }
             });
-
-
         });
         function updateconfig() {
                 var webname = $("#webname").val();
@@ -435,6 +430,7 @@
             var imgcountuser = $("#imgcountuser").val();
             var suffix = $("#suffix").val();
             var imgurltype = $('#imgurltype input[name="urltype"]:checked ').val();
+            var blacklist = $('#blacklist').val();
             var visitormemory = $('#visitormemory').val();
             var usermemory = $('#usermemory').val();
             var re = new RegExp("^[0-9]*[1-9][0-9]*$");
@@ -445,7 +441,8 @@
                         url: "/admin/root/scconfig",
                         dataType: "json",
                         data: {filesizetourists: filesizetourists,filesizeuser:filesizeuser,imgcounttourists:imgcounttourists,
-                            imgcountuser:imgcountuser,suffix:suffix,urltype:imgurltype,visitormemory:visitormemory,usermemory:usermemory},
+                            imgcountuser:imgcountuser,suffix:suffix,urltype:imgurltype,visitormemory:visitormemory,usermemory:usermemory,
+                            blacklist:blacklist},
                         success: function (data) {
                             var vals = Number(data);
                             if (vals > 0) {
@@ -537,7 +534,6 @@
                     var vals = Number(data);
                     if (vals > 0) {
                         layer.msg("保存成功", {icon: 1});
-                        //window.location.reload();
                     } else {
                         layer.msg("保存失败，请尝试刷新页面后操作", {icon: 2});
                     }

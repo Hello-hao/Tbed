@@ -2911,7 +2911,8 @@ var count2 = 0;
     
                 // 类型不匹配，则派送错误事件，并返回。
                 if ( !me.acceptFile( file ) ) {
-                    me.owner.trigger( 'error', 'Q_TYPE_DENIED', file );
+                    //me.owner.trigger( 'error', 'Q_TYPE_DENIED', file );
+                    me.owner.trigger( 'error', '拒绝上传此类型数据', file );
                     return;
                 }
     

@@ -6,6 +6,7 @@ import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.DateUtils;
 import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.ImgUrlUtil;
+import cn.hellohao.utils.Print;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -28,7 +29,6 @@ public class USSImageupload {
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            //设置Header
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
             for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
@@ -36,9 +36,6 @@ public class USSImageupload {
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 file = changeFile(entry.getValue());
-                // 上传文件流。
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
                 upyun.setContentMD5(UpYun.md5(file));
                 boolean result = upyun.writeFile(username + "/" + uuid+times + "." + entry.getKey(), file, true);
                 if(result){
@@ -58,7 +55,6 @@ public class USSImageupload {
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            //设置Header
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
             for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
@@ -66,9 +62,6 @@ public class USSImageupload {
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 String imgurl = entry.getValue();
-                // 上传文件流。
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
                 upyun.setContentMD5(UpYun.md5(new File(imgurl)));
                 boolean result = upyun.writeFile(username + "/" + uuid+times + "." + entry.getKey(), new File(imgurl), true);
                 if(result){
@@ -79,9 +72,8 @@ public class USSImageupload {
                         String deleimg = DateUtils.plusDay(setday);
                         DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "3");
                     }
-
                 }else{
-                    System.err.println("上传失败");
+                    Print.warning("上传失败");
                 }
                 new File(imgurl).delete();
             }

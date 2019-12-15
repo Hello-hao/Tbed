@@ -1,30 +1,27 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.dao.CodeMapper;
-import cn.hellohao.exception.CodeException;
-import cn.hellohao.utils.Print;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import cn.hellohao.dao.UserMapper;
+import cn.hellohao.exception.CodeException;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.UserService;
+import cn.hellohao.utils.Print;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     @Autowired
     private UserMapper userMapper;
     @Autowired
     private CodeMapper codeMapper;
-
     @Override
     public Integer register(User user) {
         // TODO Auto-generated method stub
-
         return userMapper.register(user);
     }
 

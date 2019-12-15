@@ -31,22 +31,15 @@ public class FTPImageupload {
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-
             ftps.mkDir(File.separator+username);
             for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 file = changeFile(entry.getValue());
-                System.out.println("文件地址："+file.toString());
                 String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
-                //fuzhi(file.toString(),File.separator+"tmp"+File.separator+uuid+times + "." + entry.getKey());
                 if (flag) {
-                    // 上传
-                    //ftps.upload(File.separator+"tmp"+File.separator+uuid+times + "." + entry.getKey(), File.separator+userkey, "");
                     ftps.upload(file, File.separator+userkey, "");
-
-                    //boolean isSet = ftp.sendSiteCommand("chmod 744 " + File.separator+userkey);//设置权限
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
@@ -73,10 +66,8 @@ public class FTPImageupload {
                 ftps.mkDir(File.separator+username);
                 if (flag) {
                     ftps.upload(file, File.separator+userkey, "");
-
                     ReturnImage returnImage = new ReturnImage();
                     returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
-                    Print.Normal("Url上传成功返回地址");
                     ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
                     if(setday>0) {
                         String deleimg = DateUtils.plusDay(setday);
@@ -86,11 +77,9 @@ public class FTPImageupload {
                 }
                 boolean bb= new File(imgurl).getAbsoluteFile().delete();
                 Print.Normal("删除情况"+bb);
-
             }
             return ImgUrl;
         }
-
     }
 
     // 转换文件方法
@@ -101,7 +90,6 @@ public class FTPImageupload {
         String prefix = fileName.substring(fileName.lastIndexOf("."));
         // todo 修改临时文件文件名
         File file = File.createTempFile(fileName, prefix);
-        // MultipartFile to File
         multipartFile.transferTo(file);
         return file;
     }
@@ -121,14 +109,12 @@ public class FTPImageupload {
                         if(!ftp.isConnected()){
                             ftp.connect(h,p);
                         }
-                        //如果是需要认证的服务器，就需要账号和密码来登录
                         ftp.login(k.getAccessKey(), k.getAccessSecret());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     //获取服务器返回的状态码
                     int reply = ftp.getReplyCode();
-                    System.out.println(reply);
                     /*
                      * 判断是否连接成功
                      * 所有以2开头的代码是正完成响应。
@@ -138,13 +124,10 @@ public class FTPImageupload {
                         try {
                             ftp.disconnect();
                         }catch (IOException e){
-                            System.out.println(e);
+                            e.printStackTrace();
                         }
-                        //Print.warning("连接失败");
                         ret = -1;
                     }
-                    //Print.Normal("链接成功");
-                    //boolean isUpload = ftp.storeFile("/ftp/upload.jpg", fis);
                     ftpClient1 = ftp;
                     key = k;
                     ret = 1;
@@ -180,7 +163,6 @@ public class FTPImageupload {
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                    //ImgUrl.put(key.getRequestAddress() + File.separator+userkey + username + File.separator+userkey + uuid+times + "." + entry.getKey(), (int) (entry.getValue().getSize()));
                     ftps.close();
                 }else{
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
@@ -188,11 +170,9 @@ public class FTPImageupload {
                     ImgUrl.put(returnImage, -1);
                     ftps.close();
                 }
-
             }
         }
         return ImgUrl;
-
     }
 
     public static void fuzhi(String p1,String p2){

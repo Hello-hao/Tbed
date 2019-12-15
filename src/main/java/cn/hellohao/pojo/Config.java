@@ -12,15 +12,16 @@ public class Config {
     private String notice;
     private String baidu;
     private String domain;
-    private  String background1;
-    private  String background2;
-    private  String sett;
+    private String background1;
+    private String background2;
+    private String sett;
     private String webms;
     private String webkeywords;
     private String webfavicons;
 
     public Config() {
     }
+
     public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett, String webms, String webkeywords, String webfavicons) {
         this.id = id;
         this.sourcekey = sourcekey;
