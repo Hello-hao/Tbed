@@ -169,8 +169,8 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer setabnormal(String imgname,String abnormal) {
-        return imgMapper.setabnormal(imgname,abnormal);
+    public Integer setImg(Images images) {
+        return imgMapper.setImg(images);
     }
 
     @Override
@@ -191,5 +191,15 @@ public class ImgServiceImpl implements ImgService {
     @Override
     public Integer getusermemory(Integer userid) {
         return imgMapper.getusermemory(userid);
+    }
+
+    @Override
+    public Integer md5Count(String md5key) {
+        return imgMapper.md5Count(md5key);
+    }
+
+    @Override
+    public Images selectImgUrlByMD5(String md5key) {
+        return imgMapper.selectImgUrlByMD5(md5key);
     }
 }

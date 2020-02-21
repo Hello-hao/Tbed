@@ -11,7 +11,7 @@ public interface UserService {
     Integer register(User user);
 
     //登录
-    Integer login(String email, String password);
+    Integer login(String email, String password,String uid);
 
     //获取用户信息
     User getUsers(String email);

@@ -170,7 +170,7 @@ TABLE OF CONTENTS
         //-- 4.2 show half overlay on home section
         var show_half_overlay = setTimeout(function () {
             $('.home-section').find('.half-overlay').addClass('is-visible');
-
+            $('#webtext').addClass('fadeInDown');
             clearTimeout(this);
         }, 2300);
     });

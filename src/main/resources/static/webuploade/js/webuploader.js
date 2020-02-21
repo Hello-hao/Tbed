@@ -2819,7 +2819,6 @@ var count2 = 0;
                 // accept中的中生成匹配正则。
                 if ( opts.accept ) {
                     arr = [];
-    
                     for ( i = 0, len = opts.accept.length; i < len; i++ ) {
                         item = opts.accept[ i ].extensions;
                         item && arr.push( item );

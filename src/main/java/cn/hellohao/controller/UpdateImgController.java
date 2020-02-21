@@ -32,8 +32,6 @@ public class UpdateImgController {
     @Autowired
     private KeysService keysService;
     @Autowired
-    private OSSImageupload ossImageupload;
-    @Autowired
     private ConfigService configService;
     @Autowired
     private UploadConfigService uploadConfigService;
@@ -47,6 +45,8 @@ public class UpdateImgController {
     private FTPImageupload ftpImageupload;
     @Autowired
     private ImgService imgService;
+    @Autowired
+    private  UploadServicel uploadServicel;
 
     private String[] iparr;
 
@@ -66,7 +66,7 @@ public class UpdateImgController {
             if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
             if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
             if (email != null) {
-                Integer ret = userService.login(u.getEmail(), u.getPassword());
+                Integer ret = userService.login(u.getEmail(), u.getPassword(),null);
                 if (ret > 0) {
                     User user = userService.getUsers(u.getEmail());
                     model.addAttribute("username", user.getUsername());
@@ -96,110 +96,11 @@ public class UpdateImgController {
 
     @RequestMapping(value = "/upimg")
     @ResponseBody
-    public String upimg( HttpSession session,HttpServletRequest request
+    public Msg upimg( HttpSession session,HttpServletRequest request
             , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer setday,String upurlk) throws Exception {
-        String userip = GetIPS.getIpAddr(request);
-        Print.Normal("上传者ip:"+userip);
-        java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-        Config config = configService.getSourceype();
-        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        User u = (User) session.getAttribute("user");
-        Integer usermemory =0;
-        Integer memory =0;
-        Integer sourcekey=0;
-        Integer maxsize = 0;
-        String userpath = "tourist";
-        Boolean b =false;
-        if(uploadConfig.getBlacklist()!=null){
-            iparr = uploadConfig.getBlacklist().split(";");
-            for (String s : iparr) {
-                if(s.equals(userip)){
-                    jsonObject.put("imgurls",911);
-                    return jsonObject.toString();
-                }
-            }
-        }
-        if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=yzupdate()){
-            jsonObject.put("imgurls",403);
-            return jsonObject.toString();
-        }
-        if(u==null){
-            sourcekey = GetCurrentSource.GetSource(null);
-            memory = uploadConfig.getVisitormemory();
-            maxsize = uploadConfig.getFilesizetourists();
-            usermemory= imgService.getusermemory(0);
-            if(usermemory==null){usermemory = 0;}
-        }else{
-            userpath = u.getUsername();
-            sourcekey = GetCurrentSource.GetSource(u.getId());
-            memory = userService.getUsers(u.getEmail()).getMemory();
-            maxsize = uploadConfig.getFilesizeuser();
-            usermemory= imgService.getusermemory(u.getId());
-            if(usermemory==null){usermemory = 0;}
-        }
-        if(uploadConfig.getUrltype()==2){
-            userpath = dateFormat.format(new Date());
-        }
-        Keys key = keysService.selectKeys(sourcekey);
-        if(sourcekey==5){b =true;}
-        else{b = StringUtils.doNull(sourcekey,key);}
-        if(!b){
-            jsonObject.put("imgurls",-1);
-            return jsonObject.toString();
-        }
-        int tmp =(memory==-1? -2:(usermemory/1024));
-        if(tmp>=memory){
-            jsonObject.put("imgurls",-5);
-            return jsonObject.toString();
-        }
-        long stime = System.currentTimeMillis();
-        Map<String, MultipartFile> map = new HashMap<>();
-        Print.Normal("文件大小："+multipartFile.getSize());
-        if(multipartFile.getSize()>maxsize*1024*1024){
-            jsonObject.put("imgurls",-6);
-            return jsonObject.toString();
-        }
-        String fileName = multipartFile.getOriginalFilename();
-        String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);
-        if (!multipartFile.isEmpty()) {
-            map.put(lastname, multipartFile);
-        }
-        Map<ReturnImage, Integer> m = null;
-        m = GetSource.storageSource(key.getStorageType(),map, userpath,null,setday);
-        Images img = new Images();
-        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-        Print.Normal("上传图片的时间是："+df.format(new Date()));
-        for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
-            if(key.getStorageType()==5){
-                if(config.getDomain()!=null){
-                    jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                    jsonObject.put("imgnames",entry.getKey().getImgname());
-                    img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                }else{
-                    jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                    jsonObject.put("imgnames",entry.getKey().getImgname());
-                    img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
-                }
-            }else{
-                jsonObject.put("imgurls",entry.getKey().getImgurl());
-                jsonObject.put("imgnames",entry.getKey().getImgname());
-                img.setImgurl(entry.getKey().getImgurl());
-            }
-            jsonArray.add(jsonObject);
-            img.setUpdatetime(df.format(new Date()));
-            img.setSource(key.getStorageType());
-            img.setUserid(u == null?0:u.getId());
-            img.setSizes((entry.getValue()) / 1024);
-            img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-            img.setImgtype(setday>0?1:0);
-            img.setAbnormal(userip);
-            userService.insertimg(img);
-            long etime = System.currentTimeMillis();
-            Print.Normal("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
-        }
-        return jsonObject.toString();
+        Msg msg = new Msg();
+        msg = uploadServicel.uploadForLoc(session,request,multipartFile,setday,upurlk,iparr);
+        return msg;
     }
 
 //根据网络图片url上传
@@ -419,6 +320,25 @@ public class UpdateImgController {
     }
 
 
+    @RequestMapping("/{key1}/TOIMG{key2}N.{key3}")
+    public String selectByFy(@PathVariable("key1") String key1,@PathVariable("key2") String key2,@PathVariable("key3") String key3,Model model) {
+        System.out.println(key1);
+        System.out.println(key2);
+        return "forward:/links/"+key1+"/TOIMG"+key2+"N."+key3;
+    }
+
+    //      http://127.0.0.1:8088/2020/02/18/TOIMG369f20218091644N.png
+    @RequestMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
+    public String selectByFy2(@PathVariable("key1") String key1,@PathVariable("key2") String key2,
+                              @PathVariable("key3") String key3,@PathVariable("key4") String key4,
+                              @PathVariable("key5") String key5,Model model) {
+        System.out.println(key1);
+        System.out.println(key2);
+        System.out.println(key3);
+        System.out.println(key4);
+        return "forward:/links/"+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5;
+    }
+
     private Integer yzupdate(){
         Calendar cal = Calendar.getInstance();
         int y=cal.get(Calendar.YEAR);
@@ -433,5 +353,6 @@ public class UpdateImgController {
     public String err() {
         return "err";
     }
+
 
 }

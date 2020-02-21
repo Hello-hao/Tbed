@@ -49,7 +49,7 @@ public class OSSImageupload {
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                 ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
                 ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgname(entry.getValue().getOriginalFilename());
+                returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
                 returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                 ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                 if(setday>0) {

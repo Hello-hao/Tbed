@@ -37,6 +37,8 @@ public static void main(String[] args) {
         factory.setMaxFileSize("102400KB"); // KB,MB
         /// 总上传数据大小
         factory.setMaxRequestSize("102400KB");
+        //factory.setLocation("/tmp");
+
         return factory.createMultipartConfig();
     }
 

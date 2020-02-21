@@ -11,10 +11,7 @@ import java.util.UUID;
 import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.DateUtils;
-import cn.hellohao.utils.DeleImg;
-import cn.hellohao.utils.ImgUrlUtil;
-import cn.hellohao.utils.Print;
+import cn.hellohao.utils.*;
 import com.netease.cloud.services.nos.model.ObjectMetadata;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -42,10 +39,10 @@ public class NOSImageupload {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
-                file = changeFile(entry.getValue());
+                file = SetFiles.changeFile(entry.getValue());
                 nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), file);
                 ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgname(entry.getValue().getOriginalFilename());
+                returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
                 returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                 ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                 if(setday>0){
@@ -103,17 +100,17 @@ public class NOSImageupload {
     }
 
     // 转换文件方法
-    private File changeFile(MultipartFile multipartFile) throws Exception {
-        // 获取文件名
-        String fileName = multipartFile.getOriginalFilename();
-        // 获取文件后缀
-        String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // todo 修改临时文件文件名
-        File file = File.createTempFile(fileName, prefix);
-        // MultipartFile to File
-        multipartFile.transferTo(file);
-        return file;
-    }
+//    private File changeFile(MultipartFile multipartFile) throws Exception {
+//        // 获取文件名
+//        String fileName = multipartFile.getOriginalFilename();
+//        // 获取文件后缀
+//        String prefix = fileName.substring(fileName.lastIndexOf("."));
+//        // todo 修改临时文件文件名
+//        File file = File.createTempFile(fileName, prefix);
+//        // MultipartFile to File
+//        multipartFile.transferTo(file);
+//        return file;
+//    }
 
 
     //初始化网易NOS对象存储
@@ -162,7 +159,7 @@ public class NOSImageupload {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            file = SetFiles.changeFile(entry.getValue());
             try {
                  Print.warning(entry.getValue().getSize());
                 ReturnImage returnImage = new ReturnImage();

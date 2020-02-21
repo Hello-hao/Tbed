@@ -26,9 +26,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Integer login(String email, String password) {
+    public Integer login(String email, String password,String uid) {
         // TODO Auto-generated method stub
-        return userMapper.login(email, password);
+        return userMapper.login(email, password,uid);
     }
 
     @Override

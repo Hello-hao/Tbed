@@ -171,6 +171,7 @@ function d(val) {return val+parseInt('3e7',16);}
 
                 // 禁掉全局的拖拽功能。这样不会出现图片拖进页面的时候，把图片打开。
                 disableGlobalDnd: true,
+                duplicate:true,
                 fileNumLimit: imgcount, //做多允许上传几个
                 //fileSizeLimit: 2000 * 1024 * 1024,    // 200 M  文件总大小
                 fileSingleSizeLimit: filesize    // 50 M  单文件大小
@@ -199,50 +200,55 @@ function d(val) {return val+parseInt('3e7',16);}
         // 文件上传成功
         uploader.on( 'uploadSuccess', function(file,response) {
             $("#address").css('display', 'block');
-            if(response.imgurls==-100){
+            if(response.code==-100){
                 layui.use('layer', function () {
                     layer = layui.layer;
                     layer.msg("本站已禁用游客上传,请登录本站。", {icon: 2});
                 });
-                // arr_url += '未配置存储源，请先后台配置存储源\r\n';
-                // arr_markdown += '未配置存储源，请先后台配置存储源\r\n';
-                // arr_html += '未配置存储源，请先后台配置存储源\r\n';
-            }else if(response.imgurls==-1){
+            }else if(response.code=='4000'){
+                layui.use('layer', function () {
+                    layer = layui.layer;
+                    layer.msg("非法文件上传，仅支持:jpg,png,bmp,gif,jif格式。", {icon: 2});
+                });
+            }else if(response.code=='4001'){
                 layui.use('layer', function () {
                     layer = layui.layer;
                     layer.msg("未配置存储源，或存储源配置不正确。", {icon: 2});
                 });
-            }else if(response.imgurls==-5){
+            }else if(response.code=='4005'){
                 layui.use('layer', function () {
                     layer = layui.layer;
                     layer.msg("上传失败，可用空间不足", {icon: 2});
                 });
-            } else if(response.imgurls==403){
+            } else if(response.code==4003){
                 layui.use('layer', function () {
                     layer = layui.layer;
                     layer.msg("非法调用，请刷新页面后重试", {icon: 2});
                 });
-            }else if(response.imgurls==-6){
+            }else if(response.code=='4006'){
                 layui.use('layer', function () {
                     layer = layui.layer;
                     layer.msg("图片超出大小。", {icon: 2});
                 });
-            }else if(response.imgurls==911){
+            }else if(response.code=='911'){
                 layui.use('layer', function () {
                     layer = layui.layer;
                     layer.msg("你目前不能上传图片,请联系管理员", {icon: 2});
                 });
             }else{
-                arr_url += response.imgurls + '\r\n';
-                arr_markdown += '!['+response.imgnames+'](' + response.imgurls + ')\r\n';
-                arr_html += '<img src="' + response.imgurls + '" alt="'+response.imgnames+'" title="'+response.imgnames+'" /> \r\n';
+                arr_url += response.data[0].imgurls + '\r\n';
+                arr_markdown += '!['+response.data[0].imgnames+'](' + response.data[0].imgurls + ')\r\n';
+                arr_html += '<img src="' + response.data.imgurls + '" alt="'+response.data[0].imgnames+'" title="'+response.data[0].imgnames+'" /> \r\n';
+                arr_ddcode +='[img]'+response.data[0].imgurls+'[/img]';
             }
             if(urltypes==1){
                 $("#urls").text(arr_url);
             }else if(urltypes==2){
                 $("#urls").text(arr_markdown);
-            }else{
+            }else if(urltypes==3){
                 $("#urls").text(arr_html);
+            }else{
+                $("#urls").text(arr_ddcode);
             }
         });
 
@@ -279,6 +285,7 @@ function d(val) {return val+parseInt('3e7',16);}
         });
         }else{
             $('#urlsc').html('<a style="color: #4ebd87;font-size: 0.9em;cursor:pointer;font-weight: bold;">已禁止游客上传,请登陆后使用</a>')
+            return;
         }
         // 当有文件添加进来时执行，负责view的创建
         function addFile( file ) {

@@ -36,13 +36,13 @@ public class FTPImageupload {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
-                file = changeFile(entry.getValue());
-                String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
+                file = SetFiles.changeFile(entry.getValue());
+                String userkey =username + "/"+ uuid+times + "." + entry.getKey();
                 if (flag) {
                     ftps.upload(file, File.separator+userkey, "");
                     ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
+                    returnImage.setImgname(userkey);//entry.getValue().getOriginalFilename()
+                    returnImage.setImgurl(key.getRequestAddress() + "/"+ userkey);
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                     if(setday>0) {
                         String deleimg = DateUtils.plusDay(setday);
@@ -83,16 +83,16 @@ public class FTPImageupload {
     }
 
     // 转换文件方法
-    private File changeFile(MultipartFile multipartFile) throws Exception {
-        // 获取文件名
-        String fileName = multipartFile.getOriginalFilename();
-        // 获取文件后缀
-        String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // todo 修改临时文件文件名
-        File file = File.createTempFile(fileName, prefix);
-        multipartFile.transferTo(file);
-        return file;
-    }
+//    private File changeFile(MultipartFile multipartFile) throws Exception {
+//        // 获取文件名
+//        String fileName = multipartFile.getOriginalFilename();
+//        // 获取文件后缀
+//        String prefix = fileName.substring(fileName.lastIndexOf("."));
+//        // todo 修改临时文件文件名
+//        File file = File.createTempFile(fileName, prefix);
+//        multipartFile.transferTo(file);
+//        return file;
+//    }
 
     //初始化FTP对象存储
     public static Integer Initialize(Keys k) {
@@ -152,7 +152,7 @@ public class FTPImageupload {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            file = SetFiles.changeFile(entry.getValue());
             String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
             ftps.mkDir(File.separator+username);
             if (flag) {

@@ -20,7 +20,7 @@ public interface ImgMapper {
 
     Integer counts(@Param("userid") Integer userid);
 
-    Integer setabnormal(@Param("imgname") String imgname,@Param("abnormal") String abnormal);
+    Integer setImg(Images images);
 
     Integer deleimgname(@Param("imgname") String imgname);
     Integer deleall(@Param("id") Integer id);
@@ -28,4 +28,10 @@ public interface ImgMapper {
     List<Images> gettimeimg(@Param("time") String time);
 
     Integer getusermemory(@Param("userid") Integer userid);
+
+    Integer md5Count(@Param("md5key") String md5key);
+
+    Images selectImgUrlByMD5(@Param("md5key") String md5key);
+
+
 }

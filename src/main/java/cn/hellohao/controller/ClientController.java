@@ -4,6 +4,7 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.*;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,7 @@ public class ClientController {
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         if (uploadConfig.getApi() == 1) {
             if (email != null && pass != null) {
-                Integer ret = userService.login(email, Base64Encryption.encryptBASE64(pass.getBytes()));
+                Integer ret = userService.login(email, Base64Encryption.encryptBASE64(pass.getBytes()),null);
                 if (ret > 0) {
                     User user = userService.getUsers(email);
                     if (user.getIsok() == 1) {
@@ -129,7 +130,7 @@ public class ClientController {
                             } else if (key.getStorageType() == 4) {
                                 m = kodoImageupload.clientuploadKODO(map, userpath, uploadConfig);
                             } else if (key.getStorageType() == 5) {
-                                m2 = LocUpdateImg.clientuploadFTP(map, userpath, uploadConfig);
+                                m2 = LocUpdateImg.clientLocUpdateImg(map, userpath, uploadConfig);
                             } else if (key.getStorageType() == 6) {
                                 m = cosImageupload.clientuploadCOS(map, userpath, uploadConfig);
                             } else if (key.getStorageType() == 7) {
@@ -232,7 +233,7 @@ public class ClientController {
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         if (uploadConfig.getApi() == 1) {
             if (email != null && pass != null) {
-                Integer ret = userService.login(email, Base64Encryption.encryptBASE64(pass.getBytes()));
+                Integer ret = userService.login(email, Base64Encryption.encryptBASE64(pass.getBytes()),null);
                 if (ret > 0) {
                     User u = userService.getUsers(email);
                     Config config = configService.getSourceype();//查询当前系统使用的存储源类型。
@@ -470,7 +471,7 @@ Print.Normal(resultBean.toString());
     public String login( HttpSession httpSession, String email, String password) {
         JSONArray jsonArray = new JSONArray();
         String basepass = Base64Encryption.encryptBASE64(password.getBytes());
-        Integer ret = userService.login(email, basepass);
+        Integer ret = userService.login(email, basepass,null);
         if (ret > 0) {
             User user = userService.getUsers(email);
             if (user.getIsok() == 1) {
@@ -505,5 +506,29 @@ Print.Normal(resultBean.toString());
         Integer count = domainService.getDomain(domain);
         return count.toString();
     }
+
+    @GetMapping("/getNoticeText")
+    @ResponseBody
+    public String getNoticeText() {
+        Msg msg = new Msg();
+        return noticeService.getNotice();
+    }
+
+    @GetMapping("/getNotice")
+    @ResponseBody
+    public Msg getNotice() {
+        Msg msg = new Msg();
+        String url = "http://tc.hellohao.cn/getNoticeText";
+        if(TestUrl.testUrlWithTimeOut(url,2000)){
+            String urls =url;
+            msg.setData(HttpUtil.get(urls));
+        }else{
+            msg.setData("暂无公告");
+        }
+        return msg;
+    }
+
+
+
 
 }

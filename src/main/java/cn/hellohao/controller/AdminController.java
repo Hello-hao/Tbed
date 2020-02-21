@@ -3,6 +3,7 @@ package cn.hellohao.controller;
 import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
+import cn.hellohao.service.impl.AlbumServiceI;
 import cn.hellohao.service.impl.ImgServiceImpl;
 import cn.hellohao.service.impl.UserServiceImpl;
 import cn.hellohao.utils.*;
@@ -45,7 +46,12 @@ public class AdminController {
     private UploadConfigService uploadConfigService;
     @Autowired
     private CodeService codeService;
-
+    @Autowired
+    private ImgAndAlbumService imgAndAlbumService;
+    @Autowired
+    private AlbumService albumService;
+    @Autowired
+    AlbumServiceI albumServiceI;
 
     @RequestMapping(value = "/goadmin")
     public String goadmin1(HttpSession session, Model model, HttpServletRequest request) {
@@ -147,8 +153,9 @@ public class AdminController {
         if(uploadConfig.getIsupdate()!=1){
             jsonObject.put("VisitorUpload", 0);//是否禁用了游客上传
         }else{
+            Integer temp = imgService.getusermemory(0);
             jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
-            jsonObject.put("UsedSize", (imgService.getusermemory(0)/1024));//访客已用大小
+            jsonObject.put("UsedSize", (temp == null ? 0 : temp/1024));//访客已用大小
             jsonObject.put("VisitorMemory", uploadConfig.getVisitormemory());//访客共大小
         }
         return jsonObject.toString();
@@ -216,7 +223,7 @@ public class AdminController {
 
     @PostMapping("/deleimg")
     @ResponseBody
-    public String deleimg(HttpSession session, Integer id, Integer sourcekey) {
+    public String deleimg(HttpSession session, Integer id, Integer sourcekey,String imgname) {
         JSONObject jsonObject = new JSONObject();
         User u = (User) session.getAttribute("user");
         Images images = imgService.selectByPrimaryKey(id);
@@ -248,11 +255,13 @@ public class AdminController {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
             Integer ret = imgService.deleimg(id);
+            if(ret>0){ imgAndAlbumService.deleteImgAndAlbum(imgname);}
             Integer count = 0;
             if (ret > 0) {
                 jsonObject.put("usercount", imgService.countimg(u.getId()));
                 jsonObject.put("count", imgService.counts(null));
                 count = 1;
+                imgAndAlbumService.deleteImgAndAlbum(imgname);//关联表删除关于这张照片的所有记录
             } else {
                 count = 0;
             }
@@ -265,15 +274,15 @@ public class AdminController {
 
     @PostMapping("/deleallimg")
     @ResponseBody
-    public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids) {
+    public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids,@RequestParam("sources[]") Integer[] sources,
+                             @RequestParam("imgnames[]") String[] imgnames) {
         JSONObject jsonObject = new JSONObject();
         Integer v = 0;
         ImgServiceImpl de = new ImgServiceImpl();
         User u = (User) session.getAttribute("user");
         Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         for (int i = 0; i < ids.length; i++) {
-            Images images = imgService.selectByPrimaryKey(ids[i]);
-            Keys key = keysService.selectKeys(images.getSource());
+            Keys key = keysService.selectKeys(sources[i]);
             Boolean b =false;
             if(Sourcekey==5){
                 b =true;
@@ -282,19 +291,19 @@ public class AdminController {
             }
             if(b){
                 if (key.getStorageType() == 1) {
-                    de.delect(key, images.getImgname());
+                    de.delect(key, imgnames[i]);
                 } else if (key.getStorageType() == 2) {
-                    de.delectOSS(key, images.getImgname());
+                    de.delectOSS(key, imgnames[i]);
                 } else if (key.getStorageType() == 3) {
-                    de.delectUSS(key, images.getImgname());
+                    de.delectUSS(key, imgnames[i]);
                 } else if (key.getStorageType() == 4) {
-                    de.delectKODO(key, images.getImgname());
+                    de.delectKODO(key, imgnames[i]);
                 } else if (key.getStorageType() == 5) {
-                    LocUpdateImg.deleteLOCImg(images.getImgname());
+                    LocUpdateImg.deleteLOCImg(imgnames[i]);
                 }else if (key.getStorageType() == 6) {
-                    de.delectCOS(key, images.getImgname());
+                    de.delectCOS(key, imgnames[i]);
                 }else if (key.getStorageType() == 7) {
-                    de.delectFTP(key, images.getImgname());
+                    de.delectFTP(key, imgnames[i]);
                 }else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }
@@ -303,6 +312,7 @@ public class AdminController {
                     v = 0;
                 } else {
                     v = 1;
+                    imgAndAlbumService.deleteImgAndAlbum(imgnames[i]);//关联表删除关于这张照片的所有记录
                 }
             }else {
                 v = 0;
@@ -394,6 +404,63 @@ public class AdminController {
     @ResponseBody
     public Images selectByFy(@PathVariable("id") Integer id) {
         return imgService.selectByPrimaryKey(id);
+    }
+
+
+    @RequestMapping(value = "/albumlist")
+    public String albumlist(HttpSession session, Model model) {
+        Config config = configService.getSourceype();
+        User u = (User) session.getAttribute("user");
+        model.addAttribute("config", config);
+        model.addAttribute("level", u.getLevel());
+        model.addAttribute("email", u.getEmail());
+        model.addAttribute("loginid", 100);
+
+        return "admin/albumlist";
+    }
+
+    @RequestMapping("/getAlbumURLList")
+    @ResponseBody
+    public Map<String, Object> getAlbumURLList (HttpSession session,@RequestParam(required = false, defaultValue = "1") int page,
+    @RequestParam(required = false) int limit,Album album){
+        User u = (User) session.getAttribute("user");
+        PageHelper.startPage(page, limit);
+        List<Album>  list = null;
+        if (u.getLevel() == 2) {
+            album.setUserid(null);
+            list = albumServiceI.selectAlbumURLList(album);
+            PageInfo<Album> rolePageInfo = new PageInfo<>(list);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("code", 0);
+            map.put("msg", "");
+            map.put("count", rolePageInfo.getTotal());
+            map.put("data", rolePageInfo.getList());
+            return map;
+        } else {
+            album.setUserid(u.getId());
+            list = albumServiceI.selectAlbumURLList(album);
+            PageInfo<Album> rolePageInfo = new PageInfo<>(list);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("code", 0);
+            map.put("msg", "");
+            map.put("count", rolePageInfo.getTotal());
+            map.put("data", rolePageInfo.getList());
+            return map;
+        }
+    }
+
+    @RequestMapping("/delAlbum")
+    @ResponseBody
+    public Integer delAlbum(String albumkey){
+        Integer ret = albumServiceI.delete(albumkey);
+        return ret;
+    }
+
+    @RequestMapping("/delAlbumAll")
+    @ResponseBody
+    public Integer delAlbumAll( @RequestParam("albumkeyArr[]") String[] albumkeyArr ){
+        Integer ret = albumServiceI.deleteAll(albumkeyArr);
+        return ret;
     }
 
 

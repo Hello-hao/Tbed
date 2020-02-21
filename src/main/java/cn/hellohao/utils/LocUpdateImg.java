@@ -24,18 +24,19 @@ public class LocUpdateImg {
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                String uuid = "TOIMG"+UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 // 上传文件流。
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                File dest = new File(filePath + username + File.separator+ uuid+times + "." + entry.getKey());
+                System.out.println("待上传的图片："+username + "/" + uuid+times + "N." + entry.getKey());
+                File dest = new File(filePath + username + File.separator+ uuid+times + "N." + entry.getKey());
                 if (!dest.getParentFile().exists()) {
                     dest.getParentFile().mkdirs();
                 }
                 try {
                     MultipartFile multipartFile = entry.getValue();
-                    FileInputStream fileInputStream = (FileInputStream) multipartFile.getInputStream();
+                    //FileInputStream fileInputStream = (FileInputStream) multipartFile.getInputStream();
+                    InputStream fileInputStream = (InputStream)multipartFile.getInputStream();
                     BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(dest));
                     byte[] bs = new byte[1024];
                     int len;
@@ -45,12 +46,12 @@ public class LocUpdateImg {
                     bos.flush();
                     bos.close();
                     ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
+                    returnImage.setImgname(username + "/" +uuid+times + "N." + entry.getKey());//entry.getValue().getOriginalFilename()
+                    returnImage.setImgurl(username + "/" + uuid+times + "N." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                     if(setday>0) {
                         String deleimg = DateUtils.plusDay(setday);
-                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "5");
+                        DeleImg.charu(username + "/" + uuid + times + "N." + entry.getKey() + "|" + deleimg + "|" + "5");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -88,7 +89,7 @@ public class LocUpdateImg {
     /**
      * 客户端接口
      * */
-    public static Map<ReturnImage, Integer> clientuploadFTP(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) {
+    public static Map<ReturnImage, Integer> clientLocUpdateImg(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) {
         String filePath =File.separator + "HellohaoData" + File.separator;
         File file = null;
         Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
@@ -116,7 +117,7 @@ public class LocUpdateImg {
                     bos.close();
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
                     returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
-                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize())/1024);
                 } catch (IOException e) {
                     e.printStackTrace();
                     System.err.println("上传失败");

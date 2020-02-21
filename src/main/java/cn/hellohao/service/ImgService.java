@@ -18,7 +18,7 @@ public interface ImgService {
 
     Integer counts(Integer userid);
 
-    Integer setabnormal(String imgname,String abnormal);
+    Integer setImg(Images images);
 
     Integer deleimgname(String imgname);
 
@@ -27,4 +27,9 @@ public interface ImgService {
     List<Images> gettimeimg(String time);
 
     Integer getusermemory(Integer userid);
+
+    Integer md5Count(String md5key);
+
+    Images selectImgUrlByMD5(String md5key);
+
 }

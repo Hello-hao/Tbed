@@ -6,6 +6,7 @@ import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.DateUtils;
 import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.ImgUrlUtil;
+import cn.hellohao.utils.SetFiles;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.google.gson.Gson;
@@ -42,12 +43,12 @@ public class KODOImageupload {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
-                file = changeFile(entry.getValue());
+                file = SetFiles.changeFile(entry.getValue());
                 try {
                     Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
                     DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
                     ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
+                    returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
                     if(setday>0) {
@@ -97,16 +98,16 @@ public class KODOImageupload {
     }
 
     // 转换文件方法
-    private File changeFile(MultipartFile multipartFile) throws Exception {
-        // 获取文件名
-        String fileName = multipartFile.getOriginalFilename();
-        // 获取文件后缀
-        String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // todo 修改临时文件文件名
-        File file = File.createTempFile(fileName, prefix);
-        multipartFile.transferTo(file);
-        return file;
-    }
+//    private File changeFile(MultipartFile multipartFile) throws Exception {
+//        // 获取文件名
+//        String fileName = multipartFile.getOriginalFilename();
+//        // 获取文件后缀
+//        String prefix = fileName.substring(fileName.lastIndexOf("."));
+//        // todo 修改临时文件文件名
+//        File file = File.createTempFile(fileName, prefix);
+//        multipartFile.transferTo(file);
+//        return file;
+//    }
 
     //初始化
     public static Integer Initialize(Keys k) {
@@ -147,7 +148,7 @@ public class KODOImageupload {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            file = SetFiles.changeFile(entry.getValue());
             System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
             try {
                 ReturnImage returnImage = new ReturnImage();

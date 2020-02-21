@@ -272,28 +272,29 @@
             if(StorageType==4){Endpoint = $("#Endpoint2").val();}else{Endpoint = $("#Endpoint").val();}
         }
         if($("#StorageType").val()==5){
-            $.ajax({
-                type: "POST",
-                url: "/admin/root/updatekey",
-                data: {
-                    AccessKey: 0,
-                    AccessSecret: 0,
-                    Endpoint: 0,
-                    Bucketname: 0,
-                    RequestAddress: 0,
-                    StorageType: 5
-                },
-                dataType: "json",
-                success: function (data) {
-                    if (data > 0) {
-                        layer.msg("保存成功", {icon: 1});
-                    } else if(data==-1){
-                        layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
-                    }else{
-                        layer.msg("保存失败", {icon: 2});
-                    }
-                }
-            });
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/admin/root/updatekey",
+            //     data: {
+            //         AccessKey: 0,
+            //         AccessSecret: 0,
+            //         Endpoint: 0,
+            //         Bucketname: 0,
+            //         RequestAddress: 0,
+            //         StorageType: 5
+            //     },
+            //     dataType: "json",
+            //     success: function (data) {
+            //         if (data > 0) {
+            //             layer.msg("保存成功", {icon: 1});
+            //         } else if(data==-1){
+            //             layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+            //         }else{
+            //             layer.msg("保存失败", {icon: 2});
+            //         }
+            //     }
+            // });
+            layer.msg("本都存储不需要保存配置", {icon: 4});
         }else if($("#StorageType").val()==7){
             if(AccessKey!="" && AccessSecret!=""  &&Endpoint!="" && RequestAddress!="" && StorageType!=""){
                 $.ajax({
@@ -321,8 +322,7 @@
             }else{
                 layer.msg("有参数不正确，请检查", {icon: 2});
             }
-        }
-        else{
+        }else{
             if(AccessKey!="" && AccessSecret!="" &&Endpoint!="" &&  Bucketname!="" && RequestAddress!="" && StorageType!=""){
                 $.ajax({
                     type: "POST",
