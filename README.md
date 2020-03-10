@@ -41,7 +41,7 @@
 
 ## 系统预览
 
-![Hellohao.png](https://hellohao.nos-eastchina1.126.net/githubimg/themes.png)
+![Hellohao.png](http://cdn.wwery.com/Hellohao/f7b030310035310.png)
 
 ![Hellohao2.png](http://cdn.wwery.com/Hellohao/eeeed0825062727.png)
 
