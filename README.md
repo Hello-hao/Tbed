@@ -1,10 +1,10 @@
-# Hellohao图床 - 全新响应式UI
+# Hellohao图床 - 强大的图片托管服务程序
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
-> 这是一个基于多家对象存储源的SpringBoot开源图床项目。
+> 这是一个基于多家对象存储源的SpringBoot开源图片托管程序。
 > 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`等多家对象存储.
 > 后台对用户管理。
 > 支持配置多家存储源。
@@ -13,6 +13,7 @@
 
 ## 主要功能支持：
 
+- 多主题支持：炫酷壁纸、简约蓝白
 - 支持 图片拖拽、截图软件直接(Ctrl+V)和图片URL地址上传。
 - 支持对接本地、网易、阿里、又拍、七牛、腾讯、FTP等各大对象存储平台。
 - 支持图片定期暂存（到期自动删除）
@@ -40,9 +41,7 @@
 
 ## 系统预览
 
-![Hellohao.png](http://cdn.wwery.com/Hellohao/6071c0825062730.png)
-
-![Hellohao2.png](http://cdn.wwery.com/Hellohao/eeeed0825062727.png)
+![Hellohao.png](http://cdn.wwery.com/Hellohao/f7b030310035310.png)
 
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/c208e0825054822.png)
 ![图床后台管理2.png](http://cdn.wwery.com/Hellohao/6c7690825054822.png)
@@ -51,35 +50,19 @@
 
 ## 更新日志
 
-**2019-12-20**
+**2020-03-09**
 
-√ 重点：添加画廊分享模式
-(用户可把自己当前上传的图片以图片集的形式批量分享给好友)
+1.新增主题 “简约蓝白”
 
-√ 延长cookies有效期(3个月)，常用设备无需经常登录。
+2.修复url上传不成功
 
-√ 添加精简首页半透明遮罩。页面更清晰。
+3.优化程序内部文件处理逻辑
 
-√ 修复API接口文件大小计算异常。
+4.修复画廊管理列表不显示用户名问题 
 
-√ 增加论坛引用图片格式。
+5.修复画廊列表显示所有数据问题。
 
-√ 修改部分页面弹窗样式。
-
-
-#### 修复
-
-修复上传时总是提示非法调用问题
-修复系统部署的严重BUG
-修复上传者IP地址显示准确问题
-修复注册用户BUG
-
-#### 注意：
-
-- 如果你的图床已经在使用了。直接执行 `patch.sql` 补丁sql即可,不用清空之前的数据。
-- 如果你是2019年09月份之前的版本，或者第一次安装本程序需要执行 `picturebed.sql` 完成sql文件
-
-
+6.优化N项小问题，不一一列举。
 
 ## 运行环境
 
