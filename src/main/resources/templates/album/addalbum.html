@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>创建画廊</title>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{/layui/layui/layui.js}"></script>
+    <style>
+        ul.imglist{ /*margin:0 auto; width:536px;*/width:100%; overflow:hidden}
+        ul.imglist li{ float:left; padding:4px 5px; width:160px}
+        ul.imglist li img{ display:block; width:160px; height:90px;border-radius: 3px;}
+        ul.imglist li span{ display:block; width:100%; height:30px; line-height:30px; background:#F6F6F6}
+        .explain{
+            width: 100%;
+            height: 20px;
+            line-height: 20px ;
+            /*border: 1px #b3b3b3 solid;*/
+            /*border-radius: 2px;*/
+            /*color: #4c4a48;*/
+            border-radius: 4px;
+            border: 1px solid #dcdfe6;
+            box-sizing: border-box;
+            color: #606266;
+            padding: 0 15px;
+            font-size: small;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-main" style="width: 80%;margin-top: 50px;">
+    <form class="layui-form layui-form-pane" action="">
+        <br/>
+        <div class="layui-form-item">
+            <label class="layui-form-label">画廊标题</label>
+            <div class="layui-input-block">
+                <input id="albumtitle" type="text" name="title" autocomplete="off"  class="layui-input" placeholder="画廊描述(小于50字符)" />
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">访问密码</label>
+            <div class="layui-input-block">
+                <input id="password" type="text" name="title" autocomplete="off"  class="layui-input" placeholder="密码可留空(小于10个字)" />
+            </div><span id="tishi" style="color: #DAA5A6;display: none;">用户名只可是英文或数字</span>
+        </div>
+        <div class="layui-form-item">
+        </div>
+        <ul class="imglist">
+
+        </ul>
+        <br/>
+        <br/>
+        <div class="layui-form-item">
+            <a class="layui-btn" lay-submit="" style="width: 100%;" lay-filter="demo2" onclick="commit()">创建</a>
+        </div>
+    </form>
+</div>
+<input id="urltype" type="hidden" th:value="${urltype}" />
+<input id="sourcekey" type="hidden" th:value="${sourcekey}" />
+
+<script>
+    var arr = new Array();
+    var layer;
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form;
+        layer = layui.layer;
+
+        $(function () {
+            var urlArr = window.parent.arr_url;
+            if(urlArr=="" || urlArr==undefined){
+                parent.layer.msg('请先上传图片后再生成画廊', {icon: 2});
+                parent.layer.close(window.parent.win);
+            }else{
+                imgList(urlArr)
+            }
+        })
+    });
+
+    function imgList(urlArr){
+        arr=urlArr.split('\r\n');
+        var temp = arr.length-1;
+        $('.imglist').html('');
+        var body = '';
+        for(var i = 0;i<temp;i++){
+            var filename = arr[i].substring(arr[i].lastIndexOf('/')+1);
+
+
+
+            body +='<li style="border-radius: 5px;border: 1px solid #ebeef5;box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);"><img src="'+arr[i]+'" /><input type="hidden" value="'+arr[i]+'" class="imgsurl" /><span><input  type="text" placeholder="图片说明（可留空）" class="explain" id="imgs'+i+'" /></span></li>';
+        }
+        $('.imglist').append(body);
+    }
+
+    function commit() {
+        var albumtitle = $('#albumtitle').val();
+        var password = $('#password').val();
+        if(albumtitle==null || albumtitle==""){
+            parent.layer.msg('画廊标题不能为空', {icon: 7});
+            return false;
+        }
+        if(albumtitle.length>50){
+            parent.layer.msg('画廊标题太长啦，修改一下吧', {icon: 7});
+            return false;
+        }
+        if(password!=null || password!=""){
+            if(password.length>10){
+                parent.layer.msg('密码太长啦，修改一下吧', {icon: 7});
+                return false;
+            }
+        }
+        var imgarr = new Array();
+        var aboutarr = new Array();
+        var urltype = $('#urltype').val();
+        var sourcekey = $('#sourcekey').val();
+        var tmpvar = 0;
+        if(urltype==2){
+            tmpvar = 2;
+        }
+        // if(sourcekey==5){
+        //     tmpvar = 4;
+        // }
+        $('.imgsurl').each(function(i,n){
+            var url = $(n).val();
+            if(url.indexOf("http://") >= 0 ||  url.indexOf("https://") >= 0 ) {
+
+                var temparr= new Array();
+                temparr = url.split("/");
+                var imgname = "";
+                // var arrs=temparr.slice(3);
+                // imgarr.push(arrs[arrs.length-2]+"/"+arrs[arrs.length-1]);
+
+                for(var i=tmpvar;i<temparr.length;i++){
+                    // if(i<temparr.length-1){
+                    //     imgname+=temparr[i]+'/';
+                    // }else{
+                    //     imgname+=temparr[i];
+                    // }
+                    if(i>2 && i!=(temparr.length-1)){
+                        imgname+=temparr[i]+"/";
+                    }
+                    if(i>2 && i==(temparr.length-1)){
+                        imgname+=temparr[i];
+                    }
+
+                }
+                imgarr.push(imgname);
+            }else{
+                url = "http://"+url;
+                var temparr= new Array();
+                temparr = url.split("/");
+                var imgname = "";
+                // var arrs=temparr.slice(3);
+                // imgarr.push(arrs[arrs.length-2]+"/"+arrs[arrs.length-1]);
+                for(var i=tmpvar;i<temparr.length;i++){
+                    if(i<temparr.length-1){
+                        imgname+=temparr[i]+'/';
+                    }else{
+                        imgname+=temparr[i];
+                    }
+                }
+                imgarr.push(imgname);
+            }
+        });
+
+        //根据地址获取图片的信息
+        function setimgurl(){
+            for(var i=3;i<arr.length;i++){
+                if(i==arr.length){
+                    b+=arr[i];
+                }else{
+                    b+=arr[i]+'/'
+                }
+            }
+        }
+
+        $('.explain').each(function(i,n){
+            aboutarr.push($(n).val());
+        });
+        var albumtitle = $('#albumtitle').val();
+        var password = $('#password').val();
+        $.ajax({
+            type: "POST",
+            url: "/SaveForAlbum",
+            dataType: "json",
+            data: {imgarr:imgarr,aboutarr:aboutarr,albumtitle:albumtitle,password:password},
+            success: function (data) {
+                var code = data.code;
+                if(code=='200'){
+                    window.parent.albumUrl = data.data;
+                    window.parent.albumKey = password;
+                    //layer.msg('画廊创建完成', {icon: 1});
+                    parent.Popup(data.data,password);
+                    //parent.layer.close(window.parent.win);
+                }else{
+                    layer.alert(data.info+'错误代码：'+code);
+                }
+            }
+        });
+    }
+
+
+</script>
+</body>
+</html>

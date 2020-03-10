@@ -184,8 +184,12 @@ public class AdminController {
         if (u.getLevel() > 1) {
             if (selecttype == 1) {
                 images = imgService.selectimg(img);
-            } else {
+            } else if(selecttype == 2) {
                 img.setUserid(u.getId());
+                images = imgService.selectimg(img);
+            }else{
+                img.setUserid(u.getId());
+                img.setSelecttype(3);
                 images = imgService.selectimg(img);
             }
         } else {
@@ -419,7 +423,7 @@ public class AdminController {
         return "admin/albumlist";
     }
 
-    @RequestMapping("/getAlbumURLList")
+    @PostMapping("/getAlbumURLList")
     @ResponseBody
     public Map<String, Object> getAlbumURLList (HttpSession session,@RequestParam(required = false, defaultValue = "1") int page,
     @RequestParam(required = false) int limit,Album album){

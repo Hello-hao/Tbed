@@ -21,23 +21,34 @@
         LEFT JOIN user b ON a.userid = b.id
         where
         1=1
-        <if test="userid != null">
-            and
-            userid = #{userid}
-        </if>
         <if test="source != null">
             and
-            source = #{source}
+            a.source = #{source}
         </if>
         <if test="starttime != null">
             and
-            updatetime &gt;= #{starttime}
+            a.updatetime &gt;= #{starttime}
         </if>
         <if test="stoptime != null">
             and
-            updatetime &lt;= #{stoptime}
+            a.updatetime &lt;= #{stoptime}
         </if>
-        order by id desc
+
+        <if test="userid != null">
+            <choose>
+                <when test="selecttype != null">
+                    and
+                    a.userid not in (#{userid})
+                </when>
+                <otherwise>
+                    and
+                    a.userid = #{userid}
+                </otherwise>
+            </choose>
+        </if>
+
+
+        order by a.id desc
     </select>
     <!-- 此用户下总数 -->
     <select id="countimg" parameterType="integer" resultType="integer">

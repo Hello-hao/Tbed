@@ -236,20 +236,43 @@ function d(val) {return val+parseInt('3e7',16);}
                     layer.msg("你目前不能上传图片,请联系管理员", {icon: 2});
                 });
             }else{
-                arr_url += response.data[0].imgurls + '\r\n';
-                arr_markdown += '!['+response.data[0].imgnames+'](' + response.data[0].imgurls + ')\r\n';
-                arr_html += '<img src="' + response.data.imgurls + '" alt="'+response.data[0].imgnames+'" title="'+response.data[0].imgnames+'" /> \r\n';
-                arr_ddcode +='[img]'+response.data[0].imgurls+'[/img]';
+                $("#updateurl").show();
+                    arr_url +=response.data[0].imgurls + '\r\n';
+                if(theme==1){
+                    //arr_url += response.data[0].imgurls + '\r\n';
+                    arr_markdown += '!['+response.data[0].imgnames+'](' + response.data[0].imgurls + ')\r\n';
+                    arr_html += '<img src="' + response.data[0].imgurls + '" alt="'+response.data[0].imgnames+'" title="'+response.data[0].imgnames+'" /> \r\n';
+                    arr_ddcode +='[img]'+response.data[0].imgurls+'[/img]';
+                }else{
+                    arr_imgurl += '<li onclick="copyimgurl(this)" class="copyimgurl"><span class="line"></span><i class="icon fab fa-gg"></i><p class="fontstyle" >'+response.data[0].imgurls + '</p></li>';
+                    arr_markdown += '<li onclick="copyimgurl(this)" class="copyimgurl "><span class="line"></span><i class="icon fab fa-gg"></i><p class="fontstyle">'+'!['+response.data[0].imgnames+'](' + response.data[0].imgurls + ')</p></li>';
+                    arr_html += '<li onclick="copyimgurl(this)" class="copyimgurl "><span class="line"></span><i class="icon fab fa-gg"></i><p class="fontstyle">'+'&lt;img src="' + response.data[0].imgurls + '" alt="'+response.data[0].imgnames+'" /&gt; </p></li>';
+                    arr_ddcode +='<li onclick="copyimgurl(this)" class="copyimgurl"><span class="line"></span><i class="icon fab fa-gg"></i><p class="fontstyle">'+'[img]'+response.data[0].imgurls+'[/img]</p></li>';
+                }
+
             }
-            if(urltypes==1){
-                $("#urls").text(arr_url);
-            }else if(urltypes==2){
-                $("#urls").text(arr_markdown);
-            }else if(urltypes==3){
-                $("#urls").text(arr_html);
+            if(theme==1){
+                if(urltypes==1){
+                    $("#urls").text(arr_url);
+                }else if(urltypes==2){
+                    $("#urls").text(arr_markdown);
+                }else if(urltypes==3){
+                    $("#urls").text(arr_html);
+                }else{
+                    $("#urls").text(arr_ddcode);
+                }
             }else{
-                $("#urls").text(arr_ddcode);
+                if(urltypes==1){
+                    $("#imgurls").html(arr_imgurl);
+                }else if(urltypes==2){
+                    $("#imgurls").html(arr_markdown);
+                }else if(urltypes==3){
+                    $("#imgurls").html(arr_html);
+                }else{
+                    $("#imgurls").html(arr_ddcode);
+                }
             }
+
         });
 
         // 文件上传失败，显示上传出错
@@ -284,7 +307,7 @@ function d(val) {return val+parseInt('3e7',16);}
             window.uploader = uploader;
         });
         }else{
-            $('#urlsc').html('<a style="color: #4ebd87;font-size: 0.9em;cursor:pointer;font-weight: bold;">已禁止游客上传,请登陆后使用</a>')
+            $('#urlsc').html('<a id="jyupdate">已禁止游客上传,请登陆后使用</a>')
             return;
         }
         // 当有文件添加进来时执行，负责view的创建

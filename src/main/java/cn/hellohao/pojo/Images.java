@@ -32,12 +32,15 @@ public class Images {
     private String albumtitle;
     @Length(min = 0, max = 10, message = "画廊密码不能超过10个字符")
     private String password;
+    private Integer selecttype;
 
     public Images() {
         super();
     }
 
-    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, String abnormal, Integer source, Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime, String explains, String albumtitle, String password,String md5key) {
+    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, String abnormal, Integer source,
+                  Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime,
+                  String explains, String albumtitle, String password,String md5key,Integer selecttype) {
         this.id = id;
         this.imgname = imgname;
         this.imgurl = imgurl;
@@ -55,6 +58,7 @@ public class Images {
         this.albumtitle = albumtitle;
         this.password = password;
         this.md5key = md5key;
+        this.selecttype = selecttype;
     }
 
     public Integer getId() {
@@ -192,6 +196,16 @@ public class Images {
     public void setMd5key(String md5key) {
         this.md5key = md5key;
     }
+
+    public Integer getSelecttype() {
+        return selecttype;
+    }
+
+    public void setSelecttype(Integer selecttype) {
+        this.selecttype = selecttype;
+    }
+
+
 
 }
 	

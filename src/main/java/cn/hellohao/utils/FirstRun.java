@@ -74,6 +74,11 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(sql8);
             Print.Normal("Stage 6");
         }
+        Integer ret5 = RunSqlScript.RunSelectCount(judgeTable+"'config' and column_name = 'theme'");
+        if(ret5==0){
+            RunSqlScript.RunInsert(sql9);
+            Print.Normal("Stage 7");
+        }
         RunSqlScript.RunInsert("alter table imgdata drop index index_md5key_url;");
         RunSqlScript.RunInsert(inddx_md5key);
 
@@ -93,6 +98,8 @@ public class FirstRun implements InitializingBean {
     private String sql7 = "alter table album add userid int(10)";
     //添加imgdata表字段md5key
     private String sql8 = "alter table imgdata add md5key varchar(500)";
+    private String sql9 = "ALTER TABLE config ADD theme int(4) DEFAULT '1' COMMENT '主题'  ";
+
 
     private String inddx_md5key = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( md5key,imgurl)";
 

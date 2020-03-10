@@ -222,7 +222,6 @@
                 url: "/getNotice",
                 dataType: "json",
                 success: function (data) {
-                    console.log(data);
                     $('#notice').text(data.data);
                 }
             });
@@ -445,7 +444,6 @@
                 dataType: "json",
                 data:{codestring:krm},
                 success: function (data) {
-                    console.log(data)
                     if(data.ret>0){
                         layer.msg('扩容成功，当前总空间：'+data.sizes+'M', {icon: 1});
                         setTimeout(function () { window.location.reload(); }, 2000);

@@ -45,6 +45,9 @@
             <if test="username != null">
                 `username` like '%${username}%'
             </if>
+            <if test="userid != null">
+                a.userid = #{userid}
+            </if>
         </where>
         order by a.createdate
     </select>

@@ -148,11 +148,11 @@ public class ClientController {
                                     jsonObject.put("Imgname", entry.getKey().getImgname());
                                     if (key.getStorageType() == 5) {
                                         if (config.getDomain() != null) {
-                                            jsonObject.put("Imgurl", config.getDomain() + "/links/" + entry.getKey().getImgurl());
-                                            img.setImgurl(config.getDomain() + "/links/" + entry.getKey().getImgurl());//图片链接
+                                            jsonObject.put("Imgurl", config.getDomain() + "/" + entry.getKey().getImgurl());
+                                            img.setImgurl(config.getDomain() + "/" + entry.getKey().getImgurl());//图片链接
                                         } else {
-                                            jsonObject.put("Imgurl", config.getDomain() + "/links/" + entry.getKey().getImgurl());
-                                            img.setImgurl("http://" + IPPortUtil.getLocalIP() + ":" + IPPortUtil.getLocalPort() + "/links/" + entry.getKey().getImgurl());//图片链接
+                                            jsonObject.put("Imgurl", config.getDomain() + "/" + entry.getKey().getImgurl());
+                                            img.setImgurl("http://" + IPPortUtil.getLocalIP() + ":" + IPPortUtil.getLocalPort() + "/" + entry.getKey().getImgurl());//图片链接
                                         }
                                     } else {
                                         jsonObject.put("Imgname", entry.getKey().getImgurl());
@@ -183,11 +183,11 @@ public class ClientController {
                                     jsonObject.put("Imgname", entry.getKey().getImgname());
                                     if (key.getStorageType() == 5) {
                                         if (config.getDomain() != null) {
-                                            jsonObject.put("Imgurl", config.getDomain() + "/links/" + entry.getKey().getImgurl());
-                                            img.setImgurl(config.getDomain() + "/links/" + entry.getKey().getImgurl());//图片链接
+                                            jsonObject.put("Imgurl", config.getDomain() + "/" + entry.getKey().getImgurl());
+                                            img.setImgurl(config.getDomain() + "/" + entry.getKey().getImgurl());//图片链接
                                         } else {
-                                            jsonObject.put("Imgurl", config.getDomain() + "/links/" + entry.getKey().getImgurl());
-                                            img.setImgurl("http://" + IPPortUtil.getLocalIP() + ":" + IPPortUtil.getLocalPort() + "/links/" + entry.getKey().getImgurl());//图片链接
+                                            jsonObject.put("Imgurl", config.getDomain() + "/" + entry.getKey().getImgurl());
+                                            img.setImgurl("http://" + IPPortUtil.getLocalIP() + ":" + IPPortUtil.getLocalPort() + "/" + entry.getKey().getImgurl());//图片链接
                                         }
                                     } else {
                                         jsonObject.put("Imgurl", entry.getKey().getImgurl());
@@ -491,27 +491,6 @@ Print.Normal(resultBean.toString());
     @ResponseBody
     public String notices() throws Exception {
         return "-1";//-1就是没有公告，客户端不显示
-    }
-    //主端接口
-    @PostMapping("/systemupdate")
-    @ResponseBody
-    public String sysupdate(String  dates) {
-        Integer i=dates.compareTo(systemupdate);//小于0则需要更新
-        return i.toString();
-    }
-    //主端接口
-    @PostMapping("/getdomain")
-    @ResponseBody
-    public String getdomain(String  domain) {
-        Integer count = domainService.getDomain(domain);
-        return count.toString();
-    }
-
-    @GetMapping("/getNoticeText")
-    @ResponseBody
-    public String getNoticeText() {
-        Msg msg = new Msg();
-        return noticeService.getNotice();
     }
 
     @GetMapping("/getNotice")

@@ -66,23 +66,43 @@ function shakeModal(val) {
 
     $('#loginModal .modal-dialog').addClass('shake');
     if(val==1){
-        $('#zcts').text('用户名格式不正确');
-        //$('.error').addClass('alert alert-danger').html("用户名格式不正确");
+        // $('#zcts').text('用户名格式不正确');
+        layui.use('layer', function () {
+            layer = layui.layer;
+            layer.msg("用户名格式不正确", {icon: 2});
+        });
     }else if(val==2){
-        $('#zcts').text('无效的电子邮件');
-        //$('.error').addClass('alert alert-danger').html("无效的电子邮件");
+        // $('#zcts').text('无效的电子邮件');
+        layui.use('layer', function () {
+            layer = layui.layer;
+            layer.msg("无效的电子邮件", {icon: 2});
+        });
     }else if(val==3){
-        $('#zcts').text('密码输入不一致');
-        //$('.error').addClass('alert alert-danger').html("密码输入不一致");
+        // $('#zcts').text('密码输入不一致');
+        layui.use('layer', function () {
+            layer = layui.layer;
+            layer.msg("密码输入不一致", {icon: 2});
+        });
     }else if(val==4){
-        $('#zcts').text('密码不能为空');
+        // $('#zcts').text('密码不能为空');
+        layui.use('layer', function () {
+            layer = layui.layer;
+            layer.msg("密码不能为空", {icon: 2});
+        });
     }else if(val==5){
-        $('#zcts').text('邮箱不能为空');
-        //$('.error').addClass('alert alert-danger').html("邮箱不能为空");
+        // $('#zcts').text('邮箱不能为空');
+        layui.use('layer', function () {
+            layer = layui.layer;
+            layer.msg("邮箱不能为空", {icon: 2});
+        });
     }else if(val==6){
-        $('#zcts').text('未通过验证码校验');
+        // $('#zcts').text('未通过验证码校验');
+        layui.use('layer', function () {
+            layer = layui.layer;
+            layer.msg("未通过验证码校验", {icon: 2});
+        });
     }else{
-        $('#zcts').text('');
+        //$('#zcts').text('');
     }
 
     $('input[type="password"]').val('');

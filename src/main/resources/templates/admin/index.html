@@ -97,6 +97,13 @@
                     </dl>
                     <dl class="layui-nav-child">
                         <dd>
+                            <a href="#" lay-id="12" lay-url="/admin/albumlist">
+                                <i class="layui-icon layui-icon-right"></i><cite>我的画廊</cite>
+                            </a>
+                        </dd>
+                    </dl>
+                    <dl class="layui-nav-child">
+                        <dd>
                             <a href="#" lay-id="3" lay-url="/admin/tosetuser">
                                 <i class="layui-icon layui-icon-right"></i><cite>修改密码</cite>
                             </a>
@@ -276,7 +283,6 @@ function kr() {
         dataType: "json",
         data:{codestring:krm},
         success: function (data) {
-            console.log(data)
             if(data.ret>0){
                 layer.msg('扩容成功，当前总空间：'+data.sizes+'M', {icon: 1});
             }else if(data.ret ==-1){

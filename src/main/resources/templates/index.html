@@ -132,7 +132,9 @@
 		#urls::-webkit-scrollbar-thumb {
 			background-color:#4ebd87;
 		}
-
+		#jyupdate{
+			color: #4ebd87;font-size: 0.9em;cursor:pointer;font-weight: bold;
+		}
 	</style>
 </head>
 <body class="simple" id="body">
@@ -192,7 +194,6 @@
 					</p>
 					<center>
 					<div id="countdown" class="countdown-container" style="text-align: center;">
-						<!-- days left -->
 						<br />
 						<div class="dash days_dash" style="max-width: 172px;">
 							<div class="counter">
@@ -231,12 +232,6 @@
 					<br />
 					<br />
 				</div>
-
-<!--				<footer class="navbar-fixed-bottom">-->
-<!--					<div class="container" align="center" th:utext="${config.getLinks()}">-->
-<!--&lt;!&ndash;						<p align="center">&copy; Photo album sharing from <span th:text="${webname}">hellohao</span></p>&ndash;&gt;-->
-<!--					</div>-->
-<!--				</footer>-->
 			</div>
 		</section>
 		<div class="tlinks">Collect from <a href="/" >网站建设</a></div>
@@ -260,7 +255,7 @@
 									<div class="queueList">
 										<div id="dndArea" class="placeholder">
 											<br />
-											<span class="text">您也可以尝试文件拖拽，使用QQ截屏工具，然后激活窗口后粘贴。<span id="whts" data-toggle="popover" title="Example popover" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></span>
+											<span class="text">您也可以尝试文件拖拽，使用截屏工具，然后激活窗口后粘贴。<span id="whts" data-toggle="popover" title="Example popover" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></span>
 											<br />
 											<span class="text" id="urlsc" ><a style="color: #4ebd87;font-size: 0.9em;cursor:pointer;font-weight: bold;" onclick="imgsc()">使用图片URL地址上传</a></span>
 											<div id="filePicker">
@@ -302,7 +297,7 @@
 							<button type="button" style="width: 195px;height: 36px;padding: 10px 50px;" onclick="urltype(3);"  class="button button-green button-small">HTML</button>
 							<button type="button" style="width: 195px;height: 36px;padding: 10px 50px;" onclick="urltype(4);"  class="button button-green button-small">BBCode</button>
 							<!-- New Album-->
-						
+							<button type="button" style="width: 195px;height: 36px;padding: 10px 50px;background: #FC5348;color: #FFF;" onclick="anniu();"  class="button button-green button-small">创建画廊</button>
                         </div>
 					</div>
 				</div>
@@ -407,7 +402,6 @@
 <script th:src="@{/webuploade/js/upload.js}" ></script>
 <script th:src="@{/webuploade/js/classie.js}"></script>
 <script th:src="@{/webuploade/js/modalEffects.js}" ></script>
-
 <script th:src="@{js/html5shiv.js}"></script>
 <script th:src="@{js/respond.min.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/bootstrap.min.js}"></script>
@@ -417,7 +411,6 @@
 <script th:src="@{/js/base64.min.js}"></script>
 <script th:src="@{/js/js.cookie.min.js}"></script>
 <script th:src="@{/js/hellohao.js}"></script>
-
 <script th:inline="javascript">
 	var isday = 0;
 	var verification = false;
@@ -433,12 +426,12 @@
 	var filesize = [[${filesize}]];
 	var imgcount = [[${imgcount}]];
 	var suffix= [[${suffix}]];
+	var theme = [[${config.getTheme()}]];
 	var qq ='hellohao-code-yz';
 	var layer;
 	layui.use('layer', function(){
 		layer = layui.layer;
 	});
-
 	var oDiv=document.getElementById('body');
 	var x = 10;
 	var y = 1;
@@ -473,7 +466,7 @@
 		var gg=[[${config.getNotice()}]];
 		var arr=new Array();
 		var arr2=new Array();
-//可以用字符或字符串分割
+		//可以用字符或字符串分割
 		arr=gg.split('|');
 		for(var i=0;i<arr.length;i++)
 		{arr2.push('<h2>'+arr[i]+'</h2>');}
@@ -496,337 +489,8 @@
 
 	});
 
-	function zhuce(mail, registerusername, registerpassword) {
-		if(zcverification){
-			//验证成功
-			$.ajax({
-				type: "POST",
-				url: "/user/register",
-				data: {email: mail, username: registerusername, password: registerpassword,zctmp:zctmp},
-				dataType: "json",
-				success: function (data) {
-					if (data.ret > 0) {
-						$("#zctishi").text('注册成功');
-						if (data.zctype == 1) {
-							layer.alert('注册成功，请前往邮箱激活你的账号，注意！激活邮件如果迟迟未收到，有可能在您的【垃圾箱】中。', {
-								skin: 'layui-layer-molv'
-								,closeBtn: 0
-								,anim: 1
-								,btn: ['确定']
-								,icon: 1
-								,yes:function(){
-									window.location.reload();
-								}
-							});
-						} else {
-							layer.alert('注册成功，快去登录体验吧。', {
-								skin: 'layui-layer-molv'
-								,closeBtn: 0
-								,anim: 1
-								,btn: ['确定']
-								,icon: 1
-								,yes:function(){
-									window.location.reload();
-								}
-							});
-						}
-					} else {
-						if (data.ret == -2) {
-							layer.alert('注册失败，用户名或邮箱重复且用户名只能为字母数字，请重试。', {
-								skin: 'layui-layer-molv'
-								,closeBtn: 0
-								,anim: 1
-								,btn: ['确定']
-								,icon: 2
-							});
-						} else if(data.ret == -3){
-							layer.alert('本站关闭了注册功能。', {
-								skin: 'layui-layer-molv'
-								,closeBtn: 0
-								,anim: 1
-								,btn: ['确定']
-								,icon: 2
-							});
-						}else if(data.ret == -4){
-							layer.alert('非法注册，请刷新页面后重新尝试。', {
-								skin: 'layui-layer-molv'
-								,closeBtn: 0
-								,anim: 1
-								,btn: ['确定']
-								,icon: 2
-							});
-						}else {
-							layer.alert('注册失败，请重试。', {
-								skin: 'layui-layer-molv'
-								,closeBtn: 0
-								,anim: 1
-								,btn: ['确定']
-								,icon: 2
-							});
-						}
-						setTimeout(function () {
-						}, 2000);
-					}
-					again(2);
-					$("#userzc").css('display','block');
-					$("#zctishi").css('display','none');
-				}
-			});
-		}else{
-			shakeModal(6);
-			$("#userzc").css('display','block');
-			$("#zctishi").css('display','none');
-		}
-	}
-	//登录
-	function loginAjax() {
-		var loginemail = $("#loginemail").val();
-		var loginpassword = $("#loginpassword").val();
-		if(verification){
-			//验证成功
-			$.ajax({
-				type: "POST",
-				url: "/user/login",
-				data: {email: loginemail, password: loginpassword,logotmp:logotmp},
-				dataType: "json",
-				success: function (data) {
-					$('#loginModal').modal('hide');
-					if (data == 1) {
-						//toastr.success("登录成功。");
-						//$.cookie('name_hellohaobycookie', loginemail, { expires: 90});
-						//$.cookie('pass_hellohaobycookie', loginpassword, { expires: 90});
-						//$.cookie('Hellohao_UniqueUserKey', loginpassword, { expires: 90});
-						layer.msg('登录成功', {icon: 1});
-						setTimeout(function () {
-							window.location.reload();
-						}, 1000);
-					} else {
-						dd();
-						$.cookie('name_hellohaobycookie', null);
-						$.cookie('pass_hellohaobycookie', null);
-						if (data == -1) {
-							$('#dlts').text('您的账号是未激活状态，无法登陆。');
-							//toastr.error('您的账号是未激活状态，无法登陆。');
-							layer.msg('您的账号是未激活状态，无法登陆', {icon: 4});
-							again();
-						} else if(data==-2){
-							$('#dlts').text('您的账号已被冻结。');
-							layer.msg('您的账号已被冻结', {icon: 2});
-							again(1);
-						}else if(data==-3){
-							$('#dlts').text('非法登录，请刷新页面重新尝试。');
-							layer.msg('非法登录，请刷新页面重新尝试', {icon: 2});
-							again(1);
-						}
-						else {
-							$('#dlts').text('登录失败，你的邮箱或密码不正确，请重试。');
-							layer.msg('登录失败，你的邮箱或者密码不正确，请重试', {icon: 2});
-							again(1);
-						}
-						setTimeout(function () {
-							//window.location.reload();
-						}, 2000);
-					}
-				}
-			});
-		}else{
-			$('#dlts').text('请滑动验证码进行验证，才可登录。');
-		}
-	}
-	function imgsc() {
-		var str = '输入图片URL地址：';
-		if(isday>0){
-			str = '输入图片URL地址：('+isday+'天后将会自动销毁)';
-		}
-		swal(str, {
-			content: "input",
-		})
-			.then((value) => {
-			var result =value;
-		if(result!=null && result!="" ){
-			urlimg(result);
-		}
-	});
-	}
-
-
-	function copyText() {
-		var data = data = $('#urls').val();
-		var copy = new ClipboardJS('.copytext', {
-			text: function (trigger) {
-				return  data;
-			}
-		});
-		copy.on('success', function (e) {
-			layer.msg('复制成功');
-			copy.off("success");
-		});
-		copy.on('error', function (e) {
-			layer.msg('复制失败');
-			copy.off("error");
-		});
-	}
-
-	function loadScriptString(code) {
-		var script = document.createElement("script");
-		script.type = "text/javascript";
-		try {
-			// firefox、safari、chrome和Opera
-			script.appendChild(document.createTextNode(code));
-		} catch (ex) {
-			// IE早期的浏览器 ,需要使用script的text属性来指定javascript代码。
-			script.text = code;
-		}
-		document.getElementsByTagName("head")[0].appendChild(script);
-	}
-
 	var baidu = [[${config.getBaidu()}]];
-
 	loadScriptString(baidu);
-
-	function urlimg(result) {
-		if(result) {
-			var rx=/^https?:\/\//i;
-			if(rx.test(result)==true){
-				var msgid = layer.msg('上传中..', {
-					icon: 16
-					,shade: 0.01
-				});
-				qq = GetDateStr(new Date());
-				$('#loadingModal').modal({backdrop: 'static', keyboard: false,upurlk:qq});
-				$.ajax({
-					type: "POST",
-					url: "/upurlimg",
-					dataType: "json",
-					data: {imgurl: result,setday:isday,upurlk:qq},
-					success: function (data) {
-						layer.close(msgid);
-						for(var i=0;i<data.length;i++){
-							if(data[i]==-1){
-								$('#loadingModal').modal('hide');
-								swal('上传失败', '未配置存储源，请先后台配置存储源');
-							}
-							else if(data[i]==-2){
-								$('#loadingModal').modal('hide');
-								swal('上传失败', '图片太大或不存在');
-							}
-							else if(data[i]==-3){
-								$('#loadingModal').modal('hide');
-								swal('上传失败', '文件类型不符合要求');
-							}
-							else if(data[i]==-4){
-								$('#loadingModal').modal('hide');
-								swal('上传失败', '该文件不支持上传');
-							}else if(data[i]==-5){
-								$('#loadingModal').modal('hide');
-								swal('上传失败，可用空间不足');
-							}else if(data[i]==403){
-								$('#loadingModal').modal('hide');
-								swal('非法调用，请刷新页面后重试');
-                            }else if(data[i]==911){
-								$('#loadingModal').modal('hide');
-								swal('你目前不能上传图片,请联系管理员');
-							}else{
-								$('#loadingModal').modal('hide');
-								swal('上传成功', '该图片链接已成功上传');
-								$("#address").css('display', 'block');
-								arr_url += data[i] + '\r\n';
-								arr_markdown += '![ ](' + data[i] + ')\r\n';
-								arr_html += '<img src="' + data[i] + '" alt="Image" title="Image" /> \r\n';
-								arr_ddcode +='[img]'+data[i]+'[/img]\r\n';
-							}
-							if(urltypes==1){
-								$("#urls").text(arr_url);
-							}else if(urltypes==2){
-								$("#urls").text(arr_markdown);
-							}else if(urltypes==3){
-								$("#urls").text(arr_html);
-							}else{
-								$("#urls").text(arr_ddcode);
-							}
-						}
-					}
-				});
-			}else{layer.close(msgid);Popups('网址格式错误','网址必须以http(s)://开头。','error');}
-		}
-	}
-
-	function Popups(str1,str2,types) {
-		swal({
-			title: str1,
-			text: str2,
-			type: types,
-			showCancelButton: false,//true显示两个按钮
-			confirmButtonColor: "#A5DC86",
-			confirmButtonText: "知道了",
-			closeOnConfirm: true,
-			closeOnCancel: false
-		});
-	}
-
-	function urltype(urltypes){
-		if(urltypes==1){
-			$("#urls").text(arr_url);
-		}else if(urltypes==2){
-			$("#urls").text(arr_markdown);
-		}else if(urltypes==3){
-			$("#urls").text(arr_html);
-		}else{
-			$("#urls").text(arr_ddcode);
-		}
-	}
-	//获取当前时间
-	function clock(){
-		now = new Date();
-		year = now.getFullYear();
-		month = now.getMonth() + 1;
-		day = now.getDate();
-		today = ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'];
-		week = today[now.getDay()];
-		hour = now.getHours();
-		min = now.getMinutes();
-		sec = now.getSeconds();
-		if (hour < 10) {
-			hour = "0" + hour;
-		}
-		if (min < 10) {
-			min = "0" + min;
-		}
-		if (sec < 10) {
-			sec = "0" + sec;
-		}
-		if (day < 10) {
-			day = "0" + day;
-		}
-		//$("#nian").html(year);
-		//$("#yue").html(month);
-		$("#ri").html(day);
-		$("#shi").html(hour);
-		$("#fen").html(min);
-		$("#miao").html(sec);
-	}
-
-	function xiazai(){
-		swal({
-			title: "即将下载客户端",
-			text: "客户端目前持支Windows系统，其他系统请勿下载。",
-			icon: "success",
-			buttons: true,
-			buttons: ["取消", "下载"],
-			dangerMode: false,
-		})
-				.then((value) => {
-			if (value) {
-				window.open("http://img.wwery.com/HellohaoApps/PC/Hellohao%E5%9B%BE%E5%BA%8A_beta.exe");
-			} else {
-			}
-		});
-	}
-	//回车登录
-	function keyLogin(){
-		if (event.keyCode==13)
-			document.getElementById("dl").click();
-	}
 
 	(function ($) {
 		var backtype = [[${config.getBacktype()}]];
@@ -971,50 +635,63 @@
 	}
 
 	function setday() {
-	swal("输入图片期限（天）,到期自动销毁图片,最高365天：\n(输入0为永久保存)", {
-		content: "input",
-		// text: "单位名称 <input type='text' name='myinput' id='jfdw'>"
-		// 		+"文件 <input type='text' name='myinput' id='jfwj'>"
-		// 		+"文号 <input type='text' name='myinput' id='jfwh'>"
-		// 		+"原因 <input type='text' name='myinput' id='jfyy'>",
-		html: true,
-	})
+		swal("输入图片期限（天）,到期自动销毁图片,最高365天：\n(输入0为永久保存)", {
+			content: "input",
+			html: true,
+		})
 		.then((value) => {
 		var result =value;
 		var reg=/^[0-9]\d*$/;
-		if(result!=null && result!="" ){
-			if(reg.test(result)){
-				if(result<=365){
-					isday = result;
-					// 初始化以后添加
-					uploader.options.formData.setday = isday;
+			if(result!=null && result!="" ){
+				if(reg.test(result)){
+					if(result<=365){
+						isday = result;
+						// 初始化以后添加
+						uploader.options.formData.setday = isday;
+					}else{
+						swal('输入天数有误，最大不可超过365天');
+					}
 				}else{
-					swal('输入天数有误，最大不可超过365天');
+					swal('输入格式不正确，只可输入0-9之间正整数');
 				}
-			}else{
-				swal('输入格式不正确，只可输入0-9之间正整数');
 			}
-		}
-	if(isday>0){
-		$('#setday').text(isday+'天后销毁');
-	}else{
-		$('#setday').text('图片期限');
+			if(isday>0){
+				$('#setday').text(isday+'天后销毁');
+			}else{
+				$('#setday').text('图片期限');
+			}
+		});
 	}
-});
-}
-var win = null;
+	var win = null;
+	function anniu(){
+		if(arr_html!=null && arr_html!=""){
+			win = layer.open({
+				title:'画廊分享',
+				type: 2,
+				area: ['870px', '500px'],
+				fixed: false, //不固定
+				maxmin: true,
+				content: '/addalbum'
+			});
+		}else{
+			layer.msg('请先上传图片后再生成画廊', {icon: 7});
+		}
 
+		if($(window).width()<=880){
+			layer.full(win);
+		}
+	}
 
 	//浏览器窗口大小变化时
 	$(window).resize(function() {
-		var window_width = $(window).width();//获取浏览器窗口宽度
-		var window_height = $(window).height();//获取浏览器窗口高度
-		if(window_width<880){
-			layer.full(win);
+		if(win!=null){
+			var window_width = $(window).width();
+			var window_height = $(window).height();
+			if(window_width<880){
+				layer.full(win);
+			}
 		}
 	});
-
-
 
 	function Popup(url,pass) {
 		layer.close(win);
@@ -1055,7 +732,7 @@ var win = null;
 		}else{
 			data = '画廊链接：'+u+' 提取码：'+k+ ' 复制这段内容后用浏览器打开，即可查看画廊哦';
 		}
-		var copy = new ClipboardJS('.copyurl', {
+		var copy = new ClipboardJS('.copyimgurl', {
 			text: function (trigger) {
 				return  data;
 			}

@@ -45,6 +45,7 @@
                     '  </button>\n' +
                     '</div>' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
                 ,defaultToolbar:['filter', 'print']
+                ,method:'post'
                 ,url:'/admin/getAlbumURLList'
                 ,limit:10 //默认为10
                 ,cols: [ [
@@ -52,7 +53,7 @@
                     ,{field:'albumtitle',width:300,  title: '画廊标题'}
                     ,{field:'albumkey', width:300, title: '画廊地址', templet: function(d){return domain+'/'+d.albumkey;}}
                     ,{field:'username',  title: '创建用户',templet: function(d){
-                                var str = d.password;
+                                var str = d.username;
                                 if(d.username=='' || d.username==null){str='游客';}
                                 return str;
                             }

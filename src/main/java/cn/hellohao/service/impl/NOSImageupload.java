@@ -70,7 +70,8 @@ public class NOSImageupload {
                 }else if(entry.getKey().equals("gif")){
                     head = "image/gif";
                 }else{
-                    System.err.println("未知格式文件，无法定义header头。");
+                    //System.err.println("未知格式文件，无法定义header头。");
+                    head = "image/"+entry.getKey();
                 }
                 meta.setHeader("Content-Type", head);//image/jpeg
                 File file = new File(imgurl);

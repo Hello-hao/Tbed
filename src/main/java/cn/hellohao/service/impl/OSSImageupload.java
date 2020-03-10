@@ -43,7 +43,8 @@ public class OSSImageupload {
                 }else if(entry.getKey().equals("gif")){
                     head = "image/gif";
                 }else{
-                    System.err.println("位置格式文件，无法定义header头。");
+                    //System.err.println("位置格式文件，无法定义header头。");
+                    head = "image/"+entry.getKey();
                 }
                 meta.setHeader("Content-Type", head);//image/jpeg
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
@@ -77,7 +78,8 @@ public class OSSImageupload {
                 }else if(entry.getKey().equals("gif")){
                     head = "image/gif";
                 }else{
-                    System.err.println("位置格式文件，无法定义header头。");
+                    //System.err.println("位置格式文件，无法定义header头。");
+                    head = "image/"+entry.getKey();
                 }
                 meta.setHeader("Content-Type", head);//image/jpeg
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
@@ -134,7 +136,8 @@ public class OSSImageupload {
                 }else if(entry.getKey().equals("gif")){
                     head = "image/gif";
                 }else{
-                    System.err.println("位置格式文件，无法定义header头。");
+                    //System.err.println("位置格式文件，无法定义header头。");
+                    head = "image/"+entry.getKey();
                 }
                 meta.setHeader("Content-Type", head);//image/jpeg
                 ReturnImage returnImage = new ReturnImage();

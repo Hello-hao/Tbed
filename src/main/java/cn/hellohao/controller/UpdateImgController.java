@@ -7,19 +7,19 @@ import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -91,7 +91,13 @@ public class UpdateImgController {
                 isupdate = (u == null) ? 0: 1;
             }
             model.addAttribute("VisitorUpload", isupdate);
-        return "index";
+
+            if(config.getTheme()==1){
+                return "index";
+            }else{
+                return "index-Minimalism";
+            }
+
     }
 
     @RequestMapping(value = "/upimg")
@@ -169,9 +175,9 @@ public class UpdateImgController {
             }
             try{
                 boolean bl =ImgUrlUtil.downLoadFromUrl(imgurl,
-                        uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        uuid, request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator);
                 if(bl==true){
-                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator+uuid);
                     byte[] b = new byte[3];
                     is.read(b, 0, b.length);
                     String xxx = ImgUrlUtil.bytesToHexString(b);
@@ -182,7 +188,7 @@ public class UpdateImgController {
                         return jsonArray.toString();
                     }
                     Map<String, String> map = new HashMap<>();
-                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"hellohaotmp"+ File.separator+uuid);
                     Map<ReturnImage, Integer> m = null;
                     m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
                     Images img = new Images();
@@ -192,11 +198,11 @@ public class UpdateImgController {
                     for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
                         if(key.getStorageType()==5){
                             if(config.getDomain()!=null){
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl(config.getDomain()+"/"+entry.getKey().getImgurl());//图片链接
                             }else{
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/"+entry.getKey().getImgurl());//图片链接
                             }
                         }else{
                             jsonArray.add(entry.getKey().getImgurl());
@@ -206,7 +212,8 @@ public class UpdateImgController {
                         img.setSource(key.getStorageType());
                         img.setUserid(u == null?0:u.getId());
                         img.setSizes((entry.getValue()));
-                        img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                        //img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                        img.setImgname(entry.getKey().getImgurl());
                         img.setAbnormal(userip);
                         if(setday>0){img.setImgtype(1);}
                         else{img.setImgtype(0);}
@@ -227,9 +234,9 @@ public class UpdateImgController {
             }
             try{
                 boolean bl = ImgUrlUtil.downLoadFromUrl(imgurl,
-                        uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        uuid, request.getSession().getServletContext().getRealPath("/")+"hellohaotmp"+File.separator);
                 if(bl==true){
-                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"hellohaotmp"+File.separator+uuid);
                     byte[] b = new byte[3];
                     is.read(b, 0, b.length);
                     String xxx = ImgUrlUtil.bytesToHexString(b);
@@ -240,7 +247,7 @@ public class UpdateImgController {
                         return jsonArray.toString();
                     }
                     Map<String, String> map = new HashMap<>();
-                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator+uuid);
                     Map<ReturnImage, Integer> m = null;
                     m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
                     Images img = new Images();
@@ -250,11 +257,11 @@ public class UpdateImgController {
                     for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
                         if(key.getStorageType()==5){
                             if(config.getDomain()!=null){
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl(config.getDomain()+"/"+entry.getKey().getImgurl());
                             }else{
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/"+entry.getKey().getImgurl());//图片链接
                             }
                         }else{
                             jsonArray.add(entry.getKey().getImgurl());
@@ -321,22 +328,104 @@ public class UpdateImgController {
 
 
     @RequestMapping("/{key1}/TOIMG{key2}N.{key3}")
-    public String selectByFy(@PathVariable("key1") String key1,@PathVariable("key2") String key2,@PathVariable("key3") String key3,Model model) {
-        System.out.println(key1);
-        System.out.println(key2);
-        return "forward:/links/"+key1+"/TOIMG"+key2+"N."+key3;
+    public void selectByFy(HttpServletRequest request, HttpServletResponse response,
+                             @PathVariable("key1") String key1, @PathVariable("key2") String key2,
+                             @PathVariable("key3") String key3, Model model){
+        String head = "jpg";
+        if(key3.equals("jpg")||key3.equals("jpeg")){
+            head = "jpeg";
+        }else if(key3.equals("png")){
+            head = "png";
+        }else if(key3.equals("bmp")){
+            head = "bmp";
+        }else if(key3.equals("gif")){
+            head = "gif";
+        }else{
+            head = key3;
+        }
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("image/"+head);
+        InputStream is= null;
+        BufferedImage bi=null;
+        try {
+            is = new FileInputStream(new File(File.separator+"HellohaoData"+File.separator+key1+"/TOIMG"+key2+"N."+key3));
+            bi= ImageIO.read(is);
+            is.close();
+            //将图片输出给浏览器
+            BufferedImage image = (bi) ;
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(image, head, os);
+        } catch (Exception e) {
+            Print.warning("寻找本地文件出错："+e.getMessage());
+            e.printStackTrace();
+            try {
+                response.sendRedirect("/404");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        //return "forward:/links/"+key1+"/TOIMG"+key2+"N."+key3;
     }
 
-    //      http://127.0.0.1:8088/2020/02/18/TOIMG369f20218091644N.png
     @RequestMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
-    public String selectByFy2(@PathVariable("key1") String key1,@PathVariable("key2") String key2,
+    public void selectByFy2(HttpServletRequest request, HttpServletResponse response,
+                              @PathVariable("key1") String key1,@PathVariable("key2") String key2,
                               @PathVariable("key3") String key3,@PathVariable("key4") String key4,
                               @PathVariable("key5") String key5,Model model) {
-        System.out.println(key1);
-        System.out.println(key2);
-        System.out.println(key3);
-        System.out.println(key4);
-        return "forward:/links/"+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5;
+        String head = "jpg";
+        if(key5.equals("jpg")||key5.equals("jpeg")){
+            head = "jpeg";
+        }else if(key5.equals("png")){
+            head = "png";
+        }else if(key5.equals("bmp")){
+            head = "bmp";
+        }else if(key5.equals("gif")){
+            head = "gif";
+        }else{
+            head = key5;
+        }
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("image/"+head);
+        InputStream is= null;
+        BufferedImage bi=null;
+        try {
+            is = new FileInputStream(new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5));
+            bi= ImageIO.read(is);
+            is.close();
+            //将图片输出给浏览器
+            BufferedImage image = (bi) ;
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(image, head, os);
+        } catch (Exception e) {
+            Print.warning("寻找本地文件出错："+e.getMessage());
+            e.printStackTrace();
+            try {
+                response.sendRedirect("/404");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+
+
+
+/*        InputStream is= null;
+        BufferedImage bi=null;
+            is = new FileInputStream(new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5));
+            bi= ImageIO.read(is);
+            is.close();
+
+        //将验证码存入Session
+        //将图片输出给浏览器
+        BufferedImage image = (bi) ;
+        response.setContentType("image/JPEG");
+        OutputStream os = response.getOutputStream();
+        ImageIO.write(image, "JPEG", os);*/
+
+
     }
 
     private Integer yzupdate(){

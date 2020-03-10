@@ -30,8 +30,9 @@ public class LocUpdateImg {
                 // 上传文件流。
                 System.out.println("待上传的图片："+username + "/" + uuid+times + "N." + entry.getKey());
                 File dest = new File(filePath + username + File.separator+ uuid+times + "N." + entry.getKey());
+                File temppath = new File(filePath + username+ File.separator );
                 if (!dest.getParentFile().exists()) {
-                    dest.getParentFile().mkdirs();
+                    temppath.getParentFile().mkdirs();
                 }
                 try {
                     MultipartFile multipartFile = entry.getValue();
@@ -62,20 +63,22 @@ public class LocUpdateImg {
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                String uuid = "TOIMG"+UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 String oldfilePath = entry.getValue();
-                String newfilePath =  File.separator + "HellohaoData" + File.separator + username + File.separator+ uuid+times + "." + entry.getKey();//
+                String newfilePath =  File.separator + "HellohaoData" + File.separator + username + File.separator+ uuid+times + "N." + entry.getKey();
+                String tempfilePath =  File.separator + "HellohaoData" + File.separator + username+ File.separator ;
                 File file = new File(oldfilePath);
-                File targetFile =new File(newfilePath);
+                File targetFile =new File(tempfilePath);
                 if(!targetFile.getParentFile().exists()) {
                     targetFile.mkdirs();
                 }
                 file.renameTo(new File(newfilePath));
-                // 例2：采用数据流模式上传文件（节省内存）,自动创建父级目录
+                //采用数据流模式上传文件（节省内存）,自动创建父级目录
                 ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
+                //username + "/" + uuid+times + "." + entry.getKey()
+                returnImage.setImgurl(username + "/" + uuid+times + "N." + entry.getKey());
                     ImgUrl.put( returnImage, ImgUrlUtil.getFileSize2(new File(newfilePath)));
                 if(setday>0) {
                     String deleimg = DateUtils.plusDay(setday);
@@ -94,13 +97,13 @@ public class LocUpdateImg {
         File file = null;
         Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+            String uuid = "TOIMG"+UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
             System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
            ReturnImage returnImage = new ReturnImage();
             if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
-                File dest = new File(filePath + username + File.separator+ uuid+times + "." + entry.getKey());
+                File dest = new File(filePath + username + File.separator+ uuid+times + "N." + entry.getKey());
                 if (!dest.getParentFile().exists()) {
                     dest.getParentFile().mkdirs();
                 }
@@ -116,7 +119,7 @@ public class LocUpdateImg {
                     bos.flush();
                     bos.close();
                     returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(username + "/" + uuid+times + "." + entry.getKey());
+                    returnImage.setImgurl(username + "/" + uuid+times + "N." + entry.getKey());
                     ImgUrl.put(returnImage, (int) (entry.getValue().getSize())/1024);
                 } catch (IOException e) {
                     e.printStackTrace();

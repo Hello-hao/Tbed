@@ -167,6 +167,7 @@
                         <select id="myselect" class="form-control">
                             <option value="1" checked="checked">所有人</option>
                             <option value="2">仅自己</option>
+                            <option value="3">仅他人</option>
                         </select>
                     </div>
                     <div class="btn-group">
@@ -490,7 +491,6 @@
                     title: '性质',
                     formatter: function (value, rows, index) {
                         var type = "";
-                        console.log(rows.imgtype)
                         if (rows.imgtype == 1) {
                             type = "临时";
                         } else {
