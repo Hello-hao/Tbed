@@ -43,8 +43,6 @@
 
 ![Hellohao.png](http://cdn.wwery.com/Hellohao/f7b030310035310.png)
 
-![Hellohao2.png](http://cdn.wwery.com/Hellohao/eeeed0825062727.png)
-
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/c208e0825054822.png)
 ![图床后台管理2.png](http://cdn.wwery.com/Hellohao/6c7690825054822.png)
 ![图床后台管理3.png](http://cdn.wwery.com/Hellohao/2a79b0825054822.png)
