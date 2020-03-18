@@ -151,6 +151,8 @@ function setisko(id,val) {
                 layer.msg('设置成功', {icon: 1});
             }else if(data==-1){
                 layer.msg('设置失败', {icon: 2});
+            }else if(data==-2){
+                layer.msg('无法对自己进行操作', {icon: 2});
             }
         }
     });

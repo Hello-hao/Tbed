@@ -27,7 +27,7 @@ public class GetSource {
             m = nosImageupload.Imageupload(fileMap, userpath,filename,setday);
             }else if (type==2){
                 m = ossImageupload.ImageuploadOSS(fileMap, userpath,filename,setday);
-            }else if(type==3){
+            }else if(type==3 || type==8){
                 m = ussImageupload.ImageuploadUSS(fileMap, userpath,filename,setday);
             }else if(type==4){
                 m = kodoImageupload.ImageuploadKODO(fileMap, userpath,filename,setday);

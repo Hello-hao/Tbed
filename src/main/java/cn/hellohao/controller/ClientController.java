@@ -80,7 +80,7 @@ public class ClientController {
                                 nOSImageupload.Initialize(key);//实例化网易
                             } else if (key.getStorageType() == 2) {
                                 OSSImageupload.Initialize(key);
-                            } else if (key.getStorageType() == 3) {
+                            } else if (key.getStorageType() == 3 || key.getStorageType()==8) {
                                 USSImageupload.Initialize(key);
                             } else if (key.getStorageType() == 4) {
                                 KODOImageupload.Initialize(key);
@@ -125,7 +125,7 @@ public class ClientController {
                                 m = nOSImageupload.clientuploadNOS(map, userpath, uploadConfig);
                             } else if (key.getStorageType() == 2) {
                                 m = ossImageupload.clientuploadOSS(map, userpath, uploadConfig);
-                            } else if (key.getStorageType() == 3) {
+                            } else if (key.getStorageType() == 3 || key.getStorageType()==8) {
                                 m = ussImageupload.clientuploadUSS(map, userpath, uploadConfig);
                             } else if (key.getStorageType() == 4) {
                                 m = kodoImageupload.clientuploadKODO(map, userpath, uploadConfig);
@@ -305,7 +305,7 @@ public class ClientController {
                                                     m = nOSImageupload.Imageupload(null, userpath,map,setday);
                                                 }else if (key.getStorageType()==2){
                                                     m = ossImageupload.ImageuploadOSS(null, userpath,map,setday);
-                                                }else if(key.getStorageType()==3){
+                                                }else if(key.getStorageType()==3 || key.getStorageType()==8){
                                                     m = ussImageupload.ImageuploadUSS(null, userpath,map,setday);
                                                 }else if(key.getStorageType()==4){
                                                     m = kodoImageupload.ImageuploadKODO(null, userpath,map,setday);
@@ -387,7 +387,7 @@ public class ClientController {
                                                     m = nOSImageupload.Imageupload(null, userpath,map,setday);
                                                 }else if (key.getStorageType()==2){
                                                     m = ossImageupload.ImageuploadOSS(null, userpath,map,setday);
-                                                }else if(key.getStorageType()==3){
+                                                }else if(key.getStorageType()==3 || key.getStorageType()==8){
                                                     m = ussImageupload.ImageuploadUSS(null, userpath,map,setday);
                                                 }else if(key.getStorageType()==4){
                                                     m = kodoImageupload.ImageuploadKODO(null, userpath,map,setday);

@@ -28,11 +28,11 @@ public class LocUpdateImg {
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 // 上传文件流。
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "N." + entry.getKey());
+                System.out.println("待上传的图片："+username + File.separator + uuid+times + "N." + entry.getKey());
                 File dest = new File(filePath + username + File.separator+ uuid+times + "N." + entry.getKey());
                 File temppath = new File(filePath + username+ File.separator );
                 if (!dest.getParentFile().exists()) {
-                    temppath.getParentFile().mkdirs();
+                    dest.getParentFile().mkdirs();
                 }
                 try {
                     MultipartFile multipartFile = entry.getValue();
@@ -100,7 +100,7 @@ public class LocUpdateImg {
             String uuid = "TOIMG"+UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+            System.out.println("待上传的图片："+username + "/" + uuid+times + "N." + entry.getKey());
            ReturnImage returnImage = new ReturnImage();
             if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
                 File dest = new File(filePath + username + File.separator+ uuid+times + "N." + entry.getKey());

@@ -112,6 +112,7 @@ public class FTPImageupload {
                         ftp.login(k.getAccessKey(), k.getAccessSecret());
                     } catch (IOException e) {
                         e.printStackTrace();
+                        return -1;
                     }
                     //获取服务器返回的状态码
                     int reply = ftp.getReplyCode();

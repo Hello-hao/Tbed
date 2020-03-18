@@ -245,7 +245,7 @@ public class AdminController {
                 de.delect(key, images.getImgname());
             } else if (key.getStorageType() == 2) {
                 de.delectOSS(key, images.getImgname());
-            } else if (key.getStorageType() == 3) {
+            } else if (key.getStorageType() == 3 || key.getStorageType() == 8) {
                 de.delectUSS(key, images.getImgname());
             } else if (key.getStorageType() == 4) {
                 de.delectKODO(key, images.getImgname());

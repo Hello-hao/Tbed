@@ -11,11 +11,23 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 07/11/2019 21:25:39
+ Date: 18/03/2020 22:31:29
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for album
+-- ----------------------------
+DROP TABLE IF EXISTS `album`;
+CREATE TABLE `album`  (
+  `albumkey` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `albumtitle` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `createdate` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `userid` int(10) NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for code
@@ -50,13 +62,14 @@ CREATE TABLE `config`  (
   `webms` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `webkeywords` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `webfavicons` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `theme` int(4) NULL DEFAULT 1 COMMENT '主题',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 7, 1, 'Hellohao', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Pexels.mp4', '1', '<a href=\"http://hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">Hellohao开发制作</a>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://127.0.0.1:8088', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 1, NULL, NULL, NULL);
+INSERT INTO `config` VALUES (1, 8, 1, 'Hellohao', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Pexels.mp4', '1', '<a href=\"http://hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">Hellohao开发制作</a>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://127.0.0.1:8088', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 1, NULL, NULL, NULL, 1);
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -95,6 +108,15 @@ CREATE TABLE `group`  (
 INSERT INTO `group` VALUES (1, '默认群组', 5);
 
 -- ----------------------------
+-- Table structure for imgandalbum
+-- ----------------------------
+DROP TABLE IF EXISTS `imgandalbum`;
+CREATE TABLE `imgandalbum`  (
+  `imgname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `albumkey` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for imgdata
 -- ----------------------------
 DROP TABLE IF EXISTS `imgdata`;
@@ -108,8 +130,11 @@ CREATE TABLE `imgdata`  (
   `abnormal` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `source` int(2) NULL DEFAULT NULL COMMENT '存储源',
   `imgtype` int(2) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+  `explains` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `md5key` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `index_md5key_url`(`md5key`, `imgurl`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
 
 -- ----------------------------
 -- Table structure for imgreview
@@ -150,12 +175,12 @@ CREATE TABLE `keys`  (
 -- ----------------------------
 INSERT INTO `keys` VALUES (1, '', '', '', '', '', 1);
 INSERT INTO `keys` VALUES (2, '', '', '', '', '', 2);
-INSERT INTO `keys` VALUES (3, '', '', '0', '', '', 3);
+INSERT INTO `keys` VALUES (3, '1', '1', '0', '1', 'http://127.0.0.1', 3);
 INSERT INTO `keys` VALUES (4, '', '', '', '', '', 4);
 INSERT INTO `keys` VALUES (5, '0', '0', '0', '0', '0', 5);
 INSERT INTO `keys` VALUES (6, '', '', '', '', '', 6);
-INSERT INTO `keys` VALUES (7, '', '', '', '', '', 7);
-INSERT INTO `keys` VALUES (8, '', '', '', '', '', 8);
+INSERT INTO `keys` VALUES (7, '1', '1', '127.0.0.1:21', '', 'http://127.0.0.1', 7);
+INSERT INTO `keys` VALUES (8, '111', '222', '0', '333', 'http://127.0.0.1/', 8);
 INSERT INTO `keys` VALUES (9, '', '', '', '', '', 9);
 INSERT INTO `keys` VALUES (10, '0', '', '0', '0', '0', 10);
 
@@ -199,13 +224,14 @@ CREATE TABLE `uploadconfig`  (
   `api` int(2) NOT NULL COMMENT '开启api',
   `visitormemory` int(10) NULL DEFAULT NULL COMMENT '游客限制大小',
   `usermemory` int(10) NULL DEFAULT 0 COMMENT '用户默认大小',
+  `blacklist` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of uploadconfig
 -- ----------------------------
-INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 1, 1, 1, 500, 1024);
+INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 2, 1, 1, 500, 1024, '');
 
 -- ----------------------------
 -- Table structure for user
@@ -228,7 +254,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-06-12', 2, 'admin', 1, 1024, 1);
+INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-06-12', 2, '828812cff63b4e52b7be7911a9a410b2', 1, 1024, 1);
 
 -- ----------------------------
 -- Table structure for usergroup

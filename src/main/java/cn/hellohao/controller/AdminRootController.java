@@ -112,7 +112,7 @@ public class AdminRootController {
             ret =nOSImageupload.Initialize(key);//实例化网易
         }else if (key.getStorageType()==2){
             ret = OSSImageupload.Initialize(key);
-        }else if(key.getStorageType()==3){
+        }else if(key.getStorageType()==3 || key.getStorageType()==8){
             ret = USSImageupload.Initialize(key);
         }else if(key.getStorageType()==4){
             ret = KODOImageupload.Initialize(key);
@@ -200,9 +200,14 @@ public class AdminRootController {
     @PostMapping("/setisok")
     @ResponseBody
     public String setisok(HttpSession session, User user) {
-        Integer ret = userService.setisok(user);
         JSONArray jsonArray = new JSONArray();
-        jsonArray.add(ret);
+        User u = (User) session.getAttribute("user");
+        if(u.getId()==user.getId()){
+            jsonArray.add(-2);
+        }else{
+            Integer ret = userService.setisok(user);
+            jsonArray.add(ret);
+        }
         return jsonArray.toString();
     }
 
