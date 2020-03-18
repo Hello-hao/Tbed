@@ -97,7 +97,6 @@ public class UpdateImgController {
             }else{
                 return "index-Minimalism";
             }
-
     }
 
     @RequestMapping(value = "/upimg")
