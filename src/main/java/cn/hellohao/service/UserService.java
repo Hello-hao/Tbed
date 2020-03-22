@@ -7,6 +7,29 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface UserService {
+    User getUsersByApiKey(String apikey);
+    /**
+     *
+     * @param userid
+     * @return 新的Apikey
+     */
+    String resetApikey(Integer userid);
+
+    /**
+     * apikey是否存在
+     *
+     * @param apikey
+     * @return
+     */
+    Boolean isApiKeyExist(String apikey);
+    /**
+     * 创建一个新的Apikey
+     *
+     * @return
+     */
+    String createApikey();
+    User getUsersByApikey(String apikey);
+
     //注册
     Integer register(User user);
 

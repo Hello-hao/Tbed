@@ -369,6 +369,7 @@ public class AdminController {
         //key信息
         model.addAttribute("username", u.getUsername());
         model.addAttribute("level", u.getLevel());
+        model.addAttribute("apikey",u.getApikey());
         model.addAttribute("domain", config.getDomain());
         return "admin/api";
     }

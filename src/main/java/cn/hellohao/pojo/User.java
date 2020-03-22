@@ -22,7 +22,15 @@ public class User {
     private Integer isok;
     private  Integer memory;
     private Integer groupid;
+    private String apikey;
 
+    public String getApikey() {
+        return apikey;
+    }
+
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
+    }
 
     public User() {
         super();

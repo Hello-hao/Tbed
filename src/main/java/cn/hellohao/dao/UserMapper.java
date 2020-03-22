@@ -10,6 +10,14 @@ import java.util.List;
 
 @Mapper
 public interface UserMapper {
+    Integer resetApikey(@Param("userid")Integer userid,@Param("newApikey")String newApikey);
+    User getUsersByApikey(@Param("apikey") String apikey);
+    /**
+     * 检查APIkey用户名是否重复
+     * @param apikey
+     * @return
+     */
+    Integer checkApiKey(@Param("apikey") String apikey);
     //注册
     Integer register(User user);
 
