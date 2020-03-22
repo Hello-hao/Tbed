@@ -60,14 +60,10 @@ public class ClientController {
     public ResultBean clientupimg(HttpServletRequest request, @RequestParam("file") List<MultipartFile> file, @RequestParam(required = false) String apikey, @RequestParam(required = false) String email, @RequestParam(required = false) String pass) throws Exception {
         String userip = GetIPS.getIpAddr(request);
         Print.Normal("上传者ip:" + userip);
-        System.out.println("上传者ip:" + userip);
         ResultBean resultBean = null;
         JSONArray jsonArray = new JSONArray();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-
-
         if (uploadConfig.getApi() == 1) {
-            System.out.println(apikey + ":" + email + ":" + pass);
             User user = null;
             boolean iscon = false;
             if (apikey != null) {
