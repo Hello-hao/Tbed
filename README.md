@@ -29,7 +29,7 @@
 
 主站地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
 
-体验地址（用户名/密码均为admin）：[http://129.28.173.126:8088/](http://129.28.173.126:8088/)
+体验地址（用户名/密码均为admin）：[http://84.39.188.145:8088/](http://84.39.188.145:8088/)
 
 文档地址: [http://doc.wwery.com/](http://doc.wwery.com/)
 
