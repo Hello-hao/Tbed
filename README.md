@@ -1,4 +1,4 @@
-# Hellohao图床 - 强大的图片托管服务程序
+# Hellohao图床 - 强大的图像托管服务程序
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
