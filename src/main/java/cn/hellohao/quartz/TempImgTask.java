@@ -99,6 +99,10 @@ public class TempImgTask  {
        } else {
                 //Print.warning("file not exists, 不进行暂存扫描处理");
                 try {
+                    File parentFile = file.getParentFile();
+                    if (!parentFile.exists()) {
+                        parentFile.mkdirs();
+                    }
                     file.createNewFile();
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
