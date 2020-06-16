@@ -27,39 +27,30 @@
 - 邮箱注册激活。
 - 站点样式设置和上传规则配置等。
 
-主站地址: [http://tc.hellohao.cn/](http://tc.hellohao.cn/)
+主站地址: [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
 
 体验地址（用户名/密码均为admin）：[http://84.39.188.145:8088/](http://84.39.188.145:8088/)
 
-文档地址: [http://doc.wwery.com/](http://doc.wwery.com/)
+文档地址: [http://tbed.hellohao.cn/doc](http://tbed.hellohao.cn/doc)
 
 编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
-
-捐赠列表：[http://doc.wwery.com/#/reward?id=捐赠者名单](http://doc.wwery.com/#/reward?id=捐赠者名单)
 
 全套部署视频教程：[https://www.bilibili.com/video/av79137056/](https://www.bilibili.com/video/av79137056/)
 
 ## 系统预览
 
-![Hellohao.png](http://cdn.wwery.com/Hellohao/f7b030310035310.png)
+![Hellohao/dec2d0616104505.png](http://cdn.wwery.com/Hellohao/dec2d0616104505.png)
 
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/c208e0825054822.png)
 ![图床后台管理2.png](http://cdn.wwery.com/Hellohao/6c7690825054822.png)
 ![图床后台管理3.png](http://cdn.wwery.com/Hellohao/2a79b0825054822.png)
 ![图床后台管理4.png](http://cdn.wwery.com/Hellohao/5c1800825054824.png)
 
-## 更新日志
-
-**2020-05-03**
-- 增加某些互联网注入防护过滤，提高安全系数。
-- 修复【站点配置】页面修改表单的字符长度，尽可能增加了保存长度。
-- 优化文件类型判断逻辑。
-- 优化了多个页面逻辑细节问题。
 
 ## 运行环境
 
 - JDK 1.8
-- MySQL
+- MySQL5.5+
 
 ## 一：项目编译
 
@@ -175,4 +166,5 @@ Hellohao博客: [http://www.hellohao.cn/](http://www.hellohao.cn/)
 
 **如果你也支持Hellohao图床，可以请我喝杯咖啡。我会持续更新Hellohao图床**
 
-![](http://cdn.wwery.com/Hellohao/df2710722111702.jpg)
+**捐赠地址:** [**http://tbed.hellohao.cn/pay**](http://tbed.hellohao.cn/pay)
+
