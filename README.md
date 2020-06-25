@@ -5,7 +5,7 @@
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
 > 这是一个基于多家对象存储源的SpringBoot开源图片托管程序。
-> 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`、`u-file`等多家对象存储.
+> 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`、`u-file`,`B2`等多家对象存储.
 > 后台对用户管理。
 > 支持配置多家存储源。
 > 用户注册邮箱验证，以及后台配置邮箱服务器。
@@ -15,7 +15,7 @@
 
 - 多主题支持：炫酷壁纸、简约蓝白
 - 支持 图片拖拽、截图软件直接(Ctrl+V)和图片URL地址上传。
-- 支持对接本地、网易、阿里、又拍、七牛、腾讯、FTP、u-file等各大对象存储平台。
+- 支持对接本地、网易、阿里、又拍、七牛、腾讯、FTP、u-file、B2等各大对象存储平台。
 - 支持图片定期暂存（到期自动删除）
 - 支持画廊分享模式(用户可把自己当前上传的图片以图片集的形式批量分享给好友)
 - 支持上传者IP记录，并可配置IP黑名单操作
@@ -29,7 +29,7 @@
 
 主站地址: [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
 
-体验地址（用户名/密码均为admin）：[http://84.39.188.145:8088/](http://84.39.188.145:8088/)
+站点Demo：[http://tc.hellohao.cn/](http://tc.hellohao.cn/)
 
 文档地址: [http://tbed.hellohao.cn/doc](http://tbed.hellohao.cn/doc)
 
