@@ -7,6 +7,10 @@ import java.util.List;
 import cn.hellohao.utils.Print;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
+import com.backblaze.b2.client.B2StorageClient;
+import com.backblaze.b2.client.B2StorageClientFactory;
+import com.backblaze.b2.client.structures.B2FileVersion;
+import com.backblaze.b2.client.structures.B2ListFileVersionsRequest;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -154,6 +158,29 @@ public class ImgServiceImpl implements ImgService {
         } catch (IOException e) {
             e.printStackTrace();
             Print.warning("删除FTP存储的图片失败");
+        }
+    }
+    public void delectB2(Keys key, String fileName) {
+        try{
+            B2StorageClient client = B2StorageClientFactory
+                    .createDefaultFactory()
+                    .create( key.getAccessKey(),  key.getAccessSecret(), "backblaze-b2/4.0.0+java/1.8");
+
+            B2ListFileVersionsRequest request = B2ListFileVersionsRequest
+                    .builder(key.getBucketname())
+                    .setStartFileName(fileName)
+                    .setPrefix(fileName)
+                    .build();
+
+            for (B2FileVersion version : client.fileVersions(request)) {
+                if (version.getFileName().equals(fileName)) {
+                    client.deleteFileVersion(version);
+                } else {
+                    break;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
     @Override

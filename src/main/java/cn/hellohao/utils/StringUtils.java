@@ -54,6 +54,12 @@ public class StringUtils {
                     return true;
                 }
             }
+        }else if(sourcekey==15){
+            if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null && k.getRequestAddress()!=null ) {
+                if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("") && !k.getRequestAddress().equals("") ) {
+                    return true;
+                }
+            }
         }
         return false;
     }

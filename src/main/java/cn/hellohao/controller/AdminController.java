@@ -255,6 +255,8 @@ public class AdminController {
                 de.delectCOS(key, images.getImgname());
             }else if (key.getStorageType() == 7) {
                 de.delectFTP(key, images.getImgname());
+            }else if (key.getStorageType() == 15) {
+                de.delectB2(key, images.getImgname());
             }else {
                 System.err.println("未获取到对象存储参数，删除失败。");
             }
@@ -308,6 +310,8 @@ public class AdminController {
                     de.delectCOS(key, imgnames[i]);
                 }else if (key.getStorageType() == 7) {
                     de.delectFTP(key, imgnames[i]);
+                }else if (key.getStorageType() == 15) {
+                    de.delectB2(key, imgnames[i]);
                 }else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }

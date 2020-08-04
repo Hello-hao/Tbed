@@ -120,8 +120,9 @@ public class AdminRootController {
             ret = COSImageupload.Initialize(key);
         }else if(key.getStorageType()==7){
             ret = FTPImageupload.Initialize(key);
-        }
-        else{
+        }else if(key.getStorageType()==15){
+            ret = B2Imageupload.Initialize(key);
+        }else{
             Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
         }
         if(ret>0){

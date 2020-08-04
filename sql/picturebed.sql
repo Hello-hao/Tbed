@@ -183,6 +183,7 @@ INSERT INTO `keys` VALUES (7, '1', '1', '127.0.0.1:21', '', 'http://127.0.0.1', 
 INSERT INTO `keys` VALUES (8, '111', '222', '0', '333', 'http://127.0.0.1/', 8);
 INSERT INTO `keys` VALUES (9, '', '', '', '', '', 9);
 INSERT INTO `keys` VALUES (10, '0', '', '0', '0', '0', 10);
+INSERT INTO `keys` VALUES (15, '0', '', '0', '0', '0', 15);
 
 -- ----------------------------
 -- Table structure for notice

@@ -44,6 +44,8 @@ public class InitializationStorage implements CommandLineRunner {
                     ret = COSImageupload.Initialize(key);
                 }else if(key.getStorageType()==7){
                     ret = FTPImageupload.Initialize(key);
+                }else if(key.getStorageType()==15){
+                    ret = B2Imageupload.Initialize(key);
                 }
             }
         }

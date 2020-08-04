@@ -88,6 +88,8 @@ public class ClientController {
                                 COSImageupload.Initialize(key);
                             } else if (key.getStorageType() == 7) {
                                 FTPImageupload.Initialize(key);
+                            } else if (key.getStorageType() == 15) {
+                                B2Imageupload.Initialize(key);
                             } else {
                                 System.err.println("客户端：未获取到对象存储参数，初始化失败。");
                             }
