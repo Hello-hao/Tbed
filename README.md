@@ -33,7 +33,7 @@
 
 文档地址: [http://tbed.hellohao.cn/doc](http://tbed.hellohao.cn/doc)
 
-编译包下载: [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
+开源版编译包下载(内部版请前往主站获取): [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
 全套部署视频教程：[https://www.bilibili.com/video/av79137056/](https://www.bilibili.com/video/av79137056/)
 
