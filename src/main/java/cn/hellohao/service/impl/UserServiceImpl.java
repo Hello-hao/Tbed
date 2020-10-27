@@ -7,10 +7,12 @@ import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.UserService;
 import cn.hellohao.utils.Print;
+import cn.hutool.crypto.digest.DigestUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,6 +21,50 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private CodeMapper codeMapper;
+
+    @Override
+    public String createApikey() {
+        String apikey;
+        do {
+            apikey = DigestUtil.md5Hex(LocalDateTime.now().toString());
+        } while (isApiKeyExist(apikey));
+        return apikey;
+    }
+
+    @Override
+    public User getUsersByApikey(String apikey) {
+        // TODO Auto-generated method stub
+        return userMapper.getUsersByApikey(apikey);
+    }
+
+    /**
+     * apikey是否存在
+     *
+     * @param apikey
+     * @return
+     */
+    @Override
+    public Boolean isApiKeyExist(String apikey) {
+        if (userMapper.checkApiKey(apikey) > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public User getUsersByApiKey(String apikey) {
+        return userMapper.getUsersByApikey(apikey);
+    }
+
+    @Override
+    public String resetApikey(Integer userid){
+        String newApikey=createApikey();
+        userMapper.resetApikey( userid, newApikey);
+        return newApikey;
+    }
+
+
+
     @Override
     public Integer register(User user) {
         // TODO Auto-generated method stub

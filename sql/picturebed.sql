@@ -248,7 +248,10 @@ CREATE TABLE `user`  (
   `isok` int(2) NOT NULL,
   `memory` int(10) NULL DEFAULT NULL COMMENT '用户内存大小',
   `groupid` int(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  `apikey` VARCHAR(100) NULL DEFAULT NULL COMMENT '调用API的Key',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `apikey` (`apikey`),
+  INDEX `email` (`email`)
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------

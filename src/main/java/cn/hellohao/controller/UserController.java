@@ -2,10 +2,7 @@ package cn.hellohao.controller;
 
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.Cookie;
@@ -47,7 +44,18 @@ public class UserController {
     private SysConfigService sysConfigService;
     @Autowired
     private UserGroupService userGroupService;
+    @RequestMapping("/reset/apikey")
+    @ResponseBody
+    public ResultBean resetApikey(HttpSession session) {
+        Map<String, Object> map = new HashMap<>();
+        User user = (User)session.getAttribute("user");
+        String newApikey = userService.resetApikey(user.getId());
 
+        map.put("newApikey",newApikey);
+        user.setApikey(newApikey);
+        session.setAttribute("user",user);
+        return ResultBean.success(map);
+    }
     @RequestMapping("/register")
     @ResponseBody
     public String Register(@Valid User u,Integer zctmp) {
@@ -72,6 +80,7 @@ public class UserController {
                     user.setEmail(u.getEmail());
                     user.setUsername(u.getUsername());
                     user.setPassword(Base64Encryption.encryptBASE64(u.getPassword().getBytes()));
+                    user.setApikey(userService.createApikey());
                     Config config = configService.getSourceype();
                     System.err.println("是否启用了邮箱激活："+emailConfig.getUsing());
                     Integer type = 0;

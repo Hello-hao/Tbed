@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.hellohao.dao.UserMapper">
-
+    <select id="checkApiKey" parameterType="string" resultType="integer">
+        SELECT count(apikey) FROM `user` where apikey=#{apikey}
+    </select>
+    <!-- 查询当前用户:根据Apikey -->
+    <select id="getUsersByApikey" parameterType="string" resultType="cn.hellohao.pojo.User">
+        SELECT id,
+               username,
+               email,
+               password,
+               birthder,
+               LEVEL,
+               uid,
+               isok,
+               memory,
+               groupid,
+               apikey
+        FROM user
+        WHERE apikey = #{apikey}
+    </select>
+    <update id="resetApikey" parameterType="string">
+        UPDATE `user`
+        <set>
+            `apikey` = #{newApikey}
+        </set>
+        where `id`=#{userid}
+    </update>
     <!-- 用户注册 -->
     <insert id="register" parameterType="cn.hellohao.pojo.User">
-        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok,memory,groupid)
-        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok},#{memory},#{groupid}   )
+        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok,memory,groupid,apikey)
+        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok},#{memory},#{groupid} ,#{apikey}  )
     </insert>
     <!--  查询是否有username  -->
     <select id="countusername" parameterType="string" resultType="integer">
@@ -58,7 +83,8 @@
         uid,
         isok,
         memory,
-        groupid
+        groupid,
+        apikey
         FROM user
         WHERE email = #{email}
     </select>
@@ -73,7 +99,8 @@
                uid,
                isok,
                memory,
-               groupid
+               groupid,
+               apikey
         FROM user
         WHERE id = #{id}
     </select>
@@ -88,7 +115,8 @@
         uid,
         isok,
         memory,
-        groupid
+        groupid,
+        apikey
         FROM user
         WHERE uid = #{uid}
     </select>
