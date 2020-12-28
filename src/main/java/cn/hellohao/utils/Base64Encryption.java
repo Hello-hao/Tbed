@@ -1,7 +1,7 @@
 package cn.hellohao.utils;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import java.util.Base64.Encoder;
+import java.util.Base64.Decoder;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -16,14 +16,18 @@ public class Base64Encryption {
     public static String decryptBASE64(String key)  {
         byte[] b =null;
         try {
-            b = (new BASE64Decoder()).decodeBuffer(key);
-        } catch (IOException e) {
+
+            Decoder decoder = Base64.getDecoder();
+            b = decoder.decode(key);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return  new String(b);
     }
     public static String encryptBASE64(byte[] key)  {
         String string = "SGVsbG9oYW8K";
-        return (new BASE64Encoder()).encodeBuffer(key).replaceAll("\r|\n", "");
+        Encoder encoder = Base64.getEncoder();
+        byte[] encode = encoder.encode(key);
+        return new String(encode);
     }
 }
