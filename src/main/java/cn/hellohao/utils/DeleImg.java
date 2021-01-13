@@ -5,7 +5,7 @@ import java.io.*;
 
 public class DeleImg {
     public static void charu(String imgUrlText) {
-        String filePath =File.separator + "HellohaoData" ;
+        String filePath =File.separator + Resources.basePath ;
         File file = new File(filePath);
         File file1 = new File(filePath+File.separator+"img.ini");
         if(!file.exists()){

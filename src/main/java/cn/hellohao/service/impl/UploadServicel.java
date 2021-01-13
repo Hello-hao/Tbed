@@ -38,7 +38,7 @@ public class UploadServicel {
     UserMapper userMapper;
 
 
-    public Msg uploadForLoc(HttpSession session, HttpServletRequest request,
+    public synchronized Msg uploadForLoc(HttpSession session, HttpServletRequest request,
                             MultipartFile multipartFile, Integer setday, String upurlk, String[] iparr) {
         Msg msg = new Msg();
         JSONArray jsonArray = new JSONArray();

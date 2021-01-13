@@ -12,14 +12,14 @@ import java.util.UUID;
 
 public class LocUpdateImg {
     public static void deleteLOCImg(String imagename){
-        String filePath =File.separator + "HellohaoData" + File.separator+imagename;
+        String filePath =File.separator + Resources.basePath + File.separator+imagename;
         File file = new File(filePath);
         file.delete();
     }
 
     public static Map<ReturnImage, Integer> ImageuploadLOC(Map<String, MultipartFile> fileMap, String username,
                                                            Map<String, String> fileMap2,Integer setday) throws Exception {
-        String filePath =File.separator + "HellohaoData" + File.separator;
+        String filePath =File.separator + Resources.basePath + File.separator;
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
@@ -67,8 +67,8 @@ public class LocUpdateImg {
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
                 String oldfilePath = entry.getValue();
-                String newfilePath =  File.separator + "HellohaoData" + File.separator + username + File.separator+ uuid+times + "N." + entry.getKey();
-                String tempfilePath =  File.separator + "HellohaoData" + File.separator + username+ File.separator ;
+                String newfilePath =  File.separator + Resources.basePath + File.separator + username + File.separator+ uuid+times + "N." + entry.getKey();
+                String tempfilePath =  File.separator + Resources.basePath + File.separator + username+ File.separator ;
                 File file = new File(oldfilePath);
                 File targetFile =new File(tempfilePath);
                 if(!targetFile.getParentFile().exists()) {
@@ -93,7 +93,7 @@ public class LocUpdateImg {
      * 客户端接口
      * */
     public static Map<ReturnImage, Integer> clientLocUpdateImg(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) {
-        String filePath =File.separator + "HellohaoData" + File.separator;
+        String filePath =File.separator + Resources.basePath + File.separator;
         File file = null;
         Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
         for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {

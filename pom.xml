@@ -197,6 +197,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <executable>true</executable>
+                    <mainClass>cn.hellohao.TbedApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>

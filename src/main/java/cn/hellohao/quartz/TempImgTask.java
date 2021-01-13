@@ -6,6 +6,7 @@ import cn.hellohao.service.impl.KeysServiceImpl;
 import cn.hellohao.utils.DeleImg;
 import cn.hellohao.utils.LocUpdateImg;
 import cn.hellohao.utils.Print;
+import cn.hellohao.utils.Resources;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -43,7 +44,7 @@ public class TempImgTask  {
 
     public void start() throws InterruptedException {
         List<String> list = new ArrayList<>();
-        File file = new File(File.separator + "HellohaoData"+File.separator+"img.ini");
+        File file = new File(File.separator + Resources.basePath+File.separator+"img.ini");
         //判断文件是否存在
         if (file.exists()) {
             StringBuilder result = new StringBuilder();
@@ -108,7 +109,7 @@ public class TempImgTask  {
     }
 
     public static void main(String[] args) throws Exception {
-        clearInfoForFile(File.separator + "HellohaoData"+File.separator+"img.ini");
+        clearInfoForFile(File.separator + Resources.basePath+File.separator+"img.ini");
     }
 
 
@@ -136,7 +137,7 @@ public class TempImgTask  {
 
     //遍历没有过期的list文本，依次插入
     public static void textcr(List<String> list){
-        clearInfoForFile(File.separator + "HellohaoData"+File.separator+"img.ini");
+        clearInfoForFile(File.separator + Resources.basePath+File.separator+"img.ini");
         //Print.Normal("开始重新插入没有过期的文本");
         for (String s : list) {
             DeleImg.charu(s);
