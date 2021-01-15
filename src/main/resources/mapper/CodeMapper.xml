@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.CodeMapper">
+<mapper namespace="cn.mq.tbed.dao.CodeMapper">
 
 
-    <select id="selectCode" parameterType="string" resultType="cn.hellohao.pojo.Code">
+    <select id="selectCode" parameterType="string" resultType="cn.mq.tbed.pojo.Code">
         SELECT
         *
         FROM
@@ -14,7 +14,7 @@
         </if>
     </select>
 
-    <select id="selectCodekey"  parameterType="string" resultType="cn.hellohao.pojo.Code">
+    <select id="selectCodekey"  parameterType="string" resultType="cn.mq.tbed.pojo.Code">
         SELECT
         *
         FROM
@@ -23,7 +23,7 @@
 
     </select>
 
-    <insert id="addCode" parameterType="cn.hellohao.pojo.Code">
+    <insert id="addCode" parameterType="cn.mq.tbed.pojo.Code">
         insert into `code` (id,value,code) values (null,#{value},#{code})
     </insert>
 

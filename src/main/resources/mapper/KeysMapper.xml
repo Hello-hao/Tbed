@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.KeysMapper">
+<mapper namespace="cn.mq.tbed.dao.KeysMapper">
 
 
     <!-- 查询对象存储key-->
-    <select id="selectKeys" parameterType="integer" resultType="cn.hellohao.pojo.Keys">
+    <select id="selectKeys" parameterType="integer" resultType="cn.mq.tbed.pojo.Keys">
         SELECT
             *
         FROM
@@ -14,14 +14,14 @@
     </select>
 
     <!-- 查询对象存储key-->
-    <select id="getKeys" parameterType="integer" resultType="cn.hellohao.pojo.Keys">
+    <select id="getKeys" parameterType="integer" resultType="cn.mq.tbed.pojo.Keys">
         SELECT
             *
         FROM
             `keys`
     </select>
 
-    <update id="updateKey" parameterType="cn.hellohao.pojo.Keys">
+    <update id="updateKey" parameterType="cn.mq.tbed.pojo.Keys">
         UPDATE `keys`
         SET AccessKey = #{AccessKey},
         AccessSecret = #{AccessSecret},

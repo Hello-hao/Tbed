@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.ImgAndAlbumMapper">
+<mapper namespace="cn.mq.tbed.dao.ImgAndAlbumMapper">
 
 
-    <select id="selectImgAndAlbum" parameterType="string" resultType="cn.hellohao.pojo.ImgAndAlbum">
+    <select id="selectImgAndAlbum" parameterType="string" resultType="cn.mq.tbed.pojo.ImgAndAlbum">
         SELECT
         *
         FROM
@@ -15,7 +15,7 @@
         </where>
     </select>
 
-    <select id="getAlbumForImgname" resultType="cn.hellohao.pojo.ImgAndAlbum" parameterType="string">
+    <select id="getAlbumForImgname" resultType="cn.mq.tbed.pojo.ImgAndAlbum" parameterType="string">
         SELECT
         *
         FROM
@@ -27,7 +27,7 @@
         </where>
     </select>
 
-    <insert id="addImgAndAlbum" parameterType="cn.hellohao.pojo.ImgAndAlbum">
+    <insert id="addImgAndAlbum" parameterType="cn.mq.tbed.pojo.ImgAndAlbum">
         insert into `imgandalbum` (imgname,albumkey) values (#{imgname},#{albumkey})
     </insert>
 
@@ -39,7 +39,7 @@
         delete from imgandalbum where albumkey=#{albumkey}
     </delete>
 
-    <select id="selectImgForAlbumkey" parameterType="string" resultType="cn.hellohao.pojo.Images">
+    <select id="selectImgForAlbumkey" parameterType="string" resultType="cn.mq.tbed.pojo.Images">
         select * from imgdata a
                           LEFT JOIN imgandalbum b  on a.imgname = b.imgname
                           LEFT JOIN album c on b.albumkey = c.albumkey

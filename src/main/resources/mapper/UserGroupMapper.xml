@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.UserGroupMapper">
+<mapper namespace="cn.mq.tbed.dao.UserGroupMapper">
 
 
-    <select id="useridgetusergroup" parameterType="integer" resultType="cn.hellohao.pojo.UserGroup">
+    <select id="useridgetusergroup" parameterType="integer" resultType="cn.mq.tbed.pojo.UserGroup">
         SELECT
         *
         FROM
@@ -14,7 +14,7 @@
         </if>
     </select>
 
-    <select id="idgetusergroup"  parameterType="integer" resultType="cn.hellohao.pojo.UserGroup">
+    <select id="idgetusergroup"  parameterType="integer" resultType="cn.mq.tbed.pojo.UserGroup">
         SELECT
         *
         FROM
@@ -23,11 +23,11 @@
 
     </select>
 
-    <insert id="addusergroup" parameterType="cn.hellohao.pojo.UserGroup">
+    <insert id="addusergroup" parameterType="cn.mq.tbed.pojo.UserGroup">
         insert into `usergroup` (id,userid,groupid) values (null,#{userid},#{groupid})
     </insert>
 
-    <update id="updateusergroup" parameterType="cn.hellohao.pojo.UserGroup">
+    <update id="updateusergroup" parameterType="cn.mq.tbed.pojo.UserGroup">
         UPDATE `usergroup` SET  groupid = #{groupid} where userid = #{userid}
     </update>
 

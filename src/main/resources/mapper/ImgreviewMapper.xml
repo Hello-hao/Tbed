@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.ImgreviewMapper">
-    <resultMap id="BaseResultMap" type="cn.hellohao.pojo.Imgreview">
+<mapper namespace="cn.mq.tbed.dao.ImgreviewMapper">
+    <resultMap id="BaseResultMap" type="cn.mq.tbed.pojo.Imgreview">
         <!--@mbg.generated-->
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="app_id" jdbcType="VARCHAR" property="appId"/>
@@ -26,7 +26,7 @@
         delete from imgreview
         where id = #{id,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.hellohao.pojo.Imgreview"
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="cn.mq.tbed.pojo.Imgreview"
             useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into imgreview (app_id, api_key, secret_key,
@@ -34,7 +34,7 @@
         values (#{appId,jdbcType=VARCHAR}, #{apiKey,jdbcType=VARCHAR}, #{secretKey,jdbcType=VARCHAR},
         #{using,jdbcType=INTEGER},#{count,jdbcType=INTEGER})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.hellohao.pojo.Imgreview"
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="cn.mq.tbed.pojo.Imgreview"
             useGeneratedKeys="true">
         <!--@mbg.generated-->
         insert into imgreview
@@ -73,7 +73,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="cn.hellohao.pojo.Imgreview">
+    <update id="updateByPrimaryKeySelective" parameterType="cn.mq.tbed.pojo.Imgreview">
         <!--@mbg.generated-->
         update imgreview
         <set>
@@ -95,7 +95,7 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="cn.hellohao.pojo.Imgreview">
+    <update id="updateByPrimaryKey" parameterType="cn.mq.tbed.pojo.Imgreview">
         <!--@mbg.generated-->
         update imgreview
         set app_id = #{appId,jdbcType=VARCHAR},
