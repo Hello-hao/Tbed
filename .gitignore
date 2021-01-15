@@ -9,7 +9,8 @@
 .settings
 .springBeans
 .sts4-cache
-
+logs
+src/target
 ### IntelliJ IDEA ###
 .idea
 *.iws
