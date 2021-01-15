@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.GroupMapper">
+<mapper namespace="cn.mq.tbed.dao.GroupMapper">
 
 
-    <select id="grouplist" resultType="cn.hellohao.pojo.Group">
+    <select id="grouplist" resultType="cn.mq.tbed.pojo.Group">
         SELECT
         *
         FROM
         `group`
     </select>
 
-    <select id="idgrouplist" parameterType="integer" resultType="cn.hellohao.pojo.Group">
+    <select id="idgrouplist" parameterType="integer" resultType="cn.mq.tbed.pojo.Group">
         SELECT
             *
         FROM
@@ -18,7 +18,7 @@
         where id = #{id}
     </select>
 
-    <insert id="addgroup" parameterType="cn.hellohao.pojo.Group">
+    <insert id="addgroup" parameterType="cn.mq.tbed.pojo.Group">
         insert into `group` (id,groupname,keyid) values (null,#{groupname},#{keyid})
     </insert>
 
@@ -26,7 +26,7 @@
         delete from `group` where id=#{id}
     </delete>
 
-    <update id="setgroup" parameterType="cn.hellohao.pojo.Group">
+    <update id="setgroup" parameterType="cn.mq.tbed.pojo.Group">
         UPDATE `group` SET groupname=#{groupname},keyid=#{keyid} where id = #{id};
     </update>
 

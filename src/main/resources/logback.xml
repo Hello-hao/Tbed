@@ -1,0 +1,54 @@
+<?xml version="1.0" ?>
+<configuration debug="false">
+    <!--  控制台日志  -->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <!-- magenta:洋红 -->
+            <!-- boldMagenta:粗红-->
+            <!-- cyan:青色 -->
+            <!-- white:白色 -->
+            <!-- magenta:洋红 -->
+            <pattern>%red(%date{yyyy-MM-dd HH:mm:ss})  %highlight(%-5level)  %cyan(%thread)  %blue(%file:%line)  %green(%logger)  %cyan(%msg%n)</pattern>
+<!--            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} -&ndash;&gt; %p - %c[%L] %msg%n</pattern>-->
+        </encoder>
+    </appender>
+
+    <!--  配置info日志文件  -->
+    <appender name="fileInfoLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- info 日志，只记录INFO WARN 信息，不记录error信息 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>logs/info.%d.log</FileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d -->%p %c[%L] --> %msg%n</pattern>
+            <!--            <pattern>%d{yyyy-MM-dd HH:mm:ss}&ndash;&gt; [%thread] %-5level %logger{50} &ndash;&gt; %msg%n</pattern>-->
+        </encoder>
+    </appender>
+
+    <!--  配置error日志文件  -->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 过滤只记录error日志 -->
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <!-- d:时间 c:类名 L:行号 msg:日志信息 n:换行 p:日志级别 -->
+            <pattern>%d -->%p %c[%L] --> %msg%n</pattern>
+        </encoder>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <FileNamePattern>logs/error.%d.log</FileNamePattern>
+        </rollingPolicy>
+    </appender>
+    <!-- 全局日志级别 -->
+    <root level="info">
+        <appender-ref ref="consoleLog"/>
+        <!--<appender-ref ref="fileInfoLog"/>
+        <appender-ref ref="fileErrorLog"/>-->
+    </root>
+
+</configuration>

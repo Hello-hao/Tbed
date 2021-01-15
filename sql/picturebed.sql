@@ -2,16 +2,16 @@
  Navicat Premium Data Transfer
 
  Source Server         : localhost
- Source Server Type    : MySQL
- Source Server Version : 50720
+ Source Server Type    : MariaDB
+ Source Server Version : 100504
  Source Host           : localhost:3306
  Source Schema         : picturebed
 
- Target Server Type    : MySQL
- Target Server Version : 50720
+ Target Server Type    : MariaDB
+ Target Server Version : 100504
  File Encoding         : 65001
 
- Date: 18/03/2020 22:31:29
+ Date: 28/12/2020 17:44:56
 */
 
 SET NAMES utf8mb4;
@@ -30,6 +30,11 @@ CREATE TABLE `album`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of album
+-- ----------------------------
+INSERT INTO `album` VALUES ('TOALBUM9ee19N', '第一个画廊', '2020-12-28', '951021', 1);
+
+-- ----------------------------
 -- Table structure for code
 -- ----------------------------
 DROP TABLE IF EXISTS `code`;
@@ -38,7 +43,20 @@ CREATE TABLE `code`  (
   `value` int(20) NOT NULL,
   `code` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+
+-- ----------------------------
+-- Records of code
+-- ----------------------------
+INSERT INTO `code` VALUES (2, 1024, 'f70b3ec2473a658a7c922237645e00f73f1996a0095767cfa19ecd29dab26e04');
+INSERT INTO `code` VALUES (3, 1024, '9799a265d89fc026f3b2c22a6bde53ebf859ed707543a6a8bd3e13e6b83131aa');
+INSERT INTO `code` VALUES (4, 1024, 'c301b863e12bff3f7cdba2af0d7ca134c819419ff6eb3e21260a5199456efb43');
+INSERT INTO `code` VALUES (5, 1024, '7279a5421d022f7e6c234d94d90a4d02d54a9053e35054276fdfc532b2433aff');
+INSERT INTO `code` VALUES (6, 1024, 'ce8d66dca8f72c1b7a7aced177e2df6c4c9fa0b39d04e97280124323befae9c6');
+INSERT INTO `code` VALUES (7, 1024, 'df046eef348c873acb7340565f82381255b6e4869c1e25122b3e7af28316904a');
+INSERT INTO `code` VALUES (8, 1024, '78833240197a06d3fb793cd6747e84cd3c6c2323633d6bc49bb7518e98f7245f');
+INSERT INTO `code` VALUES (9, 1024, '2ec0ba794ba60d7d7adcfe3cea4dd6949921d319333d890b226ebd4f463cf7e9');
+INSERT INTO `code` VALUES (10, 1024, '5cb3ffd64a3ba4fdfb1716b172fa44723f698bb397471eeebcb30f27f524d70b');
 
 -- ----------------------------
 -- Table structure for config
@@ -64,12 +82,12 @@ CREATE TABLE `config`  (
   `webfavicons` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `theme` int(4) NULL DEFAULT 1 COMMENT '主题',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 8, 1, 'Hellohao', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Pexels.mp4', '1', '<a href=\"http://hellohao.cn/\" rel=\"nofollow\" target=\"_blank\">Hellohao开发制作</a>', '也许...|这将是最好用的图床', 'console.log(\'百度统计JS代码\');', 'http://127.0.0.1:8088', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 1, NULL, NULL, NULL, 1);
+INSERT INTO `config` VALUES (1, 8, 1, '师哥', '网站由JAVA语言编写应用SpringBoot框架开发，前端全部组件由BootStrap/Layui框架编写。由作者个人更新维护，后期会加入更全面的功能供大家使用，如有BUG请与我反馈。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/Pexels.mp4', '1', '<a rel=\"nofollow\" target=\"_blank\">请叫我师哥</a>', '也许...|这将是最好用的图床', 'console.log(\'\\n\' + \' %c 师哥出品，必属精品！ \' + \'\\n\', \'color: #fadfa3; background: #030307; padding:5px 0;\');', 'http://127.0.0.1:8088', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 'https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565769264&di=74d809d6cfae81bbab83bf9d573d8f9a&src=http://pic17.nipic.com/20110917/7420038_160826355111_2.jpg', 1, NULL, NULL, NULL, 1);
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -84,12 +102,12 @@ CREATE TABLE `emailconfig`  (
   `emailname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名',
   `using` int(4) NULL DEFAULT NULL COMMENT '1为可用，其他为不使用',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of emailconfig
 -- ----------------------------
-INSERT INTO `emailconfig` VALUES (1, '', '', '', '', '', 0);
+INSERT INTO `emailconfig` VALUES (1, 'luyuna1121@163.com', '123', '123', '0', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for group
@@ -117,6 +135,15 @@ CREATE TABLE `imgandalbum`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Records of imgandalbum
+-- ----------------------------
+INSERT INTO `imgandalbum` VALUES ('2020/12/28/TOIMG55c9c1228034019N.png', 'TOALBUM9ee19N');
+INSERT INTO `imgandalbum` VALUES ('2020/12/28/TOIMG74d771228034019N.png', 'TOALBUM9ee19N');
+INSERT INTO `imgandalbum` VALUES ('2020/12/28/TOIMGcb1b61228044637N.png', 'TOALBUM9ee19N');
+INSERT INTO `imgandalbum` VALUES ('2020/12/28/TOIMG1888f1228044638N.png', 'TOALBUM9ee19N');
+INSERT INTO `imgandalbum` VALUES ('2020/12/28/TOIMGfbee11228044638N.png', 'TOALBUM9ee19N');
+
+-- ----------------------------
 -- Table structure for imgdata
 -- ----------------------------
 DROP TABLE IF EXISTS `imgdata`;
@@ -134,7 +161,21 @@ CREATE TABLE `imgdata`  (
   `md5key` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_md5key_url`(`md5key`, `imgurl`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
+
+-- ----------------------------
+-- Records of imgdata
+-- ----------------------------
+INSERT INTO `imgdata` VALUES (3, '2020/12/28/TOIMG8feef1228034019N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG8feef1228034019N.png', 1, '2020-12-28', 33, '0:0:0:0:0:0:0:1', 5, 0, NULL, 'c3c6b8b02135ff705099e31896a40ba3');
+INSERT INTO `imgdata` VALUES (4, '2020/12/28/TOIMG27a471228034019N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG27a471228034019N.png', 1, '2020-12-28', 31, '0:0:0:0:0:0:0:1', 5, 0, NULL, '5aabd5ae7f506d9a14b995c1aebd8032');
+INSERT INTO `imgdata` VALUES (5, '2020/12/28/TOIMG3f94b1228034019N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG3f94b1228034019N.png', 1, '2020-12-28', 701, '0:0:0:0:0:0:0:1', 5, 0, NULL, 'bb0e745f1bd70301067bcd643c8210c2');
+INSERT INTO `imgdata` VALUES (6, '2020/12/28/TOIMG55c9c1228034019N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG55c9c1228034019N.png', 1, '2020-12-28', 340, '0:0:0:0:0:0:0:1', 5, 0, '', '0dcf051e419b3c1330cdb50c25ba74ba');
+INSERT INTO `imgdata` VALUES (7, '2020/12/28/TOIMG74d771228034019N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG74d771228034019N.png', 1, '2020-12-28', 155, '0:0:0:0:0:0:0:1', 5, 0, '', 'a93f5402b3572dcd797aa51ad0bed814');
+INSERT INTO `imgdata` VALUES (8, '2020/12/28/TOIMG094361228041534N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG094361228041534N.png', 1, '2020-12-28', 14, '0:0:0:0:0:0:0:1', 5, 0, NULL, '15eb54fcb5a69e527f03287c106fbf52');
+INSERT INTO `imgdata` VALUES (9, '2020/12/28/TOIMGcb1b61228044637N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMGcb1b61228044637N.png', 1, '2020-12-28', 49, '0:0:0:0:0:0:0:1', 5, 0, '', '4812f2386d32385ae43ee4bd6a717838');
+INSERT INTO `imgdata` VALUES (10, '2020/12/28/TOIMG1888f1228044638N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMG1888f1228044638N.png', 1, '2020-12-28', 64, '0:0:0:0:0:0:0:1', 5, 0, '', '7350b217e7fde0d6152d8a01660d425a');
+INSERT INTO `imgdata` VALUES (11, '2020/12/28/TOIMGfbee11228044638N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMGfbee11228044638N.png', 1, '2020-12-28', 46, '0:0:0:0:0:0:0:1', 5, 0, '', '50c2d2b67cb94dfeb09c18746eb28f29');
+INSERT INTO `imgdata` VALUES (12, '2020/12/28/TOIMGe5d641228045647N.png', 'http://127.0.0.1:8088/2020/12/28/TOIMGe5d641228045647N.png', 0, '2020-12-28', 1396, '0:0:0:0:0:0:0:1', 5, 0, NULL, 'a894878a9b97664ef2eee16619befc5d');
 
 -- ----------------------------
 -- Table structure for imgreview
@@ -231,7 +272,7 @@ CREATE TABLE `uploadconfig`  (
 -- ----------------------------
 -- Records of uploadconfig
 -- ----------------------------
-INSERT INTO `uploadconfig` VALUES (1, 3, 5, 1, 5, 'gif,jpg,jpeg,bmp,png', 2, 1, 1, 500, 1024, '');
+INSERT INTO `uploadconfig` VALUES (1, 3, 15, 1, 5, 'gif,jpg,jpeg,bmp,png', 2, 1, 1, 500, 10240, '');
 
 -- ----------------------------
 -- Table structure for user
@@ -254,7 +295,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-06-12', 2, '828812cff63b4e52b7be7911a9a410b2', 1, 1024, 1);
+INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-06-12', 2, 'bf4e20c586284ae3bc31c7554d345fed', 1, 2048, 1);
 
 -- ----------------------------
 -- Table structure for usergroup

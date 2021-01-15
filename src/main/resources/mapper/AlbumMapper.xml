@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.hellohao.dao.AlbumMapper">
+<mapper namespace="cn.mq.tbed.dao.AlbumMapper">
 
 
-    <select id="selectAlbum" parameterType="cn.hellohao.pojo.Album" resultType="cn.hellohao.pojo.Album">
+    <select id="selectAlbum" parameterType="cn.mq.tbed.pojo.Album" resultType="cn.mq.tbed.pojo.Album">
         SELECT
         *
         FROM
@@ -19,7 +19,7 @@
     </select>
 
 
-    <insert id="addAlbum" parameterType="cn.hellohao.pojo.Album">
+    <insert id="addAlbum" parameterType="cn.mq.tbed.pojo.Album">
         insert into `album` (albumkey,albumtitle,createdate,`password`,userid)
         values (#{albumkey},#{albumtitle},#{createdate},#{password},#{userid})
     </insert>
@@ -28,7 +28,7 @@
         delete from album where albumkey=#{albumkey}
     </delete>
 
-    <select id="selectAlbumURLList" parameterType="cn.hellohao.pojo.Album" resultType="cn.hellohao.pojo.Album">
+    <select id="selectAlbumURLList" parameterType="cn.mq.tbed.pojo.Album" resultType="cn.mq.tbed.pojo.Album">
 
         SELECT
         a.albumkey,
