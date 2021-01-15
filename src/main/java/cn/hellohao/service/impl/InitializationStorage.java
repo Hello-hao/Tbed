@@ -25,7 +25,7 @@ public class InitializationStorage implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         intiStorage();
-        sout();
+//        sout();
     }
     public void intiStorage(){
         List<Keys> keylist = keysMapper.getKeys();
@@ -33,7 +33,8 @@ public class InitializationStorage implements CommandLineRunner {
             if(key.getStorageType()!=0 && key.getStorageType()!=null){
                 int ret =0;
                 if(key.getStorageType()==1){
-                    ret =NOSImageupload.Initialize(key);//实例化网易
+                    //实例化网易
+                    ret =NOSImageupload.Initialize(key);
                 }else if (key.getStorageType()==2){
                     ret =OSSImageupload.Initialize(key);
                 }else if(key.getStorageType()==3){

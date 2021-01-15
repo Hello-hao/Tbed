@@ -107,10 +107,10 @@ public class FTPImageupload {
                     Integer p = Integer.parseInt(host[1]);
                     try {
                         if(!ftp.isConnected()){
-                            ftp.connect(h,p);
+//                            ftp.connect(h,p);
                         }
-                        ftp.login(k.getAccessKey(), k.getAccessSecret());
-                    } catch (IOException e) {
+//                        ftp.login(k.getAccessKey(), k.getAccessSecret());
+                    } catch (Exception e) {
                         e.printStackTrace();
                         return -1;
                     }
