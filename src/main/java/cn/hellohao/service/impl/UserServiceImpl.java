@@ -21,7 +21,10 @@ public class UserServiceImpl implements UserService {
     private CodeMapper codeMapper;
     @Override
     public Integer register(User user) {
-        // TODO Auto-generated method stub
+        Integer integer = checkUsername(user.getEmail());
+        if(integer > 0){
+            return 0;
+        }
         return userMapper.register(user);
     }
 

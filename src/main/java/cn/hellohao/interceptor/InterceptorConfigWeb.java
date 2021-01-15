@@ -31,24 +31,24 @@ public class InterceptorConfigWeb implements HandlerInterceptor {
         if(user==null){
             Cookie[] cookies = request.getCookies();
             String Hellohao_UniqueUserKey = "";
-            for (Cookie cookie : cookies) {
-                if(cookie.getName().equals("Hellohao_UniqueUserKey") && Hellohao_UniqueUserKey.equals("")){
-                    Hellohao_UniqueUserKey = URLDecoder.decode(cookie.getValue(), "GBK");
-                }
-            }
-
-            if(Hellohao_UniqueUserKey!=null && !Hellohao_UniqueUserKey.equals("")){
-                //String basepass = Base64Encryption.encryptBASE64(pass.getBytes());
-                Integer ret = userService.login(null, null,Hellohao_UniqueUserKey);
-                if (ret > 0) {
-                    User u = userService.getUsersMail(Hellohao_UniqueUserKey);
-                    if (u.getIsok() == 1) {
-                        session.setAttribute("user", u);
-                        session.setAttribute("email", u.getEmail());
-                        //request.getRequestDispatcher("/admin/goadmin").forward(request, response);
-                    }
-                }
-            }
+//            for (Cookie cookie : cookies) {
+//                if(cookie.getName().equals("Hellohao_UniqueUserKey") && Hellohao_UniqueUserKey.equals("")){
+//                    Hellohao_UniqueUserKey = URLDecoder.decode(cookie.getValue(), "GBK");
+//                }
+//            }
+//
+//            if(Hellohao_UniqueUserKey!=null && !Hellohao_UniqueUserKey.equals("")){
+//                //String basepass = Base64Encryption.encryptBASE64(pass.getBytes());
+//                Integer ret = userService.login(null, null,Hellohao_UniqueUserKey);
+//                if (ret > 0) {
+//                    User u = userService.getUsersMail(Hellohao_UniqueUserKey);
+//                    if (u.getIsok() == 1) {
+//                        session.setAttribute("user", u);
+//                        session.setAttribute("email", u.getEmail());
+//                        //request.getRequestDispatcher("/admin/goadmin").forward(request, response);
+//                    }
+//                }
+//            }
         }
 
         return true;

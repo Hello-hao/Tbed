@@ -37,7 +37,7 @@ public class WebAppConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/static/**","/**/*.css", "/**/*.js", "/**/*.png", "/**/*.jpg",
                                         "/**/*.jpeg", "/**/*.gif", "/**/fonts/*", "/**/*.svg",
                         "/clientupimg/**","/clientupurlimg/**","/clientlogin/**","/notices/**","/systemupdate/**","/getdomain/**",
-                        "/getNoticeText/**","/getNotice/**","/addalbum/**","/addalbum/**","/SaveForAlbum/**","/TOALBUM*N/**","/TOALBUM*N/**");
+                        "/getNoticeText/**","/getNotice/**","/addalbum/**","/addalbum/**","/SaveForAlbum/**","/TOALBUM*N/**","/TOALBUM*N/**","/upimgs/**");
         registry.addInterceptor(interceptorConfig).addPathPatterns("/admin/**");
         registry.addInterceptor(interceptorConfigTwo).addPathPatterns("/admin/root/**");
 

@@ -124,7 +124,7 @@
     </update>
 
     <select id="checkUsername" parameterType="string" resultType="integer">
-        SELECT count(username) FROM `user` where username=#{username}
+        SELECT count(email) FROM `user` where email=#{username}
     </select>
 
     <!-- 查询用户总数 -->

@@ -106,10 +106,11 @@ public class UploadServicel {
                 }
             }
         }
-        if (Integer.parseInt(Base64Encryption.decryptBASE64(upurlk)) != yzupdate()) {
-            msg.setCode("4003");
-            return msg;
-        }
+        Integer yzupdate = yzupdate();
+//        if (Integer.parseInt(Base64Encryption.decryptBASE64(upurlk)) != yzupdate) {
+//            msg.setCode("4003");
+//            return msg;
+//        }
         //验证文件是否是图片
         if (u == null) {
             sourcekey = GetCurrentSource.GetSource(null);

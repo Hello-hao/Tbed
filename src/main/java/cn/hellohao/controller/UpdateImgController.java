@@ -130,6 +130,41 @@ public class UpdateImgController {
         msg.setData(jsonObject);
         return msg;
     }
+    @RequestMapping(value = "/upimgss")
+    @ResponseBody
+    public String upimgss(@RequestParam(value = "file",required = false) MultipartFile  multipartFile,HttpSession session, HttpServletRequest request
+            , Integer setday, String upurlk) throws Exception {
+
+
+        InputStream ins = multipartFile.getInputStream();
+        File file = new File(multipartFile.getOriginalFilename());
+        inputStreamToFile(ins, file);
+        ins.close();
+
+        Msg msg = new Msg();
+        msg = uploadServicel.uploadForLoc(session, request, multipartFile, 0, upurlk, iparr);
+        String s = JSONObject.toJSONString(msg.getData());
+        Object parse = JSONObject.parse(s);
+        JSONObject jsonObject = new JSONObject();
+        return s;
+    }
+
+
+    private static void inputStreamToFile(InputStream ins, File file) {
+        try {
+            OutputStream os = new FileOutputStream(file);
+            int bytesRead = 0;
+            byte[] buffer = new byte[8192];
+            while ((bytesRead = ins.read(buffer, 0, 8192)) != -1) {
+                os.write(buffer, 0, bytesRead);
+            }
+            os.close();
+            ins.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     //根据网络图片url上传
     @PostMapping(value = "/upurlimg")
