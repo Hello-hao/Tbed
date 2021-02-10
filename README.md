@@ -73,15 +73,15 @@ git clone https://github.com/Hello-hao/Tbed.git
 
 ### 配置文件
 
-打开 `application.properties` 修改 `MySQL` 和 `服务器端口` 等连接信息.
+打开 `application.properties` 修改 `MySQL` 、 `服务器端口` 和 `数据库链接地址`等连接信息.
 
 ```properties
 #数据库账号
 spring.datasource.username=root
 #数据库密码
 spring.datasource.password=root
-#数据库链接地址
-spring.datasource.url=jdbc:mysql://localhost:3306/picturebed?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
+#数据库链接地址，注意不带<>
+spring.datasource.url=jdbc:mysql://localhost:3306/<此处改为你的数据库名称>?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8
 #端口
 server.port=8088
 #鉴黄周期表达式 下方表达式为每天七点半执行
@@ -143,7 +143,7 @@ java -jar Tbed.jar
 
 然后访问`http://服务器IP:8088/`即可。
 注意：上边的`/home`是你的jar包和application.properties文件放的目录。
-项目运行起来不要关闭xshell窗口，否则项目将不能访问。可以使用一些后台命令把项目锁定后台。如`nohup`或`screen`，推荐使用`screen`
+项目运行起来不要关闭xshell窗口，否则项目将不能访问。可以使用一些后台命令把项目锁定后台。如`nohup`或`screen`或`tmux`，推荐使用`screen`
 
 ### PC客户端
 
