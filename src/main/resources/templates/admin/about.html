@@ -15,7 +15,7 @@
 <body>
 <div class="layui-main" style="width: 50%;margin-top: 50px;">
     <h3>
-        <img src="https://hellohao.oss-cn-beijing.aliyuncs.com/Hellohao/c1f380714064000.png"
+        <img th:src="@{/img/baner.jpg}"
              style="border-radius :5px;max-width: 80%;-moz-box-shadow: 2px 2px 10px #909090;-webkit-box-shadow: 2px 2px 10px #909090;box-shadow:2px 2px 10px #909090;" />
     </h3>
     <br/>
@@ -28,14 +28,12 @@
     <h3><i class="layui-icon layui-icon-login-qq">&nbsp;</i>开发者交流群：864800972</h3>
     <hr />
 <!--    th:text="${systemupdate}"-->
-    <h3><i class="layui-icon layui-icon-auz">&nbsp;</i><span id="dates"  >2019-12-13</span> &nbsp;&nbsp;&nbsp;<a onclick="sysupdate();" class="layui-btn layui-btn-normal layui-btn-sm">检查更新</a></h3>
+    <h3><i class="layui-icon layui-icon-auz">&nbsp;</i><span id="dates" >2020-09-24</span> &nbsp;&nbsp;&nbsp;<a onclick="sysupdate();" class="layui-btn layui-btn-normal layui-btn-sm">检查更新</a></h3>
     <hr />
-    <h3 style="font-weight: bold;"><i class="layui-icon layui-icon-rmb">&nbsp;</i>支持一下作者吧：</h3>
+    <h3 style="font-weight: bold;"><i class="layui-icon layui-icon-rmb">&nbsp;</i>捐赠开发者：<a onclick="jz()" style="cursor:pointer;">展开</a></h3>
     <br />
     <h3>
-        <img  th:src="@{/img/ds.jpg}"
-             style="border-radius :5px;max-width: 80%;-moz-box-shadow: 2px 2px 10px #909090;-webkit-box-shadow: 2px 2px 10px #909090;box-shadow:2px 2px 10px #909090;" />
-<!--        src="http://cdn.wwery.com/Hellohao/df2710722111702.jpg"-->
+        <img id="jzm"  th:src="@{/img/ds.jpg}" style=" display:none;border-radius :5px;max-width: 60%;-moz-box-shadow: 2px 2px 10px #909090;-webkit-box-shadow: 2px 2px 10px #909090;box-shadow:2px 2px 10px #909090;" />
     </h3>
 
 </div>
@@ -57,7 +55,7 @@
                 dataType: "json",
                 success: function (data) {
                     if (data < 0) {
-                        layer.confirm('有新版本，是否更新？', {
+                        layer.confirm('有新版本，是否去下载最新编译包？', {
                             btn: ['去更新','不必了'] //按钮
                         }, function(){
                             window.open("https://github.com/Hello-hao/Tbed/releases");
@@ -69,6 +67,18 @@
                     }
                 }
             });
+    }
+
+    function jz() {
+        var display =$('#jzm').css('display');
+        if(display == 'none'){
+            $('#jzm').show();
+        }else{
+            $('#jzm').hide();
+        }
+        $('body,html').animate({
+            scrollTop:$("#jzm").offset().top
+        },800);
     }
 
 </script>

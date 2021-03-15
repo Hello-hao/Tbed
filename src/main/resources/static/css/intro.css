@@ -1,6 +1,7 @@
 
     body{
-        background-color:gray;
+        background-color:#FFF;
+        /*background: #5583EE;background: -moz-linear-gradient(right, #5583EE 0%, #41D8DD 100%);background: -webkit-linear-gradient(right, #5583EE 0%, #41D8DD 100%);background: linear-gradient(to right,  #5583EE 0%, #41D8DD 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5583EE', endColorstr='#41D8DD',GradientType=1 );*/
     }
     h1{
         color:rgb(225,223,220);

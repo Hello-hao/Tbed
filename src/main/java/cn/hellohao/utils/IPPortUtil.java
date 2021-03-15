@@ -20,10 +20,15 @@ public class IPPortUtil {
      * @throws MalformedObjectNameException
      * 获取当前机器的端口号
      */
-    public static String getLocalPort() throws MalformedObjectNameException {
+    public static String getLocalPort()  {//throws MalformedObjectNameException
         MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
-        Set<ObjectName> objectNames = beanServer.queryNames(new ObjectName("*:type=Connector,*"),
-                Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
+        Set<ObjectName> objectNames = null;
+        try {
+            objectNames = beanServer.queryNames(new ObjectName("*:type=Connector,*"),
+                    Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
+        } catch (MalformedObjectNameException e) {
+            e.printStackTrace();
+        }
         String port = objectNames.iterator().next().getKeyProperty("port");
         return port;
     }

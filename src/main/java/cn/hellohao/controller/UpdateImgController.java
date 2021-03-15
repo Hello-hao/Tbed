@@ -4,22 +4,29 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.*;
+import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -31,8 +38,6 @@ public class UpdateImgController {
     private UserService userService;
     @Autowired
     private KeysService keysService;
-    @Autowired
-    private OSSImageupload ossImageupload;
     @Autowired
     private ConfigService configService;
     @Autowired
@@ -47,8 +52,12 @@ public class UpdateImgController {
     private FTPImageupload ftpImageupload;
     @Autowired
     private ImgService imgService;
+    @Autowired
+    private  UploadServicel uploadServicel;
 
     private String[] iparr;
+
+    public static String vu;
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession, HttpServletRequest request, HttpServletResponse response) {
@@ -66,7 +75,7 @@ public class UpdateImgController {
             if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
             if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
             if (email != null) {
-                Integer ret = userService.login(u.getEmail(), u.getPassword());
+                Integer ret = userService.login(u.getEmail(), u.getPassword(),null);
                 if (ret > 0) {
                     User user = userService.getUsers(u.getEmail());
                     model.addAttribute("username", user.getUsername());
@@ -91,115 +100,22 @@ public class UpdateImgController {
                 isupdate = (u == null) ? 0: 1;
             }
             model.addAttribute("VisitorUpload", isupdate);
-        return "index";
+            vu = IdUtil.simpleUUID();
+            model.addAttribute("vu",vu);
+            if(config.getTheme()==1){
+                return "index";
+            }else{
+                return "index-Minimalism";
+            }
     }
 
     @RequestMapping(value = "/upimg")
     @ResponseBody
-    public String upimg( HttpSession session,HttpServletRequest request
+    public Msg upimg( HttpSession session,HttpServletRequest request
             , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer setday,String upurlk) throws Exception {
-        String userip = GetIPS.getIpAddr(request);
-        Print.Normal("上传者ip:"+userip);
-        java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
-        JSONArray jsonArray = new JSONArray();
-        JSONObject jsonObject = new JSONObject();
-        Config config = configService.getSourceype();
-        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        User u = (User) session.getAttribute("user");
-        Integer usermemory =0;
-        Integer memory =0;
-        Integer sourcekey=0;
-        Integer maxsize = 0;
-        String userpath = "tourist";
-        Boolean b =false;
-        if(uploadConfig.getBlacklist()!=null){
-            iparr = uploadConfig.getBlacklist().split(";");
-            for (String s : iparr) {
-                if(s.equals(userip)){
-                    jsonObject.put("imgurls",911);
-                    return jsonObject.toString();
-                }
-            }
-        }
-        if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=yzupdate()){
-            jsonObject.put("imgurls",403);
-            return jsonObject.toString();
-        }
-        if(u==null){
-            sourcekey = GetCurrentSource.GetSource(null);
-            memory = uploadConfig.getVisitormemory();
-            maxsize = uploadConfig.getFilesizetourists();
-            usermemory= imgService.getusermemory(0);
-            if(usermemory==null){usermemory = 0;}
-        }else{
-            userpath = u.getUsername();
-            sourcekey = GetCurrentSource.GetSource(u.getId());
-            memory = userService.getUsers(u.getEmail()).getMemory();
-            maxsize = uploadConfig.getFilesizeuser();
-            usermemory= imgService.getusermemory(u.getId());
-            if(usermemory==null){usermemory = 0;}
-        }
-        if(uploadConfig.getUrltype()==2){
-            userpath = dateFormat.format(new Date());
-        }
-        Keys key = keysService.selectKeys(sourcekey);
-        if(sourcekey==5){b =true;}
-        else{b = StringUtils.doNull(sourcekey,key);}
-        if(!b){
-            jsonObject.put("imgurls",-1);
-            return jsonObject.toString();
-        }
-        int tmp =(memory==-1? -2:(usermemory/1024));
-        if(tmp>=memory){
-            jsonObject.put("imgurls",-5);
-            return jsonObject.toString();
-        }
-        long stime = System.currentTimeMillis();
-        Map<String, MultipartFile> map = new HashMap<>();
-        Print.Normal("文件大小："+multipartFile.getSize());
-        if(multipartFile.getSize()>maxsize*1024*1024){
-            jsonObject.put("imgurls",-6);
-            return jsonObject.toString();
-        }
-        String fileName = multipartFile.getOriginalFilename();
-        String lastname = fileName.substring(fileName.lastIndexOf(".") + 1);
-        if (!multipartFile.isEmpty()) {
-            map.put(lastname, multipartFile);
-        }
-        Map<ReturnImage, Integer> m = null;
-        m = GetSource.storageSource(key.getStorageType(),map, userpath,null,setday);
-        Images img = new Images();
-        SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd");
-        Print.Normal("上传图片的时间是："+df.format(new Date()));
-        for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
-            if(key.getStorageType()==5){
-                if(config.getDomain()!=null){
-                    jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                    jsonObject.put("imgnames",entry.getKey().getImgname());
-                    img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                }else{
-                    jsonObject.put("imgurls",config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                    jsonObject.put("imgnames",entry.getKey().getImgname());
-                    img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
-                }
-            }else{
-                jsonObject.put("imgurls",entry.getKey().getImgurl());
-                jsonObject.put("imgnames",entry.getKey().getImgname());
-                img.setImgurl(entry.getKey().getImgurl());
-            }
-            jsonArray.add(jsonObject);
-            img.setUpdatetime(df.format(new Date()));
-            img.setSource(key.getStorageType());
-            img.setUserid(u == null?0:u.getId());
-            img.setSizes((entry.getValue()) / 1024);
-            img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
-            img.setImgtype(setday>0?1:0);
-            img.setAbnormal(userip);
-            userService.insertimg(img);
-            long etime = System.currentTimeMillis();
-            Print.Normal("上传图片所用时长：" + String.valueOf(etime - stime) + "ms");
-        }
-        return jsonObject.toString();
+        Msg msg = new Msg();
+        msg = uploadServicel.uploadForLoc(session,request,multipartFile,setday,upurlk,iparr);
+        return msg;
     }
 
 //根据网络图片url上传
@@ -239,7 +155,8 @@ public class UpdateImgController {
             java.text.DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy/MM/dd");
             userpath = dateFormat.format(new Date());
         }
-        if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=yzupdate()){
+        //if(Integer.parseInt(Base64Encryption.decryptBASE64(upurlk))!=yzupdate()){
+        if (!upurlk.equals(UpdateImgController.vu)) {
             jsonArray.add(-403);
             return jsonArray.toString();
         }
@@ -248,12 +165,12 @@ public class UpdateImgController {
         Integer youke = uploadConfig.getFilesizetourists();
         Integer yonghu = uploadConfig.getFilesizeuser();
         String uuid= UUID.randomUUID().toString().replace("-", "");
-        Boolean bo =false;
-        bo = Sourcekey==5?true:StringUtils.doNull(Sourcekey,key);
-        if(!bo){
-            jsonArray.add(-1);
-            return jsonArray.toString();
-        }
+        //Boolean bo =false;
+        //bo = Sourcekey==5?true:StringUtils.doNull(Sourcekey,key);
+//        if(!bo){
+//            jsonArray.add(-1);
+//            return jsonArray.toString();
+//        }
         Print.warning("上传地址是："+request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
 
         if(usermemory/1024>=memory) {
@@ -268,9 +185,9 @@ public class UpdateImgController {
             }
             try{
                 boolean bl =ImgUrlUtil.downLoadFromUrl(imgurl,
-                        uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        uuid, request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator);
                 if(bl==true){
-                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator+uuid);
                     byte[] b = new byte[3];
                     is.read(b, 0, b.length);
                     String xxx = ImgUrlUtil.bytesToHexString(b);
@@ -281,7 +198,7 @@ public class UpdateImgController {
                         return jsonArray.toString();
                     }
                     Map<String, String> map = new HashMap<>();
-                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"hellohaotmp"+ File.separator+uuid);
                     Map<ReturnImage, Integer> m = null;
                     m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
                     Images img = new Images();
@@ -291,11 +208,11 @@ public class UpdateImgController {
                     for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
                         if(key.getStorageType()==5){
                             if(config.getDomain()!=null){
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl(config.getDomain()+"/"+entry.getKey().getImgurl());//图片链接
                             }else{
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/"+entry.getKey().getImgurl());//图片链接
                             }
                         }else{
                             jsonArray.add(entry.getKey().getImgurl());
@@ -305,7 +222,8 @@ public class UpdateImgController {
                         img.setSource(key.getStorageType());
                         img.setUserid(u == null?0:u.getId());
                         img.setSizes((entry.getValue()));
-                        img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                        //img.setImgname(SetText.getSubString(entry.getKey().getImgurl(), key.getRequestAddress() + "/", ""));
+                        img.setImgname(entry.getKey().getImgurl());
                         img.setAbnormal(userip);
                         if(setday>0){img.setImgtype(1);}
                         else{img.setImgtype(0);}
@@ -326,9 +244,9 @@ public class UpdateImgController {
             }
             try{
                 boolean bl = ImgUrlUtil.downLoadFromUrl(imgurl,
-                        uuid, request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/");
+                        uuid, request.getSession().getServletContext().getRealPath("/")+"hellohaotmp"+File.separator);
                 if(bl==true){
-                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    FileInputStream is = new FileInputStream(request.getSession().getServletContext().getRealPath("/")+"hellohaotmp"+File.separator+uuid);
                     byte[] b = new byte[3];
                     is.read(b, 0, b.length);
                     String xxx = ImgUrlUtil.bytesToHexString(b);
@@ -339,7 +257,7 @@ public class UpdateImgController {
                         return jsonArray.toString();
                     }
                     Map<String, String> map = new HashMap<>();
-                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+"/hellohaotmp/"+uuid);
+                    map.put(TypeDict.checkType(xxx), request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator+uuid);
                     Map<ReturnImage, Integer> m = null;
                     m = GetSource.storageSource(key.getStorageType(), null, userpath,map,setday);
                     Images img = new Images();
@@ -349,11 +267,11 @@ public class UpdateImgController {
                     for (Map.Entry<ReturnImage, Integer> entry : m.entrySet()) {
                         if(key.getStorageType()==5){
                             if(config.getDomain()!=null){
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl(config.getDomain()+"/links/"+entry.getKey().getImgurl());
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl(config.getDomain()+"/"+entry.getKey().getImgurl());
                             }else{
-                                jsonArray.add(config.getDomain()+"/links/"+entry.getKey().getImgurl());
-                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/links/"+entry.getKey().getImgurl());//图片链接
+                                jsonArray.add(config.getDomain()+"/"+entry.getKey().getImgurl());
+                                img.setImgurl("http://"+IPPortUtil.getLocalIP()+":"+IPPortUtil.getLocalPort()+"/"+entry.getKey().getImgurl());//图片链接
                             }
                         }else{
                             jsonArray.add(entry.getKey().getImgurl());
@@ -419,6 +337,128 @@ public class UpdateImgController {
     }
 
 
+    @RequestMapping("/{key1}/TOIMG{key2}N.{key3}")
+    public ResponseEntity<Object> selectByFyOne(final HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                @PathVariable("key1") String key1, @PathVariable("key2") String key2,
+                             @PathVariable("key3") String key3, Model model){
+        MediaType mediaType =null;
+        File file = new File(File.separator+"HellohaoData"+File.separator+key1+"/TOIMG"+key2+"N."+key3);
+        if (!file.exists()) {
+            try {
+                response.sendRedirect("/404");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("<h1>404 FILE NOT FOUND</h1>");
+            }
+        }
+        if(key3.equals("png")){
+            mediaType = MediaType.IMAGE_PNG;
+        }else if(key3.equals("gif")){
+            mediaType = MediaType.IMAGE_GIF;
+        }else{
+            mediaType = MediaType.IMAGE_JPEG;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        // headers.setContentDispositionFormData("attachment", URLUtil.encode(file.getName()));
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(mediaType)
+                .body(new FileSystemResource(file));
+
+        //return "forward:/links/"+key1+"/TOIMG"+key2+"N."+key3;
+    }
+
+   // @RequestMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
+    public void selectByFy2(HttpServletRequest request, HttpServletResponse response,
+                              @PathVariable("key1") String key1,@PathVariable("key2") String key2,
+                              @PathVariable("key3") String key3,@PathVariable("key4") String key4,
+                              @PathVariable("key5") String key5,Model model) {
+        String head = "jpg";
+        if(key5.equals("jpg")||key5.equals("jpeg")){
+            head = "jpeg";
+        }else if(key5.equals("png")){
+            head = "png";
+        }else if(key5.equals("bmp")){
+            head = "bmp";
+        }else if(key5.equals("gif")){
+            head = "gif";
+        }else{
+            head = key5;
+        }
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Cache-Control", "no-cache");
+        response.setDateHeader("Expires", 0);
+        response.setContentType("image/"+head);
+        //InputStream is= null;
+        BufferedImage bi=null;
+        try {
+            //is = new FileInputStream(new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5));
+            bi= ImageIO.read(new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5));
+            //is.close();
+            //将图片输出给浏览器
+            BufferedImage image = (bi) ;
+            OutputStream os = response.getOutputStream();
+            ImageIO.write(image, head, os);
+        } catch (Exception e) {
+            Print.warning("寻找本地文件出错："+e.getMessage());
+            e.printStackTrace();
+            try {
+                response.sendRedirect("/404");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    @GetMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
+    @ResponseBody
+    public ResponseEntity<Object> selectByFyTow(final HttpServletRequest request,
+                                                 HttpServletResponse response,
+                                                @PathVariable("key1") String key1,
+                                                 @PathVariable("key2") String key2,
+                                                @PathVariable("key3") String key3,
+                                                 @PathVariable("key4") String key4,
+                                                @PathVariable("key5") String key5) {
+        MediaType mediaType =null;
+        File file = new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5);
+        if (!file.exists()) {
+            try {
+                response.sendRedirect("/404");
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("<h1>404 FILE NOT FOUND</h1>");
+            }
+        }
+         if(key5.equals("png")){
+            mediaType = MediaType.IMAGE_PNG;
+        }else if(key5.equals("gif")){
+            mediaType = MediaType.IMAGE_GIF;
+        }else{
+             mediaType = MediaType.IMAGE_JPEG;
+        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        // headers.setContentDispositionFormData("attachment", URLUtil.encode(file.getName()));
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+        headers.add("Last-Modified", new Date().toString());
+        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(mediaType)
+                .body(new FileSystemResource(file));
+    }
+
     private Integer yzupdate(){
         Calendar cal = Calendar.getInstance();
         int y=cal.get(Calendar.YEAR);
@@ -433,5 +473,6 @@ public class UpdateImgController {
     public String err() {
         return "err";
     }
+
 
 }

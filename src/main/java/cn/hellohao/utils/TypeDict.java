@@ -1,5 +1,10 @@
 package cn.hellohao.utils;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 public class TypeDict {
 /**
  常用文件的文件头如下：(以前六位为准)
@@ -43,9 +48,22 @@ MIDI (mid)，文件头：4D546864
         case "474946": return "jif";
         case "47494638": return "gif";
         case "424D": return "bmp";
-            
+        case "424D36": return "bmp";
         default: return "0000";
         }
     }
+
+    public static Boolean checkImgType(File file) {
+        try {
+            // 通过ImageReader来解码这个file并返回一个BufferedImage对象
+            // 如果找不到合适的ImageReader则会返回null，我们可以认为这不是图片文件
+            // 或者在解析过程中报错，也返回false
+            Image image = ImageIO.read(file);
+            return image != null;
+        } catch(IOException ex) {
+            return false;
+        }
+    }
+
 
 }

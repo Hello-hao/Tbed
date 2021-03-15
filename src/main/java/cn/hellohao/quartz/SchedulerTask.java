@@ -6,7 +6,9 @@ import cn.hellohao.pojo.Keys;
 import cn.hellohao.service.impl.ImgServiceImpl;
 import cn.hellohao.service.impl.ImgreviewServiceImpl;
 import cn.hellohao.service.impl.KeysServiceImpl;
+import cn.hellohao.service.impl.NOSImageupload;
 import cn.hellohao.utils.LocUpdateImg;
+import cn.hellohao.utils.SpringContextHolder;
 import com.alibaba.fastjson.JSON;
 import com.baidu.aip.contentcensor.AipContentCensor;
 import com.baidu.aip.contentcensor.EImgType;
@@ -90,25 +92,28 @@ public class SchedulerTask {
                                 schedulerTask.imgreviewService.updateByPrimaryKeySelective(imgreview1);
                                 Keys key =null;
                                 if(images.getSource()==1){
-                                    key = keysService.selectKeys(images.getSource());
+                                    key =schedulerTask.keysService.selectKeys(images.getSource());
                                     schedulerTask.imgService.delect(key, images.getImgname());
                                 }else if (images.getSource()==2){
-                                    key = keysService.selectKeys(images.getSource());
+                                    key = schedulerTask.keysService.selectKeys(images.getSource());
                                     schedulerTask.imgService.delectOSS(key, images.getImgname());
                                 }else if(images.getSource()==3){
-                                    key = keysService.selectKeys(images.getSource());
+                                    key = schedulerTask.keysService.selectKeys(images.getSource());
                                     schedulerTask.imgService.delectUSS(key, images.getImgname());
                                 }else if(images.getSource()==4){
-                                    key = keysService.selectKeys(images.getSource());
+                                    key = schedulerTask.keysService.selectKeys(images.getSource());
                                     schedulerTask.imgService.delectKODO(key, images.getImgname());
                                 }else if(images.getSource()==5){
                                     LocUpdateImg.deleteLOCImg(images.getImgname());
                                 }else if(images.getSource()==6){
-                                    key = keysService.selectKeys(images.getSource());
+                                    key = schedulerTask.keysService.selectKeys(images.getSource());
                                     schedulerTask.imgService.delectCOS(key, images.getImgname());
                                 }else if(images.getSource()==7){
-                                    key = keysService.selectKeys(images.getSource());
+                                    key = schedulerTask.keysService.selectKeys(images.getSource());
                                     schedulerTask.imgService.delectFTP(key, images.getImgname());
+                                }else if(images.getSource()==8){
+                                    key = schedulerTask.keysService.selectKeys(images.getSource());
+                                    schedulerTask.imgService.delectUFile(key, images.getImgname());
                                 }else{
                                     System.err.println("未获取到对象存储参数，上传失败。");
                                 }

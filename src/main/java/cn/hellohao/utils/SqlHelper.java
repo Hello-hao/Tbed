@@ -76,7 +76,7 @@ final class RunSqlScript {
         try {
             Class.forName(DBDRIVER);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            Print.Normal("SqlHelper.java - ClassNotFoundException");
         }
         //2、连接数据库
         //通过连接管理器连接数据库
@@ -84,25 +84,29 @@ final class RunSqlScript {
             //在连接的时候直接输入用户名和密码才可以连接
             conn = DriverManager.getConnection(DBURL,USERNAME,PASSWORD);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Print.Normal("SqlHelper.java - SQLException1");
         }
         try {
             stmt = conn.createStatement();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Print.Normal("SqlHelper.java - SQLException2");
         }
         //4、执行语句
         try {
             count = stmt.executeUpdate(sql);
         } catch (SQLException e) {
-            e.printStackTrace();
+            if(e.getMessage().contains("Duplicate key name") && e.getMessage().contains("index_md5key_url")){
+                Print.Normal("Database index already exists, skip this step.");
+            }else{
+                e.printStackTrace();
+            }
         }
         //5、关闭操作
         try {
             stmt.close();
             conn.close();
         } catch (SQLException e) {
-            e.printStackTrace();
+            Print.Normal("SqlHelper.java - SQLException4");
         }
         return count;
     }

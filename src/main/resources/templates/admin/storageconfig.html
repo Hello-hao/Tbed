@@ -16,11 +16,10 @@
     <br/>
     <form class="layui-form layui-form-pane" action="">
 
-        <div class="layui-form-item">
+        <div class="layui-form-item tlist">
             <label class="layui-form-label">对象存储源</label>
             <div class="layui-input-block">
                 <select id="StorageType" name="city" lay-filter="business" lay-verify="required">
-                    <option value="0">&nbsp;未设置任何存储源</option>
                     <option value="5">&nbsp;本地存储</option>
                     <option value="1">&nbsp;网易NOS</option>
                     <option value="2">&nbsp;阿里OSS</option>
@@ -28,6 +27,9 @@
                     <option value="4">&nbsp;七牛云KODO</option>
                     <option value="6">&nbsp;腾讯COS</option>
                     <option value="7">&nbsp;FTP存储</option>
+                    <option value="8">&nbsp;U-File</option>
+<!--                    <i class="layui-icon layui-icon-face-smile" style="margin-right: 10px;float: right;color: red;font-weight: bold;"></i>-->
+
                 </select>
             </div>
         </div>
@@ -91,8 +93,9 @@
     </form>
 </div>
 <script>
+    var form = null;
     layui.use(['form', 'layedit', 'laydate'], function () {
-        var form = layui.form;
+        form = layui.form;
         //监听提交
         form.on('submit(formDemo)', function (data) {
             layer.msg(JSON.stringify(data.field));
@@ -151,6 +154,11 @@
                     $("#c3 label").text('FTP地址');
                     $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
 
+                }else if(data.value==8){
+                    $("#c3").css('display','none');
+                    $("#keyusername").text('操作员名称');
+                    $("#keypass").text('操作员密码');
+                    $("#c3-1").css('display','none');
                 }else{
                     $("#c3").css('display','block');
                     $("#c3-1").css('display','none');
@@ -183,6 +191,7 @@
                         $("#Endpoint").val(data[0].endpoint);
                         $("#Bucketname").val(data[0].bucketname);
                         $("#RequestAddress").val(data[0].requestAddress);
+                        form.render();
                 }
             });
         });
@@ -195,6 +204,10 @@
                 form.render();
             }
         });
+        // $(".tlist dd").each(function(){
+        //     $(this).append('<img style="float: right;max-width: 23px; margin-top: 5px;" src="/img/ld.gif" />');
+        // });
+        v();
     });
     $(function () {
         var types = [[${StorageType!=null?StorageType:0}]];
@@ -218,7 +231,7 @@
             $("#keypass").text('操作员密码');
             $("#c3 label").text('Endpoint');
         }else if(types==4){
-            Endpoint2 = [[${Endpoint2}]];
+            Endpoint2 = [[${Endpoint2!=''?Endpoint2:0}]];
             $("#c3").css('display','none');
             $("#c3-1").css('display','block');
             $("#keyusername").text('AccessKey');
@@ -226,7 +239,7 @@
             $("#c3 label").text('Endpoint');
             $("#Endpoint2").find("option[value='" + Endpoint2 + "']").attr("selected", true);
         }else if(types==5){
-            Endpoint2 = [[${Endpoint2}]];
+            Endpoint2 = [[${Endpoint2!=''?Endpoint2:0}]];
             $("#keyusername").text('AccessKey');
             $("#keypass").text('SecretKey');
             $("#c1").css('display','none');
@@ -251,6 +264,12 @@
             $("#c3 label").text('FTP地址');
             $("#ysm").text('按格式填写如：127.0.0.1:21不需要添加ftp:// 推荐使用21默认端口，修改过得端口先用xftp等客户端工具测试一下能不能链接。');
 
+        }else if(types==8){
+            $("#c3").css('display','none');
+            $("#c3-1").css('display','none');
+            $("#keyusername").text('操作员名称');
+            $("#keypass").text('操作员密码');
+            $("#c3 label").text('Endpoint');
         }else{
             $("#c3").css('display','block');
             $("#c3-1").css('display','none');
@@ -259,6 +278,8 @@
             $("#c3 label").text('Endpoint');
             $("#ysm").text('需带有http://或https://');
         }
+        //v();
+        form.render();
     });
     function issave() {
         var AccessKey = $("#AccessKey").val();
@@ -272,28 +293,29 @@
             if(StorageType==4){Endpoint = $("#Endpoint2").val();}else{Endpoint = $("#Endpoint").val();}
         }
         if($("#StorageType").val()==5){
-            $.ajax({
-                type: "POST",
-                url: "/admin/root/updatekey",
-                data: {
-                    AccessKey: 0,
-                    AccessSecret: 0,
-                    Endpoint: 0,
-                    Bucketname: 0,
-                    RequestAddress: 0,
-                    StorageType: 5
-                },
-                dataType: "json",
-                success: function (data) {
-                    if (data > 0) {
-                        layer.msg("保存成功", {icon: 1});
-                    } else if(data==-1){
-                        layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
-                    }else{
-                        layer.msg("保存失败", {icon: 2});
-                    }
-                }
-            });
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/admin/root/updatekey",
+            //     data: {
+            //         AccessKey: 0,
+            //         AccessSecret: 0,
+            //         Endpoint: 0,
+            //         Bucketname: 0,
+            //         RequestAddress: 0,
+            //         StorageType: 5
+            //     },
+            //     dataType: "json",
+            //     success: function (data) {
+            //         if (data > 0) {
+            //             layer.msg("保存成功", {icon: 1});
+            //         } else if(data==-1){
+            //             layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+            //         }else{
+            //             layer.msg("保存失败", {icon: 2});
+            //         }
+            //     }
+            // });
+            layer.msg("本都存储不需要保存配置", {icon: 4});
         }else if($("#StorageType").val()==7){
             if(AccessKey!="" && AccessSecret!=""  &&Endpoint!="" && RequestAddress!="" && StorageType!=""){
                 $.ajax({
@@ -312,7 +334,7 @@
                         if (data > 0) {
                             layer.msg("保存成功", {icon: 1});
                         } else if(data==-1){
-                            layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+                            layer.msg("对象存储初始化失败,请检查参数是否正确", {icon: 2});
                         }else{
                             layer.msg("保存失败", {icon: 2});
                         }
@@ -321,8 +343,7 @@
             }else{
                 layer.msg("有参数不正确，请检查", {icon: 2});
             }
-        }
-        else{
+        }else{
             if(AccessKey!="" && AccessSecret!="" &&Endpoint!="" &&  Bucketname!="" && RequestAddress!="" && StorageType!=""){
                 $.ajax({
                     type: "POST",
@@ -340,7 +361,7 @@
                         if (data > 0) {
                             layer.msg("保存成功", {icon: 1});
                         } else if(data==-1){
-                            layer.msg("对象存储有参数为空,初始化失败", {icon: 2});
+                            layer.msg("对象存储初始化失败,请检查参数是否正确", {icon: 2});
                         }else{
                             layer.msg("保存失败", {icon: 2});
                         }
@@ -350,6 +371,30 @@
                 layer.msg("有参数不正确，请检查", {icon: 2});
             }
         }
+    }
+
+    function v() {
+        $.ajax({
+            type: "POST",
+            url: "/admin/root/tocheck",
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function(i) {
+                    $(".tlist dd").each(function(){
+                        var temp = $(this).attr("lay-value");
+                        if(temp==i){
+                            //$(this).remove('img');
+                            if(data[i]==1){
+                                $(this).append('<img style="float: right;max-width: 23px; margin-top: 5px;" src="/img/yx.png" />');
+                            }else {
+                                $(this).append('<img style="float: right;max-width: 23px; margin-top: 5px;" src="/img/sx.png" />');
+                            }
+                        }
+                    });
+                });
+            }
+        });
+
     }
 </script>
 </body>

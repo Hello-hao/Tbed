@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.ImgAndAlbumMapper">
+
+
+    <select id="selectImgAndAlbum" parameterType="string" resultType="cn.hellohao.pojo.ImgAndAlbum">
+        SELECT
+        *
+        FROM
+        `imgandalbum`
+        <where>
+            <if test="albumkey != null">
+                `albumkey` = #{albumkey}
+            </if>
+        </where>
+    </select>
+
+    <select id="getAlbumForImgname" resultType="cn.hellohao.pojo.ImgAndAlbum" parameterType="string">
+        SELECT
+        *
+        FROM
+        `imgandalbum`
+        <where>
+            <if test="imgname != null">
+                `imgname` = #{imgname}
+            </if>
+        </where>
+    </select>
+
+    <insert id="addImgAndAlbum" parameterType="cn.hellohao.pojo.ImgAndAlbum">
+        insert into `imgandalbum` (imgname,albumkey,notes) values (#{imgname},#{albumkey},#{notes})
+    </insert>
+
+    <delete id="deleteImgAndAlbum" parameterType="string">
+        delete from imgandalbum where imgname=#{imgname}
+    </delete>
+
+    <delete id="deleteImgAndAlbumForKey" parameterType="string">
+        delete from imgandalbum where albumkey=#{albumkey}
+    </delete>
+
+    <select id="selectImgForAlbumkey" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        select * from imgdata a
+                          LEFT JOIN imgandalbum b  on a.imgname = b.imgname
+                          LEFT JOIN album c on b.albumkey = c.albumkey
+        where b.albumkey = #{albumkey}
+    </select>
+
+</mapper>

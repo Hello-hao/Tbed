@@ -16,6 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <tomcat.version>9.0.30</tomcat.version>
         <docker.image.prefix>springboot</docker.image.prefix>
     </properties>
     <dependencies>
@@ -68,6 +69,12 @@
             <artifactId>java-sdk</artifactId>
             <version>4.1.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-text -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>1.8</version>
+        </dependency>
 <!--七牛-->
         <dependency>
             <groupId>com.qiniu</groupId>
@@ -99,7 +106,6 @@
             <artifactId>hutool-all</artifactId>
             <version>4.5.16</version>
         </dependency>
-
 
         <!--        定时器依赖-->
         <dependency>

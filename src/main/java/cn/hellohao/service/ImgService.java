@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import cn.hellohao.pojo.Images;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface ImgService {
     List<Images> selectimg(Images images);
 
@@ -18,7 +20,7 @@ public interface ImgService {
 
     Integer counts(Integer userid);
 
-    Integer setabnormal(String imgname,String abnormal);
+    Integer setImg(Images images);
 
     Integer deleimgname(String imgname);
 
@@ -27,4 +29,9 @@ public interface ImgService {
     List<Images> gettimeimg(String time);
 
     Integer getusermemory(Integer userid);
+
+    Integer md5Count(String md5key);
+
+    Images selectImgUrlByMD5(String md5key);
+
 }

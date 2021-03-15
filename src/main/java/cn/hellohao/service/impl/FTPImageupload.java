@@ -21,7 +21,7 @@ public class FTPImageupload {
     static Keys key;
 
     public Map<ReturnImage, Integer> ImageuploadFTP(Map<String, MultipartFile> fileMap, String username,
-                                                    Map<String, String> fileMap2,Integer setday) throws Exception {
+                                                    Map<String, String> fileMap2,Integer setday)  {
         String[] host = key.getEndpoint().split("\\:");
         String h = host[0];
         Integer p = Integer.parseInt(host[1]);
@@ -32,66 +32,64 @@ public class FTPImageupload {
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             ftps.mkDir(File.separator+username);
-            for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                file = changeFile(entry.getValue());
-                String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
-                if (flag) {
-                    ftps.upload(file, File.separator+userkey, "");
-                    ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
-                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                    if(setday>0) {
-                        String deleimg = DateUtils.plusDay(setday);
-                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "7");
+            try {
+                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    file = SetFiles.changeFile(entry.getValue());
+                    String userkey =username + "/"+ uuid+times + "." + entry.getKey();
+                    if (flag) {
+                        ftps.upload(file, File.separator+userkey, "");
+                        ReturnImage returnImage = new ReturnImage();
+                        returnImage.setImgname(userkey);//entry.getValue().getOriginalFilename()
+                        returnImage.setImgurl(key.getRequestAddress() + "/"+ userkey);
+                        ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                        if(setday>0) {
+                            String deleimg = DateUtils.plusDay(setday);
+                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "7");
+                        }
+                        ftps.close();
                     }
-                    ftps.close();
-                }
 
-                Print.Normal("要上传的文件路径："+File.separator+userkey);
+                    Print.Normal("要上传的文件路径："+File.separator+userkey);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                String imgurl = entry.getValue();
-                File file = new File(imgurl);
-                String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
-                ftps.mkDir(File.separator+username);
-                if (flag) {
-                    ftps.upload(file, File.separator+userkey, "");
-                    ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
-                    ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
-                    if(setday>0) {
-                        String deleimg = DateUtils.plusDay(setday);
-                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "7");
+            try {
+                for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    String imgurl = entry.getValue();
+                    File file = new File(imgurl);
+                    String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
+                    ftps.mkDir(File.separator+username);
+                    if (flag) {
+                        ftps.upload(file, File.separator+userkey, "");
+                        ReturnImage returnImage = new ReturnImage();
+                        returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
+                        ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                        if(setday>0) {
+                            String deleimg = DateUtils.plusDay(setday);
+                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "7");
+                        }
+                        ftps.close();
                     }
-                    ftps.close();
+                    boolean bb= new File(imgurl).getAbsoluteFile().delete();
+                    Print.Normal("删除情况"+bb);
                 }
-                boolean bb= new File(imgurl).getAbsoluteFile().delete();
-                Print.Normal("删除情况"+bb);
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }
-    }
-
-    // 转换文件方法
-    private File changeFile(MultipartFile multipartFile) throws Exception {
-        // 获取文件名
-        String fileName = multipartFile.getOriginalFilename();
-        // 获取文件后缀
-        String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // todo 修改临时文件文件名
-        File file = File.createTempFile(fileName, prefix);
-        multipartFile.transferTo(file);
-        return file;
     }
 
     //初始化FTP对象存储
@@ -101,37 +99,39 @@ public class FTPImageupload {
             if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("") && !k.getRequestAddress().equals("") ) {
                 FTPClient ftp = new FTPClient();
                 int flag = k.getEndpoint().indexOf(":");
-                if(flag>0){
-                    String[] host = k.getEndpoint().split("\\:");
-                    String h = host[0];
-                    Integer p = Integer.parseInt(host[1]);
-                    try {
-                        if(!ftp.isConnected()){
-                            ftp.connect(h,p);
-                        }
-                        ftp.login(k.getAccessKey(), k.getAccessSecret());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    //获取服务器返回的状态码
-                    int reply = ftp.getReplyCode();
-                    /*
-                     * 判断是否连接成功
-                     * 所有以2开头的代码是正完成响应。
-                     * FTP服务器将在最终发送一个肯定的完成响应成功完成命令。
-                     */
-                    if (!FTPReply.isPositiveCompletion(reply)) {
+                    if(flag>0){
+                        String[] host = k.getEndpoint().split("\\:");
+                        String h = host[0];
+                        Integer p = Integer.parseInt(host[1]);
                         try {
-                            ftp.disconnect();
-                        }catch (IOException e){
-                            e.printStackTrace();
+                            if(!ftp.isConnected()){
+                                ftp.connect(h,p);
+                            }
+                            ftp.login(k.getAccessKey(), k.getAccessSecret());
+                            //获取服务器返回的状态码
+                            int reply = ftp.getReplyCode();
+                            /*
+                             * 判断是否连接成功
+                             * 所有以2开头的代码是正完成响应。
+                             * FTP服务器将在最终发送一个肯定的完成响应成功完成命令。
+                             */
+                            if (!FTPReply.isPositiveCompletion(reply)) {
+                                System.out.println("FTP - Waiting for configuration");
+                                ftp.disconnect();
+                                return -1;
+                            }
+                            ftpClient1 = ftp;
+                            key = k;
+                            ret = 1;
+    //                        if(ftp.printWorkingDirectory()==null){
+    //                            Print.warning("FTP初始化失败，配置项错误");
+    //                            return -1;
+    //                        }
+                        } catch (IOException e) {
+                            System.out.println("FTP - Waiting for configuration");
+                            return -1;
                         }
-                        ret = -1;
-                    }
-                    ftpClient1 = ftp;
-                    key = k;
-                    ret = 1;
-            }
+                }
             }
             }
         return ret;
@@ -152,7 +152,7 @@ public class FTPImageupload {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            file = SetFiles.changeFile_c(entry.getValue());
             String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
             ftps.mkDir(File.separator+username);
             if (flag) {

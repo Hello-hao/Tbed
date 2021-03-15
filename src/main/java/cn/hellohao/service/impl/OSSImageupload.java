@@ -5,15 +5,14 @@ import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.*;
 import com.aliyun.oss.OSSClient;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.ObjectMetadata;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class OSSImageupload {
@@ -22,74 +21,86 @@ public class OSSImageupload {
     static Keys key;
 
     public Map<ReturnImage, Integer> ImageuploadOSS(Map<String, MultipartFile> fileMap, String username,
-                                                    Map<String, String> fileMap2,Integer setday) throws Exception {
+                                                    Map<String, String> fileMap2,Integer setday){
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
-            for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                file = SetFiles.changeFile(entry.getValue());
-                String head = "";
-                if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
-                    head = "image/jpeg";
-                }else if(entry.getKey().equals("png")){
-                    head = "image/png";
-                }else if(entry.getKey().equals("bmp")){
-                    head = "image/bmp";
-                }else if(entry.getKey().equals("gif")){
-                    head = "image/gif";
-                }else{
-                    System.err.println("位置格式文件，无法定义header头。");
+            try {
+                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    file = SetFiles.changeFile(entry.getValue());
+                    String head = "";
+                    if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
+                        head = "image/jpeg";
+                    }else if(entry.getKey().equals("png")){
+                        head = "image/png";
+                    }else if(entry.getKey().equals("bmp")){
+                        head = "image/bmp";
+                    }else if(entry.getKey().equals("gif")){
+                        head = "image/gif";
+                    }else{
+                        //System.err.println("位置格式文件，无法定义header头。");
+                        head = "image/"+entry.getKey();
+                    }
+                    meta.setHeader("Content-Type", head);//image/jpeg
+                    System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+                    ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "2");
+                    }
                 }
-                meta.setHeader("Content-Type", head);//image/jpeg
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),file,meta);
-                ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgname(entry.getValue().getOriginalFilename());
-                returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                if(setday>0) {
-                    String deleimg = DateUtils.plusDay(setday);
-                    DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "2");
-                }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
-            for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                String imgurl = entry.getValue();
-                String head = "";
-                if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
-                    head = "image/jpeg";
-                }else if(entry.getKey().equals("png")){
-                    head = "image/png";
-                }else if(entry.getKey().equals("bmp")){
-                    head = "image/bmp";
-                }else if(entry.getKey().equals("gif")){
-                    head = "image/gif";
-                }else{
-                    System.err.println("位置格式文件，无法定义header头。");
+            try {
+                for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    String imgurl = entry.getValue();
+                    String head = "";
+                    if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
+                        head = "image/jpeg";
+                    }else if(entry.getKey().equals("png")){
+                        head = "image/png";
+                    }else if(entry.getKey().equals("bmp")){
+                        head = "image/bmp";
+                    }else if(entry.getKey().equals("gif")){
+                        head = "image/gif";
+                    }else{
+                        //System.err.println("位置格式文件，无法定义header头。");
+                        head = "image/"+entry.getKey();
+                    }
+                    meta.setHeader("Content-Type", head);//image/jpeg
+                    System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
+                    ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),new File(imgurl),meta);
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                    new File(imgurl).delete();
+                    if(setday>0) {
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "2");
+                    }
                 }
-                meta.setHeader("Content-Type", head);//image/jpeg
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                ossClient.putObject(key.getBucketname(), username + "/" + uuid+times + "." + entry.getKey(),new File(imgurl),meta);
-                ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
-                new File(imgurl).delete();
-                if(setday>0) {
-                    String deleimg = DateUtils.plusDay(setday);
-                    DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "2");
-                }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }
@@ -98,17 +109,25 @@ public class OSSImageupload {
     //初始化
     public static Integer Initialize(Keys k) {
         int ret = -1;
+        ObjectListing objectListing = null;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
                 && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
             if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
                     && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
                 ossClient = new OSSClient(k.getEndpoint(), k.getAccessKey(), k.getAccessSecret());
-                key = k;
-                ret=1;
+                try {
+                    objectListing = ossClient.listObjects(k.getBucketname());
+                    key = k;
+                    ret=1;
+                } catch (Exception e) {
+                    System.out.println("OSS - Waiting for configuration");
+                    ret = -1;
+                }
             }
         }
         return ret;
     }
+
 
 
     /**
@@ -123,7 +142,7 @@ public class OSSImageupload {
                 String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 String times = format1.format(new Date());
-                file = SetFiles.changeFile(entry.getValue());
+                file = SetFiles.changeFile_c(entry.getValue());
                 String head = "";
                 if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
                     head = "image/jpeg";
@@ -134,7 +153,8 @@ public class OSSImageupload {
                 }else if(entry.getKey().equals("gif")){
                     head = "image/gif";
                 }else{
-                    System.err.println("位置格式文件，无法定义header头。");
+                    //System.err.println("位置格式文件，无法定义header头。");
+                    head = "image/"+entry.getKey();
                 }
                 meta.setHeader("Content-Type", head);//image/jpeg
                 ReturnImage returnImage = new ReturnImage();

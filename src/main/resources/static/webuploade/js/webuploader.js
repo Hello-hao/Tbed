@@ -2819,7 +2819,6 @@ var count2 = 0;
                 // accept中的中生成匹配正则。
                 if ( opts.accept ) {
                     arr = [];
-    
                     for ( i = 0, len = opts.accept.length; i < len; i++ ) {
                         item = opts.accept[ i ].extensions;
                         item && arr.push( item );
@@ -3187,7 +3186,7 @@ var count2 = 0;
             // 跨域时，是否允许携带cookie, 只有html5 runtime才有效
             withCredentials: false,
             fileVal: 'file',
-            timeout: 2 * 60 * 1000,    // 2分钟
+            timeout: 5 * 60 * 1000,    //超时时间 5分钟
             formData: {},
             headers: {},
             sendAsBinary: false
@@ -4021,7 +4020,6 @@ var count2 = 0;
                     if ( !owner.trigger( 'uploadAccept', block, ret, fn ) ) {
                         reject = reject || 'server';
                     }
-    
                     return reject;
                 };
     

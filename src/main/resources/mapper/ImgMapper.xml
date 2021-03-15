@@ -13,29 +13,42 @@
         a.sizes,
         a.abnormal,
         a.source,
-        a.imgtype
+        a.imgtype,
+        a.explains,
+        a.md5key
         FROM
         imgdata a
         LEFT JOIN user b ON a.userid = b.id
         where
         1=1
-        <if test="userid != null">
-            and
-            userid = #{userid}
-        </if>
         <if test="source != null">
             and
-            source = #{source}
+            a.source = #{source}
         </if>
         <if test="starttime != null">
             and
-            updatetime &gt;= #{starttime}
+            a.updatetime &gt;= #{starttime}
         </if>
         <if test="stoptime != null">
             and
-            updatetime &lt;= #{stoptime}
+            a.updatetime &lt;= #{stoptime}
         </if>
-        order by id desc
+
+        <if test="userid != null">
+            <choose>
+                <when test="selecttype != null">
+                    and
+                    a.userid not in (#{userid})
+                </when>
+                <otherwise>
+                    and
+                    a.userid = #{userid}
+                </otherwise>
+            </choose>
+        </if>
+
+
+        order by a.id desc
     </select>
     <!-- 此用户下总数 -->
     <select id="countimg" parameterType="integer" resultType="integer">
@@ -60,8 +73,17 @@
     </select>
 
     <!-- 根据图片名字标记IP -->
-    <update id="setabnormal" parameterType="string">
-         UPDATE imgdata set abnormal=#{abnormal} where imgname=#{imgname}
+    <update id="setImg" parameterType="cn.hellohao.pojo.Images">
+         UPDATE imgdata
+             <set>
+                 <if test="abnormal!=null">
+                     abnormal=#{abnormal}
+                 </if>
+                 <if test="explains!=null">
+                     explains=#{explains}
+                 </if>
+             </set>
+              where imgname=#{imgname}
     </update>
     <!-- 非法图片删除他  根据名称-->
     <delete id="deleimgname" parameterType="string">
@@ -78,7 +100,23 @@
     </select>
 <!--查询指定用户总内存-->
     <select id="getusermemory" parameterType="integer" resultType="integer">
-        SELECT sum(sizes) FROM `imgdata` where userid = #{userid}
+        SELECT sum(sizes) as sizes FROM `imgdata` where userid = #{userid}
+    </select>
+
+    <select id="md5Count" resultType="integer">
+        select count(*) from imgdata
+        <where>
+            1=1
+            <if test="md5key != null">
+                and md5key=#{md5key}
+            </if>
+        </where>
+
+    </select>
+
+
+    <select id="selectImgUrlByMD5" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        select imgname,imgurl from imgdata where md5key = #{md5key}
     </select>
 
 </mapper>

@@ -18,6 +18,7 @@
         select COUNT(*)
         from user
         where email = #{email}
+
     </select>
     <!--  uid查询用户并修改  -->
     <update id="uiduser" parameterType="cn.hellohao.pojo.User">
@@ -29,8 +30,21 @@
     <select id="login" parameterType="string" resultType="integer">
         select COUNT(*)
         from user
-        where email = #{email}
-        and password = #{password}
+<!--        where email = #{email}-->
+<!--        and password = #{password}-->
+        <where>
+             1=1
+            <if test="email != null">
+                and email = #{email}
+            </if>
+            <if test="password != null">
+                and password = #{password}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+
+        </where>
     </select>
 
     <!-- 查询当前用户:根据邮箱 -->
@@ -81,8 +95,8 @@
 
     <!-- 插入图片信息 -->
     <insert id="insertimg" parameterType="cn.hellohao.pojo.Images">
-        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype)
-        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype})
+        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype,md5key)
+        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},#{md5key})
     </insert>
 
     <!-- 修改资料 -->

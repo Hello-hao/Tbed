@@ -107,6 +107,17 @@ public class ImgServiceImpl implements ImgService {
             e.printStackTrace();
         }
     }
+
+    public void delectUFile(Keys key, String fileName) {
+        UpYun upyun = new UpYun(key.getBucketname(), key.getAccessKey(), key.getAccessSecret());
+        try {
+            boolean result = upyun.deleteFile(fileName, null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (UpException e) {
+            e.printStackTrace();
+        }
+    }
     public void delectKODO(Keys key, String fileName) {
         Configuration cfg;
         if(key.getEndpoint().equals("1")){cfg = new Configuration(Zone.zone0());}
@@ -169,8 +180,8 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer setabnormal(String imgname,String abnormal) {
-        return imgMapper.setabnormal(imgname,abnormal);
+    public Integer setImg(Images images) {
+        return imgMapper.setImg(images);
     }
 
     @Override
@@ -191,5 +202,15 @@ public class ImgServiceImpl implements ImgService {
     @Override
     public Integer getusermemory(Integer userid) {
         return imgMapper.getusermemory(userid);
+    }
+
+    @Override
+    public Integer md5Count(String md5key) {
+        return imgMapper.md5Count(md5key);
+    }
+
+    @Override
+    public Images selectImgUrlByMD5(String md5key) {
+        return imgMapper.selectImgUrlByMD5(md5key);
     }
 }

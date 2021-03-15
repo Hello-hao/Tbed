@@ -1,7 +1,7 @@
 /*-- ========================================= --
 	0.0 CSS IMPORT
 /*-- ========================================= --*/
-@import url("bootstrap.min.css");
+@import url("/static/css/bootstrap.min.css");
 @import url("font-awesome.min.css");
 @import url("animate.min.css");
 @import url("owl.carousel.css");
@@ -371,6 +371,8 @@ a.link-1.active::before
 	color:#262626;
 	background:#4ebd87;
 	width: 200px;
+	border-radius: 25px;
+	margin-top: 5px;
 }
 .button-green::before{
 	background:#4ebd87;
@@ -1736,7 +1738,7 @@ section .half-overlay.is-visible{
 	top:100%;
 }
 .about-section .bg-container-static{
-	background:url(../img/background/sample2.jpg) no-repeat;
+	/*background:url(../img/background/sample2.jpg) no-repeat;*/
 	background-size:cover;
 	background-position:50% 50%;
 }
@@ -1860,7 +1862,7 @@ section .half-overlay.is-visible{
 }
 
 .works-section .bg-container-static{
-	background:url(../img/background/sample3.jpg) no-repeat;
+	/*background:url(../img/background/sample3.jpg) no-repeat;*/
 	background-size:cover;
 	background-position:50% 50%;
 }
@@ -2163,6 +2165,7 @@ canvas#bg-canvas{
 	left:0px;
 	top:0px;
 	z-index:1;
+	background: rgba(38,38,38,0.7);
 }
 
 

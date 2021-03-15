@@ -67,21 +67,21 @@
                         </div>
                     <br />
                     <div class="layui-form-item">
-                        <label class="layui-form-label">首页背景一</label>
+                        <label class="layui-form-label">图片背景</label>
                         <div class="layui-input-block">
                             <input id="background1" type="text" name="title" autocomplete="off" placeholder="首页背景图" class="layui-input"
                                    th:value="${config.getBackground1()}"/>
                         </div>
                     </div>
                     <br />
-                    <div class="layui-form-item">
-                        <label class="layui-form-label">首页背景二</label>
-                        <div class="layui-input-block">
-                            <input id="background2" type="text" name="title" autocomplete="off" placeholder="上传页面背景图" class="layui-input"
-                                   th:value="${config.getBackground2()}"/>
-                        </div>
-                    </div>
-                    <br />
+<!--                    <div class="layui-form-item">-->
+<!--                        <label class="layui-form-label">首页背景二</label>-->
+<!--                        <div class="layui-input-block">-->
+<!--                            <input id="background2" type="text" name="title" autocomplete="off" placeholder="上传页面背景图" class="layui-input"-->
+<!--                                   th:value="${config.getBackground2()}"/>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                    <br />-->
 <!--                    <div class="layui-form-item">-->
 <!--                        <label class="layui-form-label">每日随机图</label>-->
 <!--                        <div class="layui-input-block">-->
@@ -95,12 +95,20 @@
                     <label class="layui-form-label">备案显示</label>
                     <div class="layui-input-block">
                         <textarea id="links" name="links" placeholder="备案号，可用html代码" class="layui-textarea" th:text="${config.getLinks()}"></textarea>
-                        <span style="color: #DAA5A6;">不填写，则不显示<xmp></xmp></span>
+                        <span style="color: #DAA5A6;">不填写，则不显示(请合理管理长度，若输入超长代码块可能导致字符溢出，保存失败。)<xmp></xmp></span>
                     </div>
                 </div>
                     <br />
                     <form class="layui-form-item " >
                         <div class="laydfdaui-form-item">
+                            <label class="layui-form-label">主题类型</label>
+                            <div class="layui-input-block" id="theme">
+                                <input type="radio" id="themetype1" name="themetype" lay-filter="themetype" value="1" title="炫酷壁纸">
+                                <input type="radio" id="themetype2" name="themetype" lay-filter="themetype" value="2" title="简约蓝白">
+                            </div>
+                        </div>
+                        <br />
+                        <div class="laydfdaui-form-item themetypeone">
                             <label class="layui-form-label">背景类型</label>
                             <div class="layui-input-block" id="backtype">
                                 <input type="radio" id="backtype1" name="isbacktype" value="1" title="图片壁纸">
@@ -108,7 +116,7 @@
                             </div>
                         </div>
                         <br />
-                        <div class="laydfdaui-form-item">
+                        <div class="laydfdaui-form-item themetypeone">
                             <label class="layui-form-label">首页类型</label>
                             <div class="layui-input-block" id="sett">
                                 <input type="radio" id="sett11" name="settweb" value="1" title="默认首页">
@@ -206,7 +214,7 @@
                     <label class="layui-form-label">文件类型</label>
                     <div class="layui-input-block">
                         <input id="suffix" th:value="${updateConfig.getSuffix()}" type="text" name="title" required  lay-verify="required" placeholder="配置可上传的文件类型" autocomplete="off" class="layui-input">
-                        <span style="color: #DAA5A6;">配个类型用“ , ”隔开</span>
+                        <span style="color: #DAA5A6;">配个类型用“ , ”隔开(PS：只可以设置图片格式，其他文件格式无效)</span>
                     </div>
                 </div>
                 <h3 style="margin-top: 50px;">图片链接格式</h3>
@@ -268,7 +276,7 @@
                         <label class="layui-form-label">站点描述</label>
                         <div class="layui-input-block">
                             <textarea id="webms" name="webms" placeholder="请输入站点标描述，这样有利于搜索引擎" class="layui-textarea" th:text="${config.getWebms()}"></textarea>
-                            <span style="color: #DAA5A6;"><xmp>添加网站统计的JS代码，不需要要添加<script>标签</script></xmp></span>
+<!--                            <span style="color: #DAA5A6;"><xmp>添加网站统计的JS代码，不需要要添加<script>标签</script></xmp></span>-->
                         </div>
                     </div>
                 </form>
@@ -286,89 +294,114 @@
         var isapi = [[${updateConfig.getApi()}]];
         var state = [[${sysconfig==null?0:sysconfig.getRegister()}]];
         var group = [[${group}]];
-        $(function () {
-            layui.use(['form','table','element'], function(){
-                var table = layui.table;
-                var element = layui.element;
-                var form = layui.form;
-                //监听指定开关
-                form.on('switch(switchTest)', function (data) {
-                    if (this.checked == true) {
-                        isupdate(1);
-                    } else {
-                        isupdate(0);
-                    }
-                });
-                form.on('switch(switchTest2)', function (data) {
-                    if (this.checked == true) {
-                        upapi(1);
-                    } else {
-                        upapi(0);
-                    }
-                });
-                form.on('switch(switchTest3)', function (data) {
-                    if (this.checked == true) {
-                        setstate(1);
-                    } else {
-                        setstate(2);
-                    }
-                });
-                form.on('select(group)', function(data){
-                    group = data.value;
-                });
-                $('#group').val(group);
-                form.render('select');
-                });
+
+        var usertype = [[${updateConfig.getUrltype()!=null?updateConfig.getUrltype():1}]];
+        var backtype = [[${config.getBacktype()!=null?config.getBacktype():1}]];
+        var sett = [[${config.getSett()}]];
+        var theme = [[${config.getTheme()}]];
+
+        var form = null;
+        layui.use(['form','table','element'], function(){
+            var table = layui.table;
+            var element = layui.element;
+            form = layui.form;
+            //监听指定开关
+            form.on('switch(switchTest)', function (data) {
+                if (this.checked == true) {
+                    isupdate(1);
+                } else {
+                    isupdate(0);
+                }
+            });
+            form.on('switch(switchTest2)', function (data) {
+                if (this.checked == true) {
+                    upapi(1);
+                } else {
+                    upapi(0);
+                }
+            });
+            form.on('switch(switchTest3)', function (data) {
+                if (this.checked == true) {
+                    setstate(1);
+                } else {
+                    setstate(2);
+                }
+            });
+            // form.on('select(group)', function(data){
+            //     group = data.value;
+            // });
+            // $('#group').val(group);
+            form.render('select');
+
+            form.on('radio(themetype)', function (data) {
+                if(data.value==1){
+                    $('.themetypeone').show();
+                }else{
+                    $('.themetypeone').hide();
+                }
+
+            });
+
+         });
+
+
+        window.onload=function (){
             if (isupval == 1) {
                 $('#upopen').attr("checked", 'hellohao'); //增加属性
             } else {
                 $('#upopen').removeAttr("checked"); //移除属性
             }
             if (isapi == 1) {
-                $('#bedapi').attr("checked", 'hellohao'); //增加属性
+                $('#bedapi').attr("checked", 'hellohao');
             } else {
-                $('#bedapi').removeAttr("checked"); //移除属性
+                $('#bedapi').removeAttr("checked");
             }
             if (state == 1) {
-                $('#dologo').attr("checked", 'hellohao'); //增加属性
+                $('#dologo').attr("checked", 'hellohao');
             } else {
-                $('#dologo').removeAttr("checked"); //移除属性
+                $('#dologo').removeAttr("checked");
             }
-        });
-        $(function () {
-           var usertype = [[${updateConfig.getUrltype()!=null?updateConfig.getUrltype():1}]];
-            var backtype = [[${config.getBacktype()!=null?config.getBacktype():1}]];
-            var sett = [[${config.getSett()}]];
-            if(usertype==2){
-               $('#urltype2:radio:input:radio:last').attr('checked', 'true');
-           }else{
-               $('#urltype1:radio:first').attr('checked', 'true');
-           }
-           if(backtype==2){
-               $('#backtype2:radio:input:radio:last').attr('checked', 'true');
-           }else{
-               $('#backtype1:radio:first').attr('checked', 'true');
-           }
 
+            if(usertype==2){
+                $('#urltype2:radio:input:radio:last').attr('checked', 'true');
+            }else{
+                $('#urltype1:radio:first').attr('checked', 'true');
+            }
+            if(backtype==2){
+                $('#backtype2:radio:input:radio:last').attr('checked', 'true');
+            }else{
+                $('#backtype1:radio:first').attr('checked', 'true');
+            }
             if(sett != 1){
                 $('#sett22:radio:input:radio:last').attr('checked', 'true');
             }else{
                 $('#sett11:radio:first').attr('checked', 'true');
             }
-            $.ajax({
-                type: "POST",
-                url: "/admin/root/getgrouplist",
-                //data: {groupid:groupid},
-                dataType: "json",
-                success: function (data) {
-                    var body = '';//<option value="0">&nbsp;默认群组</option>
-                    for(var i=0;i<data.length;i++){
-                        body+='<option value="'+data[i].id+'">'+data[i].groupname+'</option>';
-                    }
-                    $('#group').append(body);
-                    form.render('select');
-                }
-            });
+            if(theme != 1){
+                $('#themetype2:radio:input:radio:last').attr('checked', 'true');
+                $('.themetypeone').hide();
+            }else{
+                $('#themetype1:radio:first').attr('checked', 'true');
+                $('.themetypeone').show();
+            }
+            // form.render('select');
+            layui.form.render();
+        }
+
+        $(function () {
+            // $.ajax({
+            //     type: "POST",
+            //     url: "/admin/root/getgrouplist",
+            //     //data: {groupid:groupid},
+            //     dataType: "json",
+            //     success: function (data) {
+            //         var body = '';//<option value="0">&nbsp;默认群组</option>
+            //         for(var i=0;i<data.length;i++){
+            //             body+='<option value="'+data[i].id+'">'+data[i].groupname+'</option>';
+            //         }
+            //         $('#group').append(body);
+            //     }
+            // });
         });
         function updateconfig() {
                 var webname = $("#webname").val();
@@ -384,13 +417,15 @@
                 var webms = $("#webms").val();
                 var webkeywords = $("#webkeywords").val();
                 var webfavicons = $("#webfavicons").val();
+                var theme = $('#theme input[name="themetype"]:checked ').val();
                 if (webname != "" && domain!="" ) {
                     $.ajax({
                         type: "POST",
                         url: "/admin/root/updateconfig",
                         dataType: "json",
                         data: {webname: webname, explain: explain, video: video,backtype:backtype,links:links,notice:notice,
-                            domain:domain,background1:background1,background2:background2,sett:sett,webms:webms,webkeywords:webkeywords,webfavicons:webfavicons},
+                            domain:domain,background1:background1,background2:background2,sett:sett,webms:webms,
+                            webkeywords:webkeywords,webfavicons:webfavicons,theme:theme},
                         success: function (data) {
                             var vals = Number(data);
                             if (vals > 0) {
@@ -524,22 +559,7 @@
             });
         }
 
-        function webset() {
-            $.ajax({
-                type: "POST",
-                url: "/admin/root/settstoragetype",
-                dataType: "json",
-                data: {storagetype: group},
-                success: function (data) {
-                    var vals = Number(data);
-                    if (vals > 0) {
-                        layer.msg("保存成功", {icon: 1});
-                    } else {
-                        layer.msg("保存失败，请尝试刷新页面后操作", {icon: 2});
-                    }
-                }
-            });
-        }
+
     </script>
 </body>
 </html>

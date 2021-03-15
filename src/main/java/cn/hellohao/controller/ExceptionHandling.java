@@ -2,8 +2,10 @@ package cn.hellohao.controller;
 
 import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.utils.Print;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
@@ -49,6 +51,20 @@ public class ExceptionHandling {
         //返回错误信息，并显示给用户
         return e.getMessage();
     }
+
+    @ExceptionHandler
+    public String test3(HttpRequestMethodNotSupportedException e,Model model){
+
+        ModelAndView modelAndView = new ModelAndView("/index");
+        Print.Normal("URL访问类型不正确："+ e.getMessage());
+        //e.printStackTrace();
+        modelAndView.addObject("error","URL访问类型不正确。");
+        model.addAttribute("error","URL访问类型不正确。");
+        //返回错误信息，并显示给用户
+        //return e.getMessage();
+        return "exception";
+    }
+
 
 
 //    @ExceptionHandler

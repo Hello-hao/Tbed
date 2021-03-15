@@ -15,7 +15,7 @@
     <div class="layui-inline">
         <label class="layui-form-label">用户容量(M)</label>
         <div class="layui-input-inline">
-            <input id="memory"  style="width: 250px;" th:value="${memory}" type="tel" name="groupname" lay-verify="required|phone" autocomplete="off" class="layui-input">
+            <input id="memory"  style="width: 250px;" th:value="${memory}" type="number" name="groupname" lay-verify="required|phone" autocomplete="off" class="layui-input">
             <input th:value="${uid}" type="hidden"  id="uid"/>
         </div>
     </div>
@@ -63,21 +63,26 @@ function updateuser() {
         ,shade: 0.01
     });
     var memory = $('#memory').val();
-    $.ajax({
-        type: "POST",
-        url: "/admin/root/updateuser",
-        data: {memory:memory,groupid:groupid,uid:uid,id:id},
-        dataType: "json",
-        success: function (data) {
-            if (data > 0) {
-                table.reload('datas');//重新获取表数据
-                layer.msg('修改成功', {icon: 1});
-            }else{
-                layer.msg('修改失败', {icon: 2});
+    if(memory!=""){
+        $.ajax({
+            type: "POST",
+            url: "/admin/root/updateuser",
+            data: {memory:memory,groupid:groupid,uid:uid,id:id},
+            dataType: "json",
+            success: function (data) {
+                if (data > 0) {
+                    table.reload('datas');//重新获取表数据
+                    layer.msg('修改成功', {icon: 1});
+                }else{
+                    layer.msg('修改失败', {icon: 2});
+                }
             }
-        }
-    });
-    layer.closeAll();
+        });
+        layer.closeAll();
+    }else{
+        layer.closeAll();
+        layer.msg('用户容量不能为空', {icon: 2});
+    }
 }
 </script>
 </body>

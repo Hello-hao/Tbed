@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.AlbumMapper">
+
+
+    <select id="selectAlbum" parameterType="cn.hellohao.pojo.Album" resultType="cn.hellohao.pojo.Album">
+        SELECT
+        *
+        FROM
+        `album`
+        <where>
+            <if test="albumkey != null">
+                `albumkey` = #{albumkey}
+            </if>
+            <if test="userid != null">
+                `userid` = #{userid}
+            </if>
+        </where>
+    </select>
+
+
+    <insert id="addAlbum" parameterType="cn.hellohao.pojo.Album">
+        insert into `album` (albumkey,albumtitle,createdate,`password`,userid)
+        values (#{albumkey},#{albumtitle},#{createdate},#{password},#{userid})
+    </insert>
+
+    <delete id="deleteAlbum" parameterType="string">
+        delete from album where albumkey=#{albumkey}
+    </delete>
+
+    <select id="selectAlbumURLList" parameterType="cn.hellohao.pojo.Album" resultType="cn.hellohao.pojo.Album">
+
+        SELECT
+        a.albumkey,
+        a.albumtitle,
+        a.createdate,
+        a.`password`,
+        a.userid,
+        u.username
+        FROM `album` a LEFT JOIN user u on a.userid = u.id
+        <where>
+            <if test="albumkey != null">
+                `albumkey` like '%${albumkey}%'
+            </if>
+            <if test="username != null">
+                `username` like '%${username}%'
+            </if>
+            <if test="userid != null">
+                a.userid = #{userid}
+            </if>
+        </where>
+        order by a.createdate
+    </select>
+
+</mapper>

@@ -11,6 +11,8 @@
 <div class="layui-main" style="width: 50%;margin-top: 50px;">
     <h2>百度鉴黄Key配置</h2>
     <br/>
+    <span style="color: #DAA5A6;"><span style="font-weight: bold">注意：</span>若您修改了配置文件中的默认定时器配置，设置的周期表达式必须小于一天。否则会有遗漏<br/>推荐设置为：每天某个时辰执行、或每几个小时、每几分钟执行一次。</span>
+    <p>&nbsp;</p>
     <form class="layui-form layui-form-pane" action="">
         <div class="layui-form-item">
             <label class="layui-form-label">鉴黄检测</label>
@@ -18,7 +20,7 @@
                 <input id="open" type="checkbox" name="close" lay-skin="switch" lay-filter="switchTest"
                        lay-text="ON|OFF">
                 <!--                <input type="checkbox"  name="open" lay-skin="switch" lay-filter="switchTest" lay-text="ON|OFF">-->
-                <span style="color: #DAA5A6;">开启前保证下方信息填写正确</span>
+                <span style="color: #DAA5A6;">开启前保证下方信息填写正确,并已保存</span>
             </div>
         </div>
         <hr/>

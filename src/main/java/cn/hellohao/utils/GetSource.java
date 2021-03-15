@@ -21,13 +21,14 @@ public class GetSource {
         KODOImageupload kodoImageupload = SpringContextHolder.getBean(KODOImageupload.class);
         COSImageupload cosImageupload = SpringContextHolder.getBean(COSImageupload.class);
         FTPImageupload ftpImageupload = SpringContextHolder.getBean(FTPImageupload.class);
+        UFileImageupload uFileImageupload = SpringContextHolder.getBean(UFileImageupload.class);
         Map<ReturnImage, Integer> m = null;
         try {
             if(type==1){
             m = nosImageupload.Imageupload(fileMap, userpath,filename,setday);
             }else if (type==2){
                 m = ossImageupload.ImageuploadOSS(fileMap, userpath,filename,setday);
-            }else if(type==3){
+            }else if(type==3 ){
                 m = ussImageupload.ImageuploadUSS(fileMap, userpath,filename,setday);
             }else if(type==4){
                 m = kodoImageupload.ImageuploadKODO(fileMap, userpath,filename,setday);
@@ -37,6 +38,8 @@ public class GetSource {
                 m = cosImageupload.ImageuploadCOS(fileMap, userpath,filename,setday);
             }else if(type==7){
                 m =  ftpImageupload.ImageuploadFTP(fileMap, userpath,filename,setday);
+            }else if(type==8){
+                m =  uFileImageupload.ImageuploadUSS(fileMap, userpath,filename,setday);
             }
             else{
                 new StorageSourceInitException("GetSource类捕捉异常：未找到存储源");

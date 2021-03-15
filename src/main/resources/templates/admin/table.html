@@ -9,7 +9,6 @@
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"/>
     <link th:href="@{/static/css/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/style.css}" rel="stylesheet" type="text/css"/>
-    <link th:href="@{/static/css/toastr.min.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/login-register.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/bootstrap-table.css}" media="all" rel="stylesheet" type="text/css"/>
     <link th:href="@{/static/css/sweetalert.min.css}" media="all" rel="stylesheet" type="text/css"/>
@@ -19,7 +18,6 @@
 
     <script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap.min.js}" type="text/javascript"></script>
-    <script th:src="@{/static/js/toastr.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/login-register.js}"></script>
     <script th:src="@{/static/bootstrap-3.3.4-dist/js/bootstrap-table-hellohao1.13.1.js}"></script>
     <script th:src="@{/static/js/clipboard.min.js}"></script>
@@ -57,10 +55,10 @@
             max-height: 130px;
             border-radius: 5px;
             box-shadow: 1px 2px 4px #999999;
-            transition: all 0.6s;
+            transition: all 0.3s;
         }
         .slt:hover{
-            transform: scale(1.2);
+            transform: scale(1.1);
         }
         .table>tbody>tr>td{
             border:0px;
@@ -169,12 +167,13 @@
                         <select id="myselect" class="form-control">
                             <option value="1" checked="checked">所有人</option>
                             <option value="2">仅自己</option>
+                            <option value="3">仅他人</option>
                         </select>
                     </div>
                     <div class="btn-group">
                         <span style="margin-left: 20px;line-height: 36px;">存储源：</span>
                     </div>
-                    <div class="btn-group">
+                    <div class="btn-group" th:if=" ${level} gt '1'">
                         <select id="StorageType" class="form-control">
                             <option value="0">所有</option>
                             <option value="5">本地存储</option>
@@ -184,6 +183,7 @@
                             <option value="4">七牛云KODO</option>
                             <option value="6">腾讯COS</option>
                             <option value="7">FTP存储</option>
+                            <option value="8">U-File</option>
                         </select>
                     </div>
                     <div class="btn-group">
@@ -234,22 +234,7 @@
     var t;
     $(function () {
         var loginid = [[${loginid}]];
-        toastr.options.positionClass = 'toast-bottom-right';
-        toastr.options = {
-            closeButton: true,//是否显示关闭按钮
-            debug: false,
-            progressBar: true,
-            positionClass: "toast-bottom-right",
-            onclick: null,
-            showDuration: "300",
-            hideDuration: "1000",
-            timeOut: "2000",
-            extendedTimeOut: "1000",
-            showEasing: "swing",
-            hideEasing: "linear",
-            showMethod: "fadeIn",
-            hideMethod: "fadeOut"
-        };
+
         $(document).ready(function() {
             $('#reservation').daterangepicker(null, function(start, end, label) {
             });
@@ -280,6 +265,11 @@
         fenye('/admin/selecttable',1);
     }
     function deleall() {
+        var rows = $("#table_server").bootstrapTable('getSelections');
+        if (rows.length == 0) {
+            layui.layer.msg('请先勾选要操作的图像。');
+            return;
+        }
         swal({
                 title: "确认删除选中图片？",
                 text: "删除后将无法恢复，请谨慎操作。",
@@ -291,50 +281,35 @@
             },
             function (isConfirm) {
                 if (isConfirm) {
-                    var rows = $("#table_server").bootstrapTable('getSelections');
-                    if (rows.length == 0) {// rows 主要是为了判断是否选中，下面的else内容才是主要
-                        swal("请先勾选图片再删除", "目前未选中任何图片", "error");
-                        return;
+                    if (rows.length == 0) {
+
                     } else {
-                        var ids = new Array();// 声明一个数组
+                        var ids = new Array();
+                        var sources = new Array();
+                        var imgnames = new Array();
                         $(rows).each(function () {// 通过获得别选中的来进行遍历
-                            ids.push(this.id);// cid为获得到的整条数据中的一列
+                            ids.push(this.id);
+                            sources.push(this.source);
+                            imgnames.push(this.imgname);
                         });
-                        deleallimg(ids);
+                        deleallimg(ids,sources,imgnames);
                     }
                 }
             });
     }
-    function deleallimg(ids) {
+    function deleallimg(ids,sources,imgnames) {
         var loading = layer.msg('正在删除', {icon: 16, shade: 0.3, time:0});
         $.ajax({
             type: "POST",
             url: "/admin/deleallimg",
-            data: {ids: ids},
+            data: {ids: ids,sources:sources,imgnames:imgnames},
             dataType: "json",
             success: function (data) {
+                layer.close(loading);
                 if (data.val > 0) {
-                    layer.close(loading);
-                    $("#table_server").bootstrapTable('refresh', t);
-                    swal({
-                            title: "删除成功",
-                            text: "已成功删除所选图片。",
-                            type: "success",
-                            showCancelButton: false,//true显示两个按钮
-                            confirmButtonColor: "#A5DC86",
-                            confirmButtonText: "确定",
-                            //cancelButtonText: "取消删除！",
-                            closeOnConfirm: true,
-                            closeOnCancel: false
-                        },
-                        function (isConfirm) {
-                            if (isConfirm) {
-                            }
-                        });
-                } else {
-                    layer.close(loading);
-                    $("#table_server").bootstrapTable('refresh', t);
+                    layer.msg('已成功删除所选图片', {icon: 1});
                 }
+                $("#table_server").bootstrapTable('refresh', t);
                 $("#imgcount").text(data.count);
                 $("#usercount").text(data.usercount);
                 $("#imgreviewcount").text(data.imgreviewcount);
@@ -347,13 +322,13 @@
             url: "/user/exit.do",
             dataType: "json",
             success: function (data) {
-                toastr.success("账号已退出。");
+                layer.msg('账号已退出', {icon: 1});
                 window.location.reload();
             }
         });
     }
     //删除
-    function deleimg(id, sourcekey) {
+    function deleimg(id, sourcekey,imgname) {
         swal({
                 title: "确认是否删除该图片?",
                 text: "删除后将无法恢复，请谨慎操作。",
@@ -368,16 +343,16 @@
                     $.ajax({
                         type: "POST",
                         url: "/admin/deleimg",
-                        data: {id: id, sourcekey: sourcekey},
+                        data: {id: id, sourcekey: sourcekey,imgname:imgname},
                         dataType: "json",
                         success: function (data) {
                             if (data.val > 0) {
                                 $("#table_server").bootstrapTable('refresh', t);
-                                toastr.success("删除成功");
+                                layer.msg('删除成功', {icon: 1});
                                 $("#imgcount").text(data.count);
                                 $("#usercount").text(data.usercount);
                             } else {
-                                toastr.error("删除失败");
+                                layer.msg('删除失败', {icon: 2});
                                 $("#table_server").bootstrapTable('refresh', t);
                             }
                         }
@@ -393,18 +368,42 @@
             }
         });
         copy.on('success', function (e) {
-            toastr.success("复制成功");
+            layer.msg('复制成功');
             copy.off("success");
         });
         copy.on('error', function (e) {
-            toastr.error("复制失败");
+            layer.msg('复制失败');
             copy.off("error");
         });
     }
 
     function lookimgs(id,urls) {
         //单张图片预览
-        var viewer = new Viewer(document.getElementById('imgs'+id));
+        var viewer = new Viewer(document.getElementById('imgs'+id),{
+            // inline: true,
+            // url: 'data-original',
+            // navbar: false,
+            // zoomRatio: 0.4,
+            // button: true,
+            // title: false,
+            // keyboard: false,
+            toolbar: {
+                zoomIn: 1,
+                    zoomOut: 1,
+                    oneToOne: 1,
+                    reset: 1,
+                    prev: 0,
+                    play: 0,
+                    next: 0,
+                    rotateLeft: 1,
+                    rotateRight: 1,
+                    flipHorizontal: 1,
+                    flipVertical: 1,
+            },
+            viewed: function () {
+                viewer.view(0);
+            }
+        });
         document.getElementById('imgs'+id).click();
     }
 
@@ -454,7 +453,7 @@
                         if(kooltype==1){
                             var output = Mustache.render('<a style="cursor:pointer;" onclick="lookimgs('+rows.id+',\'{{&imgurl}}\')">{{imgurl}}<img class="slt" style="display: none;" id="imgs'+rows.id+'" src="{{imgurl}}" alt="" /></a>', view);
                         }else{
-                            var output = Mustache.render('<a style="cursor:pointer;"  onclick="lookimgs('+rows.id+',\'{{&imgurl}}\')"><img class="slt" id="imgs'+rows.id+'" src="{{imgurl}}" alt="" /></a>', view);
+                            var output = Mustache.render('<a style="cursor:pointer;"  onclick="lookimgs('+rows.id+',\'{{&imgurl}}\')"><img class="slt" id="imgs'+rows.id+'" src="{{imgurl}}" alt="" onerror="this.src=\'/img/img404.jpg\'" /></a>', view);
                         }
                         return output;
                     },
@@ -496,7 +495,6 @@
                     title: '性质',
                     formatter: function (value, rows, index) {
                         var type = "";
-                        console.log(rows.imgtype)
                         if (rows.imgtype == 1) {
                             type = "临时";
                         } else {
@@ -512,12 +510,16 @@
                         var view = {
                             imgurl: rows.imgurl,
                             path:rows.imgname,
-                            size:rows.sizes
+                            size:rows.sizes,
+
+                            id:rows.id,
+                            source:rows.source
                         };
                         var htm = '<a onclick="copy(\'' + rows.imgurl +
                             '\')" class="btn btn-info btn-xs"><span class="glyphicon glyphicon-list-alt" title="复制"></span></a>'+ "&nbsp;&nbsp;";//复制
                         htm += Mustache.render("<a onclick='erwm(\"{{&imgurl}}\",\"{{path}}\",\"{{size}}\")' class='btn btn-success btn-xs'><span title='二维码' class='glyphicon glyphicon-qrcode'></span></a>"+ "&nbsp;&nbsp;", view) ;//二维码
-                        htm += "<a onclick='deleimg(" + rows.id + "," + rows.source + ")' class='btn btn-danger btn-xs'><span title='删除' class='glyphicon glyphicon-trash'></span></a>";//删除
+                        //htm += "<a onclick='deleimg(" + rows.id + "," + rows.source + ")' class='btn btn-danger btn-xs'><span title='删除' class='glyphicon glyphicon-trash'></span></a>";//删除
+                        htm += Mustache.render("<a onclick='deleimg(\"{{&id}}\",\"{{source}}\",\"{{path}}\")' class='btn btn-danger btn-xs'><span title='删除' class='glyphicon glyphicon-trash'></span></a>",view);
                         return htm;
                     },
                     align: 'center'

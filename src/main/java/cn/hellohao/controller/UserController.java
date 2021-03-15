@@ -1,5 +1,6 @@
 package cn.hellohao.controller;
 
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -7,7 +8,9 @@ import java.util.Random;
 import java.util.UUID;
 
 import javax.mail.internet.MimeMessage;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -108,16 +111,20 @@ public class UserController {
 
     @RequestMapping("/login")
     @ResponseBody
-    public String login( HttpSession httpSession, String email, String password,Integer logotmp) {
+    public String login( HttpServletResponse response,HttpSession httpSession, String email, String password,Integer logotmp) {
         JSONArray jsonArray = new JSONArray();
         if((logotmp-number1)==(istmp1-number1)){
             String basepass = Base64Encryption.encryptBASE64(password.getBytes());
-            Integer ret = userService.login(email, basepass);
+            Integer ret = userService.login(email, basepass,null);
             if (ret > 0) {
                 User user = userService.getUsers(email);
                 if (user.getIsok() == 1) {
                     httpSession.setAttribute("user", user);
                     httpSession.setAttribute("email", user.getEmail());
+                    Cookie cookie = new Cookie("Hellohao_UniqueUserKey", userService.getUsers(user.getEmail()).getUid());
+                    cookie.setMaxAge(60*60*24*90);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
                     jsonArray.add(1);
                 } else if(ret==-1){
                     jsonArray.add(-1);
@@ -133,11 +140,48 @@ public class UserController {
         return jsonArray.toString();
     }
 
+
+    @RequestMapping("/login_c")
+    @ResponseBody
+    public String login( HttpSession httpSession, String Hellohao_UniqueUserKey) {
+        JSONArray jsonArray = new JSONArray();
+        Integer ret = userService.login(null, null,Hellohao_UniqueUserKey);
+            if (ret > 0) {
+                User user = userService.getUsersMail(Hellohao_UniqueUserKey);
+                if (user.getIsok() == 1) {
+                    httpSession.setAttribute("user", user);
+                    httpSession.setAttribute("email", user.getEmail());
+                    jsonArray.add(1);
+                } else if(ret==-1){
+                    jsonArray.add(-1);
+                }else {
+                    jsonArray.add(-2);
+                }
+            } else {
+                jsonArray.add(0);
+            }
+        return jsonArray.toString();
+    }
+
     //退出
     @RequestMapping(value = "/exit.do")
     @ResponseBody
-    public String exit(Model model, HttpServletRequest request, HttpSession session) {
+    public String exit(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         JSONObject jsonObject = new JSONObject();
+        Cookie[] cookies = request.getCookies();
+        if(cookies!=null){
+            for (Cookie cookie : cookies) {
+                Cookie c = null;
+                cookie.setPath("/");
+                if(cookie.getName().equals("Hellohao_UniqueUserKey")){
+                    //cookie.setValue(null);
+                    c = new Cookie("Hellohao_UniqueUserKey","");
+                    c.setPath("/");
+                    cookie.setMaxAge(0);//60*60*24*90
+                    response.addCookie(c);
+                }
+            }
+        }
         //注销，移除session
         User user = (User) session.getAttribute("user");
         if (user.getEmail() != null && user.getPassword() != null) {

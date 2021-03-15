@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Map;
 
 public class StringUtils {
+    //此方法目前未使用2020-04-06
     public static Boolean doNull(Integer sourcekey,Keys k) {
         if(sourcekey==1){
             if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null

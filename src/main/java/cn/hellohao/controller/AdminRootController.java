@@ -8,6 +8,7 @@ import cn.hellohao.utils.Print;
 import cn.hellohao.utils.StringUtils;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/root")
@@ -55,17 +57,15 @@ public class AdminRootController {
         User u = (User) session.getAttribute("user");
         Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         Keys  key= keysService.selectKeys(Sourcekey);
-        Boolean b = StringUtils.doNull(Sourcekey,key);
+        //Boolean b = StringUtils.doNull(Sourcekey,key);
         Integer StorageType = 0;
         if(Sourcekey!=5){
-            if(b){
-                model.addAttribute("AccessKey", key.getAccessKey());
-                model.addAttribute("AccessSecret", key.getAccessSecret());
-                model.addAttribute("Endpoint", key.getEndpoint());
-                model.addAttribute("Bucketname", key.getBucketname());
-                model.addAttribute("RequestAddress", key.getRequestAddress());
-                model.addAttribute("StorageType", Sourcekey);
-            }
+            model.addAttribute("AccessKey", key.getAccessKey());
+            model.addAttribute("AccessSecret", key.getAccessSecret());
+            model.addAttribute("Endpoint", key.getEndpoint());
+            model.addAttribute("Bucketname", key.getBucketname());
+            model.addAttribute("RequestAddress", key.getRequestAddress());
+            model.addAttribute("StorageType", Sourcekey);
             if(Sourcekey==4){
                 model.addAttribute("Endpoint2", key.getEndpoint());
             }else{
@@ -107,12 +107,11 @@ public class AdminRootController {
         config.setSourcekey(key.getStorageType());
         Integer val = configService.setSourceype(config);
         Integer ret = -2;
-        //修改完初始化
         if(key.getStorageType()==1){
-            ret =nOSImageupload.Initialize(key);//实例化网易
+            ret =nOSImageupload.Initialize(key);
         }else if (key.getStorageType()==2){
             ret = OSSImageupload.Initialize(key);
-        }else if(key.getStorageType()==3){
+        }else if(key.getStorageType()==3 ){
             ret = USSImageupload.Initialize(key);
         }else if(key.getStorageType()==4){
             ret = KODOImageupload.Initialize(key);
@@ -120,6 +119,8 @@ public class AdminRootController {
             ret = COSImageupload.Initialize(key);
         }else if(key.getStorageType()==7){
             ret = FTPImageupload.Initialize(key);
+        }else if(key.getStorageType()==8){
+            ret = UFileImageupload.Initialize(key);
         }
         else{
             Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
@@ -127,7 +128,6 @@ public class AdminRootController {
         if(ret>0){
             ret = keysService.updateKey(key);
         }
-
         //-1 对象存储有参数为空,初始化失败
         //0，保存失败
         //1 正确
@@ -200,9 +200,14 @@ public class AdminRootController {
     @PostMapping("/setisok")
     @ResponseBody
     public String setisok(HttpSession session, User user) {
-        Integer ret = userService.setisok(user);
         JSONArray jsonArray = new JSONArray();
-        jsonArray.add(ret);
+        User u = (User) session.getAttribute("user");
+        if(u.getId()==user.getId()){
+            jsonArray.add(-2);
+        }else{
+            Integer ret = userService.setisok(user);
+            jsonArray.add(ret);
+        }
         return jsonArray.toString();
     }
 
@@ -259,6 +264,42 @@ public class AdminRootController {
         paramMap.put("dates",dates);
         String result= HttpUtil.post(urls, paramMap);
         return Integer.parseInt( result );
+    }
+
+    @PostMapping("/tocheck")
+    @ResponseBody
+    public JSONObject tocheck() {
+        JSONObject jsonObject = new JSONObject();
+            List<Keys> keylist = keysService.getKeys();
+            for (Keys key : keylist) {
+                if(key.getStorageType()!=0 && key.getStorageType()!=null){
+                    int ret =0;
+                    if(key.getStorageType()==1){
+                        ret =NOSImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }else if (key.getStorageType()==2){
+                        ret =OSSImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }else if(key.getStorageType()==3){
+                        ret = USSImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }else if(key.getStorageType()==4){
+                        ret = KODOImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }else if(key.getStorageType()==6){
+                        ret = COSImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }else if(key.getStorageType()==7){
+                        ret = FTPImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }else if(key.getStorageType()==8){
+                        ret = UFileImageupload.Initialize(key);
+                        jsonObject.put(key.getStorageType().toString(),ret);
+                    }
+                }
+            }
+        jsonObject.put("5",1);
+        return jsonObject;
     }
 
 }

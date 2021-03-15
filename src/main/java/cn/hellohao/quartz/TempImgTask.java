@@ -1,5 +1,6 @@
 package cn.hellohao.quartz;
 
+import cn.hellohao.pojo.FixedResources;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.service.impl.ImgServiceImpl;
 import cn.hellohao.service.impl.KeysServiceImpl;
@@ -42,6 +43,10 @@ public class TempImgTask  {
 
 
     public void start() throws InterruptedException {
+        File f = new File(FixedResources.LOCPATH);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
         List<String> list = new ArrayList<>();
         File file = new File(File.separator + "HellohaoData"+File.separator+"img.ini");
         //判断文件是否存在
@@ -52,7 +57,6 @@ public class TempImgTask  {
                 String s = null;
                 while ((s = br.readLine()) != null) {//使用readLine方法，一次读一行
                     result.append(System.lineSeparator() + s);
-                    //Print.Normal( s);
                     String str = s;
                     String[] strArr = str.split("\\|");
                     System.out.println(strArr.length); //这里输出3

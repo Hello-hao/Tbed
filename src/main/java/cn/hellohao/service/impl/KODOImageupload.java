@@ -3,9 +3,7 @@ package cn.hellohao.service.impl;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.DateUtils;
-import cn.hellohao.utils.DeleImg;
-import cn.hellohao.utils.ImgUrlUtil;
+import cn.hellohao.utils.*;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.google.gson.Gson;
@@ -16,6 +14,7 @@ import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
+import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,80 +32,89 @@ public class KODOImageupload {
     static Keys key;
 
     public Map<ReturnImage, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username,
-                                                     Map<String, String> fileMap2,Integer setday) throws Exception {
+                                                     Map<String, String> fileMap2,Integer setday){
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-
-            for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                file = changeFile(entry.getValue());
-                try {
-                    Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                    if(setday>0) {
-                        String deleimg = DateUtils.plusDay(setday);
-                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
-                    }
-                } catch (QiniuException ex) {
-                    Response r = ex.response;
-                    System.err.println(r.toString());
+            try {
+                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    file = SetFiles.changeFile(entry.getValue());
                     try {
-                        System.err.println(r.bodyString());
-                    } catch (QiniuException ex2) {
+                        Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
+                        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+                        ReturnImage returnImage = new ReturnImage();
+                        returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
+                        returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                        ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                        if(setday>0) {
+                            String deleimg = DateUtils.plusDay(setday);
+                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
+                        }
+                    } catch (QiniuException ex) {
+                        Response r = ex.response;
+                        System.err.println(r.toString());
+                        try {
+                            System.err.println(r.bodyString());
+                        } catch (QiniuException ex2) {
+                        }
                     }
                 }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                String imgurl = entry.getValue();
-                System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                try {
-                    Response response = uploadManager.put(new File(imgurl),username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                    ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
-                    if(setday>0) {
-                        String deleimg = DateUtils.plusDay(setday);
-                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
-                    }
-                    new File(imgurl).delete();
-                } catch (QiniuException ex) {
-                    Response r = ex.response;
-                    System.err.println(r.toString());
+            try {
+                for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    String imgurl = entry.getValue();
+                    System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
                     try {
-                        System.err.println(r.bodyString());
-                    } catch (QiniuException ex2) {
+                        Response response = uploadManager.put(new File(imgurl),username + "/" + uuid+times + "." + entry.getKey(),upToken);
+                        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+                        ReturnImage returnImage = new ReturnImage();
+                        returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                        ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                        if(setday>0) {
+                            String deleimg = DateUtils.plusDay(setday);
+                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
+                        }
+                        new File(imgurl).delete();
+                    } catch (QiniuException ex) {
+                        Response r = ex.response;
+                        System.err.println(r.toString());
+                        try {
+                            System.err.println(r.bodyString());
+                        } catch (QiniuException ex2) {
+                        }
                     }
                 }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }
     }
 
     // 转换文件方法
-    private File changeFile(MultipartFile multipartFile) throws Exception {
-        // 获取文件名
-        String fileName = multipartFile.getOriginalFilename();
-        // 获取文件后缀
-        String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // todo 修改临时文件文件名
-        File file = File.createTempFile(fileName, prefix);
-        multipartFile.transferTo(file);
-        return file;
-    }
+//    private File changeFile(MultipartFile multipartFile) throws Exception {
+//        // 获取文件名
+//        String fileName = multipartFile.getOriginalFilename();
+//        // 获取文件后缀
+//        String prefix = fileName.substring(fileName.lastIndexOf("."));
+//        // todo 修改临时文件文件名
+//        File file = File.createTempFile(fileName, prefix);
+//        multipartFile.transferTo(file);
+//        return file;
+//    }
 
     //初始化
     public static Integer Initialize(Keys k) {
@@ -130,8 +138,20 @@ public class KODOImageupload {
                 uploadManager = new UploadManager(cfg);
                 Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
                 upToken = auth.uploadToken(k.getBucketname());
-                key = k;
-                ret = 1;
+                BucketManager bucketManager = new BucketManager(auth, cfg);
+                BucketManager.FileListIterator fileListIterator = null;
+                try {
+                    fileListIterator = bucketManager.createFileListIterator(k.getBucketname(), "", 1, "/");
+                    FileInfo[] items = fileListIterator.next();
+                    System.out.println(items!=null);
+                    if(items!=null){
+                        key = k;
+                        ret = 1;
+                    }
+                }catch (Exception e){
+                    System.out.println("KODO - Waiting for configuration");
+                    ret = -1;
+                }
             }
         }
         return ret;
@@ -147,7 +167,7 @@ public class KODOImageupload {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            file = SetFiles.changeFile_c(entry.getValue());
             System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
             try {
                 ReturnImage returnImage = new ReturnImage();

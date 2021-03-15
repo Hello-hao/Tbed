@@ -73,10 +73,10 @@ layui.use(['element', 'layer'], function () {
     };
 
     element.on('nav(test)', function (elem) {
+
         // 如果点击的目录还有子目录就不做任何操作.
         if ($(elem).find("span.layui-nav-more").length === 0) {
             var obj = $(this);
-
             var title = obj.find("cite").html();
             var id = obj.attr("lay-id");
             var url = obj.attr("lay-url");
@@ -235,9 +235,10 @@ layui.use(['element', 'layer'], function () {
         var filter = "test"; //菜单
         var id = $(this).attr("lay-id");
         var navElem = $(".layui-nav[lay-filter='" + filter + "']"); //菜单导航元素
+        //移除所有的展开事件
+        navElem.find("li").removeClass("layui-nav-itemed");
         //移除所有选中、获取当前tab选择导航、标注选中样式、展开条目
         navElem.find("li, dd").removeClass("layui-this").find("a[lay-id='" + id + "']").parent().first().addClass("layui-this").parents("li,dd").addClass("layui-nav-itemed");
-
         buildBreadcrumb();
         if (rememberTab) {
             sessionStorage.setItem("currentTabId", id);

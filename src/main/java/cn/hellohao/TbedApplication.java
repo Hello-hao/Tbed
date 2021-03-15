@@ -7,6 +7,7 @@ import cn.hellohao.utils.Print;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -19,6 +20,7 @@ import java.util.Scanner;
 
 @SpringBootApplication
 @Configuration
+@ServletComponentScan
 @EnableTransactionManagement(proxyTargetClass = true)
 public class TbedApplication {
 
@@ -37,6 +39,8 @@ public static void main(String[] args) {
         factory.setMaxFileSize("102400KB"); // KB,MB
         /// 总上传数据大小
         factory.setMaxRequestSize("102400KB");
+        //factory.setLocation("/tmp");
+
         return factory.createMultipartConfig();
     }
 

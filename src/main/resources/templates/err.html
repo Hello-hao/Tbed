@@ -4,14 +4,48 @@
     <meta charset="UTF-8">
     <title>登录超时</title>
     <script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
+    <script th:src="@{/js/js.cookie.min.js}"></script>
 </head>
 <body>
-<h2>登录已过期，请重新登录</h2>
+<br />
+<br />
+<br />
+<br />
+<br />
+<h2 id="logmsg" align="center" style=" color: #555;">登录已过期，请重新登录</h2>
 
 <script>
-$(function () {
     top.location.href="/";
-})
+
+    // var isurl = window.location.protocol+'//'+window.location.host+'/admin/goadmin';//document.referrer+'/admin/goadmin'
+    // //cookie登录
+    // var cookiepass = $.cookie('pass_hellohaobycookie');
+    // var cookiename = $.cookie('name_hellohaobycookie');
+    // if(cookiepass!=null && cookiepass!="" && cookiepass!="null"){
+    //     $('#logmsg').text('正在验证本地登录');
+    //     cookieLogin(cookiename,cookiepass)
+    // }else{
+    //     top.location.href="/";
+    // }
+    function cookieLogin(loginemail,loginpassword){
+        $.ajax({
+            type: "POST",
+            url: "/user/login_c",
+            data: {email: loginemail, password: loginpassword},
+            dataType: "json",
+            success: function (data) {
+                if (data == 1) {
+                    $.cookie('name_hellohaobycookie', loginemail, { expires: 90});
+                    $.cookie('pass_hellohaobycookie', loginpassword, { expires: 90});
+                    top.location.href=isurl;
+                } else {
+                    $('#logmsg').text('本地账号已失效。');
+                    $.cookie('name_hellohaobycookie', null);
+                    $.cookie('pass_hellohaobycookie', null);
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

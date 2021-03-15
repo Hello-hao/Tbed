@@ -1,7 +1,9 @@
 package cn.hellohao.service;
 
 import cn.hellohao.pojo.Imgreview;
+import org.springframework.stereotype.Service;
 
+@Service
 public interface ImgreviewService {
     int deleteByPrimaryKey(Integer id);
 

@@ -54,8 +54,6 @@ public class ImgUrlUtil {
      * @param savePath
      * @throws IOException
      */
-
-
     public static boolean  downLoadFromUrl(String urlStr,String fileName,String savePath) throws IOException{
         URL url = new URL(urlStr);
         HttpURLConnection conn = (HttpURLConnection)url.openConnection();

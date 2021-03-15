@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="description" content=""/>
+	<meta name="keywords" content=""/>
+	<meta name="viewport"
+		  content="width=device-width, initial-scale=1"/>
+	<title th:text="${webname}+' - 画廊分享'"></title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+	<meta name="mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+	<link rel="shortcut icon" th:href="${ico}" type="image/x-icon"/>
+	<link rel="icon" type="image/ico" th:href="${ico}" />
+	<link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" th:href="@{/gallery/css/style1.css}" />
+	<link rel="stylesheet" type="text/css" th:href="@{/gallery/css/style_login.css}" />
+	<script th:src="@{/gallery/js/modernizr-custom.js}"></script>
+
+</head>
+
+<body class="demo-1" style="background: #FFF;">
+<!--<div class="kit-name-head" id="some-element">-->
+<!--    <div class="container">-->
+<!--        <div class="kit-name-txt" >-->
+<!--&lt;!&ndash;            <h2 ><span>画 廊</span><span style="font-size: 16px;font-weight: 500;color: #dee1e6;">&nbsp;-&nbsp;分享亦是感动</span></h2>&ndash;&gt;-->
+<!--            <h2 th:text="${webname}">画 廊</h2>-->
+<!--            <h3 id="webname">分享亦是感动</h3>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<div class="container">
+    <section id="verification" class="signin popup-in" style="display: none;">
+        <div class="container">
+            <div class="sign-content popup-in-content">
+                <div class="popup-in-txt">
+                    <div style="position: relative;">
+                        <h3 align="center" class="ghost">&nbsp;<img id="tupian" style="max-height: 1.6em;" th:src="@{/img/signin.png}" />&nbsp;画廊共享</h3>
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="signin-form">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="signin_form" style="margin-left: 15px;">请输入提取码</label>
+                                        <input type="text" class="form-control" id="signin_form" placeholder="请输入你的提取码" style="height: 50px;width: 90%;margin: 15px;" />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="signin-password">
+                                <div class="awesome-checkbox-list">
+                                    <ul class="unstyled centered">
+                                        <li>
+<!--                                            <input class="styled-checkbox" id="styled-checkbox-2" type="checkbox" value="value2">-->
+                                            <label style="margin-left: 15px;" for="styled-checkbox-2">Resources from <a href="/" th:text="${webname}">Hellohao</a></label>
+                                        </li>
+<!--                                        <li>-->
+<!--                                            <a href="#">Forgot email or password ?</a>-->
+<!--                                        </li>-->
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="signin-footer">
+                                <button type="button" class="btn signin_btn" onclick="tologin();">
+                                    Verification
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <h3 align="center" id="imgLose"style="display: none;color: #555;margin-top: 50px;" ><i class="layui-icon layui-icon-face-cry" style="font-size: 30px;"></i>&nbsp; 该画廊已经停用或图片已经被删除~</h3>
+	<div class="content" id="Albummain" style="display: none;">
+        <div class="page-header" >
+            <h3 style=" display:block;height: 30px;" >
+                <span th:text="${webname}"></span>
+                <small id='webname'></small>
+            </h3>
+        </div>
+		<div class="grid" id="AlbumList">
+<!--			&lt;!&ndash; <div class="grid__item" data-size="1280x853" style="position: absolute; left: 0px; top: 0px;"> <a href="http://p9.qhimg.com/bdr/__85/t01dfdd66012dca164d.jpg" class="img-wrap"><img src="http://p9.qhimg.com/bdr/__85/t01dfdd66012dca164d.jpg" alt="img1">-->
+<!--                <div class="description description&#45;&#45;grid">Assemblage</div>-->
+<!--                </a> </div> &ndash;&gt;-->
+		</div>
+		<!-- /grid -->
+		<div class="preview">
+			<button class="action action--close"><i class="fa fa-times">x</i><span class="text-hidden">Close</span></button>
+			<div class="description description--preview"></div>
+		</div>
+		<!-- /preview -->
+	</div>
+</div>
+<footer class="navbar-fixed-bottom">
+    <div class="container" style="background: #FFF;">
+        <p align="center"></p>
+        <p align="center">&copy; Photo album sharing from <span th:utext="'<a href='+${domain}+'>'+${webname}+'</a>'">hellohao</span></p>
+<!--        <p align="center">本站资源为用户上传分享,如有违法或侵犯原作合法权益，请与我们联系删除</p>-->
+    </div>
+</footer>
+<input type="hidden" id="passType" th:value="${passType}" />
+<!-- /container -->
+<script th:src="@{/static/js/jquery-3.4.1.min.js}" type="text/javascript"></script>
+	<script th:src="@{/gallery/js/imagesloaded.pkgd.min.js}"></script>
+	<script th:src="@{/gallery/js/masonry.pkgd.min.js}"></script>
+	<script th:src="@{/gallery/js/classie.js}"></script>
+	<script th:src="@{/gallery/js/main.js}"></script>
+    <script th:src="@{/js/js.cookie.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/layui/layui/css/layui.css}">
+    <script th:src="@{/layui/layui/layui.js}"></script>
+<script th:src="@{/js/background-blur.min.js}"></script>
+<script>
+    var passType;
+    var album = [[${album}]];
+    var pass = $.cookie('key_cookie');
+    var albumkey = $.cookie('albumkey_cookie');
+    var userpass;
+    var backurl = '';
+    var layer;
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form;
+        layer = layui.layer;
+    });
+
+    (function() {
+        var passType = $('#passType').val();
+        if(passType==1 || passType=='1'){
+            var thisKey = window.location.pathname.replace(/\//g, "");
+            if(thisKey==albumkey){
+                //是同一个网址，然后获取cookies的pass
+                if(pass!=null && pass!="" && pass!='null'){
+                    userpass = pass;
+                    getAlbum();
+                }
+            }else{
+                $('#verification').show();
+            }
+        }else{
+            $('#verification').hide();
+            userpass = null;
+            getAlbum();
+        }
+
+    })();
+    //点击验证之后
+    function tologin() {
+        userpass = $('#signin_form').val();
+        getAlbum();
+    }
+
+    //手动输入密码
+    function  getAlbum(){
+        var albumkey = window.location.pathname.replace(/\//g, "");
+        $.ajax({
+            type: "POST",
+            url: "/getAlbumList",
+            dataType: "json",
+            data: {albumkey:albumkey,password:userpass},
+            success: function (data) {
+                var code = data.code;
+                var body = '';
+                //var imgList = data.data.imagesList; //&& typeof(imgList) != "undefined"
+                if(code=='200'){
+                    var imgList = data.data.imagesList;
+                    $('#webname').html(data.data.titlename);
+                    $('#verification').hide();
+                    $('#AlbumList').html('');
+                    //$('#some-element').show();
+                    $.cookie('key_cookie', userpass, { expires: 7 });
+                    $.cookie('albumkey_cookie', albumkey, { expires: 7 });
+                    if(imgList.length==0){
+                        $('#imgLose').css('display','block');
+                    }else{
+                        for(var i = 0;i<imgList.length;i++){
+                            var datasize = "";
+                            body+='<div class="grid__item" data-size="9999x9999"> <a href="'+imgList[i].imgurl+'" class="img-wrap"><img src="'+imgList[i].imgurl+'" alt="'+imgList[i].imgurl+'" />\n' +
+                                '<div class="description description--grid" style="display: none;">'+imgList[i].notes+'</div>\n' +
+                                '</a> </div>';
+                        }
+                        $('#AlbumList').html(body);
+                        imgRendering();
+                        $('#Albummain').show();
+                    }
+                }else if(code=='404'){
+                    $('#verification').hide();
+                    $('#imgLose').css('display','block');
+                }else{
+                    layer.msg(data.info, {icon: 2});
+                    // setTimeout(function () {
+                    // }, 1000);
+                    $('#verification').show();
+                    $.cookie('key_cookie', null);
+                    $.cookie('albumkey_cookie', null);
+                }
+            }
+        });
+    }
+
+    function getImageWidth(url,callback){
+        var img = new Image();
+        img.src = url;
+        // 如果图片被缓存，则直接返回缓存数据
+        if(img.complete){
+            callback(img.width, img.height);
+        }else{
+            // 完全加载完毕的事件
+            img.onload = function(){
+                callback(img.width, img.height);
+            }
+        }
+    }
+
+    //页面图片渲染
+    function imgRendering() {
+        // create SVG circle overlay and append it to the preview element
+        function createCircleOverlay(previewEl) {
+            var dummy = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            dummy.setAttributeNS(null, 'version', '1.1');
+            dummy.setAttributeNS(null, 'width', '100%');
+            dummy.setAttributeNS(null, 'height', '100%');
+            dummy.setAttributeNS(null, 'class', 'overlay');
+            var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            circle.setAttributeNS(null, 'cx', 0);
+            circle.setAttributeNS(null, 'cy', 0);
+            circle.setAttributeNS(null, 'r', Math.sqrt(Math.pow(previewEl.offsetWidth,2) + Math.pow(previewEl.offsetHeight,2)));
+            dummy.appendChild(g);
+            g.appendChild(circle);
+            previewEl.appendChild(dummy);
+        }
+
+        new GridFx(document.querySelector('.grid'), {
+            onInit : function(instance) {
+                createCircleOverlay(instance.previewEl);
+            },
+            onResize : function(instance) {
+                instance.previewEl.querySelector('svg circle').setAttributeNS(null, 'r', Math.sqrt(Math.pow(instance.previewEl.offsetWidth,2) + Math.pow(instance.previewEl.offsetHeight,2)));
+            },
+            onOpenItem : function(instance, item) {
+                // item's image
+                var gridImg = item.querySelector('img'),
+                    gridImgOffset = gridImg.getBoundingClientRect(),
+                    win = {width: document.documentElement.clientWidth, height: window.innerHeight},
+                    SVGCircleGroupEl = instance.previewEl.querySelector('svg > g'),
+                    SVGCircleEl = SVGCircleGroupEl.querySelector('circle');
+
+                SVGCircleEl.setAttributeNS(null, 'r', Math.sqrt(Math.pow(instance.previewEl.offsetWidth,2) + Math.pow(instance.previewEl.offsetHeight,2)));
+                // set the transform for the SVG g node. This will animate the circle overlay. The origin of the circle depends on the position of the clicked item.
+                if( gridImgOffset.left + gridImg.offsetWidth/2 < win.width/2 ) {
+                    SVGCircleGroupEl.setAttributeNS(null, 'transform', 'translate(' + win.width + ', ' + (gridImgOffset.top + gridImg.offsetHeight/2 < win.height/2 ? win.height : 0) + ')');
+                }
+                else {
+                    SVGCircleGroupEl.setAttributeNS(null, 'transform', 'translate(0, ' + (gridImgOffset.top + gridImg.offsetHeight/2 < win.height/2 ? win.height : 0) + ')');
+                }
+            }
+        });
+    }
+
+    // window.onload=function(){
+    //     var oDiv=document.getElementById('some-element');
+    //     var x = 10;
+    //     var y = 1;
+    //     var rand = parseInt(Math.random() * (x - y + 1) + y);
+    //     var c1 = '';
+    //     var c2 = '';
+    //     if(rand==1){c1 = '26d9b3';c2 = '5a84fd';}
+    //     else if(rand==2){c1 = '6DE195';c2 = 'C4E759';}
+    //     else if(rand==3){c1 = '41C7AF';c2 = '54E38E';}
+    //     else if(rand==4){c1 = '99E5A2';c2 = 'D4FC78';}
+    //     else if(rand==5){c1 = 'A16BFE';c2 = 'DEB0DF';}
+    //     else if(rand==6){c1 = 'F78FAD';c2 = 'FDEB82';}
+    //     else if(rand==7){c1 = 'BC3D2F';c2 = 'A16BFE';}
+    //     else if(rand==8){c1 = 'A43AB2';c2 = 'E13680';}
+    //     else if(rand==9){c1 = '8DEBFF';c2 = '41D8DD';}
+    //     else{c1 = '5583EE';c2 = '5a84fd';}
+    //     oDiv.style.cssText="background: #"+c1+";background: -moz-linear-gradient(right, #"+c1+" 0%, #"+c2+" 100%);background: -webkit-linear-gradient(right, #"+c1+" 0%, #"+c2+" 100%);background: linear-gradient(to right,  #"+c1+" 0%, #"+c2+" 100%);filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#"+c1+"', endColorstr='#"+c2+"',GradientType=1 );";  //第二种 使用cssText
+    // };
+</script>
+
+
+</body>
+</html>

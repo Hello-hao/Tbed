@@ -2,19 +2,14 @@ package cn.hellohao.service.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.DateUtils;
-import cn.hellohao.utils.DeleImg;
-import cn.hellohao.utils.ImgUrlUtil;
-import cn.hellohao.utils.Print;
+import cn.hellohao.utils.*;
+import com.netease.cloud.services.nos.model.NOSObjectSummary;
+import com.netease.cloud.services.nos.model.ObjectListing;
 import com.netease.cloud.services.nos.model.ObjectMetadata;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,68 +29,79 @@ public class NOSImageupload {
     static Keys key;
 
     public Map<ReturnImage, Integer> Imageupload(Map<String, MultipartFile> fileMap, String username,
-                                                 Map<String, String> fileMap2,Integer setday) throws Exception {
+                                                 Map<String, String> fileMap2,Integer setday){
         if(fileMap2==null){
             File file = null;
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                file = changeFile(entry.getValue());
-                nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), file);
-                ReturnImage returnImage = new ReturnImage();
-                returnImage.setImgname(entry.getValue().getOriginalFilename());
-                returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                if(setday>0){
-                    String deleimg = DateUtils.plusDay(setday);
-                    DeleImg.charu(username + "/" + uuid+times + "." + entry.getKey()+"-"+deleimg+"-"+"1");
+            try {
+                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    file = SetFiles.changeFile(entry.getValue());
+                    nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), file);
+                    ReturnImage returnImage = new ReturnImage();
+                    returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
+                    if(setday>0){
+                        String deleimg = DateUtils.plusDay(setday);
+                        DeleImg.charu(username + "/" + uuid+times + "." + entry.getKey()+"-"+deleimg+"-"+"1");
+                    }
                 }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }else{
             Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
             ObjectMetadata meta = new ObjectMetadata();
             meta.setHeader("Content-Disposition", "inline");
-            for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                String times = format1.format(new Date());
-                String imgurl = entry.getValue();
-                String head = "";
-                if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
-                    head = "image/jpeg";
-                }else if(entry.getKey().equals("png")){
-                    head = "image/png";
-                }else if(entry.getKey().equals("bmp")){
-                    head = "image/bmp";
-                }else if(entry.getKey().equals("gif")){
-                    head = "image/gif";
-                }else{
-                    System.err.println("未知格式文件，无法定义header头。");
-                }
-                meta.setHeader("Content-Type", head);//image/jpeg
-                File file = new File(imgurl);
-                FileInputStream fileInputStream = new FileInputStream(file);
-                try {
-                    nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), fileInputStream,meta);
-                    ReturnImage returnImage = new ReturnImage();
-                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                    ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
-                    if(setday>0) {
-                        String deleimg = DateUtils.plusDay(setday);
-                        DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "-" + deleimg + "-" + "1");
+            try {
+                for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
+                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                    String times = format1.format(new Date());
+                    String imgurl = entry.getValue();
+                    String head = "";
+                    if(entry.getKey().equals("jpg")||entry.getKey().equals("jpeg")){
+                        head = "image/jpeg";
+                    }else if(entry.getKey().equals("png")){
+                        head = "image/png";
+                    }else if(entry.getKey().equals("bmp")){
+                        head = "image/bmp";
+                    }else if(entry.getKey().equals("gif")){
+                        head = "image/gif";
+                    }else{
+                        //System.err.println("未知格式文件，无法定义header头。");
+                        head = "image/"+entry.getKey();
                     }
-                    boolean bb= new File(imgurl).getAbsoluteFile().delete();
-                    Print.Normal("删除情况"+bb);
-                } catch (Exception e) {
-                    System.err.println("上传报错:" + e.getMessage());
+                    meta.setHeader("Content-Type", head);//image/jpeg
+                    File file = new File(imgurl);
+                    FileInputStream fileInputStream = new FileInputStream(file);
+                    try {
+                        nosClient.putObject(BarrelName, username + "/" + uuid+times + "." + entry.getKey(), fileInputStream,meta);
+                        ReturnImage returnImage = new ReturnImage();
+                        returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
+                        ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
+                        if(setday>0) {
+                            String deleimg = DateUtils.plusDay(setday);
+                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "-" + deleimg + "-" + "1");
+                        }
+                        boolean bb= new File(imgurl).getAbsoluteFile().delete();
+                        Print.Normal("删除情况"+bb);
+                    } catch (Exception e) {
+                        System.err.println("上传报错:" + e.getMessage());
+                    }
+                    if(fileInputStream!=null){
+                        fileInputStream.close();
+                        Print.Normal("流已经关闭");
+                    }
                 }
-                if(fileInputStream!=null){
-                    fileInputStream.close();
-                    Print.Normal("流已经关闭");
-                }
+            }catch (Exception e){
+                e.printStackTrace();
+                ImgUrl.put(null, 500);
             }
             return ImgUrl;
         }
@@ -103,17 +109,17 @@ public class NOSImageupload {
     }
 
     // 转换文件方法
-    private File changeFile(MultipartFile multipartFile) throws Exception {
-        // 获取文件名
-        String fileName = multipartFile.getOriginalFilename();
-        // 获取文件后缀
-        String prefix = fileName.substring(fileName.lastIndexOf("."));
-        // todo 修改临时文件文件名
-        File file = File.createTempFile(fileName, prefix);
-        // MultipartFile to File
-        multipartFile.transferTo(file);
-        return file;
-    }
+//    private File changeFile(MultipartFile multipartFile) throws Exception {
+//        // 获取文件名
+//        String fileName = multipartFile.getOriginalFilename();
+//        // 获取文件后缀
+//        String prefix = fileName.substring(fileName.lastIndexOf("."));
+//        // todo 修改临时文件文件名
+//        File file = File.createTempFile(fileName, prefix);
+//        // MultipartFile to File
+//        multipartFile.transferTo(file);
+//        return file;
+//    }
 
 
     //初始化网易NOS对象存储
@@ -127,28 +133,19 @@ public class NOSImageupload {
                 Credentials credentials = new BasicCredentials(k.getAccessKey(), k.getAccessSecret());
                 nosClient = new NosClient(credentials);
                 nosClient.setEndpoint(k.getEndpoint());
-                // 列举桶
-                ArrayList bucketList = new ArrayList();
-    //加入传入的key值不正确，这里会报异常，页面500，如何捕捉异常处理。
                 BarrelName = k.getBucketname();
-    //            for (Bucket bucket : nosClient.listBuckets()) {
-    //                bucketList.add(bucket.getName());
-    //            }
-
-    //            for (Object object : bucketList) {
-    //                if (object.toString().equals(k.getBucketname())) {
-    //                    BarrelName = object.toString();
-    //                }
-    //            }
-                key = k;
-                ret = 1;
-            }else{
-                ret = -1;
+                ObjectListing objectListing = null;
+                try {
+                    objectListing = nosClient.listObjects(k.getBucketname());
+                    key = k;
+                    ret = 1;
+                }catch (Exception e){
+                    System.out.println("NOS - Waiting for configuration");
+                    ret = -1;
+                }
             }
-        }else{
-            ret = -1;
-            //throw new StorageSourceInitException("当前数据源配置不完整，请管理员前往后台配置。");
         }
+            //throw new StorageSourceInitException("当前数据源配置不完整，请管理员前往后台配置。");
         return ret;
     }
 
@@ -162,7 +159,7 @@ public class NOSImageupload {
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
             String times = format1.format(new Date());
-            file = changeFile(entry.getValue());
+            file = SetFiles.changeFile_c(entry.getValue());
             try {
                  Print.warning(entry.getValue().getSize());
                 ReturnImage returnImage = new ReturnImage();

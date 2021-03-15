@@ -14,7 +14,7 @@ public interface UserMapper {
     Integer register(User user);
 
     //登录
-    Integer login(@Param("email") String email, @Param("password") String password);
+    Integer login(@Param("email") String email, @Param("password") String password,@Param("uid") String uid);
 
     //获取用户信息
     User getUsers(@Param("email") String email);

@@ -18,11 +18,12 @@ public class Config {
     private String webms;
     private String webkeywords;
     private String webfavicons;
+    private Integer theme;
 
     public Config() {
     }
 
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett, String webms, String webkeywords, String webfavicons) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett, String webms, String webkeywords, String webfavicons, Integer theme) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
@@ -40,6 +41,7 @@ public class Config {
         this.webms = webms;
         this.webkeywords = webkeywords;
         this.webfavicons = webfavicons;
+        this.theme = theme;
     }
 
     public Integer getId() {
@@ -176,5 +178,13 @@ public class Config {
 
     public void setWebfavicons(String webfavicons) {
         this.webfavicons = webfavicons;
+    }
+
+    public Integer getTheme() {
+        return theme;
+    }
+
+    public void setTheme(Integer theme) {
+        this.theme = theme;
     }
 }

@@ -102,7 +102,7 @@ table {
     margin: 20px auto;
     cursor: pointer;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-
+    border-radius:25px
 }
 
 
@@ -138,6 +138,8 @@ table {
     list-style: none;
     margin: 0;
     padding: 0;
+    max-height: 300px;
+    overflow: auto;
 }
 
 #uploader .filelist:after {
@@ -284,7 +286,16 @@ table {
     z-index: 200;
     background: url(../images/success.png) no-repeat right bottom;
 }
-
+.warning {
+    display: block;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 40px;
+    width: 100%;
+    z-index: 200;
+    background: url(../images/warning.png) no-repeat right bottom;
+}
 #uploader .filelist div.file-panel {
     position: absolute;
     height: 0;
@@ -392,7 +403,7 @@ table {
     color: #565656;
     padding: 0 18px;
     display: inline-block;
-    border-radius: 3px;
+    border-radius: 25px;
     margin-left: 10px;
     cursor: pointer;
     font-size: 14px;
@@ -406,7 +417,7 @@ table {
 }
 
 #uploader .statusBar .btns .uploadBtn {
-    /*background: #00b7ee;*/
+    /*background: #4ebd87;  00b7ee*/
     background:#4ebd87;
     color: #fff;
     border-color: transparent;

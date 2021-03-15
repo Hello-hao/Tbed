@@ -57,6 +57,10 @@
             <if test="webfavicons != null">
                 `webfavicons` = #{webfavicons},
             </if>
+            <if test="theme != null">
+                `theme` = #{theme},
+            </if>
+
 
 
         </set>
