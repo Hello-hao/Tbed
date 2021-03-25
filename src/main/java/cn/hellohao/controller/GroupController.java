@@ -72,19 +72,8 @@ public class GroupController {
     @RequestMapping(value = "/addisgroup")
     @ResponseBody
     public Integer addisgroup(Group group) {
-        //boolean b =false;
-        //if(group.getKeyid()==5){
-         //   b =true;
-        //}else{
-            //Keys key = keysService.selectKeys(group.getKeyid());
-            //b = StringUtils.doNull(group.getKeyid(),key);
-        //}
         Integer ret = 0;
-        //if(b){
-            ret = groupService.addgroup(group);
-        //}else{
-          //  ret = -1;
-        //}
+        ret = groupService.addgroup(group);
         return ret;
     }
     @RequestMapping(value = "/delegroup")
