@@ -82,6 +82,7 @@ public class AdminController {
             }
             return "admin/index";
         }else{
+            System.out.println("重定向到首页");
             return "redirect:/";
         }
     }
