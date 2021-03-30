@@ -40,7 +40,7 @@ public class FTPImageupload {
                     file = SetFiles.changeFile(entry.getValue());
                     String userkey =username + "/"+ uuid+times + "." + entry.getKey();
                     if (flag) {
-                        ftps.upload(file, File.separator+userkey, "");
+                        ftps.upload(file, "/"+userkey, "");
                         ReturnImage returnImage = new ReturnImage();
                         returnImage.setImgname(userkey);//entry.getValue().getOriginalFilename()
                         returnImage.setImgurl(key.getRequestAddress() + "/"+ userkey);
@@ -52,7 +52,7 @@ public class FTPImageupload {
                         ftps.close();
                     }
 
-                    Print.Normal("要上传的文件路径："+File.separator+userkey);
+                    Print.Normal("要上传的文件路径："+"/"+userkey);
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -71,7 +71,7 @@ public class FTPImageupload {
                     String userkey =username + File.separator+ uuid+times + "." + entry.getKey();
                     ftps.mkDir(File.separator+username);
                     if (flag) {
-                        ftps.upload(file, File.separator+userkey, "");
+                        ftps.upload(file, "/"+userkey, "");
                         ReturnImage returnImage = new ReturnImage();
                         returnImage.setImgurl(key.getRequestAddress() + File.separator+ userkey);
                         ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
