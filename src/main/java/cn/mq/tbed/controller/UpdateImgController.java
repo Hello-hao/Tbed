@@ -122,29 +122,86 @@ public class UpdateImgController {
         JSONObject jsonObject = new JSONObject();
         for (int i = 0; i < multipartFile.length; i++) {
             Msg msg1 = uploadServicel.uploadForLoc(session, request, multipartFile[i], setday, upurlk, iparr);
-            jsonObject.put(i+"",msg1.getData());
+            jsonObject.put(i + "", msg1.getData());
         }
 
         msg.setData(jsonObject);
         return msg;
     }
+
     @RequestMapping(value = "/upimgss")
     @ResponseBody
-    public String upimgss(@RequestParam(value = "file",required = false) MultipartFile  multipartFile,HttpSession session, HttpServletRequest request
+    public String upimgss(@RequestParam(value = "file", required = false) MultipartFile multipartFile, HttpSession session, HttpServletRequest request
             , Integer setday, String upurlk) throws Exception {
 
 
         InputStream ins = multipartFile.getInputStream();
-        File file = new File(multipartFile.getOriginalFilename());
+        File files = new File("upimgs");
+        if (!files.exists()) {
+            boolean mkdirs = files.mkdirs();//创建目录
+        }
+        File file = new File("upimgs/" + multipartFile.getOriginalFilename());
         inputStreamToFile(ins, file);
         ins.close();
 
-        Msg msg = new Msg();
+        Msg msg;
         msg = uploadServicel.uploadForLoc(session, request, multipartFile, 0, upurlk, iparr);
-        String s = JSONObject.toJSONString(msg.getData());
-        Object parse = JSONObject.parse(s);
-        JSONObject jsonObject = new JSONObject();
-        return s;
+        return JSONObject.toJSONString(msg.getData());
+    }
+
+
+    @RequestMapping(value = "/delimg")
+    @ResponseBody
+    public Boolean delimg(String fileName){
+        boolean delete = false;
+        String sPath = "upimgs";
+        Integer deleimgname = imgService.deleimgname(fileName);
+        File file = new File(File.separator + Resources.basePath + File.separator + fileName);
+        if (file.isFile() && file.exists()) {
+            delete = file.delete();
+        }
+        if(delete){
+            return deletedirFile(sPath);
+        }else {
+            return false;
+        }
+    }
+
+
+    private boolean deletedirFile(String sPath) {
+        boolean flag = false;
+        if (!sPath.endsWith(File.separator)) {
+            sPath = sPath + File.separator;
+        }
+        File dirFile = new File(sPath);
+        File[] files = dirFile.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            //删除子文件
+            if (files[i].isFile()) {
+                flag = deleteFile(files[i].getAbsolutePath());
+                if (!flag) {
+                    break;
+                }
+            } //删除子目录
+            else {
+                flag = deletedirFile(files[i].getAbsolutePath());
+                if (!flag) {
+                    break;
+                }
+            }
+        }
+        return flag;
+    }
+
+    public boolean deleteFile(String sPath) {
+        boolean flag = false;
+        File file = new File(sPath);
+        // 路径为文件且不为空则进行删除
+        if (file.isFile() && file.exists()) {
+            file.delete();
+            flag = true;
+        }
+        return flag;
     }
 
 

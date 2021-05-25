@@ -4,6 +4,7 @@ package cn.mq.tbed;
 import java.io.*;
 
 
+import cn.hutool.http.HttpRequest;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -21,10 +22,15 @@ import org.apache.commons.httpclient.methods.multipart.Part;
  */
 public class SendPic {
     public static void main(String[] args) throws IOException {
-        String url = "http://127.0.0.1:8081/upimgss";
-        File file = new File("1.jpg");
-        String fileload = SendPic.fileload(url, file);
-        System.out.println(fileload);
+        String path = "2021/03/09/TOIMG4fd080309102352N.jpg";
+        String url = "http://localhost:8081/delimg?fileName="+path;
+        String body = HttpRequest.get(url).execute().body();
+        System.out.println(body);
+
+//        String url = "http://localhost:8081/upimgss";
+//        File file = new File("78-1609827215767.jpg");
+//        String fileload = SendPic.fileload(url, file);
+//        System.out.println(fileload);
 //        String body = HttpRequest.get(url).timeout(20000).form("file", baos.toByteArray(), "aaa.png").execute().body();
 //        System.out.println(body);
 
@@ -58,7 +64,7 @@ public class SendPic {
             if (status == HttpStatus.SC_OK) {
                 InputStream inputStream = postMethod.getResponseBodyAsStream();
                 br = new BufferedReader(new InputStreamReader(inputStream));
-                StringBuffer stringBuffer = new StringBuffer();
+                StringBuilder stringBuffer = new StringBuilder();
                 String str = "";
                 while ((str = br.readLine()) != null) {
                     stringBuffer.append(str);
@@ -68,13 +74,13 @@ public class SendPic {
                 body = "fail";
             }
         } catch (Exception e) {
-            System.out.println(e);
+            e.printStackTrace();
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    System.out.println(e);
+                    e.printStackTrace();
                 }
             }
             // 释放连接
