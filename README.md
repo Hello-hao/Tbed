@@ -1,35 +1,36 @@
 # Hellohao图床 - 强大的图像托管服务程序
 
+![Hellohao](http://cdn.wwery.com/Hellohao/add120310034948.png)
+
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
-> 这是一个基于多家对象存储源的SpringBoot开源图片托管程序。
-> 本项目使用 Spring Boot 搭建, 针对用户更方便的管理自己的图片管理拓展功能, 支持对接`本地`、`网易`，`阿里`，`又拍`，`七牛`、`腾讯`、`FTP`、`u-file`,`B2`等多家对象存储.
-> 后台对用户管理。
-> 支持配置多家存储源。
-> 用户注册邮箱验证，以及后台配置邮箱服务器。
-> 以及图片鉴黄配置等操作。
+Hellohao图像托管程序这是一个基于多家对象存储源的SpringBoot开源图像托管程序。
+目前已经支持对接本地、网易、阿里、又拍、七牛、腾讯、FTP、U-File、Backblaze、Minio等存储源。功能强悍，作者立志要把图像托管一步一步开发到极致。未来，Hellohao图像托管程序不仅仅是图床那么简单。
 
-## 主要功能支持：
-
+## 主要功能（内部版本功能更多）
 - 多主题支持：炫酷壁纸、简约蓝白
 - 支持 图片拖拽、截图软件直接(Ctrl+V)和图片URL地址上传。
-- 支持对接本地、网易、阿里、又拍、七牛、腾讯、FTP、u-file、B2等各大对象存储平台。
-- 支持图片定期暂存（到期自动删除）
+- 图片定期暂存（到期自动删除）
 - 支持画廊分享模式(用户可把自己当前上传的图片以图片集的形式批量分享给好友)
+- 重复图片检测
 - 支持上传者IP记录，并可配置IP黑名单操作
 - 支持链接生成二维码。
 - 支持开启/关闭API接口。
+- 设置用户可用容量
+- 扩容码生成（用户可使用扩容码进行容量扩充）
+- 分发群组（配置用户群组，不同群组分发图片到不同对象存储）
+- 首页背景动态/静态，以及简约模式设置
 - URL列表、缩略图。查看原图等功能。
 - 图片鉴黄配置（开启后，每天固定时间进行非法图片监测）
 - 游客、用户的上传管理
 - 邮箱注册激活。
 - 站点样式设置和上传规则配置等。
 
-主站地址: [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
+主站地址(包含内部版购买地址): [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
 
-文档地址: [http://tbed.hellohao.cn/doc](http://tbed.hellohao.cn/doc)
+开源版/内部版 文档地址: [http://doc.hellohao.cn](http://doc.hellohao.cn)
 
 开源版编译包下载(内部版请前往主站获取): [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
