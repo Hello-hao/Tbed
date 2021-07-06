@@ -61,52 +61,52 @@ public class UpdateImgController {
 
     @RequestMapping({"/", "/index"})
     public String indexImg(Model model, HttpSession httpSession, HttpServletRequest request, HttpServletResponse response) {
-            Print.Normal("当前项目路径："+System.getProperty("user.dir"));
-            Config config = configService.getSourceype();
-            UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-            User u = (User) httpSession.getAttribute("user");
-            String email = (String) httpSession.getAttribute("email");
-            Integer filesizetourists = 0;
-            Integer filesizeuser = 0;
-            Integer imgcounttourists = 0;
-            Integer imgcountuser = 0;
-            if(uploadConfig.getFilesizetourists()!=null){filesizetourists = uploadConfig.getFilesizetourists();}
-            if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
-            if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
-            if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
-            if (email != null) {
-                Integer ret = userService.login(u.getEmail(), u.getPassword(),null);
-                if (ret > 0) {
-                    User user = userService.getUsers(u.getEmail());
-                    model.addAttribute("username", user.getUsername());
-                    model.addAttribute("level", user.getLevel());
-                    model.addAttribute("loginid", 100);
-                    model.addAttribute("imgcount", imgcountuser);
-                    model.addAttribute("filesize", filesizeuser*1024*1024);
-                } else {
-                    model.addAttribute("loginid", -1);
-                    model.addAttribute("imgcount", imgcounttourists);
-                }
+        Print.Normal("当前项目路径："+System.getProperty("user.dir"));
+        Config config = configService.getSourceype();
+        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+        User u = (User) httpSession.getAttribute("user");
+        String email = (String) httpSession.getAttribute("email");
+        Integer filesizetourists = 0;
+        Integer filesizeuser = 0;
+        Integer imgcounttourists = 0;
+        Integer imgcountuser = 0;
+        if(uploadConfig.getFilesizetourists()!=null){filesizetourists = uploadConfig.getFilesizetourists();}
+        if(uploadConfig.getFilesizeuser()!=null){filesizeuser = uploadConfig.getFilesizeuser();}
+        if(uploadConfig.getImgcounttourists()!=null){imgcounttourists = uploadConfig.getImgcounttourists();}
+        if(uploadConfig.getImgcountuser()!=null){imgcountuser = uploadConfig.getImgcountuser();}
+        if (email != null) {
+            Integer ret = userService.login(u.getEmail(), u.getPassword(),null);
+            if (ret > 0) {
+                User user = userService.getUsers(u.getEmail());
+                model.addAttribute("username", user.getUsername());
+                model.addAttribute("level", user.getLevel());
+                model.addAttribute("loginid", 100);
+                model.addAttribute("imgcount", imgcountuser);
+                model.addAttribute("filesize", filesizeuser*1024*1024);
             } else {
-                model.addAttribute("loginid", -2);
+                model.addAttribute("loginid", -1);
                 model.addAttribute("imgcount", imgcounttourists);
-                model.addAttribute("filesize", filesizetourists*1024*1024);
             }
-            model.addAttribute("suffix", uploadConfig.getSuffix());
-            model.addAttribute("config", config);
-            model.addAttribute("uploadConfig", uploadConfig);
-            Integer isupdate = 1;
-            if(uploadConfig.getIsupdate()!=1){
-                isupdate = (u == null) ? 0: 1;
-            }
-            model.addAttribute("VisitorUpload", isupdate);
-            vu = IdUtil.simpleUUID();
-            model.addAttribute("vu",vu);
-            if(config.getTheme()==1){
-                return "index";
-            }else{
-                return "index-Minimalism";
-            }
+        } else {
+            model.addAttribute("loginid", -2);
+            model.addAttribute("imgcount", imgcounttourists);
+            model.addAttribute("filesize", filesizetourists*1024*1024);
+        }
+        model.addAttribute("suffix", uploadConfig.getSuffix());
+        model.addAttribute("config", config);
+        model.addAttribute("uploadConfig", uploadConfig);
+        Integer isupdate = 1;
+        if(uploadConfig.getIsupdate()!=1){
+            isupdate = (u == null) ? 0: 1;
+        }
+        model.addAttribute("VisitorUpload", isupdate);
+        vu = IdUtil.simpleUUID();
+        model.addAttribute("vu",vu);
+        if(config.getTheme()==1){
+            return "index";
+        }else{
+            return "index-Minimalism";
+        }
     }
 
     @RequestMapping(value = "/upimg")
@@ -118,7 +118,7 @@ public class UpdateImgController {
         return msg;
     }
 
-//根据网络图片url上传
+    //根据网络图片url上传
     @PostMapping(value = "/upurlimg")
     @ResponseBody
     public String upurlimg(HttpSession session, String imgurl, HttpServletRequest request,Integer setday,String upurlk) throws Exception {
@@ -341,7 +341,7 @@ public class UpdateImgController {
     public ResponseEntity<Object> selectByFyOne(final HttpServletRequest request,
                                                 HttpServletResponse response,
                                                 @PathVariable("key1") String key1, @PathVariable("key2") String key2,
-                             @PathVariable("key3") String key3, Model model){
+                                                @PathVariable("key3") String key3, Model model){
         MediaType mediaType =null;
         File file = new File(File.separator+"HellohaoData"+File.separator+key1+"/TOIMG"+key2+"N."+key3);
         if (!file.exists()) {
@@ -376,11 +376,11 @@ public class UpdateImgController {
         //return "forward:/links/"+key1+"/TOIMG"+key2+"N."+key3;
     }
 
-   // @RequestMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
+    // @RequestMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
     public void selectByFy2(HttpServletRequest request, HttpServletResponse response,
-                              @PathVariable("key1") String key1,@PathVariable("key2") String key2,
-                              @PathVariable("key3") String key3,@PathVariable("key4") String key4,
-                              @PathVariable("key5") String key5,Model model) {
+                            @PathVariable("key1") String key1,@PathVariable("key2") String key2,
+                            @PathVariable("key3") String key3,@PathVariable("key4") String key4,
+                            @PathVariable("key5") String key5,Model model) {
         String head = "jpg";
         if(key5.equals("jpg")||key5.equals("jpeg")){
             head = "jpeg";
@@ -421,11 +421,11 @@ public class UpdateImgController {
     @GetMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
     @ResponseBody
     public ResponseEntity<Object> selectByFyTow(final HttpServletRequest request,
-                                                 HttpServletResponse response,
+                                                HttpServletResponse response,
                                                 @PathVariable("key1") String key1,
-                                                 @PathVariable("key2") String key2,
+                                                @PathVariable("key2") String key2,
                                                 @PathVariable("key3") String key3,
-                                                 @PathVariable("key4") String key4,
+                                                @PathVariable("key4") String key4,
                                                 @PathVariable("key5") String key5) {
         MediaType mediaType =null;
         File file = new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5);
@@ -437,12 +437,12 @@ public class UpdateImgController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("<h1>404 FILE NOT FOUND</h1>");
             }
         }
-         if(key5.equals("png")){
+        if(key5.equals("png")){
             mediaType = MediaType.IMAGE_PNG;
         }else if(key5.equals("gif")){
             mediaType = MediaType.IMAGE_GIF;
         }else{
-             mediaType = MediaType.IMAGE_JPEG;
+            mediaType = MediaType.IMAGE_JPEG;
         }
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cache-Control", "no-cache, no-store, must-revalidate");

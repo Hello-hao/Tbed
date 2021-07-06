@@ -82,7 +82,7 @@ public class UploadServicel {
         MultipartFile mf =null;
         try{
             InputStream inputStream = new FileInputStream(file);
-             mf = new MockMultipartFile(file.getName(), inputStream);
+            mf = new MockMultipartFile(file.getName(), inputStream);
             inputStream.close();
         }catch (Exception e){
             System.out.println("0000000");
