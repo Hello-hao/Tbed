@@ -2,6 +2,7 @@ package cn.hellohao.dao;
 
 import java.util.List;
 
+import cn.hellohao.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,11 +28,21 @@ public interface ImgMapper {
 
     List<Images> gettimeimg(@Param("time") String time);
 
-    Integer getusermemory(@Param("userid") Integer userid);
+    Long getusermemory(@Param("userid") Integer userid);
 
     Integer md5Count(@Param("md5key") String md5key);
 
     Images selectImgUrlByMD5(@Param("md5key") String md5key);
+
+    List<Images> RecentlyUploaded(@Param("userid") Integer userid);
+
+    List<User> RecentlyUser();
+
+    Integer addGreat(@Param("id") Integer id);
+
+    List<String> getyyyy(@Param("userid") Integer userid);
+
+    List<Images> countByM(Images images);
 
 
 }

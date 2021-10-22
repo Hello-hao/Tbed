@@ -19,11 +19,16 @@ public class Config {
     private String webkeywords;
     private String webfavicons;
     private Integer theme;
+    private String websubtitle;
+    private String logo;
+    private String aboutinfo;
 
     public Config() {
     }
 
-    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype, String links, String notice, String baidu, String domain, String background1, String background2, String sett, String webms, String webkeywords, String webfavicons, Integer theme) {
+    public Config(Integer id, Integer sourcekey, Integer emails, String webname, String explain, String video, Integer backtype,
+                  String links, String notice, String baidu, String domain, String background1, String background2, String sett,
+                  String webms, String webkeywords, String webfavicons, Integer theme,String websubtitle,String logo,String aboutinfo) {
         this.id = id;
         this.sourcekey = sourcekey;
         this.emails = emails;
@@ -42,6 +47,10 @@ public class Config {
         this.webkeywords = webkeywords;
         this.webfavicons = webfavicons;
         this.theme = theme;
+        this.websubtitle = websubtitle;
+        this.logo = logo;
+        this.aboutinfo = aboutinfo;
+
     }
 
     public Integer getId() {
@@ -186,5 +195,29 @@ public class Config {
 
     public void setTheme(Integer theme) {
         this.theme = theme;
+    }
+
+    public String getWebsubtitle() {
+        return websubtitle;
+    }
+
+    public void setWebsubtitle(String websubtitle) {
+        this.websubtitle = websubtitle;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public String getAboutinfo() {
+        return aboutinfo;
+    }
+
+    public void setAboutinfo(String aboutinfo) {
+        this.aboutinfo = aboutinfo;
     }
 }

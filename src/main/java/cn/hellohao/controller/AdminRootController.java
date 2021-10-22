@@ -55,18 +55,18 @@ public class AdminRootController {
     @RequestMapping(value = "tostorage")
     public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
         User u = (User) session.getAttribute("user");
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
-        Keys  key= keysService.selectKeys(Sourcekey);
+        Group group = GetCurrentSource.GetSource(u.getId());
+        Keys  key= keysService.selectKeys(group.getKeyid());
         //Boolean b = StringUtils.doNull(Sourcekey,key);
         Integer StorageType = 0;
-        if(Sourcekey!=5){
+        if(key.getStorageType()!=5){
             model.addAttribute("AccessKey", key.getAccessKey());
             model.addAttribute("AccessSecret", key.getAccessSecret());
             model.addAttribute("Endpoint", key.getEndpoint());
             model.addAttribute("Bucketname", key.getBucketname());
             model.addAttribute("RequestAddress", key.getRequestAddress());
-            model.addAttribute("StorageType", Sourcekey);
-            if(Sourcekey==4){
+            model.addAttribute("StorageType", key.getStorageType());
+            if(key.getStorageType()==4){
                 model.addAttribute("Endpoint2", key.getEndpoint());
             }else{
                 model.addAttribute("Endpoint2", 0);
@@ -91,11 +91,11 @@ public class AdminRootController {
     @ResponseBody
     public Integer getkeyourceype(HttpSession session) {
         User u = (User) session.getAttribute("user");
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
+        Group group = GetCurrentSource.GetSource(u.getId());
+        Keys key = keysService.selectKeys(group.getKeyid());
         Integer ret = 0;
-        if(Sourcekey!=null){
-            ret = Sourcekey;
-        }
+
+
         return ret;
     }
 
@@ -170,19 +170,8 @@ public class AdminRootController {
         return ret;
     }
 
-    @RequestMapping(value = "/towebconfig")
-    public String towebconfig(HttpSession session,Model model) {
-        Config config = configService.getSourceype();
-        User u = (User) session.getAttribute("user");
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
-        UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
-        SysConfig sysConfig = sysConfigService.getstate();
-        model.addAttribute("config",config);
-        model.addAttribute("updateConfig",updateConfig);
-        model.addAttribute("sysconfig",sysConfig);
-        model.addAttribute("group",Sourcekey);
-        return "admin/webconfig";
-    }
+
+
     @PostMapping("/updateconfig")
     @ResponseBody
     public Integer updateconfig(Config config ) {

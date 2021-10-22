@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.hellohao.pojo.User;
 import cn.hellohao.utils.Print;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
@@ -200,7 +201,7 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer getusermemory(Integer userid) {
+    public Long getusermemory(Integer userid) {
         return imgMapper.getusermemory(userid);
     }
 
@@ -213,4 +214,29 @@ public class ImgServiceImpl implements ImgService {
     public Images selectImgUrlByMD5(String md5key) {
         return imgMapper.selectImgUrlByMD5(md5key);
     }
+
+    @Override
+    public List<Images> RecentlyUploaded(Integer userid) {
+        return imgMapper.RecentlyUploaded(userid);
+    }
+
+    @Override
+    public List<User> RecentlyUser() {
+        return imgMapper.RecentlyUser();
+    }
+
+    @Override
+    public Integer addGreat(Integer id) {
+        return imgMapper.addGreat(id);
+    }
+
+    public List<String> getyyyy(Integer userid){
+        return imgMapper.getyyyy(userid);
+    }
+
+    @Override
+    public List<Images> countByM(Images images) {
+        return imgMapper.countByM(images);
+    }
+
 }

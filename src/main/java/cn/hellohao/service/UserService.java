@@ -16,7 +16,7 @@ public interface UserService {
     Integer login(String email, String password,String uid);
 
     //获取用户信息
-    User getUsers(String email);
+    User getUsers(User user);
 
     //插入图片
     Integer insertimg(Images img);

@@ -26,87 +26,38 @@ import java.util.*;
 
 @Service
 public class COSImageupload {
-    static String BarrelName;
     static COSClient cosClient;
     static Keys key;
 
-    public Map<ReturnImage, Integer> ImageuploadCOS(Map<String, MultipartFile> fileMap, String username,
-                                                    Map<String, String> fileMap2,Integer setday) {
-        // 要上传文件的路径
-        if(fileMap2==null){
-            File file = null;
-            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            try {
-                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                    String times = format1.format(new Date());
-                    file = SetFiles.changeFile(entry.getValue());
-                    try {
-                        // 指定要上传到的存储桶
-                        String bucketName = BarrelName;
-                        // 指定要上传到 COS 上对象键
-                        String userkey =username + "/" + uuid+times + "." + entry.getKey();
-                        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, userkey, file);
-                        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-                        ReturnImage returnImage = new ReturnImage();
-                        returnImage.setImgname(userkey);//entry.getValue().getOriginalFilename()
-                        returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
-                        ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                        if(setday>0) {
-                            String deleimg = DateUtils.plusDay(setday);
-                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "6");
-                        }
-                    } catch (CosServiceException serverException) {
-                        serverException.printStackTrace();
-                    } catch (CosClientException clientException) {
-                        clientException.printStackTrace();
-                    }
+    public ReturnImage ImageuploadCOS(Map<String, File> fileMap, String username,Integer keyID) {
+        ReturnImage returnImage = new ReturnImage();
+        File file = null;
+        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
+        try {
+            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
+                String ShortUID = SetText.getShortUuid();
+                file = entry.getValue();
+                try {
+                    String bucketName = key.getBucketname();
+                    String userkey =username + "/" + ShortUID + "." + entry.getKey();
+                    PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, userkey, file);
+                    PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
+                    returnImage.setUid(ShortUID);
+                    returnImage.setImgname(userkey);
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
+                    returnImage.setImgSize(entry.getValue().length());
+                    returnImage.setCode("200");
+                } catch (CosServiceException serverException) {
+                    serverException.printStackTrace();
+                } catch (CosClientException clientException) {
+                    clientException.printStackTrace();
                 }
-            }catch(Exception e){
-                e.printStackTrace();
-                ImgUrl.put(null, 500);
             }
-            return ImgUrl;
-        }else{
-            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            ObjectMetadata meta = new ObjectMetadata();
-            meta.setHeader("Content-Disposition", "inline");
-            try {
-                for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                    String times = format1.format(new Date());
-                    String imgurl = entry.getValue();
-                    File file = new File(imgurl);
-                    FileInputStream fileInputStream = new FileInputStream(file);
-                    try {
-                        String userkey =username + "/" + uuid+times + "." + entry.getKey();
-                        PutObjectRequest putObjectRequest = new PutObjectRequest(BarrelName, userkey, file);
-                        PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-                        ReturnImage returnImage = new ReturnImage();
-                        returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
-                        ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
-                        if(setday>0) {
-                            String deleimg = DateUtils.plusDay(setday);
-                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "6");
-                        }
-                        boolean bb= new File(imgurl).getAbsoluteFile().delete();
-                        Print.Normal("删除情况"+bb);
-                    } catch (Exception e) {
-                        System.err.println("上传报错:" + e.getMessage());
-                    }
-                    if(fileInputStream!=null){
-                        fileInputStream.close();
-                        Print.Normal("流已经关闭");
-                    }
-                }
-            }catch(Exception e){
-                ImgUrl.put(null, 500);
-            }
-            cosClient.shutdown();
-            return ImgUrl;
+        }catch(Exception e){
+            e.printStackTrace();
+            returnImage.setCode("200");
         }
+        return returnImage;
     }
 
 
@@ -121,9 +72,7 @@ public class COSImageupload {
                 COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
                 Region region = new Region(k.getEndpoint());
                 ClientConfig clientConfig = new ClientConfig(region);
-                cosClient = new COSClient(cred, clientConfig);
-                BarrelName = k.getBucketname();
-
+                COSClient cosClient = new COSClient(cred, clientConfig);
                 ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
                 listObjectsRequest.setBucketName(k.getBucketname());
                 listObjectsRequest.setDelimiter("/");
@@ -131,49 +80,30 @@ public class COSImageupload {
                 ObjectListing objectListing = null;
                 try {
                     objectListing = cosClient.listObjects(listObjectsRequest);
-                    key = k;
                     ret = 1;
+                    cosClient = cosClient;
+                    key = k;
                 } catch (Exception e) {
-                    System.out.println("COS - Waiting for configuration。");
+                    System.out.println("COS Object Is null");
                     ret = -1;
                 }
             }
         }
         return ret;
     }
-    /**
-     * 客户端接口
-     * */
-    public Map<ReturnImage, Integer> clientuploadCOS(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) throws Exception {
 
-        File file = null;
-        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-            java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-            String times = format1.format(new Date());
-            file = SetFiles.changeFile_c(entry.getValue());
-            try {
-                ReturnImage returnImage = new ReturnImage();
-                if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
-                    String userkey =username + "/" + uuid+times + "." + entry.getKey();
-                    PutObjectRequest putObjectRequest = new PutObjectRequest(BarrelName, userkey, file);
-                    PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(key.getRequestAddress() + "/" + userkey);
-                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                }else{
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl("文件超出系统设定大小，不得超过");
-                    ImgUrl.put(returnImage, -1);
-                }
-            } catch (Exception e) {
-                System.err.println("上传报错:" + e.getMessage());
-            }
+    public Boolean delCOS(Integer keyID, String fileName) {
+        boolean b = true;
+        try {
+            cosClient.deleteObject(key.getBucketname(), fileName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            b = false;
         }
-        return ImgUrl;
-
+        return b ;
     }
+
+
 
 
 }

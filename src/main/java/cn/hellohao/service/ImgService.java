@@ -3,6 +3,7 @@ package cn.hellohao.service;
 
 import java.util.List;
 
+import cn.hellohao.pojo.User;
 import org.apache.ibatis.annotations.Param;
 
 import cn.hellohao.pojo.Images;
@@ -28,10 +29,20 @@ public interface ImgService {
 
     List<Images> gettimeimg(String time);
 
-    Integer getusermemory(Integer userid);
+    Long getusermemory(Integer userid);
 
     Integer md5Count(String md5key);
 
     Images selectImgUrlByMD5(String md5key);
+
+    List<Images> RecentlyUploaded(Integer userid);
+
+    List<User> RecentlyUser();
+
+    Integer addGreat(Integer id);
+
+    List<String> getyyyy(Integer userid);
+
+    List<Images> countByM(Images images);
 
 }

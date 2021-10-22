@@ -15,7 +15,13 @@
         a.source,
         a.imgtype,
         a.explains,
-        a.md5key
+        a.md5key,
+        a.imguid,
+        a.shortlink,
+        a.format,
+        a.about,
+        a.great,
+        a.violation
         FROM
         imgdata a
         LEFT JOIN user b ON a.userid = b.id
@@ -99,7 +105,7 @@
         SELECT * from  imgdata WHERE  updatetime>=#{time}
     </select>
 <!--查询指定用户总内存-->
-    <select id="getusermemory" parameterType="integer" resultType="integer">
+    <select id="getusermemory" parameterType="integer" resultType="long">
         SELECT sum(sizes) as sizes FROM `imgdata` where userid = #{userid}
     </select>
 
@@ -114,9 +120,52 @@
 
     </select>
 
-
     <select id="selectImgUrlByMD5" parameterType="string" resultType="cn.hellohao.pojo.Images">
         select imgname,imgurl from imgdata where md5key = #{md5key}
+    </select>
+
+    <!--    查询当前用户的近20条数据-->
+    <select id="RecentlyUploaded" parameterType="integer" resultType="cn.hellohao.pojo.Images">
+        select * from imgdata where userid = #{userid}  ORDER BY updatetime DESC LIMIT 20
+    </select>
+
+    <select id="RecentlyUser" resultType="cn.hellohao.pojo.User">
+        select count(i.id) as counts ,i.userid,u.username from imgdata i
+                                                                   LEFT JOIN `user` u on i.userid = u.id
+        where i.userid not in (0)
+        GROUP BY i.userid ORDER BY counts DESC LIMIT 20
+    </select>
+
+    <!--    点赞后累加数 -->
+    <update id="addGreat" parameterType="integer">
+        update imgdata set great = (great+1) where id = #{id}
+    </update>
+
+
+    <select id="getyyyy" parameterType="integer" resultType="string">
+        SELECT DISTINCT  YEAR(updatetime) yyyy FROM `imgdata` where
+        IFNULL(updatetime,'')
+        <if test="userid != null">
+            and userid = #{userid}
+        </if>
+    </select>
+
+
+    <select id="countByM" parameterType="cn.hellohao.pojo.Images"  resultType="cn.hellohao.pojo.Images">
+        SELECT
+        count(id) countNum,
+        MONTH(updatetime) monthNum
+        FROM
+        imgdata
+        where YEAR(updatetime)=#{yyyy}
+        <if test="userid != null">
+            and userid = #{userid}
+        </if>
+        GROUP BY
+        MONTH(updatetime)
+        ORDER BY
+        MONTH(updatetime) ASC
+
     </select>
 
 </mapper>

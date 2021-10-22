@@ -40,16 +40,53 @@ public class GetCurrentSource {
     }
 
 
-    public static Integer GetSource(Integer userid){
-        Integer ret = 0;
-        if(userid==null){
-            Group group = groupService.idgrouplist(1);
-            ret = group.getKeyid();
-        }else{
-            User user = userService.getUsersid(userid);
-            Group group = groupService.idgrouplist(user.getGroupid());
-            ret = group.getKeyid();
+
+    public static Group GetSource(Integer userid) {
+        //UserType 0-未分配 1-游客 2-用户 3-管理员
+        User user =null;
+        if(userid!=null){
+            User u = new User();
+            u.setId(userid);
+            user = userService.getUsers(u);
         }
-        return ret;
+        Group group =null;
+        if(user==null){
+            //游客
+            Integer count = groupService.GetCountFroUserType(1);
+            if(count>0){
+                group = groupService.getGroupFroUserType(1);
+            }else{
+                group = groupService.idgrouplist(1);
+            }
+        }else{
+            //用户
+            if(user.getGroupid()!=1){
+                //说明自定义过的优先
+                group = groupService.idgrouplist(user.getGroupid());
+            }else{
+                //默认的，用的是group主键为1的  但是还需要看看用户组有没有设置，比如管理员 用户
+                if(user.getLevel()>1){
+                    //先查询管理员用户组有没有 如果有就用 没有就默认
+                    Integer count = groupService.GetCountFroUserType(3);
+                    if(count>0){
+                        group = groupService.getGroupFroUserType(3);
+                    }else{
+                        group = groupService.idgrouplist(1);
+                    }
+                }else{
+                    //先查询普通用户组有没有 如果有就用 没有就默认
+                    Integer count = groupService.GetCountFroUserType(2);
+                    if(count>0){
+                        group = groupService.getGroupFroUserType(2);
+
+                    }else{
+                        group = groupService.idgrouplist(1);
+                    }
+                }
+            }
+        }
+        return group;
     }
+
+
 }

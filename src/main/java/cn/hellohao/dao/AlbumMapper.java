@@ -4,7 +4,6 @@ import cn.hellohao.pojo.Album;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -22,4 +21,6 @@ public interface AlbumMapper {
     Integer deleteAlbum(@Param("albumkey") String albumkey);
 
     List<Album> selectAlbumURLList(Album album);
+
+    Integer selectAlbumCount(@Param("userid")  Integer userid);
 }

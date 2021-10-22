@@ -60,7 +60,15 @@
             <if test="theme != null">
                 `theme` = #{theme},
             </if>
-
+            <if test="websubtitle != null">
+                websubtitle = #{websubtitle},
+            </if>
+            <if test="logo != null">
+                logo = #{logo},
+            </if>
+            <if test="aboutinfo != null">
+                aboutinfo = #{aboutinfo},
+            </if>
 
 
         </set>

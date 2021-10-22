@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.hellohao.dao.ImgTempMapper">
+
+    <resultMap id="BaseResultMap" type="cn.hellohao.pojo.ImgTemp">
+            <id property="id" column="id" jdbcType="INTEGER"/>
+            <result property="imguid" column="imguid" jdbcType="VARCHAR"/>
+            <result property="deltime" column="deltime" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,imguid,deltime
+    </sql>
+<!--    点赞累计增加-->
+    <update id="addGreatForImguid" >
+        UPDATE `user`
+        <set>
+            <if test="great != null">
+                `great` = great+1,
+            </if>
+
+        </set>
+        where imguid=#{imguid}
+    </update>
+
+<!--    根据日期查询要删除的图片-->
+    <select id="selectDelImgUidList" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        SELECT
+        imgdata.imguid,
+        imgdata.source,
+        imgdata.imgname
+        FROM
+            imgtemp LEFT JOIN imgdata on imgtemp.imguid = imgdata.imguid
+        where imgtemp.deltime &lt;=  STR_TO_DATE(#{datatime}, '%Y-%m-%d %H:%i:%s')
+    </select>
+
+<!--    此sql会同时删除imgdata 和 imgtemp两个表的数据 -->
+    <delete id="delImgAndExp" parameterType="string">
+        DELETE imgtemp,imgdata FROM imgtemp LEFT JOIN imgdata ON imgtemp.imguid = imgdata.imguid
+        WHERE imgdata.imguid =#{imguid}
+<!--        <foreach collection="list" item="imguid" index="index" open="(" close=")" separator=",">-->
+<!--            #{imguid}-->
+<!--        </foreach>-->
+    </delete>
+
+    <insert id="insertImgExp" parameterType="cn.hellohao.pojo.ImgTemp" >
+        insert into `imgtemp` (id,imguid,`deltime`)
+        values (null,#{imguid},#{deltime})
+    </insert>
+
+
+</mapper>

@@ -16,9 +16,9 @@ public class KeysServiceImpl implements KeysService {
     private KeysMapper keysMapper;
 
     @Override
-    public Keys selectKeys(Integer storageType) {
+    public Keys selectKeys(Integer id) {
         // TODO Auto-generated method stub
-        return keysMapper.selectKeys(storageType);
+        return keysMapper.selectKeys(id);
     }
 
     @Override

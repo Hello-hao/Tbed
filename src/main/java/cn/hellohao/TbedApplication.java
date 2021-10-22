@@ -11,7 +11,9 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.unit.DataSize;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -20,6 +22,7 @@ import java.util.Scanner;
 
 @SpringBootApplication
 @Configuration
+@EnableScheduling
 @ServletComponentScan
 @EnableTransactionManagement(proxyTargetClass = true)
 public class TbedApplication {
@@ -29,18 +32,14 @@ public static void main(String[] args) {
     }
     /**
      * 文件上传配置
-     *
      * @return
      */
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         //  单个数据大小
-        factory.setMaxFileSize("102400KB"); // KB,MB
+        factory.setMaxFileSize(DataSize.parse("102400KB")); // KB,MB
         /// 总上传数据大小
-        factory.setMaxRequestSize("102400KB");
-        //factory.setLocation("/tmp");
-
         return factory.createMultipartConfig();
     }
 

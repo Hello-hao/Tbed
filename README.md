@@ -27,6 +27,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 > 开源版正在开发中
 
 作者正在夜以继日的努力开发中，敬请期待！
+源代码不可用请谅解，如需搭建请前往下载编译包直接部署。
 
 主站地址(包含Core版购买地址): [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
 

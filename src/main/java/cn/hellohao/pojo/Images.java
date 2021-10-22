@@ -1,11 +1,5 @@
 package cn.hellohao.pojo;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.hibernate.validator.constraints.Length;
-
-import javax.validation.constraints.NotBlank;
-
 public class Images {
     // 默认的时间字符串格式
 
@@ -14,7 +8,7 @@ public class Images {
     private String imgname;
     private String imgurl;
     private Integer userid;
-    private Integer sizes = 0;
+    private String sizes;
     private String abnormal;
     private Integer source;
     private Integer imgtype;
@@ -23,23 +17,45 @@ public class Images {
     private Integer storageType;
     private String starttime;
     private String stoptime;
-    @Length(min = 1, max = 100, message = "图片描述不得超过100个字符")
     private String explains;
     private String md5key;
-    //Album
-    @NotBlank(message = "画廊标题不能为空")
-    @Length(min = 1, max = 50, message = "画廊标题不得超过50个字符")
+    private String notes;
+    private String useridlist;
+    private String imguid;
+    private String shortlink;
+    private String format;
+    private String about;
+    private Integer great;
+    private String violation;
     private String albumtitle;
-    @Length(min = 0, max = 10, message = "画廊密码不能超过10个字符")
+    //@Length(min = 0, max = 10, message = "画廊密码不能超过10个字符")
     private String password;
     private Integer selecttype;
-    private String notes;
+    private Long countNum;
+    private Integer monthNum;
+    private String yyyy;
+    private String[] classifuidlist; //类别uid集合
+    private String classificationuid; //类别uid集合
 
     public Images() {
         super();
     }
 
-    public Images(Integer id, String imgname, String imgurl, Integer userid, Integer sizes, String abnormal, Integer source, Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime, @Length(min = 1, max = 100, message = "图片描述不得超过100个字符") String explains, String md5key, String albumtitle,String password, Integer selecttype, String notes) {
+    public Images(String imgurl, String sizes, String abnormal, String updatetime, String username, String md5key, String imguid,String shortlink) {
+        this.imgurl = imgurl;
+        this.sizes = sizes;
+        this.abnormal = abnormal;
+        this.updatetime = updatetime;
+        this.username = username;
+        this.md5key = md5key;
+        this.imguid = imguid;
+    }
+
+    public Images(Integer id, String imgname, String imgurl, Integer userid, String sizes, String abnormal, Integer source,
+                  Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime,
+                  String explains, String md5key, String notes, String useridlist, String imguid, String albumtitle,
+                  String password, Integer selecttype,Long countNum,Integer monthNum,String yyyy,String shortlink,
+                  String format,String about,Integer great,String[] classifuidlist,String classificationuid,String violation) {
         this.id = id;
         this.imgname = imgname;
         this.imgurl = imgurl;
@@ -55,10 +71,23 @@ public class Images {
         this.stoptime = stoptime;
         this.explains = explains;
         this.md5key = md5key;
+        this.notes = notes;
+        this.useridlist = useridlist;
+        this.imguid = imguid;
+        this.shortlink = shortlink;
         this.albumtitle = albumtitle;
         this.password = password;
         this.selecttype = selecttype;
-        this.notes = notes;
+        this.countNum = countNum;
+        this.monthNum = monthNum;
+        this.yyyy = yyyy;
+        this.format = format;
+        this.about = about;
+        this.great = great;
+        this.classifuidlist = classifuidlist;
+        this.classificationuid = classificationuid;
+        this.violation = violation;
+
     }
 
     public Integer getId() {
@@ -93,11 +122,11 @@ public class Images {
         this.userid = userid;
     }
 
-    public Integer getSizes() {
+    public String getSizes() {
         return sizes;
     }
 
-    public void setSizes(Integer sizes) {
+    public void setSizes(String sizes) {
         this.sizes = sizes;
     }
 
@@ -181,6 +210,38 @@ public class Images {
         this.md5key = md5key;
     }
 
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
+    }
+
+    public String getUseridlist() {
+        return useridlist;
+    }
+
+    public void setUseridlist(String useridlist) {
+        this.useridlist = useridlist;
+    }
+
+    public String getImguid() {
+        return imguid;
+    }
+
+    public void setImguid(String imguid) {
+        this.imguid = imguid;
+    }
+
+    public String getShortlink() {
+        return shortlink;
+    }
+
+    public void setShortlink(String shortlink) {
+        this.shortlink = shortlink;
+    }
+
     public String getAlbumtitle() {
         return albumtitle;
     }
@@ -205,12 +266,76 @@ public class Images {
         this.selecttype = selecttype;
     }
 
-    public String getNotes() {
-        return notes;
+    public Long getCountNum() {
+        return countNum;
     }
 
-    public void setNotes(String notes) {
-        this.notes = notes;
+    public void setCountNum(Long countNum) {
+        this.countNum = countNum;
+    }
+
+    public Integer getMonthNum() {
+        return monthNum;
+    }
+
+    public void setMonthNum(Integer monthNum) {
+        this.monthNum = monthNum;
+    }
+
+    public String getYyyy() {
+        return yyyy;
+    }
+
+    public void setYyyy(String yyyy) {
+        this.yyyy = yyyy;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public Integer getGreat() {
+        return great;
+    }
+
+    public void setGreat(Integer great) {
+        this.great = great;
+    }
+
+    public String[] getClassifuidlist() {
+        return classifuidlist;
+    }
+
+    public void setClassifuidlist(String[] classifuidlist ) {
+        this.classifuidlist = classifuidlist;
+    }
+
+    public String getClassificationuid() {
+        return classificationuid;
+    }
+
+    public void setClassificationuid(String classificationuid) {
+        this.classificationuid = classificationuid;
+    }
+
+    public String getViolation() {
+        return violation;
+    }
+
+    public void setViolation(String violation) {
+        this.violation = violation;
     }
 }
 	

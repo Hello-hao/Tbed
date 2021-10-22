@@ -28,8 +28,6 @@ class MainsiteErrorController implements ErrorController {
         }
 
     }
-    @Override
-    public String getErrorPath() {
-        return "error";
-    }
+
+
 }

@@ -1,7 +1,8 @@
-package cn.hellohao.interceptor;
+package cn.hellohao.auth.filter.xss;
 
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.text.StringEscapeUtils;
+
 import javax.servlet.ReadListener;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -10,6 +11,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+
 /**
  * ServletRequest包装类,对request做XSS过滤处理
  * @author Hellohao
@@ -87,6 +89,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String line = "";
         StringBuilder body = new StringBuilder();
         int counter = 0;
+
         // 读取POST提交的数据内容
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
         try {

@@ -36,20 +36,8 @@ public class AlbumController {
     @Autowired
     private UploadConfigService uploadConfigService;
 
-    @RequestMapping("/addalbum")
-    public String addalbum(HttpSession session,Model model) {
-        UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
-        User u = (User) session.getAttribute("user");
-        Integer sourcekey = 0;
-        if (u == null) {
-            sourcekey = GetCurrentSource.GetSource(null);
-        } else {
-            sourcekey = GetCurrentSource.GetSource(u.getId());
-        }
-        model.addAttribute("urltype",updateConfig.getUrltype());
-        model.addAttribute("sourcekey",sourcekey);
-        return "album/addalbum";
-    }
+
+
 
     @PostMapping("/SaveForAlbum")
     @ResponseBody

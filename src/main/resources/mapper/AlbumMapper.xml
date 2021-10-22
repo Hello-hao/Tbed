@@ -29,7 +29,6 @@
     </delete>
 
     <select id="selectAlbumURLList" parameterType="cn.hellohao.pojo.Album" resultType="cn.hellohao.pojo.Album">
-
         SELECT
         a.albumkey,
         a.albumtitle,
@@ -51,5 +50,18 @@
         </where>
         order by a.createdate
     </select>
+
+    <select id="selectAlbumCount" parameterType="integer" resultType="integer">
+        SELECT
+        count(albumkey)
+        FROM
+        `album`
+        <where>
+            <if test="userid != null">
+                `userid` = #{userid}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

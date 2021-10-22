@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface KeysService {
     //查询密钥
-    Keys selectKeys(Integer storageType);
+    Keys selectKeys(Integer id);
 
     //修改key
     Integer updateKey(Keys key);

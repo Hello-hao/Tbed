@@ -5,6 +5,7 @@ import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.service.impl.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -13,8 +14,7 @@ import java.util.Map;
  * @date 2019/11/7 17:12
  */
 public class GetSource {
-    public static Map<ReturnImage, Integer>  storageSource(Integer type, Map<String, MultipartFile> fileMap, String userpath,
-                                                           Map<String, String> filename,Integer setday){
+    public static ReturnImage  storageSource(Integer type, Map<String, File> fileMap, String userpath,Integer keyID){
         NOSImageupload nosImageupload = SpringContextHolder.getBean(NOSImageupload.class);
         OSSImageupload ossImageupload = SpringContextHolder.getBean(OSSImageupload.class);
         USSImageupload ussImageupload = SpringContextHolder.getBean(USSImageupload.class);
@@ -22,24 +22,24 @@ public class GetSource {
         COSImageupload cosImageupload = SpringContextHolder.getBean(COSImageupload.class);
         FTPImageupload ftpImageupload = SpringContextHolder.getBean(FTPImageupload.class);
         UFileImageupload uFileImageupload = SpringContextHolder.getBean(UFileImageupload.class);
-        Map<ReturnImage, Integer> m = null;
+        ReturnImage returnImage = null;
         try {
             if(type==1){
-            m = nosImageupload.Imageupload(fileMap, userpath,filename,setday);
+                returnImage = nosImageupload.Imageupload(fileMap, userpath,keyID);
             }else if (type==2){
-                m = ossImageupload.ImageuploadOSS(fileMap, userpath,filename,setday);
+                returnImage = ossImageupload.ImageuploadOSS(fileMap, userpath,keyID);
             }else if(type==3 ){
-                m = ussImageupload.ImageuploadUSS(fileMap, userpath,filename,setday);
+                returnImage = ussImageupload.ImageuploadUSS(fileMap, userpath,keyID);
             }else if(type==4){
-                m = kodoImageupload.ImageuploadKODO(fileMap, userpath,filename,setday);
+                returnImage = kodoImageupload.ImageuploadKODO(fileMap, userpath,keyID);
             }else if(type==5){
-                m = LocUpdateImg.ImageuploadLOC(fileMap, userpath,filename,setday);
+                returnImage = LocUpdateImg.ImageuploadLOC(fileMap, userpath,keyID);
             }else if(type==6){
-                m = cosImageupload.ImageuploadCOS(fileMap, userpath,filename,setday);
+                returnImage = cosImageupload.ImageuploadCOS(fileMap, userpath,keyID);;
             }else if(type==7){
-                m =  ftpImageupload.ImageuploadFTP(fileMap, userpath,filename,setday);
+                returnImage =  ftpImageupload.ImageuploadFTP(fileMap, userpath,keyID);
             }else if(type==8){
-                m =  uFileImageupload.ImageuploadUSS(fileMap, userpath,filename,setday);
+                returnImage =  uFileImageupload.ImageuploadUFile(fileMap, userpath,keyID);
             }
             else{
                 new StorageSourceInitException("GetSource类捕捉异常：未找到存储源");
@@ -48,7 +48,7 @@ public class GetSource {
             new StorageSourceInitException("GetSource类捕捉异常：",e);
             e.printStackTrace();
         }
-        return m;
+        return returnImage;
     }
 
 

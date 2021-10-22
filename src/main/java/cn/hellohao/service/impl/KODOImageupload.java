@@ -28,93 +28,57 @@ import java.util.UUID;
 @Service
 public class KODOImageupload {
     static String upToken;
-    static UploadManager uploadManager;
+    static BucketManager bucketManager;
     static Keys key;
 
-    public Map<ReturnImage, Integer> ImageuploadKODO(Map<String, MultipartFile> fileMap, String username,
-                                                     Map<String, String> fileMap2,Integer setday){
-        if(fileMap2==null){
-            File file = null;
-            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            try {
-                for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                    String times = format1.format(new Date());
-                    file = SetFiles.changeFile(entry.getValue());
-                    try {
-                        Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                        ReturnImage returnImage = new ReturnImage();
-                        returnImage.setImgname(username + "/" + uuid+times + "." + entry.getKey());//entry.getValue().getOriginalFilename()
-                        returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                        ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                        if(setday>0) {
-                            String deleimg = DateUtils.plusDay(setday);
-                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
-                        }
-                    } catch (QiniuException ex) {
-                        Response r = ex.response;
-                        System.err.println(r.toString());
-                        try {
-                            System.err.println(r.bodyString());
-                        } catch (QiniuException ex2) {
-                        }
-                    }
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-                ImgUrl.put(null, 500);
-            }
-            return ImgUrl;
-        }else{
-            Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-            try {
-                for (Map.Entry<String, String> entry : fileMap2.entrySet()) {
-                    String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-                    java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-                    String times = format1.format(new Date());
-                    String imgurl = entry.getValue();
-                    System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-                    try {
-                        Response response = uploadManager.put(new File(imgurl),username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                        DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                        ReturnImage returnImage = new ReturnImage();
-                        returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                        ImgUrl.put(returnImage, ImgUrlUtil.getFileSize2(new File(imgurl)));
-                        if(setday>0) {
-                            String deleimg = DateUtils.plusDay(setday);
-                            DeleImg.charu(username + "/" + uuid + times + "." + entry.getKey() + "|" + deleimg + "|" + "4");
-                        }
-                        new File(imgurl).delete();
-                    } catch (QiniuException ex) {
-                        Response r = ex.response;
-                        System.err.println(r.toString());
-                        try {
-                            System.err.println(r.bodyString());
-                        } catch (QiniuException ex2) {
-                        }
-                    }
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-                ImgUrl.put(null, 500);
-            }
-            return ImgUrl;
+    public ReturnImage ImageuploadKODO(Map<String, File> fileMap, String username, Integer keyID){
+        ReturnImage returnImage = new ReturnImage();
+        Keys key = null;
+        Configuration cfg;
+        if (key.getEndpoint().equals("1")) {
+            cfg = new Configuration(Zone.zone0());
+        } else if (key.getEndpoint().equals("2")) {
+            cfg = new Configuration(Zone.zone1());
+        } else if (key.getEndpoint().equals("3")) {
+            cfg = new Configuration(Zone.zone2());
+        } else if (key.getEndpoint().equals("4")) {
+            cfg = new Configuration(Zone.zoneNa0());
+        } else {
+            cfg = new Configuration(Zone.zoneAs0());
         }
-    }
+        UploadManager uploadManager = new UploadManager(cfg);
+        Auth auth = Auth.create(key.getAccessKey(), key.getAccessSecret());
+        String upToken = auth.uploadToken(key.getBucketname(),null,7200,null);
+        File file = null;
+        try {
+            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
+                String ShortUID = SetText.getShortUuid();
+                java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
+                file = entry.getValue();
+                try {
+                    Response response = uploadManager.put(file,username + "/" + ShortUID + "." + entry.getKey(),upToken);
+                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+                    returnImage.setUid(ShortUID);
+                    returnImage.setImgname(username + "/" + ShortUID + "." + entry.getKey());
+                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + ShortUID + "." + entry.getKey());
+                    returnImage.setImgSize(entry.getValue().length());
+                    returnImage.setCode("200");
+                } catch (QiniuException ex) {
+                    Response r = ex.response;
+                    System.err.println(r.toString());
+                    try {
+                        System.err.println(r.bodyString());
+                    } catch (QiniuException ex2) {
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            returnImage.setCode("500");
+        }
+        return returnImage;
 
-    // 转换文件方法
-//    private File changeFile(MultipartFile multipartFile) throws Exception {
-//        // 获取文件名
-//        String fileName = multipartFile.getOriginalFilename();
-//        // 获取文件后缀
-//        String prefix = fileName.substring(fileName.lastIndexOf("."));
-//        // todo 修改临时文件文件名
-//        File file = File.createTempFile(fileName, prefix);
-//        multipartFile.transferTo(file);
-//        return file;
-//    }
+    }
 
     //初始化
     public static Integer Initialize(Keys k) {
@@ -135,21 +99,22 @@ public class KODOImageupload {
                 } else {
                     cfg = new Configuration(Zone.zoneAs0());
                 }
-                uploadManager = new UploadManager(cfg);
+                UploadManager uploadManager = new UploadManager(cfg);
                 Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
-                upToken = auth.uploadToken(k.getBucketname());
+                String upToken = auth.uploadToken(k.getBucketname(),null,7200,null);//auth.uploadToken(k.getBucketname());
+
                 BucketManager bucketManager = new BucketManager(auth, cfg);
                 BucketManager.FileListIterator fileListIterator = null;
                 try {
                     fileListIterator = bucketManager.createFileListIterator(k.getBucketname(), "", 1, "/");
                     FileInfo[] items = fileListIterator.next();
-                    System.out.println(items!=null);
                     if(items!=null){
-                        key = k;
                         ret = 1;
+                        bucketManager = bucketManager;
+                        key = k;
                     }
                 }catch (Exception e){
-                    System.out.println("KODO - Waiting for configuration");
+                    System.out.println("KODO Object Is null");
                     ret = -1;
                 }
             }
@@ -157,41 +122,14 @@ public class KODOImageupload {
         return ret;
     }
 
-    /**
-     * 客户端接口
-     * */
-    public Map<ReturnImage, Integer> clientuploadKODO(Map<String, MultipartFile> fileMap, String username, UploadConfig uploadConfig) throws Exception {
-        File file = null;
-        Map<ReturnImage, Integer> ImgUrl = new HashMap<>();
-        for (Map.Entry<String, MultipartFile> entry : fileMap.entrySet()) {
-            String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
-            java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-            String times = format1.format(new Date());
-            file = SetFiles.changeFile_c(entry.getValue());
-            System.out.println("待上传的图片："+username + "/" + uuid+times + "." + entry.getKey());
-            try {
-                ReturnImage returnImage = new ReturnImage();
-                if(entry.getValue().getSize()/1024<=uploadConfig.getFilesizeuser()*1024){
-                    Response response = uploadManager.put(file,username + "/" + uuid+times + "." + entry.getKey(),upToken);
-                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + uuid+times + "." + entry.getKey());
-                    ImgUrl.put(returnImage, (int) (entry.getValue().getSize()));
-                }else{
-                    returnImage.setImgname(entry.getValue().getOriginalFilename());
-                    returnImage.setImgurl("文件超出系统设定大小，不得超过");
-                    ImgUrl.put(returnImage, -1);
-                }
-            } catch (QiniuException ex) {
-                Response r = ex.response;
-                System.err.println(r.toString());
-                try {
-                    System.err.println(r.bodyString());
-                } catch (QiniuException ex2) {
-                }
-            }
+    public Boolean delKODO(Integer keyID, String fileName) {
+        boolean b = true;
+        try {
+            bucketManager.delete(key.getBucketname(), fileName);
+        } catch (Exception ex) {
+            b = false;
         }
-        return ImgUrl;
+        return b;
     }
 
 

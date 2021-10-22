@@ -16,6 +16,8 @@ public interface GroupMapper {
     List<Group> grouplist();
     Group idgrouplist(@Param("id") Integer id);
     Integer addgroup(Group group);
+    Integer GetCountFroUserType(@Param("usertype") Integer usertype);
     Integer delegroup(@Param("id") Integer id);
     Integer setgroup(Group group);
+    Group getGroupFroUserType(@Param("usertype") Integer usertype);
 }

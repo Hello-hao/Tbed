@@ -11,6 +11,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,50 +55,73 @@ public class AdminController {
     @Autowired
     AlbumServiceI albumServiceI;
 
-    @RequestMapping(value = "/goadmin")
-    public String goadmin1(HttpSession session, Model model, HttpServletRequest request) {
-        Config config = configService.getSourceype();
-        User user = (User) session.getAttribute("user");
+    @PostMapping(value = "/overviewData") //new
+    @ResponseBody
+    public Msg overviewData(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        user =  userService.getUsers(user);
+        JSONObject jsonObject = new JSONObject();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        Integer usermemory = imgService.getusermemory(user.getId());
-        if(usermemory==null){usermemory=0;}
-        User u = userService.getUsers(user.getEmail());
-        if(user!=null){
-            if (user.getLevel() == 1) {
-                model.addAttribute("level", "普通用户");
-            } else if (user.getLevel() == 2) {
-                model.addAttribute("level", "管理员");
-            } else {
-                model.addAttribute("level", "未 知");
-            }
-            model.addAttribute("levels", user.getLevel());
-            model.addAttribute("username", user.getUsername());
-            model.addAttribute("api", uploadConfig.getApi());
-            model.addAttribute("config", config);
-            model.addAttribute("memory",u.getMemory());//单位M
-            if(usermemory==null){
-                model.addAttribute("usermemory", 0);//单位M
-            }else{
-                float d = (float) (Math.round((usermemory/1024.0F) * 100.0) / 100.0);
-                model.addAttribute("usermemory", d);//单位M
-            }
-            return "admin/index";
+        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);//查询非法个数
+        Imgreview isImgreviewOK = imgreviewService.selectByusing(1);//查询有没有启动鉴别功能
+        //普通用户
+        String ok = "false";
+        jsonObject.put("myToken","这个去掉");
+        jsonObject.put("myImgTotal", imgService.countimg(user.getId())); //我的图片数
+        jsonObject.put("myAlbumTitle", albumService.selectAlbumCount(user.getId()));//我的画廊数量
+        jsonObject.put("myView360Title", "0");//我的全景视图
+        //计算自己的百分比 已用量/分配量
+        long memory = Long.valueOf(user.getMemory());//分配量
+        Long usermemory = imgService.getusermemory(user.getId())==null?0L:imgService.getusermemory(user.getId());
+        if(memory==0){
+            jsonObject.put("myMemory","无容量");
         }else{
-            System.out.println("重定向到首页");
-            return "redirect:/";
+            Double aDouble = Double.valueOf(String.format("%.2f", (((double)usermemory/(double)memory)*100)));
+            if(aDouble>=999){
+                jsonObject.put("myMemory",999);
+            }else{
+                jsonObject.put("myMemory",aDouble);
+            }
         }
-    }
-
-    @RequestMapping(value = "/admin")
-    public String goadmin(HttpSession session, Model model) {
-        Config config = configService.getSourceype();
-        User u = (User) session.getAttribute("user");
-        model.addAttribute("username", u.getUsername());
-        model.addAttribute("level", u.getLevel());
-        model.addAttribute("email", u.getEmail());
-        model.addAttribute("loginid", 100);
-
-        return "admin/table";
+        jsonObject.put("myMemorySum",SetFiles.readableFileSize(memory));
+        if(user.getLevel()>1){
+            ok = "true";
+            //管理员
+            jsonObject.put("imgTotal", imgService.counts(null) ); //admin  站点图片数
+            jsonObject.put("userTotal", userService.getUserTotal()); //admin  用户个数
+            jsonObject.put("ViolationImgTotal", imgreview.getCount()); //admin 非法图片
+            jsonObject.put("ViolationSwitch", isImgreviewOK==null?0:isImgreviewOK.getId()); //admin 非法图片开关
+            jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
+            jsonObject.put("VisitorMemory", SetFiles.readableFileSize(Long.valueOf(uploadConfig.getVisitormemory())));//访客共大小
+            if(uploadConfig.getIsupdate()!=1){
+                jsonObject.put("VisitorUpload", 0);//是否禁用了游客上传
+                jsonObject.put("VisitorProportion",100.00);//游客用量%占比
+                jsonObject.put("VisitorMemory", "禁用");//访客共大小
+            }else{
+                Long temp = imgService.getusermemory(0)==null?0:imgService.getusermemory(0);
+                jsonObject.put("UsedMemory", (temp == null ? 0 : SetFiles.readableFileSize(temp)));//访客已用大小
+                if(Integer.valueOf(uploadConfig.getVisitormemory())==0){
+                    jsonObject.put("VisitorProportion",100.00);//游客用量%占比
+                }else if(Integer.valueOf(uploadConfig.getVisitormemory())==-1){
+                    jsonObject.put("VisitorProportion",0);//游客用量%占比
+                    jsonObject.put("VisitorMemory", "无限");//访客共大小
+                }else{
+                    double sum = Double.valueOf(uploadConfig.getVisitormemory());
+                    Double aDouble = Double.valueOf(String.format("%.2f", ((double) temp / sum) * 100));
+                    if(aDouble>=999){
+                        jsonObject.put("VisitorProportion",999);//游客用量%占比
+                    }else{
+                        jsonObject.put("VisitorProportion",aDouble);//游客用量%占比
+                    }
+                }
+            }
+        }
+        jsonObject.put("ok", ok);
+        //Config config = configService.getSourceype();
+        msg.setData(jsonObject);
+        return msg;
     }
 
     @RequestMapping(value = "/tosurvey")
@@ -112,9 +137,9 @@ public class AdminController {
         model.addAttribute("jdk", jdk);
         //空间大小
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        Integer usermemory = imgService.getusermemory(u.getId());
-        if(usermemory==null){usermemory=0;}
-        User user = userService.getUsers(u.getEmail());
+        Long usermemory = imgService.getusermemory(u.getId());
+        if(usermemory==null){usermemory=0L;}
+        User user = userService.getUsers(u);
         if(u!=null){
             if (u.getLevel() == 1) {
                 model.addAttribute("level", "普通用户");
@@ -153,13 +178,98 @@ public class AdminController {
         if(uploadConfig.getIsupdate()!=1){
             jsonObject.put("VisitorUpload", 0);//是否禁用了游客上传
         }else{
-            Integer temp = imgService.getusermemory(0);
+            Long temp = imgService.getusermemory(0);
             jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
             jsonObject.put("UsedSize", (temp == null ? 0 : temp/1024));//访客已用大小
             jsonObject.put("VisitorMemory", uploadConfig.getVisitormemory());//访客共大小
         }
         return jsonObject.toString();
     }
+
+    @PostMapping("/getRecently")//new 获取榜单和最近上传
+    @ResponseBody
+    public Msg getRecently(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        final JSONObject jsonObject = new JSONObject();
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            User user = (User) subject.getPrincipal();
+            user =  userService.getUsers(user);
+            if(user.getLevel()>1){
+                //管理员 可以看榜单数据 和最近上传
+                jsonObject.put("RecentlyUser",imgService.RecentlyUser());
+                jsonObject.put("RecentlyUploaded",imgService.RecentlyUploaded(user.getId()));
+            }else{
+                //普通用户只能看最近上传
+                jsonObject.put("RecentlyUploaded",imgService.RecentlyUploaded(user.getId()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setInfo("系统内部错误");
+            msg.setCode("500");
+            return msg;
+        }
+        msg.setData(jsonObject);
+        return msg;
+    }
+
+    @PostMapping("/getYyyy")//new
+    @ResponseBody
+    public Msg getYyyy(@RequestParam(value = "data", defaultValue = "") String data){
+        final Msg msg = new Msg();
+        Subject subject = SecurityUtils.getSubject();
+        User u = (User) subject.getPrincipal();
+        final JSONObject jsonObject = new JSONObject();
+        jsonObject.put("allYyyy",imgService.getyyyy(null));
+        jsonObject.put("userYyyy",imgService.getyyyy(u.getId()));
+        msg.setData(jsonObject);
+        return msg;
+    }
+
+    @PostMapping("/getChart")//new
+    @ResponseBody
+    public Msg getChart(@RequestParam(value = "data", defaultValue = "") String data){
+        Msg msg = new Msg();
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        String yyyy = jsonObject.getString("yyyy");
+        Integer type = jsonObject.getInteger("type");
+
+        Subject subject = SecurityUtils.getSubject();
+        User u = (User) subject.getPrincipal();
+        List<Images> list =null;
+        if(u.getLevel()>1){
+            if(type==2){
+                Images images = new Images();
+                images.setYyyy(yyyy);
+                list = imgService.countByM(images);
+            }else{
+                Images images = new Images();
+                images.setYyyy(yyyy);
+                images.setUserid(u.getId());
+                list = imgService.countByM(images);
+            }
+        }else{
+            Images images = new Images();
+            images.setYyyy(yyyy);
+            images.setUserid(u.getId());
+            list = imgService.countByM(images);
+        }
+        JSONArray json = JSONArray.parseArray("[{\"id\":1,\"monthNum\":\"一月\",\"countNum\":0},{\"id\":2,\"monthNum\":\"二月\",\"countNum\":0},{\"id\":3,\"monthNum\":\"三月\",\"countNum\":0},{\"id\":4,\"monthNum\":\"四月\",\"countNum\":0},{\"id\":5,\"monthNum\":\"五月\",\"countNum\":0},{\"id\":6,\"monthNum\":\"六月\",\"countNum\":0},{\"id\":7,\"monthNum\":\"七月\",\"countNum\":0},{\"id\":8,\"monthNum\":\"八月\",\"countNum\":0},{\"id\":9,\"monthNum\":\"九月\",\"countNum\":0},{\"id\":10,\"monthNum\":\"十月\",\"countNum\":0},{\"id\":11,\"monthNum\":\"十一月\",\"countNum\":0},{\"id\":12,\"monthNum\":\"十二月\",\"countNum\":0}]");
+        JSONArray jsonArray = new JSONArray();
+        for (int j = 0; j < list.size(); j++) {
+            for (int i = 0; i < json.size(); i++) {
+                JSONObject jobj = json.getJSONObject(i);
+                if(jobj.getInteger("id")==list.get(j).getMonthNum()){
+                    jobj.put("monthNum",getChinaes(list.get(j).getMonthNum()));
+                    jobj.put("countNum",list.get(j).getCountNum());
+                }
+            }
+        }
+        msg.setData(json);
+        return msg;
+    }
+
+
 
 
     @RequestMapping(value = "/selecttable")
@@ -230,7 +340,6 @@ public class AdminController {
         User u = (User) session.getAttribute("user");
         Images images = imgService.selectByPrimaryKey(id);
         Keys key = keysService.selectKeys(sourcekey);
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
             ImgServiceImpl de = new ImgServiceImpl();
             if (key.getStorageType() == 1) {
                 de.delect(key, images.getImgname());
@@ -274,7 +383,6 @@ public class AdminController {
         Integer v = 0;
         ImgServiceImpl de = new ImgServiceImpl();
         User u = (User) session.getAttribute("user");
-        Integer Sourcekey = GetCurrentSource.GetSource(u.getId());
         for (int i = 0; i < ids.length; i++) {
             Keys key = keysService.selectKeys(sources[i]);
                 if (key.getStorageType() == 1) {
@@ -359,7 +467,7 @@ public class AdminController {
     public String kuorong(HttpSession session, String codestring) {
         User u = (User) session.getAttribute("user");
         JSONObject jsonObject = new JSONObject();
-        User u1 = userService.getUsers(u.getEmail());
+        User u1 = userService.getUsers(u);
         Integer ret =0;
         Integer sizes = 0;
         if(u!=null){
@@ -447,5 +555,53 @@ public class AdminController {
         return ret;
     }
 
+
+    //工具函数
+    private static String getChinaes(int v){
+        String ch = "";
+        switch(v){
+            case 1 :
+                ch = "一月";
+                break; //可选
+            case 2 :
+                ch = "二月";
+                break; //可选
+            case 3 :
+                ch = "三月";
+                break; //可选
+            case 4 :
+                ch = "四月";
+                break; //可选
+            case 5 :
+                ch = "五月";
+                break; //可选
+            case 6 :
+                ch = "六月";
+                break; //可选
+            case 7 :
+                ch = "七月";
+                break; //可选
+            case 8 :
+                ch = "八月";
+                break; //可选
+            case 9 :
+                ch = "九月";
+                break; //可选
+            case 10 :
+                ch = "十月";
+                break; //可选
+            case 11 :
+                ch = "十一月";
+                break; //可选
+            case 12 :
+                ch = "十二月";
+                break; //可选
+            default : ch = "";//可选
+                //语句
+        }
+
+        return ch;
+
+    }
 
 }

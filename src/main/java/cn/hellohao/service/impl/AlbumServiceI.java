@@ -62,6 +62,11 @@ public class AlbumServiceI implements AlbumService {
         return albumMapper.selectAlbumURLList(album);
     }
 
+    @Override
+    public Integer selectAlbumCount(Integer userid) {
+        return albumMapper.selectAlbumCount(userid);
+    }
+
     @Transactional
     public Integer delete(String albumkey) {
         Integer ret1 = albumMapper.deleteAlbum(albumkey);

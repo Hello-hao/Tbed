@@ -17,8 +17,8 @@ import org.springframework.scheduling.quartz.SimpleTriggerFactoryBean;
 @Configuration
 public class QuartzConfigration {
     //直接读取properties文件的值
-    @Value("${Expression}")
-    private String Expression;
+//    @Value("${Expression}")
+    private String Expression = "0 0 1 1 * ?";
 
 
 

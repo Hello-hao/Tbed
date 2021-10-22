@@ -41,4 +41,10 @@ public class ImgreviewServiceImpl implements ImgreviewService {
     public int updateByPrimaryKey(Imgreview record) {
         return 0;
     }
+
+    @Override
+    public Imgreview selectByusing(Integer using) {
+        return imgreviewMapper.selectByusing(using);
+    }
+
 }

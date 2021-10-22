@@ -17,4 +17,6 @@ public interface ImgreviewService {
 
     int updateByPrimaryKey(Imgreview record);
 
+    Imgreview selectByusing(Integer using);
+
 }

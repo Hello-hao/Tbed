@@ -40,6 +40,11 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public Integer GetCountFroUserType(Integer usertype) {
+        return groupMapper.GetCountFroUserType(usertype);
+    }
+
+    @Override
     @Transactional//默认遇到throw new RuntimeException(“…”);会回滚
     public Integer delegroup(Integer id) {
         Integer ret = 0;
@@ -63,4 +68,10 @@ public class GroupServiceImpl implements GroupService {
     public Integer setgroup(Group group) {
         return groupMapper.setgroup(group);
     }
+
+    @Override
+    public Group getGroupFroUserType(Integer usertype) {
+        return groupMapper.getGroupFroUserType(usertype);
+    }
+
 }

@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUsers(String email) {
+    public User getUsers(User user) {
         // TODO Auto-generated method stub
-        return userMapper.getUsers(email);
+        return userMapper.getUsers(user);
     }
 
     @Override

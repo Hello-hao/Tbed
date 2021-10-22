@@ -15,6 +15,8 @@ public interface GroupService {
     List<Group> grouplist();
     Group idgrouplist(Integer id);
     Integer addgroup(Group group);
+    Integer GetCountFroUserType(Integer usertype);
     Integer delegroup(Integer id);
     Integer setgroup(Group group);
+    Group getGroupFroUserType(Integer usertype);
 }

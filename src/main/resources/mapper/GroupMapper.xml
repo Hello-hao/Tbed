@@ -22,6 +22,14 @@
         insert into `group` (id,groupname,keyid) values (null,#{groupname},#{keyid})
     </insert>
 
+    <select id="GetCountFroUserType" parameterType="integer" resultType="integer">
+        SELECT
+            count(id)
+        FROM
+            `group`
+        where usertype = #{usertype}
+    </select>
+
     <delete id="delegroup" parameterType="integer">
         delete from `group` where id=#{id}
     </delete>
@@ -30,5 +38,12 @@
         UPDATE `group` SET groupname=#{groupname},keyid=#{keyid} where id = #{id};
     </update>
 
+    <select id="getGroupFroUserType" parameterType="integer" resultType="cn.hellohao.pojo.Group">
+        SELECT
+            *
+        FROM
+            `group`
+        where usertype = #{usertype}
+    </select>
 
 </mapper>

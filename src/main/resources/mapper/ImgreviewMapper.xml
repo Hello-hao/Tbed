@@ -21,6 +21,15 @@
         from imgreview
         where id = #{id,jdbcType=INTEGER}
     </select>
+
+    <select id="selectByusing" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        <!--@mbg.generated-->
+        select
+        id, app_id, api_key, secret_key, `Using`,`count`
+        from imgreview
+        where `Using` = #{using,jdbcType=INTEGER}
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         <!--@mbg.generated-->
         delete from imgreview

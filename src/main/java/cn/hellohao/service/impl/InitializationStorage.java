@@ -1,9 +1,11 @@
 package cn.hellohao.service.impl;
 
+import cn.hellohao.auth.filter.SubjectFilter;
 import cn.hellohao.dao.KeysMapper;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.utils.Print;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -20,16 +22,18 @@ import java.util.List;
 @Component
 @Order(2)
 public class InitializationStorage implements CommandLineRunner {
+
+    @Value("${CROS_ALLOWED_ORIGINS}")
+    private String allowedOrigins;
+
     @Autowired
     private KeysMapper keysMapper;
 
     @Override
     public void run(String... args) throws Exception {
+        SubjectFilter.WEBHOST = allowedOrigins;
         String name = ManagementFactory.getRuntimeMXBean().getName();
-        //System.out.println(name);
-// get pid
         String pid = name.split("@")[0];
-        //System.out.println("Pid is:" + pid);
         intiStorage();
         sout();
     }
@@ -55,14 +59,13 @@ public class InitializationStorage implements CommandLineRunner {
                 }
             }
         }
-        //Print.Normal("66666666");
     }
 
     public void sout(){
         Print.Normal("______________________________________________");
-        Print.Normal("              Hellohao-Open source                ");
+        Print.Normal("              Hellohao Tbed                ");
         Print.Normal("     Successful startup of the program      ");
-        Print.Normal("     is OK!  Open http://your ip:port       ");
+        Print.Normal("     is OK!  Open http:// yourIP:port       ");
         Print.Normal("______________________________________________");
     }
 }

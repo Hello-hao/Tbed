@@ -21,4 +21,6 @@ public interface AlbumService {
     Integer deleteAlbum(String albumkey);
 
     List<Album> selectAlbumURLList(Album album);
+
+    Integer selectAlbumCount(Integer userid);
 }

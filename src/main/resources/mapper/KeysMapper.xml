@@ -10,7 +10,7 @@
         FROM
             `keys`
         WHERE
-            storageType = #{storageType}
+            id = #{id}
     </select>
 
     <!-- 查询对象存储key-->
