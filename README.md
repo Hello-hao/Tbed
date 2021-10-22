@@ -1,67 +1,46 @@
 # Hellohao图床 - 强大的图像托管服务程序
 
-![Hellohao](http://cdn.wwery.com/Hellohao/add120310034948.png)
+![banner.png](http://img.wwery.com/Hellohao/HqXVDR2b.png)
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
-Hellohao图像托管程序这是一个基于多家对象存储源的SpringBoot开源图像托管程序。
-目前已经支持对接本地、网易、阿里、又拍、七牛、腾讯、FTP、U-File、Backblaze、Minio等存储源。功能强悍，作者立志要把图像托管一步一步开发到极致。未来，Hellohao图像托管程序不仅仅是图床那么简单。
+**Hellohao图像托管程序**这是一个基于多家对象存储源 JAVA语言编写SpringBoot框架开发的开源图像托管程序。
 
-## 2021程序重构
+程序主要使用领域：`个人照片存储`，`团队共享图像`，`博客/商城等网站图片托管`，`图像批量云分享`等。具备优秀的多用户图像上传功能和完善的图像查询管理逻辑，同时支持对接多家对象存储。
 
-亲爱的朋友们：
-在2021年里，我准备把Hellohao图像托管程序进行一次`整体的架构`和`所有的页面UI`进行重构优化。
-之前开发的代码比较随意，代码臃肿凌乱不利于维护，没想到Hellohao图床会有这么多人使用。
-本次更新，底层上将目前的`JDK1.8`升级为`JDK11`。
-程序后端框架将升级`Springboot框架`，接口采用`统一标准格式`。
-同时前端UI将完全重构采用`Vue+iviewUI+Axios+router`前后端分离式开发（至于最终是否采用前分离式部署，到时候再定）。
-本次重构也将会在功能上实现突破。
-同时，在完成重构后的，我着重把重心放在`图像的整合`和`管理`，解决图像量大的站点更加方便的`查找` `管理` `归类`后台图像。
-> (感谢诸位对`hellohao图像托管程序`的青睐。重构版不会让你们失望，敬请期待)
+**存储源支持：**
 
-------
+开源版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,`U-File`,`FTP`
 
-须知：
-
-本次重构包含 `开源版` `内部核心版`全部重构。
-并且：开源版重构后的所有代码将完全开源在GitHub上。
-目前所有的工作均由hellohao一个人开发完成。开发周期可能比较长，目前已在`开发中...`。
-重构顺序：`内部核心版`>`开源版`。
-> 重构过程中，我还会照常对目前版本提供维护更新
+Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,`U-File`,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`
 
 
-## 主要功能（内部版本功能更多）
-- 多主题支持：炫酷壁纸、简约蓝白
-- 支持 图片拖拽、截图软件直接(Ctrl+V)和图片URL地址上传。
-- 图片定期暂存（到期自动删除）
-- 支持画廊分享模式(用户可把自己当前上传的图片以图片集的形式批量分享给好友)
-- 重复图片检测
-- 支持上传者IP记录，并可配置IP黑名单操作
-- 支持链接生成二维码。
-- 支持开启/关闭API接口。
-- 设置用户可用容量
-- 扩容码生成（用户可使用扩容码进行容量扩充）
-- 分发群组（配置用户群组，不同群组分发图片到不同对象存储）
-- 首页背景动态/静态，以及简约模式设置
-- URL列表、缩略图。查看原图等功能。
-- 图片鉴黄配置（开启后，每天固定时间进行非法图片监测）
-- 游客、用户的上传管理
-- 邮箱注册激活。
-- 站点样式设置和上传规则配置等。
 
-主站地址(包含内部版购买地址): [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
 
-开源版/内部版 文档地址: [http://doc.hellohao.cn](http://doc.hellohao.cn)
+## 重构版已经开始进行
+
+### 程序宣传视频：[点击查看](https://www.bilibili.com/video/BV11r4y1y7mH/)
+
+> 目前Core版本(付费版已经重构完成，即将发布正式版)
+> 开源版正在开发中
+
+作者正在夜以继日的努力开发中，敬请期待！
+
+主站地址(包含Core版购买地址): [http://tbed.hellohao.cn/](http://tbed.hellohao.cn/)
+
+程序Demo: [http://tc.hellohao.cn](http://tc.hellohao.cn)
+
+开源版/Core版 文档地址: [http://doc.hellohao.cn](http://doc.hellohao.cn)
 
 开源版编译包下载(内部版请前往主站获取): [https://github.com/Hello-hao/Tbed/releases/](https://github.com/Hello-hao/Tbed/releases/)
 
-全套部署视频教程：[https://www.bilibili.com/video/av79137056/](https://www.bilibili.com/video/av79137056/)
+---
 
+> 一下是旧版程序的介绍和截图，等新版开发出来后再贴图
 ## 系统预览
 
-![Hellohao/dec2d0616104505.png](http://cdn.wwery.com/Hellohao/dec2d0616104505.png)
 
 ![图床后台管理.png](http://cdn.wwery.com/Hellohao/c208e0825054822.png)
 ![图床后台管理2.png](http://cdn.wwery.com/Hellohao/6c7690825054822.png)
