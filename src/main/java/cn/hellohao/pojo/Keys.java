@@ -8,21 +8,24 @@ public class Keys {
     private String Bucketname;
     private String RequestAddress;
     private Integer storageType;
+    private String keyname;
 
     public Keys() {
         super();
     }
 
     public Keys(Integer id, String accessKey, String accessSecret, String endpoint, String bucketname,
-                String requestAddress, Integer storageType) {
+                String requestAddress, Integer storageType,String keyname) {
         super();
         this.id = id;
-        AccessKey = accessKey;
-        AccessSecret = accessSecret;
-        Endpoint = endpoint;
-        Bucketname = bucketname;
-        RequestAddress = requestAddress;
+        this.AccessKey = accessKey;
+        this.AccessSecret = accessSecret;
+        this.Endpoint = endpoint;
+        this.Bucketname = bucketname;
+        this.RequestAddress = requestAddress;
         this.storageType = storageType;
+        this.keyname = keyname;
+
     }
 
     public Integer getId() {
@@ -81,5 +84,11 @@ public class Keys {
         this.storageType = storageType;
     }
 
+    public String getKeyname() {
+        return keyname;
+    }
 
+    public void setKeyname(String keyname) {
+        this.keyname = keyname;
+    }
 }

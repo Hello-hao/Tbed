@@ -20,7 +20,10 @@ public class KeysServiceImpl implements KeysService {
         // TODO Auto-generated method stub
         return keysMapper.selectKeys(id);
     }
-
+    @Override
+    public List<Keys> getStorageName() {
+        return keysMapper.getStorageName();
+    }
     @Override
     public Integer updateKey(Keys key) {
         // TODO Auto-generated method stub

@@ -1,5 +1,6 @@
 package cn.hellohao.controller;
 
+import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
@@ -19,10 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 /**
  * @author Hellohao
  * @version 1.0
@@ -269,228 +270,177 @@ public class AdminController {
         return msg;
     }
 
-
-
-
-    @RequestMapping(value = "/selecttable")
+    @PostMapping("/getStorageName")//new 获取当前一共有多少个存储源  这是总个数
     @ResponseBody
-    public PageResultBean<Images> selectByFy(HttpSession session, Integer pageNum, Integer pageSize, Integer selecttype,
-                                             Integer storageType,String starttime,String stoptime) {
-        User u = (User) session.getAttribute("user");
+    public Msg getStorageName() {
+        Msg msg = new Msg();
+        List<Keys> storage = keysService.getStorageName();
+        msg.setData(storage);
+        return msg;
+    }
+
+    @PostMapping(value = "/selectPhoto")//new
+    @ResponseBody
+    public Msg selectPhoto(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer pageNum = jsonObj.getInteger("pageNum");
+        Integer pageSize = jsonObj.getInteger("pageSize");
+        String username = jsonObj.getString("username");
+        Integer source = jsonObj.getInteger("source");
+        String starttime = jsonObj.getString("starttime");
+        String stoptime = jsonObj.getString("stoptime");
+        Integer selecttype = jsonObj.getInteger("selecttype");
+        String classifuids = jsonObj.getString("classifuids");
+        boolean violation = jsonObj.getBoolean("violation");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if(starttime!=null){
+            try {
+                Date date1 = format.parse(starttime);
+                Date date2 = format.parse(stoptime==null?format.format(new Date()):stoptime);
+                int compareTo = date1.compareTo(date2);
+                System.out.println(compareTo);
+                if(compareTo==1){
+                    msg.setCode("110500");
+                    msg.setInfo("起始日期不能大于结束日期");
+                    return msg;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                msg.setCode("110500");
+                msg.setInfo("您输入的日期不正确");
+                return msg;
+            }
+        }
         Images img = new Images();
-        if(storageType!=null){
-            if(storageType!=0){
-                img.setSource(storageType);
-            }
-        }
-        if(starttime!=null && stoptime!=null){
-            if(!starttime.equals("") && !stoptime.equals("")){
-                img.setStarttime(starttime);
-                img.setStoptime(stoptime);
-            }
-        }
         PageHelper.startPage(pageNum, pageSize);
-        List<Images> images = null;
-        if (u.getLevel() > 1) {
-            if (selecttype == 1) {
-                images = imgService.selectimg(img);
-            } else if(selecttype == 2) {
-                img.setUserid(u.getId());
-                images = imgService.selectimg(img);
-            }else{
-                img.setUserid(u.getId());
-                img.setSelecttype(3);
-                images = imgService.selectimg(img);
-            }
-        } else {
-            img.setUserid(u.getId());
-            images = imgService.selectimg(img);
+//        img.setUseridlist(user.getId().toString());
+        if(violation){
+            img.setViolation("true");
         }
+        img.setUsername(username);
+        img.setSource(source);
+        img.setSelecttype(selecttype);
+        img.setStarttime(starttime);
+        img.setStoptime(stoptime);
+        if(classifuids!=null){
+            String[] calssif = classifuids.split(",");
+            img.setClassifuidlist(calssif);
+        }
+        if(subject.hasRole("admin")){
+            //管理员 sql根据userid是否等于空做的判断，
+            img.setUserid(null);
+        }else{
+            //普通用户
+            img.setUserid(user.getId());
+        }
+        List<Images> images = imgService.selectimg(img);
         PageInfo<Images> rolePageInfo = new PageInfo<>(images);
-        return new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
+        PageResultBean<Images> pageResultBean = new PageResultBean<>(rolePageInfo.getTotal(), rolePageInfo.getList());
+        msg.setData(pageResultBean);
+        return msg;
     }
 
-    @RequestMapping(value = "/selectusertable")
+
+    @PostMapping(value = "/getUserInfo") //new
     @ResponseBody
-    public Map<String, Object> selectByFy12(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
-                                            @RequestParam(required = false) int limit,String username) {
-        User u = (User) session.getAttribute("user");
-        PageHelper.startPage(page, limit);
-        List<User> users = null;
-        if (u.getLevel() > 1) {
+    public Msg getUserInfo() {
+        Msg msg = new Msg();
+        try {
+            Subject subject = SecurityUtils.getSubject();
+            User user = (User) subject.getPrincipal();
+            final User u = new User();
+            u.setId(user.getId());
+            User userInfo = userService.getUsers(u);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("username",userInfo.getUsername());
+            jsonObject.put("email",userInfo.getEmail());
+            msg.setData(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("110500");
+            msg.setInfo("操作失败");
+        }
+        return msg;
+    }
+
+    @PostMapping("/setUserInfo") //new
+    @ResponseBody
+    public Msg setUserInfo(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            String username = jsonObject.getString("username");
+            String email = jsonObject.getString("email");
+            String password = jsonObject.getString("password");
+            Subject subject = SecurityUtils.getSubject();
+            User u = (User) subject.getPrincipal();
             User user = new User();
-            user.setUsername(username);
-            users = userService.getuserlist(user);
-            PageInfo<User> rolePageInfo = new PageInfo<>(users);
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", 0);
-            map.put("msg", "");
-            map.put("count", rolePageInfo.getTotal());
-            map.put("data", rolePageInfo.getList());
-            return map;
-        } else {
-            return null;
-        }
-    }
-
-    @PostMapping("/deleimg")
-    @ResponseBody
-    public String deleimg(HttpSession session, Integer id, Integer sourcekey,String imgname) {
-        JSONObject jsonObject = new JSONObject();
-        User u = (User) session.getAttribute("user");
-        Images images = imgService.selectByPrimaryKey(id);
-        Keys key = keysService.selectKeys(sourcekey);
-            ImgServiceImpl de = new ImgServiceImpl();
-            if (key.getStorageType() == 1) {
-                de.delect(key, images.getImgname());
-            } else if (key.getStorageType() == 2) {
-                de.delectOSS(key, images.getImgname());
-            } else if (key.getStorageType() == 3) {
-                de.delectUSS(key, images.getImgname());
-            } else if (key.getStorageType() == 4) {
-                de.delectKODO(key, images.getImgname());
-            } else if (key.getStorageType() == 5) {
-                LocUpdateImg.deleteLOCImg(images.getImgname());
-            }else if (key.getStorageType() == 6) {
-                de.delectCOS(key, images.getImgname());
-            }else if (key.getStorageType() == 7) {
-                de.delectFTP(key, images.getImgname());
-            }else if (key.getStorageType() == 8) {
-                de.delectUFile(key, images.getImgname());
-            }else {
-                System.err.println("未获取到对象存储参数，删除失败。");
+            if(!SetText.checkEmail(email)){
+                msg.setCode("110403");
+                msg.setInfo("邮箱格式不正确");
+                return msg;
             }
-            Integer ret = imgService.deleimg(id);
-            if(ret>0){ imgAndAlbumService.deleteImgAndAlbum(imgname);}
-            Integer count = 0;
-            if (ret > 0) {
-                jsonObject.put("usercount", imgService.countimg(u.getId()));
-                jsonObject.put("count", imgService.counts(null));
-                count = 1;
-                imgAndAlbumService.deleteImgAndAlbum(imgname);//关联表删除关于这张照片的所有记录
-            } else {
-                count = 0;
+            String regex = "^\\w+$";
+            if(username.length()>20 || !username.matches (regex)){
+                msg.setCode("110403");
+                msg.setInfo("用户名不得超过20位字符");
+                return msg;
             }
-            jsonObject.put("val", count);
-        return jsonObject.toString();
-    }
 
-    @PostMapping("/deleallimg")
-    @ResponseBody
-    public String deleallimg(HttpSession session, @RequestParam("ids[]") Integer[] ids,@RequestParam("sources[]") Integer[] sources,
-                             @RequestParam("imgnames[]") String[] imgnames) {
-        JSONObject jsonObject = new JSONObject();
-        Integer v = 0;
-        ImgServiceImpl de = new ImgServiceImpl();
-        User u = (User) session.getAttribute("user");
-        for (int i = 0; i < ids.length; i++) {
-            Keys key = keysService.selectKeys(sources[i]);
-                if (key.getStorageType() == 1) {
-                    de.delect(key, imgnames[i]);
-                } else if (key.getStorageType() == 2) {
-                    de.delectOSS(key, imgnames[i]);
-                } else if (key.getStorageType() == 3) {
-                    de.delectUSS(key, imgnames[i]);
-                } else if (key.getStorageType() == 4) {
-                    de.delectKODO(key, imgnames[i]);
-                } else if (key.getStorageType() == 5) {
-                    LocUpdateImg.deleteLOCImg(imgnames[i]);
-                }else if (key.getStorageType() == 6) {
-                    de.delectCOS(key, imgnames[i]);
-                }else if (key.getStorageType() == 7) {
-                    de.delectFTP(key, imgnames[i]);
-                }else if (key.getStorageType() == 8) {
-                    de.delectUFile(key, imgnames[i]);
-                }else {
-                    System.err.println("未获取到对象存储参数，删除失败。");
+            if(subject.hasRole("admin")){
+                final User userOld = new User();
+                userOld.setId(u.getId());
+                User userInfo = userService.getUsers(userOld);
+                if(!userInfo.getUsername().equals(username)){
+                    //要修改用户名
+                    Integer countusername = userService.countusername(username);
+                    if(countusername == 1 || !SysName.CheckSysName(username)){
+                        msg.setCode("110406");
+                        msg.setInfo("此用户名已存在");
+                        return msg;
+                    }else {
+                        user.setUsername(username);
+                    }
                 }
-                Integer ret = imgService.deleimg(ids[i]);
-                if (ret < 1) {
-                    v = 0;
-                } else {
-                    v = 1;
-                    imgAndAlbumService.deleteImgAndAlbum(imgnames[i]);//关联表删除关于这张照片的所有记录
+                if(!userInfo.getEmail().equals(email)){
+                    //要修改邮箱
+                    Integer countmail = userService.countmail(email);
+                    if(countmail == 1){
+                        msg.setCode("110407");
+                        msg.setInfo("此邮箱已被注册");
+                        return msg;
+                    }else{
+                        user.setEmail(email);
+                    }
                 }
-        }
-        jsonObject.put("val", v);
-        jsonObject.put("usercount", imgService.countimg(u.getId()));
-        jsonObject.put("count", imgService.counts(null));
-        return jsonObject.toString();
-    }
-
-    @RequestMapping(value = "/tosetuser")
-    public String tosetuser(HttpSession session, Model model, HttpServletRequest request) {
-        User u = (User) session.getAttribute("user");
-        model.addAttribute("user", u);
-        return "admin/setuser";
-    }
-
-    @PostMapping("/change")
-    @ResponseBody
-    public String change(HttpSession session, User user) {
-        User u = (User) session.getAttribute("user");
-        User us = new User();
-        us.setEmail(user.getEmail());
-        us.setUsername(user.getUsername());
-        us.setPassword(Base64Encryption.encryptBASE64(user.getPassword().getBytes()));
-        us.setUid(u.getUid());
-        JSONArray jsonArray = new JSONArray();
-        Integer ret =0;
-        if(u.getLevel()==1){
-            us.setUsername(null);
-            us.setEmail(null);
-            ret = userService.change(us);
-        }else{
-            ret = userService.change(us);
-        }
-        jsonArray.add(ret);
-        if (u.getEmail() != null && u.getPassword() != null) {
-            session.removeAttribute("user");
-            session.invalidate();
-        }
-        return jsonArray.toString();
-    }
-    //进入api
-    @RequestMapping(value = "/toapi")
-    public String toapi(HttpSession session, Model model, HttpServletRequest request) {
-        User u = (User) session.getAttribute("user");
-        Config config = configService.getSourceype();
-        //key信息
-        model.addAttribute("username", u.getUsername());
-        model.addAttribute("level", u.getLevel());
-        model.addAttribute("domain", config.getDomain());
-        return "admin/api";
-    }
-
-    @PostMapping(value = "/kuorong")
-    @ResponseBody
-    public String kuorong(HttpSession session, String codestring) {
-        User u = (User) session.getAttribute("user");
-        JSONObject jsonObject = new JSONObject();
-        User u1 = userService.getUsers(u);
-        Integer ret =0;
-        Integer sizes = 0;
-        if(u!=null){
-            Code c = codeService.selectCodekey(codestring);
-            Print.warning(c);
-            if(c!=null) {
-                User user = new User();
-                sizes = c.getValue()+u1.getMemory();
-                user.setMemory(c.getValue()+u1.getMemory());
-                user.setId(u.getId());
-                ret = userServiceImpl.usersetmemory(user,codestring);
-                if(ret>0){ ret = 1; }
+                user.setPassword(Base64Encryption.encryptBASE64(password.getBytes()));
+                user.setUid(u.getUid());
             }else{
-                ret=-1;
+                user.setPassword(Base64Encryption.encryptBASE64(password.getBytes()));
+                user.setUid(u.getUid());
             }
-        }else{
-            //登录过期
-            session.invalidate();
+            userService.change(user);
+            msg.setInfo("信息修改成功，请重新登录");
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("110500");
+            msg.setInfo("服务执行异常，请稍后再试");
         }
-        jsonObject.put("sizes",sizes);
-        jsonObject.put("ret",ret);
-        return jsonObject.toString();
+        return msg;
     }
+
+
+
+
+
+
+
+
+
+
 
     @GetMapping(value = "/images/{id}")
     @ResponseBody
@@ -499,47 +449,6 @@ public class AdminController {
     }
 
 
-    @RequestMapping(value = "/albumlist")
-    public String albumlist(HttpSession session, Model model) {
-        Config config = configService.getSourceype();
-        User u = (User) session.getAttribute("user");
-        model.addAttribute("config", config);
-        model.addAttribute("level", u.getLevel());
-        model.addAttribute("email", u.getEmail());
-        model.addAttribute("loginid", 100);
-
-        return "admin/albumlist";
-    }
-
-    @PostMapping("/getAlbumURLList")
-    @ResponseBody
-    public Map<String, Object> getAlbumURLList (HttpSession session,@RequestParam(required = false, defaultValue = "1") int page,
-    @RequestParam(required = false) int limit,Album album){
-        User u = (User) session.getAttribute("user");
-        PageHelper.startPage(page, limit);
-        List<Album>  list = null;
-        if (u.getLevel() == 2) {
-            album.setUserid(null);
-            list = albumServiceI.selectAlbumURLList(album);
-            PageInfo<Album> rolePageInfo = new PageInfo<>(list);
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", 0);
-            map.put("msg", "");
-            map.put("count", rolePageInfo.getTotal());
-            map.put("data", rolePageInfo.getList());
-            return map;
-        } else {
-            album.setUserid(u.getId());
-            list = albumServiceI.selectAlbumURLList(album);
-            PageInfo<Album> rolePageInfo = new PageInfo<>(list);
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", 0);
-            map.put("msg", "");
-            map.put("count", rolePageInfo.getTotal());
-            map.put("data", rolePageInfo.getList());
-            return map;
-        }
-    }
 
     @RequestMapping("/delAlbum")
     @ResponseBody

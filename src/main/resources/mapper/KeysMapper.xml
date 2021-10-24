@@ -12,7 +12,10 @@
         WHERE
             id = #{id}
     </select>
-
+    <!-- 查询添加的所有对象存储-->
+    <select id="getStorageName"  resultType="cn.hellohao.pojo.Keys">
+        select id,keyname,storageType from `keys`
+    </select>
     <!-- 查询对象存储key-->
     <select id="getKeys" parameterType="integer" resultType="cn.hellohao.pojo.Keys">
         SELECT

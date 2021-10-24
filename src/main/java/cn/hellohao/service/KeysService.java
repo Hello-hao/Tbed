@@ -10,7 +10,7 @@ import java.util.List;
 public interface KeysService {
     //查询密钥
     Keys selectKeys(Integer id);
-
+    List<Keys> getStorageName();
     //修改key
     Integer updateKey(Keys key);
     List<Keys> getKeys();

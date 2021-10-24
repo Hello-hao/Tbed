@@ -6,9 +6,12 @@ import cn.hellohao.service.impl.AlbumServiceI;
 import cn.hellohao.service.impl.ImgAndAlbumServiceImpl;
 import cn.hellohao.utils.GetCurrentSource;
 import cn.hellohao.utils.Print;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,8 +38,73 @@ public class AlbumController {
     ImgAndAlbumService imgAndAlbumService;
     @Autowired
     private UploadConfigService uploadConfigService;
+    @Autowired
+    private UserService userService;
 
+    @PostMapping("/admin/getGalleryList") //new 获取画廊地址
+    @ResponseBody
+    public Map<String, Object> getGalleryList (@RequestParam(value = "data", defaultValue = "") String data){
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        user =  userService.getUsers(user);
+        Map<String, Object> map = new HashMap<String, Object>();
+        Album album = new Album();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer pageNum = jsonObj.getInteger("pageNum");
+        Integer pageSize = jsonObj.getInteger("pageSize");
+        Integer albumtitle = jsonObj.getInteger("albumtitle");
+        if(subject.hasRole("admin")){
+        }else{
+            album.setUserid(user.getId());
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Album> albums = null;
+        try {
+            albums = albumServiceI.selectAlbumURLList(album);
+            PageInfo<Album> rolePageInfo = new PageInfo<>(albums);
+            map.put("code", 200);
+            map.put("info", "");
+            map.put("count", rolePageInfo.getTotal());
+            map.put("data", rolePageInfo.getList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", 500);
+            map.put("info", "获取数据异常");
+        }
+        return map;
 
+    }
+
+    @PostMapping("/admin/deleGallery") //new 删除画廊
+    @ResponseBody
+    public Msg deleGallery (@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            JSONArray albumkeyList = jsonObject.getJSONArray("albumkeyList");
+            for (int i = 0; i < albumkeyList.size(); i++) {
+                if(subject.hasRole("admin")){
+                    albumServiceI.deleteAlbum(albumkeyList.getString(i));
+                }else{
+                    Album album = new Album();
+                    album.setAlbumkey(albumkeyList.getString(i));
+                    final Album alb = albumServiceI.selectAlbum(album);
+                    if(alb.getUserid()==user.getId()){
+                        albumServiceI.deleteAlbum(albumkeyList.getString(i));
+                    }
+                }
+            }
+            msg.setInfo("画廊已成功删除");
+        }catch (Exception e){
+            msg.setCode("500");
+            msg.setInfo("画廊删除失败");
+            e.printStackTrace();
+        }
+        return msg;
+
+    }
 
 
     @PostMapping("/SaveForAlbum")
