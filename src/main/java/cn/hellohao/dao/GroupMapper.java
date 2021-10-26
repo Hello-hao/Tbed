@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Mapper
 public interface GroupMapper {
-    List<Group> grouplist();
+    List<Group> grouplist(Integer usertype);
     Group idgrouplist(@Param("id") Integer id);
     Integer addgroup(Group group);
     Integer GetCountFroUserType(@Param("usertype") Integer usertype);

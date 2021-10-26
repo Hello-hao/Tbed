@@ -1,6 +1,7 @@
 package cn.hellohao.service;
 
 import cn.hellohao.pojo.Group;
+import cn.hellohao.pojo.Msg;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +13,11 @@ import java.util.List;
  */
 @Service
 public interface GroupService {
-    List<Group> grouplist();
+    List<Group> grouplist(Integer usertype);
     Group idgrouplist(Integer id);
-    Integer addgroup(Group group);
+    Msg addgroup(Group group);
     Integer GetCountFroUserType(Integer usertype);
-    Integer delegroup(Integer id);
+    Msg delegroup(Integer id);
     Integer setgroup(Group group);
     Group getGroupFroUserType(Integer usertype);
 }

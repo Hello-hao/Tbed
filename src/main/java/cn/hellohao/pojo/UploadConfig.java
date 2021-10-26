@@ -2,22 +2,22 @@ package cn.hellohao.pojo;
 
 public class UploadConfig {
     private String suffix;
-    private Integer filesizetourists;
-    private Integer filesizeuser;
+    private String filesizetourists;
+    private String filesizeuser;
     private Integer imgcounttourists;
     private Integer imgcountuser;
     private Integer urltype;
     private Integer isupdate;
     private Integer api;
-    private Integer visitormemory;
-    private Integer usermemory;
+    private String visitormemory;
+    private String usermemory;
     private String blacklist;
 
 
     public UploadConfig() {
     }
 
-    public UploadConfig(String suffix, Integer filesizetourists, Integer filesizeuser, Integer imgcounttourists, Integer imgcountuser, Integer urltype, Integer isupdate, Integer api, Integer visitormemory, Integer usermemory, String blacklist) {
+    public UploadConfig(String suffix, String filesizetourists, String filesizeuser, Integer imgcounttourists, Integer imgcountuser, Integer urltype, Integer isupdate, Integer api, String visitormemory, String usermemory, String blacklist) {
         this.suffix = suffix;
         this.filesizetourists = filesizetourists;
         this.filesizeuser = filesizeuser;
@@ -39,19 +39,19 @@ public class UploadConfig {
         this.suffix = suffix;
     }
 
-    public Integer getFilesizetourists() {
+    public String getFilesizetourists() {
         return filesizetourists;
     }
 
-    public void setFilesizetourists(Integer filesizetourists) {
+    public void setFilesizetourists(String filesizetourists) {
         this.filesizetourists = filesizetourists;
     }
 
-    public Integer getFilesizeuser() {
+    public String getFilesizeuser() {
         return filesizeuser;
     }
 
-    public void setFilesizeuser(Integer filesizeuser) {
+    public void setFilesizeuser(String filesizeuser) {
         this.filesizeuser = filesizeuser;
     }
 
@@ -95,19 +95,19 @@ public class UploadConfig {
         this.api = api;
     }
 
-    public Integer getVisitormemory() {
+    public String getVisitormemory() {
         return visitormemory;
     }
 
-    public void setVisitormemory(Integer visitormemory) {
+    public void setVisitormemory(String visitormemory) {
         this.visitormemory = visitormemory;
     }
 
-    public Integer getUsermemory() {
+    public String getUsermemory() {
         return usermemory;
     }
 
-    public void setUsermemory(Integer usermemory) {
+    public void setUsermemory(String usermemory) {
         this.usermemory = usermemory;
     }
 

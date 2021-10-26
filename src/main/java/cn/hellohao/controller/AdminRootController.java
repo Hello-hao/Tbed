@@ -9,18 +9,24 @@ import cn.hellohao.utils.StringUtils;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/root")
@@ -47,93 +53,127 @@ public class AdminRootController {
     @Value("${systemupdate}")
     private String systemupdate;
 
-    @RequestMapping(value = "/touser")
-    public String touser() {
-        return "admin/user";
+
+
+
+    @PostMapping(value = "/getUserList")//new selectusertable
+    @ResponseBody
+    public Map<String, Object> getUserList(@RequestParam(value = "data", defaultValue = "") String data) {
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer pageNum = jsonObj.getInteger("pageNum");
+        Integer pageSize = jsonObj.getInteger("pageSize");
+        String queryText = jsonObj.getString("queryText");
+        PageHelper.startPage(pageNum, pageSize);
+        List<User> users = userService.getuserlist(queryText);
+        PageInfo<User> rolePageInfo = new PageInfo<>(users);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("count", rolePageInfo.getTotal());
+        map.put("users", rolePageInfo.getList());
+        return map;
+
     }
 
-    @RequestMapping(value = "tostorage")
-    public String tostorage(HttpSession session, Model model, HttpServletRequest request) {
-        User u = (User) session.getAttribute("user");
-        Group group = GetCurrentSource.GetSource(u.getId());
-        Keys  key= keysService.selectKeys(group.getKeyid());
-        //Boolean b = StringUtils.doNull(Sourcekey,key);
-        Integer StorageType = 0;
-        if(key.getStorageType()!=5){
-            model.addAttribute("AccessKey", key.getAccessKey());
-            model.addAttribute("AccessSecret", key.getAccessSecret());
-            model.addAttribute("Endpoint", key.getEndpoint());
-            model.addAttribute("Bucketname", key.getBucketname());
-            model.addAttribute("RequestAddress", key.getRequestAddress());
-            model.addAttribute("StorageType", key.getStorageType());
-            if(key.getStorageType()==4){
-                model.addAttribute("Endpoint2", key.getEndpoint());
-            }else{
-                model.addAttribute("Endpoint2", 0);
+
+
+    @PostMapping(value = "/updateUserInfo")//new
+    @ResponseBody
+    public Msg updateUserInfo(@RequestParam(value = "data", defaultValue = "") String data) {
+        final Msg msg = new Msg();
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            User u = (User) subject.getPrincipal();
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            Integer id = jsonObj.getInteger("id");
+            String email = jsonObj.getString("email");
+            Integer memory = jsonObj.getInteger("memory");
+            Integer groupid = jsonObj.getInteger("groupid");
+            Integer isok = jsonObj.getInteger("isok");
+            final User user = new User();
+            final User user2 = new User();
+            user2.setId(id);
+            User userInfo = userService.getUsers(user2);
+            user.setId(id);
+            user.setEmail(email);
+            user.setMemory(Integer.toString(memory*1024*1024));
+            user.setGroupid(groupid);
+            if(userInfo.getLevel()==1){
+                user.setIsok(isok==1?1:-1);
             }
-        }else{
-            model.addAttribute("StorageType", 5);
-            model.addAttribute("Endpoint2", 0);
+            userService.changeUser(user);
+            msg.setInfo("修改成功");
+        }catch (Exception e){
+            msg.setCode("500");
+            msg.setInfo("修改失败");
+            e.printStackTrace();
         }
-        return "admin/storageconfig";
+        return msg;
     }
 
-    @PostMapping("/getkey")
+
+    @PostMapping("/disableUser")//new
     @ResponseBody
-    public String getkey(Integer storageType) {
-        JSONArray jsonArray = new JSONArray();
-        Keys key = keysService.selectKeys(storageType);
-        jsonArray.add(key);
-        return jsonArray.toString();
+    public Msg disableUser(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            JSONArray userIdList = jsonObj.getJSONArray("arr");
+            for (int i = 0; i < userIdList.size(); i++) {
+                User u = new User();
+                u.setId(userIdList.getInteger(i));
+                User u2 = userService.getUsers(u);
+                if(u2.getLevel()==1){
+                    User user = new User();
+                    user.setId(userIdList.getInteger(i));
+                    user.setIsok(-1);
+                    userService.changeUser(user);
+                }
+
+            }
+            msg.setInfo("所选用户已被禁用");
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setInfo("系统错误");
+            msg.setCode("500");
+        }
+        return msg;
     }
 
-    @PostMapping("/getkeyourceype")
+    @PostMapping("/deleUser")//new
     @ResponseBody
-    public Integer getkeyourceype(HttpSession session) {
-        User u = (User) session.getAttribute("user");
-        Group group = GetCurrentSource.GetSource(u.getId());
-        Keys key = keysService.selectKeys(group.getKeyid());
-        Integer ret = 0;
-
-
-        return ret;
+    public Msg deleuser(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            JSONArray userIdList = jsonObj.getJSONArray("arr");
+            boolean b = false;
+            for (int i = 0; i < userIdList.size(); i++) {
+                User u = new User();
+                u.setId(userIdList.getInteger(i));
+                User user = userService.getUsers(u);
+                if(user.getLevel()==1){
+                    userService.deleuser(userIdList.getInteger(i));
+                }else{
+                    b = true;
+                }
+            }
+            if(b && userIdList.size()==1){
+                msg.setInfo("管理员账户不可删除");
+            }else {
+                msg.setInfo("用户已删除成功");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setInfo("系统错误");
+            msg.setCode("500");
+        }
+        return msg;
     }
 
-    @PostMapping("/updatekey")
-    @ResponseBody
-    public String updatekey(Keys key) {
-        JSONArray jsonArray = new JSONArray();
-        Config config = new Config();
-        config.setSourcekey(key.getStorageType());
-        Integer val = configService.setSourceype(config);
-        Integer ret = -2;
-        if(key.getStorageType()==1){
-            ret =nOSImageupload.Initialize(key);
-        }else if (key.getStorageType()==2){
-            ret = OSSImageupload.Initialize(key);
-        }else if(key.getStorageType()==3 ){
-            ret = USSImageupload.Initialize(key);
-        }else if(key.getStorageType()==4){
-            ret = KODOImageupload.Initialize(key);
-        }else if(key.getStorageType()==6){
-            ret = COSImageupload.Initialize(key);
-        }else if(key.getStorageType()==7){
-            ret = FTPImageupload.Initialize(key);
-        }else if(key.getStorageType()==8){
-            ret = UFileImageupload.Initialize(key);
-        }
-        else{
-            Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
-        }
-        if(ret>0){
-            ret = keysService.updateKey(key);
-        }
-        //-1 对象存储有参数为空,初始化失败
-        //0，保存失败
-        //1 正确
-        jsonArray.add(ret);
-        return jsonArray.toString();
-    }
+
+
+
+
+
 
     @PostMapping("/deleuser")
     @ResponseBody

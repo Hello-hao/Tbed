@@ -3,12 +3,26 @@
 <mapper namespace="cn.hellohao.dao.GroupMapper">
 
 
-    <select id="grouplist" resultType="cn.hellohao.pojo.Group">
+<!--    <select id="grouplist" resultType="cn.hellohao.pojo.Group">-->
+<!--        SELECT-->
+<!--        *-->
+<!--        FROM-->
+<!--        `group`-->
+<!--    </select>-->
+
+
+    <select id="grouplist" resultType="cn.hellohao.pojo.Group" parameterType="integer">
         SELECT
-        *
+        g.id,g.groupname,g.keyid,g.usertype,g.compress,k.storageType,k.keyname
         FROM
-        `group`
+        `group` as g LEFT JOIN `keys` as k on g.keyid = k.id
+        where 1=1
+        <if test="usertype!=null">
+            and g.usertype=#{usertype}
+        </if>
+
     </select>
+
 
     <select id="idgrouplist" parameterType="integer" resultType="cn.hellohao.pojo.Group">
         SELECT

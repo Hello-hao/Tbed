@@ -3,11 +3,14 @@ package cn.hellohao.service.impl;
 import cn.hellohao.dao.AlbumMapper;
 import cn.hellohao.dao.ConfigMapper;
 import cn.hellohao.dao.ImgAndAlbumMapper;
+import cn.hellohao.dao.ImgMapper;
 import cn.hellohao.exception.CodeException;
 import cn.hellohao.pojo.Album;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.ImgAndAlbum;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.service.AlbumService;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +25,27 @@ import java.util.UUID;
  * @date 2019-12-18 22:30
  */
 @Service
-public class AlbumServiceI implements AlbumService {
+public class AlbumServiceImpl implements AlbumService {
     @Autowired
     AlbumMapper albumMapper;
     @Autowired
     ImgAndAlbumMapper andAlbumMapper;
     @Autowired
     ConfigMapper configMapper;
+    @Autowired
+    ImgMapper imgMapper;
+
+
+    @Override
+    public JSONArray getAlbumList(JSONArray array) {
+        JSONArray jsonArray = new JSONArray();
+        for (int i = 0; i < array.size(); i++) {
+            Images images = new Images();
+            images.setImguid(array.getString(i));
+            jsonArray.add(imgMapper.selectimg(images).get(0));
+        }
+        return jsonArray;
+    }
 
     @Override
     public Album selectAlbum(Album album) {

@@ -24,12 +24,14 @@ public interface UserService {
     //修改资料
     Integer change(User user);
 
+    Integer changeUser(User user);
+
     //检查用户名是否重复
     Integer checkUsername(String username);
 
     Integer getUserTotal();
 
-    List<User> getuserlist(User user);
+    List<User> getuserlist(String username);
 
     Integer deleuser(Integer id);
 

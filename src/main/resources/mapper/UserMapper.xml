@@ -133,6 +133,34 @@
         where uid=#{uid}
     </update>
 
+    <update id="changeUser" parameterType="cn.hellohao.pojo.User">
+        UPDATE `user`
+        <set>
+            <if test="email != null">
+                `email` = #{email},
+            </if>
+            <if test="username != null">
+                `username` = #{username},
+            </if>
+            <if test="password != null">
+                `password` = #{password},
+            </if>
+            <if test="memory != null">
+                `memory` = #{memory},
+            </if>
+            <if test="groupid != null">
+                `groupid` = #{groupid},
+            </if>
+            <if test="isok != null">
+                `isok` = #{isok},
+            </if>
+            <if test="uid != null">
+                `uid` = #{uid},
+            </if>
+        </set>
+        where id=#{id}
+    </update>
+
     <select id="checkUsername" parameterType="string" resultType="integer">
         SELECT count(username) FROM `user` where username=#{username}
     </select>
@@ -141,8 +169,9 @@
     <select id="getUserTotal" resultType="integer">
         SELECT count(*) FROM `user`
     </select>
+
     <!-- 获取用户的详细信息 -->
-    <select id="getuserlist" resultType="cn.hellohao.pojo.User">
+    <select id="getuserlist" resultType="cn.hellohao.pojo.User" parameterType="string">
         SELECT
         id,
         username,
@@ -155,6 +184,7 @@
         ceil((memory/1024/1024)) as memory,
         groupid,
         (select groupname from `group` where id = groupid) as groupname,
+        token
         FROM
         user
         where

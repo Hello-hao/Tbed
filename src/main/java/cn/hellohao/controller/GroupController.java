@@ -2,12 +2,14 @@ package cn.hellohao.controller;
 
 import cn.hellohao.pojo.Group;
 import cn.hellohao.pojo.Keys;
+import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.GroupService;
 import cn.hellohao.service.KeysService;
 import cn.hellohao.service.UserService;
 import cn.hellohao.utils.StringUtils;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,83 +41,73 @@ public class GroupController {
     private UserService userService;
 
 
-    @RequestMapping(value = "/group")
-    public String togroup() {
-        return "admin/group";
-    }
-    @RequestMapping(value = "/addgroup")
-    public String addgroup() {
-        return "admin/addgroup";
-    }
-    //获取code列表
-    @RequestMapping(value = "/getgrouplist")
+
+    @PostMapping("/getGrouplistForUsers") //new
     @ResponseBody
-    public Map<String, Object> getgrouplist(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
-                                           @RequestParam(required = false) int limit) {
-        User u = (User) session.getAttribute("user");
-        PageHelper.startPage(page, limit);
+    public Msg getGrouplistForUsers() {
+        Msg msg = new Msg();
+        //只获取用户组type为0的，只有是0的才是未分配用户组的，才能给指定用户设置
+        List<Group> groupList = groupService.grouplist(0);
+        msg.setData(groupList);
+        return msg;
+    }
+
+
+    //获取code列表
+    @PostMapping(value = "/getGroupList")//new
+    @ResponseBody
+    public Map<String, Object> getgrouplist(@RequestParam(value = "data", defaultValue = "") String data) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer pageNum = jsonObj.getInteger("pageNum");
+        Integer pageSize = jsonObj.getInteger("pageSize");
+        PageHelper.startPage(pageNum, pageSize);
         List<Group> group = null;
-        if (u.getLevel() > 1) {
-            group = groupService.grouplist();
+        try {
+            group = groupService.grouplist(null);
             PageInfo<Group> rolePageInfo = new PageInfo<>(group);
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", 0);
-            map.put("msg", "");
+            map.put("code", 200);
+            map.put("info", "");
             map.put("count", rolePageInfo.getTotal());
             map.put("data", rolePageInfo.getList());
-            return map;
-        } else {
-            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", 500);
+            map.put("info", "获取数据异常");
         }
+        return map;
     }
 
-    @RequestMapping(value = "/addisgroup")
+
+    @PostMapping(value = "/addGroup")//new
     @ResponseBody
-    public Integer addisgroup(Group group) {
-        Integer ret = 0;
-        ret = groupService.addgroup(group);
-        return ret;
+    public Msg addisgroup(@RequestParam(value = "data", defaultValue = "") String data) {
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        Group group = new Group();
+        group.setGroupname(jsonObject.getString("groupname"));
+        group.setKeyid(jsonObject.getInteger("keyid"));
+        group.setUsertype(jsonObject.getInteger("usertype"));
+        group.setCompress(jsonObject.getBoolean("compress")?1:0);
+        Msg msg = groupService.addgroup(group);
+        return msg;
     }
-    @RequestMapping(value = "/delegroup")
+
+
+    @PostMapping(value = "/deleGroup")//new
     @ResponseBody
-    public Integer delegroup(Integer id) {
-        Integer ret = -1;
+    public Msg delegroup(@RequestParam(value = "data", defaultValue = "") String data) {
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        Integer id = jsonObject.getInteger("id");
+        Msg msg = null;
         if(id!=1){
-            ret = groupService.delegroup(id);
+            msg = groupService.delegroup(id);
+            return msg;
+        }else{
+            final Msg msg2 = new Msg();
+            msg2.setCode("500");
+            msg2.setInfo("默认群组不可删除");
+            return msg2;
         }
-        return ret;
-    }
-
-    @PostMapping("/getgrouplist")
-    @ResponseBody
-    public String getgrouplist() {
-        List<Group> li = groupService.grouplist();
-        JSONArray jsonArray = new JSONArray();
-        for (Group group : li) {
-            jsonArray.add(group);
-        }
-        return jsonArray.toString();
-    }
-
-    @PostMapping("/updateuser")
-    @ResponseBody
-    public Integer updateuser(User user) {
-        Integer ret = userService.change(user);
-        return ret;
-    }
-
-    @PostMapping("/updategroup")
-    @ResponseBody
-    public Integer updategroup(Group group) {
-        Integer ret = groupService.setgroup(group);
-        return ret;
-    }
-
-    @RequestMapping("/modifygroup")
-    public String modifygroup(Model model, Integer id) {
-        Group group = groupService.idgrouplist(id);
-        model.addAttribute("group",group);
-        return "admin/setgroup";
     }
 
 

@@ -16,7 +16,7 @@ public class User {
     private Integer level;
     private String uid;
     private Integer isok;
-    private  Integer memory;
+    private  String memory;
     private Integer groupid;
 
 
@@ -24,7 +24,7 @@ public class User {
         super();
     }
 
-    public User(Integer id, String username, String password, String email, String birthder, Integer level, String uid, Integer isok, Integer memory, Integer groupid) {
+    public User(Integer id, String username, String password, String email, String birthder, Integer level, String uid, Integer isok, String memory, Integer groupid) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -101,11 +101,11 @@ public class User {
         this.isok = isok;
     }
 
-    public Integer getMemory() {
+    public String getMemory() {
         return memory;
     }
 
-    public void setMemory(Integer memory) {
+    public void setMemory(String memory) {
         this.memory = memory;
     }
 

@@ -186,6 +186,7 @@ public class UserController {
                 msg.setInfo("登录成功");
                 jsonObject.put("token",token);
                 jsonObject.put("RoleLevel",user.getLevel()==2?"admin":"user");
+                jsonObject.put("userName",user.getUsername());
                 msg.setData(jsonObject);
                 return msg;
             } catch (UnknownAccountException e) {

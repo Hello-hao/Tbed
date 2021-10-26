@@ -4,8 +4,7 @@ import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
-import cn.hellohao.service.impl.AlbumServiceI;
-import cn.hellohao.service.impl.ImgServiceImpl;
+import cn.hellohao.service.impl.AlbumServiceImpl;
 import cn.hellohao.service.impl.UserServiceImpl;
 import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONArray;
@@ -18,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
+
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +37,7 @@ public class AdminController {
     @Autowired
     private KeysService keysService;
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
     @Autowired
     private UserServiceImpl userServiceImpl;
     @Autowired
@@ -54,7 +53,7 @@ public class AdminController {
     @Autowired
     private AlbumService albumService;
     @Autowired
-    AlbumServiceI albumServiceI;
+    AlbumServiceImpl albumServiceI;
 
     @PostMapping(value = "/overviewData") //new
     @ResponseBody
@@ -72,7 +71,6 @@ public class AdminController {
         jsonObject.put("myToken","这个去掉");
         jsonObject.put("myImgTotal", imgService.countimg(user.getId())); //我的图片数
         jsonObject.put("myAlbumTitle", albumService.selectAlbumCount(user.getId()));//我的画廊数量
-        jsonObject.put("myView360Title", "0");//我的全景视图
         //计算自己的百分比 已用量/分配量
         long memory = Long.valueOf(user.getMemory());//分配量
         Long usermemory = imgService.getusermemory(user.getId())==null?0L:imgService.getusermemory(user.getId());
@@ -124,6 +122,44 @@ public class AdminController {
         msg.setData(jsonObject);
         return msg;
     }
+
+
+    @PostMapping(value = "/SpaceExpansion")//new kuorong
+    @ResponseBody
+    public Msg SpaceExpansion(@RequestParam(value = "data", defaultValue = "") String data) {
+        final Msg msg = new Msg();
+        final JSONObject jsonObject = JSONObject.parseObject(data);
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        user =  userService.getUsers(user);
+        if(user.getIsok()==0){
+            msg.setCode("100403");
+            msg.setInfo("你暂时无法使用此功能");
+            return msg;
+        }
+        if(null==user){
+            msg.setCode("100405");
+            msg.setInfo("用户信息不存在");
+            return msg;
+        }else{
+            long sizes = 0;
+            Code code = codeService.selectCodekey(jsonObject.getString("code"));
+            if(null==code){
+                msg.setCode("100404");
+                msg.setInfo("扩容码不存在,请重新填写");
+                return msg;
+            }
+            Long userMemory = Long.valueOf(user.getMemory());
+            sizes = Long.valueOf(code.getValue())+ userMemory;
+            User newMemoryUser = new User();
+            newMemoryUser.setMemory(Long.toString(sizes));
+            newMemoryUser.setId(user.getId());
+            userService.usersetmemory(newMemoryUser,jsonObject.getString("code"));
+            msg.setInfo("你已成功扩容"+SetFiles.readableFileSize(sizes));
+            return msg;
+        }
+    }
+
 
     @RequestMapping(value = "/tosurvey")
     public String admin2(HttpSession session, Model model) {

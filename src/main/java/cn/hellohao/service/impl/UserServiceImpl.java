@@ -49,6 +49,12 @@ public class UserServiceImpl implements UserService {
         return userMapper.change(user);
     }
 
+
+    @Override
+    public Integer changeUser(User user) {
+        return userMapper.changeUser(user);
+    }
+
     @Override
     public Integer checkUsername(String username) {
         // TODO Auto-generated method stub
@@ -77,8 +83,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getuserlist(User user) {
-        return userMapper.getuserlist(user);
+    public List<User> getuserlist(String username) {
+        return userMapper.getuserlist(username);
     }
 
     @Override
@@ -111,15 +117,29 @@ public class UserServiceImpl implements UserService {
         return userMapper.getuserlistforgroupid(groupid);
     }
 
+//    @Transactional//默认遇到throw new RuntimeException(“…”);会回滚
+//    public Integer usersetmemory(User user,String codestring) {
+//        Integer ret = userMapper.setmemory(user);
+//        if(ret<=0){
+//            Print.warning("用户空间没有设置成功。回滚");
+//            throw new CodeException("用户之没有设置成功。");
+//        }else{
+//            ret = codeMapper.deleteCode(codestring);
+//        }
+//        return ret;
+//    }
+
     @Transactional//默认遇到throw new RuntimeException(“…”);会回滚
-    public Integer usersetmemory(User user,String codestring) {
-        Integer ret = userMapper.setmemory(user);
+    public Integer usersetmemory(User user, String codestring) {
+        Integer ret = userMapper.changeUser(user);
         if(ret<=0){
             Print.warning("用户空间没有设置成功。回滚");
-            throw new CodeException("用户之没有设置成功。");
+            throw new CodeException("用户没有设置成功。");
         }else{
             ret = codeMapper.deleteCode(codestring);
         }
         return ret;
     }
+
+
 }

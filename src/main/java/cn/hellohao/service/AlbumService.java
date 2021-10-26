@@ -1,6 +1,7 @@
 package cn.hellohao.service;
 
 import cn.hellohao.pojo.Album;
+import com.alibaba.fastjson.JSONArray;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,8 @@ import java.util.List;
  */
 @Service
 public interface AlbumService {
+
+    JSONArray getAlbumList(JSONArray array);
 
     Album selectAlbum(Album album);
 

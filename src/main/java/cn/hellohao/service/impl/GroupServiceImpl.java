@@ -4,6 +4,7 @@ import cn.hellohao.dao.GroupMapper;
 import cn.hellohao.dao.UserMapper;
 import cn.hellohao.exception.CodeException;
 import cn.hellohao.pojo.Group;
+import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class GroupServiceImpl implements GroupService {
     private UserMapper userMapper;
 
     @Override
-    public List<Group> grouplist() {
-        return groupMapper.grouplist();
+    public List<Group> grouplist(Integer usertype) {
+        return groupMapper.grouplist(usertype);
     }
 
     @Override
@@ -35,8 +36,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Integer addgroup(Group group) {
-        return groupMapper.addgroup(group);
+    public Msg addgroup(Group group) {
+        final Msg msg = new Msg();
+        if(group.getUsertype()!=0){
+            Integer count = groupMapper.GetCountFroUserType(group.getUsertype());
+            if(count==0){
+                groupMapper.addgroup(group);
+                msg.setInfo("添加成功");
+            }else{
+                msg.setCode("110401");
+                msg.setInfo("分配的该用户组已存在。请勿重复分配。");
+            }
+        }else{
+            groupMapper.addgroup(group);
+            msg.setInfo("添加成功");
+        }
+        return msg;
     }
 
     @Override
@@ -46,7 +61,8 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional//默认遇到throw new RuntimeException(“…”);会回滚
-    public Integer delegroup(Integer id) {
+    public Msg delegroup(Integer id) {
+        Msg msg = new Msg();
         Integer ret = 0;
         ret = groupMapper.delegroup(id);
         if(ret>0){
@@ -57,11 +73,13 @@ public class GroupServiceImpl implements GroupService {
                 u.setUid(user.getUid());
                 userMapper.change(u);
             }
-
+            msg.setInfo("删除成功");
         }else{
+            msg.setCode("500");
+            msg.setInfo("删除成功");
             throw new CodeException("用户之没有设置成功。");
         }
-        return ret;
+        return msg;
     }
 
     @Override

@@ -172,6 +172,7 @@ public class IndexController {
                     User u = (User) subject.getPrincipal();
                     final JSONObject jsonObject = new JSONObject();
                     jsonObject.put("RoleLevel",u.getLevel()==2?"admin":"user");
+                    jsonObject.put("userName",u.getUsername());
                     msg.setCode("200");
                     msg.setData(jsonObject);
                 } catch (Exception e) {

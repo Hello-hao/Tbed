@@ -25,12 +25,13 @@ public interface UserMapper {
     //修改资料
     Integer change(User user);
 
+    Integer changeUser(User user);
     //检查用户名是否重复
     Integer checkUsername(@Param("username") String username);
 
     Integer getUserTotal();
 
-    List<User> getuserlist(User user);
+    List<User> getuserlist(String username);
 
     //刪除用戶
     Integer deleuser(@Param("id") Integer id);

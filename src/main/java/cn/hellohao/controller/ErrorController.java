@@ -1,8 +1,10 @@
 package cn.hellohao.controller;
 
+import cn.hellohao.pojo.Msg;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,6 +29,15 @@ class MainsiteErrorController implements ErrorController {
             return "500";
         }
 
+    }
+    //认证失败
+    @RequestMapping("/jurisError")
+    @ResponseBody
+    public Msg jurisError(HttpServletRequest request){
+        Msg msg = new Msg();
+        msg.setCode("4031");
+        msg.setInfo("Authentication request failed");
+        return msg;
     }
 
 
