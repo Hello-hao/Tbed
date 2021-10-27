@@ -83,8 +83,37 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public Integer setgroup(Group group) {
-        return groupMapper.setgroup(group);
+    public Msg setgroup(Group group) {
+        Msg msg = new Msg();
+        if(group.getUsertype()!=0){
+            Group groupFroUserType = groupMapper.getGroupFroUserType(group.getUsertype());
+            if(groupFroUserType!=null){
+                if(groupFroUserType.getUsertype()==group.getUsertype()){
+                    if(groupFroUserType.getId()==group.getId()){
+                        groupMapper.setgroup(group);
+                        msg.setInfo("修改成功");
+                    }else{
+                        msg.setCode("110401");
+                        msg.setInfo("分配的该用户组已存在。请勿重复分配。");
+                    }
+                }else{
+                    if(groupMapper.GetCountFroUserType(group.getUsertype())>0){
+                        msg.setCode("110401");
+                        msg.setInfo("分配的该用户组已存在。请勿重复分配。");
+                    }else{
+                        groupMapper.setgroup(group);
+                        msg.setInfo("修改成功");
+                    }
+                }
+            }else{
+                groupMapper.setgroup(group);
+                msg.setInfo("修改成功");
+            }
+        }else{
+            groupMapper.setgroup(group);
+            msg.setInfo("修改成功");
+        }
+        return msg;
     }
 
     @Override

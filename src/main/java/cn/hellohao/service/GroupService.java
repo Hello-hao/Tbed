@@ -18,6 +18,6 @@ public interface GroupService {
     Msg addgroup(Group group);
     Integer GetCountFroUserType(Integer usertype);
     Msg delegroup(Integer id);
-    Integer setgroup(Group group);
+    Msg setgroup(Group group);
     Group getGroupFroUserType(Integer usertype);
 }

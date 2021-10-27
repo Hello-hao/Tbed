@@ -68,7 +68,6 @@ public class AdminController {
         Imgreview isImgreviewOK = imgreviewService.selectByusing(1);//查询有没有启动鉴别功能
         //普通用户
         String ok = "false";
-        jsonObject.put("myToken","这个去掉");
         jsonObject.put("myImgTotal", imgService.countimg(user.getId())); //我的图片数
         jsonObject.put("myAlbumTitle", albumService.selectAlbumCount(user.getId()));//我的画廊数量
         //计算自己的百分比 已用量/分配量
@@ -101,9 +100,9 @@ public class AdminController {
             }else{
                 Long temp = imgService.getusermemory(0)==null?0:imgService.getusermemory(0);
                 jsonObject.put("UsedMemory", (temp == null ? 0 : SetFiles.readableFileSize(temp)));//访客已用大小
-                if(Integer.valueOf(uploadConfig.getVisitormemory())==0){
+                if(Long.valueOf(uploadConfig.getVisitormemory())==0){
                     jsonObject.put("VisitorProportion",100.00);//游客用量%占比
-                }else if(Integer.valueOf(uploadConfig.getVisitormemory())==-1){
+                }else if(Long.valueOf(uploadConfig.getVisitormemory())==-1){
                     jsonObject.put("VisitorProportion",0);//游客用量%占比
                     jsonObject.put("VisitorMemory", "无限");//访客共大小
                 }else{
@@ -118,7 +117,6 @@ public class AdminController {
             }
         }
         jsonObject.put("ok", ok);
-        //Config config = configService.getSourceype();
         msg.setData(jsonObject);
         return msg;
     }
@@ -204,7 +202,6 @@ public class AdminController {
     @ResponseBody
     public String getwebconfig(HttpSession session) {
         JSONObject jsonObject = new JSONObject();
-        //Config config = configService.getSourceype();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         User u = (User) session.getAttribute("user");
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
@@ -303,6 +300,15 @@ public class AdminController {
             }
         }
         msg.setData(json);
+        return msg;
+    }
+
+    @PostMapping("/getStorage")//new 获取当前一共有多少种存储源 这是种类
+    @ResponseBody
+    public Msg getStorage() {
+        Msg msg = new Msg();
+        List<Keys> storage = keysService.getStorage();
+        msg.setData(storage);
         return msg;
     }
 
@@ -472,33 +478,6 @@ public class AdminController {
 
 
 
-
-
-
-
-
-
-    @GetMapping(value = "/images/{id}")
-    @ResponseBody
-    public Images selectByFy(@PathVariable("id") Integer id) {
-        return imgService.selectByPrimaryKey(id);
-    }
-
-
-
-    @RequestMapping("/delAlbum")
-    @ResponseBody
-    public Integer delAlbum(String albumkey){
-        Integer ret = albumServiceI.delete(albumkey);
-        return ret;
-    }
-
-    @RequestMapping("/delAlbumAll")
-    @ResponseBody
-    public Integer delAlbumAll( @RequestParam("albumkeyArr[]") String[] albumkeyArr ){
-        Integer ret = albumServiceI.deleteAll(albumkeyArr);
-        return ret;
-    }
 
 
     //工具函数

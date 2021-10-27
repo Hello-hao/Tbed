@@ -65,11 +65,15 @@ public class SetFiles {
         if (fileS < 1024) {
             fileSizeString = df.format((double) fileS) + "B";
         } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "K";
+            fileSizeString = df.format((double) fileS / 1024) + "KB";
         } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "M";
+            fileSizeString = df.format((double) fileS / 1048576) + "MB";
         } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "G";
+            if(fileS < 1099511627776L){
+                fileSizeString = df.format((double) fileS / 1073741824) + "GB";
+            }else{
+                fileSizeString = df.format((double) fileS / 1099511627776L) + "TB";
+            }
         }
         return fileSizeString;
     }

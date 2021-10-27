@@ -5,8 +5,10 @@ import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.GetCurrentSource;
 import cn.hellohao.utils.Print;
+import cn.hellohao.utils.SetFiles;
 import cn.hellohao.utils.StringUtils;
 import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -49,11 +51,8 @@ public class AdminRootController {
     private SysConfigService sysConfigService;
     @Autowired
     private GroupService groupService;
-
-    @Value("${systemupdate}")
-    private String systemupdate;
-
-
+    @Autowired
+    private ImgService imgService;
 
 
     @PostMapping(value = "/getUserList")//new selectusertable
@@ -74,7 +73,6 @@ public class AdminRootController {
     }
 
 
-
     @PostMapping(value = "/updateUserInfo")//new
     @ResponseBody
     public Msg updateUserInfo(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -88,6 +86,11 @@ public class AdminRootController {
             Integer memory = jsonObj.getInteger("memory");
             Integer groupid = jsonObj.getInteger("groupid");
             Integer isok = jsonObj.getInteger("isok");
+            if(memory<0 || memory>1048576L){
+                msg.setCode("500");
+                msg.setInfo("容量不得超过1048576");
+                return msg;
+            }
             final User user = new User();
             final User user2 = new User();
             user2.setId(id);
@@ -169,166 +172,169 @@ public class AdminRootController {
         return msg;
     }
 
-
-
-
-
-
-
-    @PostMapping("/deleuser")
+    @PostMapping("/getKeysList") //new
     @ResponseBody
-    public String deleuser(HttpSession session, Integer id) {
-        JSONArray jsonArray = new JSONArray();
-        User u = (User) session.getAttribute("user");
-        if(u.getId()==id){
-            jsonArray.add("-1");
-        }else{
-            Integer ret = userService.deleuser(id);
-            jsonArray.add(ret);
-        }
-        return jsonArray.toString();
+    public Msg getKeysList() {
+        Msg msg = new Msg();
+        List<Keys> list = keysService.getKeys();
+        msg.setData(list);
+        return msg;
     }
 
-    @RequestMapping(value = "/emailconfig")
-    public String emailconfig(Model model) {
-        EmailConfig emailConfig = emailConfigService.getemail();
-        model.addAttribute("emailConfig",emailConfig);
-        return "admin/emailconfig";
-    }
 
-    @PostMapping("/updateemail")
+    //获取当前所有的存储策略信息
+    @PostMapping("/LoadInfo")//new
     @ResponseBody
-    public Integer updateemail(HttpSession session,String emails, String emailkey, String emailurl, String port, String emailname, Integer using ) {
-        EmailConfig emailConfig = new EmailConfig();
-        emailConfig.setEmailname(emailname);
-        emailConfig.setEmails(emails);
-        emailConfig.setEmailkey(emailkey);
-        emailConfig.setEmailurl(emailurl);
-        emailConfig.setPort(port);
-        emailConfig.setUsing(using);
-        Integer ret = emailConfigService.updateemail(emailConfig);
-        return ret;
-    }
+    public Msg LoadInfo(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonData = JSONObject.parseObject(data);
+            Integer keyId = jsonData.getInteger("keyId");
 
-
-
-    @PostMapping("/updateconfig")
-    @ResponseBody
-    public Integer updateconfig(Config config ) {
-        Integer ret = configService.setSourceype(config);
-        return ret;
-    }
-    //修改上传配置
-    @PostMapping("/scconfig")
-    @ResponseBody
-    public Integer scconfig(UploadConfig updateConfig) {
-        Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
-        return ret;
-    }
-
-    @PostMapping("/setisok")
-    @ResponseBody
-    public String setisok(HttpSession session, User user) {
-        JSONArray jsonArray = new JSONArray();
-        User u = (User) session.getAttribute("user");
-        if(u.getId()==user.getId()){
-            jsonArray.add(-2);
-        }else{
-            Integer ret = userService.setisok(user);
-            jsonArray.add(ret);
-        }
-        return jsonArray.toString();
-    }
-
-    @PostMapping("/setmemory")
-    @ResponseBody
-    public String setmemory(HttpSession session, User user) {
-        Integer ret = userService.setmemory(user);
-        JSONArray jsonArray = new JSONArray();
-        jsonArray.add(ret);
-        return jsonArray.toString();
-    }
-
-    @PostMapping("/setstate")
-    @ResponseBody
-    public Integer setstate(HttpSession session, SysConfig sysConfig) {
-        Integer ret =-1;
-        ret = sysConfigService.setstate(sysConfig);
-        return ret;
-    }
-
-    @RequestMapping(value = "/modifyuser")
-    public String modifyuser(Model model,String uid,Integer id) {
-    User user = userService.getUsersMail(uid);
-        model.addAttribute("memory",user.getMemory());
-        model.addAttribute("groupid",user.getGroupid());
-        model.addAttribute("uid",uid);
-        model.addAttribute("id",id);
-        return "admin/modifyuser";
-    }
-
-    @PostMapping("/settstoragetype")
-    @ResponseBody
-    public Integer settstoragetype(Integer storagetype) {
-        Config config = new Config();
-        config.setSourcekey(storagetype);
-        Integer val = configService.setSourceype(config);
-        return val;
-    }
-
-    @RequestMapping("/about")
-    public String about(HttpSession session,Model model ) {
-        //Integer ret = uploadConfigService.setUpdateConfig(updateConfig);
-        User u = (User) session.getAttribute("user");
-        model.addAttribute("level",u.getLevel());
-        model.addAttribute("systemupdate",systemupdate);
-        return "admin/about";
-    }
-
-    @PostMapping("/sysupdate")
-    @ResponseBody
-    public Integer sysupdate(String  dates) {
-        HashMap<String, Object> paramMap = new HashMap<>();
-        String urls ="http://tc.hellohao.cn/systemupdate";
-        paramMap.put("dates",dates);
-        String result= HttpUtil.post(urls, paramMap);
-        return Integer.parseInt( result );
-    }
-
-    @PostMapping("/tocheck")
-    @ResponseBody
-    public JSONObject tocheck() {
-        JSONObject jsonObject = new JSONObject();
-            List<Keys> keylist = keysService.getKeys();
-            for (Keys key : keylist) {
-                if(key.getStorageType()!=0 && key.getStorageType()!=null){
-                    int ret =0;
-                    if(key.getStorageType()==1){
-                        ret =NOSImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }else if (key.getStorageType()==2){
-                        ret =OSSImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }else if(key.getStorageType()==3){
-                        ret = USSImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }else if(key.getStorageType()==4){
-                        ret = KODOImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }else if(key.getStorageType()==6){
-                        ret = COSImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }else if(key.getStorageType()==7){
-                        ret = FTPImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }else if(key.getStorageType()==8){
-                        ret = UFileImageupload.Initialize(key);
-                        jsonObject.put(key.getStorageType().toString(),ret);
-                    }
-                }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id",keyId);
+            Keys key = keysService.selectKeys(keyId);
+            Integer ret = 0;
+            if(key.getStorageType()==1){
+                ret = NOSImageupload.Initialize(key);
+            }else if (key.getStorageType()==2){
+                ret = OSSImageupload.Initialize(key);
+            }else if(key.getStorageType()==3){
+                ret = USSImageupload.Initialize(key);
+            }else if(key.getStorageType()==4){
+                ret = KODOImageupload.Initialize(key);
+            }else if(key.getStorageType()==6){
+                ret = COSImageupload.Initialize(key);
+            }else if(key.getStorageType()==7){
+                ret = FTPImageupload.Initialize(key);
+            }else if(key.getStorageType()==8){
+                ret = UFileImageupload.Initialize(key);
             }
-        jsonObject.put("5",1);
-        return jsonObject;
+
+            Long l = imgService.getsourcememory(keyId);
+            jsonObject.put("isok",ret);
+            jsonObject.put("storagetype",key.getStorageType());
+            if(l==null){
+                jsonObject.put("usedCapacity",0);
+            }else{
+                jsonObject.put("usedCapacity", SetFiles.readableFileSize(l));
+            }
+            msg.setData(jsonObject);
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+        }
+        return msg;
     }
+
+
+    @PostMapping("/updateStorage") //new
+    @ResponseBody
+    public Msg updateStorage(@RequestParam(value = "data", defaultValue = "") String data) {
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer id = jsonObj.getInteger("id");
+        String AccessKey = jsonObj.getString("AccessKey");
+        String AccessSecret = jsonObj.getString("AccessSecret");
+        String Endpoint = jsonObj.getString("Endpoint");
+        String Bucketname = jsonObj.getString("Bucketname");
+        String RequestAddress = jsonObj.getString("RequestAddress");
+        Integer storageType = jsonObj.getInteger("storageType");
+        String keyname = jsonObj.getString("keyname");
+        Keys keys = new Keys();
+        keys.setId(id);
+        keys.setAccessKey(AccessKey);
+        keys.setAccessSecret(AccessSecret);
+        keys.setEndpoint(Endpoint);
+        keys.setBucketname(Bucketname);
+        keys.setRequestAddress(RequestAddress);
+        keys.setStorageType(storageType);
+        keys.setKeyname(keyname);
+        Msg msg = keysService.updateKey(keys);
+        return msg;
+    }
+
+    @PostMapping("/getStorageById")//new
+    @ResponseBody
+    public Msg getselectkey(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer keyid = jsonObj.getInteger("id");
+        Keys keys = keysService.selectKeys(keyid);
+        msg.setData(keys);
+        return msg;
+    }
+
+
+    @PostMapping("/getSettingConfig") //new upload配置表的相关设置
+    @ResponseBody
+    public Msg getSettingConfig(@RequestParam(value = "data", defaultValue = "") String data) {
+        final Msg msg = new Msg();
+        final JSONObject jsonObject = new JSONObject();
+        Subject subject = SecurityUtils.getSubject();
+        User u = (User) subject.getPrincipal();
+        try {
+            UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
+            Config config = configService.getSourceype();
+            SysConfig sysConfig = sysConfigService.getstate();
+            //把字节换算一下，页面上显示M
+//            filesizetourists = (filesizetourists*1024*1024) ,filesizeuser=(filesizeuser*1024*1024)
+//            visitormemory=(visitormemory*1024*1024),usermemory=(usermemory*1024*1024)
+            uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory())/1024/1024));
+            uploadConfig.setVisitormemory(Long.toString(Long.valueOf(uploadConfig.getVisitormemory())/1024/1024));
+            uploadConfig.setFilesizetourists(Long.toString(Long.valueOf(uploadConfig.getFilesizetourists())/1024/1024));
+            uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser())/1024/1024));
+            jsonObject.put("uploadConfig",uploadConfig);
+            jsonObject.put("config",config);
+            jsonObject.put("sysConfig",sysConfig);
+            msg.setData(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("110500");
+            msg.setInfo("操作失败");
+        }
+        return msg;
+    }
+
+
+    @PostMapping("/updateConfig")//new
+    @ResponseBody
+    public Msg updateConfig(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            UploadConfig uploadConfig = JSON.toJavaObject((JSON) jsonObject.get("uploadConfig"),UploadConfig.class);
+            String vm =  uploadConfig.getVisitormemory();
+            if((Long.valueOf(vm)<-1) || Long.valueOf(vm) > 104857600 || Long.valueOf(uploadConfig.getFilesizetourists())<0 || Long.valueOf(uploadConfig.getFilesizetourists()) > 5120
+                    || Long.valueOf(uploadConfig.getUsermemory())<0 || Long.valueOf(uploadConfig.getUsermemory())>1048576
+                    || Long.valueOf(uploadConfig.getFilesizeuser())<0 || Long.valueOf(uploadConfig.getFilesizeuser())>5120 ){
+                msg.setInfo("你输入的值不正确");
+                msg.setCode("500");
+                return  msg;
+            }
+            Config config = JSON.toJavaObject((JSON) jsonObject.get("config"),Config.class);
+            SysConfig sysConfig = JSON.toJavaObject((JSON) jsonObject.get("sysConfig"),SysConfig.class);
+            if(Integer.valueOf(vm)==-1){
+                uploadConfig.setVisitormemory("-1");
+            }else{
+                uploadConfig.setVisitormemory(Long.toString(Long.valueOf(uploadConfig.getVisitormemory())*1024*1024));
+            }
+            uploadConfig.setFilesizetourists(Long.toString(Long.valueOf(uploadConfig.getFilesizetourists())*1024*1024));
+            uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory())*1024*1024));
+            uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser())*1024*1024));
+
+            uploadConfigService.setUpdateConfig(uploadConfig);
+            configService.setSourceype(config);
+            sysConfigService.setstate(sysConfig);
+
+            msg.setInfo("配置保存成功");
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setInfo("操作出现异常");
+            msg.setCode("500");
+        }
+        return msg;
+    }
+
+
 
 }

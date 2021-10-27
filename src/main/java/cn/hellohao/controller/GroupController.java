@@ -92,6 +92,25 @@ public class GroupController {
         return msg;
     }
 
+    @PostMapping("/updateGroup")//new
+    @ResponseBody
+    public Msg updategroup(@RequestParam(value = "data", defaultValue = "") String data) {
+
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        Group group = new Group();
+        group.setId(jsonObject.getInteger("id"));
+        if(jsonObject.getInteger("id")==1){
+            group.setGroupname("默认群组");
+            group.setUsertype(0);
+        }else{
+            group.setGroupname(jsonObject.getString("groupname"));
+            group.setUsertype(jsonObject.getInteger("usertype"));
+        }
+        group.setKeyid(jsonObject.getInteger("keyid"));
+        group.setCompress(jsonObject.getBoolean("compress")?1:0);
+        Msg msg = groupService.setgroup(group);
+        return msg;
+    }
 
     @PostMapping(value = "/deleGroup")//new
     @ResponseBody

@@ -206,6 +206,11 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
+    public Long getsourcememory(Integer source) {
+        return imgMapper.getsourcememory(source);
+    }
+
+    @Override
     public Integer md5Count(String md5key) {
         return imgMapper.md5Count(md5key);
     }

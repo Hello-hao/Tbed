@@ -2,12 +2,14 @@ package cn.hellohao.controller;
 
 import cn.hellohao.pojo.Code;
 import cn.hellohao.pojo.Config;
+import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.CodeService;
 import cn.hellohao.service.KeysService;
 import cn.hellohao.service.UserService;
 import cn.hellohao.service.impl.ImgServiceImpl;
 import cn.hutool.crypto.SecureUtil;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -32,66 +34,80 @@ public class CodeController {
     private CodeService codeService;
 
 
-    @RequestMapping(value = "/tocode")
-    public String tocode() {
-
-        return "admin/code";
-    }
-
-    @RequestMapping(value = "/selectcodelist")
+    @RequestMapping(value = "/selectCodeList")//new
     @ResponseBody
-    public Map<String, Object> selectcodel(HttpSession session, @RequestParam(required = false, defaultValue = "1") int page,
-                                            @RequestParam(required = false) int limit) {
-        User u = (User) session.getAttribute("user");
-        PageHelper.startPage(page, limit);
+    public Map<String, Object> selectCodeList(@RequestParam(value = "data", defaultValue = "") String data) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Integer pageNum = jsonObj.getInteger("pageNum");
+        Integer pageSize = jsonObj.getInteger("pageSize");
+        PageHelper.startPage(pageNum, pageSize);
         List<Code> codes = null;
-        if (u.getLevel() > 1) {
+        try {
             codes = codeService.selectCode(null);
-            // 使用pageInfo包装查询
             PageInfo<Code> rolePageInfo = new PageInfo<>(codes);
-            Map<String, Object> map = new HashMap<String, Object>();
-            map.put("code", 0);
-            map.put("msg", "");
+            map.put("code", 200);
+            map.put("info", "");
             map.put("count", rolePageInfo.getTotal());
             map.put("data", rolePageInfo.getList());
-            return map;
-        } else {
-            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            map.put("code", 500);
+            map.put("info", "获取数据异常");
         }
+        return map;
     }
 
-    @RequestMapping("/deletecodes")
+    @RequestMapping("/deleteCodes")//new
     @ResponseBody
-    public Integer deletecodes(HttpSession session, @RequestParam("arr[]") String[] arr){
+    public Msg deletecodes(@RequestParam(value = "data", defaultValue = "") String data){
+        final Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        JSONArray arr = jsonObj.getJSONArray("arr");
         Integer v = 0;
-        User u = (User) session.getAttribute("user");
-        for (int i = 0; i < arr.length; i++) {
-           v =  codeService.deleteCode(arr[i]);
+        try {
+            for (int i = 0; i < arr.size(); i++) {
+                codeService.deleteCode(arr.getJSONObject(i).getString("code"));
+                v++;
+            }
+            msg.setInfo("已成功删除"+v+"个扩容码");
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("110500");
+            msg.setInfo("删除过程中发生现错误，已成功删除"+v+"个");
         }
-        return v;
-    }
-    @RequestMapping("/deletecode")
-    @ResponseBody
-    public Integer deletecode(String code){
-            Integer v =  codeService.deleteCode(code);
-        return v;
+        return msg;
     }
 
-    @RequestMapping("/addcode")
+
+    @RequestMapping("/addCode")//new
     @ResponseBody
-    public Integer addcode(Integer value,Integer counts){
+    public Msg addcode(@RequestParam(value = "data", defaultValue = "") String data){
+        final Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        Long value = jsonObj.getLong("memory");
+        Long count = jsonObj.getLong("count");
+        if(value<=0 || value>1048576 || count<=0 || count>1000){
+            msg.setInfo("数据格式错误,请正确输入");
+            return msg;
+        }
         Integer val = 0;
         Code code = new Code();
-        for (int i= 0;i<counts;i++) {
+        for (int i= 0;i<count;i++) {
             java.text.DateFormat format1 = new java.text.SimpleDateFormat("hhmmss");
             Integer number = (int)(Math.random()*100000)+1;
             String uuid = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);
-            code.setValue(value);
+            code.setValue(Long.toString(value*1024*1024));
             code.setCode(SecureUtil.sha256(number+format1.format(new Date())+uuid));
             codeService.addCode(code);
-            val = 1;
+            val++;
         }
-        return val;
+        msg.setInfo("已成功生成"+val+"个扩容码");
+        return msg;
     }
+
+
+
+
 
 }

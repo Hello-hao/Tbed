@@ -173,11 +173,6 @@
 
         <!--    对象存储依赖-->
         <dependency>
-            <groupId>io.minio</groupId>
-            <artifactId>minio</artifactId>
-            <version>7.1.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.netease.cloud</groupId>
             <artifactId>nos-sdk-java-publiccloud</artifactId>
             <version>1.3.1</version>

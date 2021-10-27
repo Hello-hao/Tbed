@@ -8,7 +8,6 @@ import cn.hellohao.utils.*;
 import cn.hellohao.utils.verifyCode.IVerifyCodeGen;
 import cn.hellohao.utils.verifyCode.SimpleCharVerifyCodeGenImpl;
 import cn.hellohao.utils.verifyCode.VerifyCode;
-import cn.hutool.core.util.IdUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
@@ -31,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -112,14 +110,8 @@ public class IndexController {
     }
 
 
-    @RequestMapping("/sentence")
-    @ResponseBody
-    public String sentence(HttpSession session, Integer id) {
-        JSONArray jsonArray = new JSONArray();
-        String text = Sentence.getURLContent();
-        jsonArray.add(text);
-        return jsonArray.toString();
-    }
+
+
 
 
     @RequestMapping(value = "/getUploadInfo")//new
@@ -151,7 +143,7 @@ public class IndexController {
 
     @RequestMapping("/checkStatus")
     @ResponseBody
-    public Msg checkStatus( HttpSession httpSession,HttpServletRequest request) {
+    public Msg checkStatus(HttpServletRequest request) {
         Msg msg = new Msg();
         String token = request.getHeader("Authorization");
         if(token != null) {
@@ -254,149 +246,8 @@ public class IndexController {
         }
     }
 
-    @GetMapping(value = "/images/{id}")
-    @ResponseBody
-    public Images selectByFy(@PathVariable("id") Integer id) {
-        return imgService.selectByPrimaryKey(id);
-    }
 
 
-    @RequestMapping("/{key1}/TOIMG{key2}N.{key3}")
-    public ResponseEntity<Object> selectByFyOne(final HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                @PathVariable("key1") String key1, @PathVariable("key2") String key2,
-                                                @PathVariable("key3") String key3, Model model){
-        MediaType mediaType =null;
-        File file = new File(File.separator+"HellohaoData"+File.separator+key1+"/TOIMG"+key2+"N."+key3);
-        if (!file.exists()) {
-            try {
-                response.sendRedirect("/404");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("<h1>404 FILE NOT FOUND</h1>");
-            }
-        }
-        if(key3.equals("png")){
-            mediaType = MediaType.IMAGE_PNG;
-        }else if(key3.equals("gif")){
-            mediaType = MediaType.IMAGE_GIF;
-        }else{
-            mediaType = MediaType.IMAGE_JPEG;
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        // headers.setContentDispositionFormData("attachment", URLUtil.encode(file.getName()));
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-        headers.add("Last-Modified", new Date().toString());
-        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentLength(file.length())
-                .contentType(mediaType)
-                .body(new FileSystemResource(file));
-
-        //return "forward:/links/"+key1+"/TOIMG"+key2+"N."+key3;
-    }
-
-    // @RequestMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
-    public void selectByFy2(HttpServletRequest request, HttpServletResponse response,
-                            @PathVariable("key1") String key1,@PathVariable("key2") String key2,
-                            @PathVariable("key3") String key3,@PathVariable("key4") String key4,
-                            @PathVariable("key5") String key5,Model model) {
-        String head = "jpg";
-        if(key5.equals("jpg")||key5.equals("jpeg")){
-            head = "jpeg";
-        }else if(key5.equals("png")){
-            head = "png";
-        }else if(key5.equals("bmp")){
-            head = "bmp";
-        }else if(key5.equals("gif")){
-            head = "gif";
-        }else{
-            head = key5;
-        }
-        response.setHeader("Pragma", "no-cache");
-        response.setHeader("Cache-Control", "no-cache");
-        response.setDateHeader("Expires", 0);
-        response.setContentType("image/"+head);
-        //InputStream is= null;
-        BufferedImage bi=null;
-        try {
-            //is = new FileInputStream(new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5));
-            bi= ImageIO.read(new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5));
-            //is.close();
-            //将图片输出给浏览器
-            BufferedImage image = (bi) ;
-            OutputStream os = response.getOutputStream();
-            ImageIO.write(image, head, os);
-        } catch (Exception e) {
-            Print.warning("寻找本地文件出错："+e.getMessage());
-            e.printStackTrace();
-            try {
-                response.sendRedirect("/404");
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    @GetMapping("/{key1:\\d+}/{key2}/{key3}/TOIMG{key4}N.{key5}")
-    @ResponseBody
-    public ResponseEntity<Object> selectByFyTow(final HttpServletRequest request,
-                                                HttpServletResponse response,
-                                                @PathVariable("key1") String key1,
-                                                @PathVariable("key2") String key2,
-                                                @PathVariable("key3") String key3,
-                                                @PathVariable("key4") String key4,
-                                                @PathVariable("key5") String key5) {
-        MediaType mediaType =null;
-        File file = new File(File.separator+"HellohaoData"+File.separator+key1+"/"+key2+"/"+key3+"/TOIMG"+key4+"N."+key5);
-        if (!file.exists()) {
-            try {
-                response.sendRedirect("/404");
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("<h1>404 FILE NOT FOUND</h1>");
-            }
-        }
-        if(key5.equals("png")){
-            mediaType = MediaType.IMAGE_PNG;
-        }else if(key5.equals("gif")){
-            mediaType = MediaType.IMAGE_GIF;
-        }else{
-            mediaType = MediaType.IMAGE_JPEG;
-        }
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
-        // headers.setContentDispositionFormData("attachment", URLUtil.encode(file.getName()));
-        headers.add("Pragma", "no-cache");
-        headers.add("Expires", "0");
-        headers.add("Last-Modified", new Date().toString());
-        headers.add("ETag", String.valueOf(System.currentTimeMillis()));
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentLength(file.length())
-                .contentType(mediaType)
-                .body(new FileSystemResource(file));
-    }
-
-    private Integer yzupdate(){
-        Calendar cal = Calendar.getInstance();
-        int y=cal.get(Calendar.YEAR);
-        int m=cal.get(Calendar.MONTH);
-        int d=cal.get(Calendar.DATE);
-        //int h=cal.get(Calendar.HOUR_OF_DAY);
-        //int mm=cal.get(Calendar.MINUTE);
-        return y+m+d+999;
-    }
-
-    @RequestMapping("/err")
-    public String err() {
-        return "err";
-    }
 
 
 }

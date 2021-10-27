@@ -12,12 +12,16 @@ public class UploadConfig {
     private String visitormemory;
     private String usermemory;
     private String blacklist;
+    private Integer userclose;
 
 
     public UploadConfig() {
+
     }
 
-    public UploadConfig(String suffix, String filesizetourists, String filesizeuser, Integer imgcounttourists, Integer imgcountuser, Integer urltype, Integer isupdate, Integer api, String visitormemory, String usermemory, String blacklist) {
+    public UploadConfig(String suffix, String filesizetourists, String filesizeuser, Integer imgcounttourists,
+                        Integer imgcountuser, Integer urltype, Integer isupdate, Integer api, String visitormemory,
+                        String usermemory, String blacklist,Integer userclose) {
         this.suffix = suffix;
         this.filesizetourists = filesizetourists;
         this.filesizeuser = filesizeuser;
@@ -29,6 +33,7 @@ public class UploadConfig {
         this.visitormemory = visitormemory;
         this.usermemory = usermemory;
         this.blacklist = blacklist;
+        this.userclose = userclose;
     }
 
     public String getSuffix() {
@@ -117,5 +122,13 @@ public class UploadConfig {
 
     public void setBlacklist(String blacklist) {
         this.blacklist = blacklist;
+    }
+
+    public Integer getUserclose() {
+        return userclose;
+    }
+
+    public void setUserclose(Integer userclose) {
+        this.userclose = userclose;
     }
 }

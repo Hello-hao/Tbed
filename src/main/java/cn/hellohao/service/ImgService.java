@@ -31,6 +31,8 @@ public interface ImgService {
 
     Long getusermemory(Integer userid);
 
+    Long getsourcememory(Integer source);
+
     Integer md5Count(String md5key);
 
     Images selectImgUrlByMD5(String md5key);

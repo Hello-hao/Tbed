@@ -109,6 +109,11 @@
         SELECT sum(sizes) as sizes FROM `imgdata` where userid = #{userid}
     </select>
 
+    <!--  获取指定对象存储的已用空间 -->
+    <select id="getsourcememory" parameterType="integer" resultType="long">
+        SELECT sum(sizes) as sizes FROM `imgdata` where source = #{source}
+    </select>
+
     <select id="md5Count" resultType="integer">
         select count(*) from imgdata
         <where>

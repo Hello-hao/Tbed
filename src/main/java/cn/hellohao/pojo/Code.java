@@ -7,13 +7,13 @@ package cn.hellohao.pojo;
  */
 public class Code {
     private Integer id;
-    private Integer value;
+    private String value;
     private String code;
 
     public Code() {
     }
 
-    public Code(Integer id, Integer value, String code) {
+    public Code(Integer id, String value, String code) {
         this.id = id;
         this.value = value;
         this.code = code;
@@ -27,11 +27,11 @@ public class Code {
         this.id = id;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

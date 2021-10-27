@@ -30,6 +30,8 @@ public interface ImgMapper {
 
     Long getusermemory(@Param("userid") Integer userid);
 
+    Long getsourcememory(@Param("source") Integer source);
+
     Integer md5Count(@Param("md5key") String md5key);
 
     Images selectImgUrlByMD5(@Param("md5key") String md5key);
