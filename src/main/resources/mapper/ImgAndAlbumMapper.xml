@@ -40,10 +40,12 @@
     </delete>
 
     <select id="selectImgForAlbumkey" parameterType="string" resultType="cn.hellohao.pojo.Images">
+
         select * from imgdata a
-                          LEFT JOIN imgandalbum b  on a.imgname = b.imgname
+                          LEFT JOIN imgandalbum b  on a.imgurl = b.imgname
                           LEFT JOIN album c on b.albumkey = c.albumkey
         where b.albumkey = #{albumkey}
+
     </select>
 
 </mapper>

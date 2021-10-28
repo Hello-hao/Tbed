@@ -29,35 +29,17 @@ import java.util.*;
  */
 @RestController
 public class ClientController {
-    @Autowired
-    private NOSImageupload nOSImageupload;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private KeysService keysService;
-    @Autowired
-    private OSSImageupload ossImageupload;
-    @Autowired
-    private ConfigService configService;
-    @Autowired
-    private USSImageupload ussImageupload;
-    @Autowired
-    private KODOImageupload kodoImageupload;
-    @Autowired
-    private UploadConfigService uploadConfigService;
-    @Autowired
-    private NoticeService noticeService;
-    @Autowired
-    private COSImageupload cosImageupload;
-    @Autowired
-    private FTPImageupload ftpImageupload;
-    @Autowired
-    private UFileImageupload uFileImageupload;
-    @Autowired
-    private ImgService imgService;
 
-    @Value("${systemupdate}")
-    private String systemupdate;
+    @Autowired
+    private ClientService clientService;
+
+
+    @PostMapping(value = "/uploadbymail")
+    @ResponseBody
+    public Msg uploadbymail(HttpServletRequest request, @RequestParam("file") MultipartFile file, String mail, String pass)  {
+        Msg resultBean = clientService.uploadImg(request, file, mail, pass);
+        return resultBean;
+    }
 
 
 }

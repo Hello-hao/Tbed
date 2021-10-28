@@ -17,7 +17,6 @@
         a.explains,
         a.md5key,
         a.imguid,
-        a.shortlink,
         a.format,
         a.about,
         a.great,
@@ -115,14 +114,7 @@
     </select>
 
     <select id="md5Count" resultType="integer">
-        select count(*) from imgdata
-        <where>
-            1=1
-            <if test="md5key != null">
-                and md5key=#{md5key}
-            </if>
-        </where>
-
+        select count(id) from imgdata where md5key=#{md5key} and userid = #{userid}
     </select>
 
     <select id="selectImgUrlByMD5" parameterType="string" resultType="cn.hellohao.pojo.Images">
@@ -172,5 +164,10 @@
         MONTH(updatetime) ASC
 
     </select>
+
+    <select id="selectImgUrlByImgUID" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        select * from imgdata where imguid = #{imguid}
+    </select>
+
 
 </mapper>

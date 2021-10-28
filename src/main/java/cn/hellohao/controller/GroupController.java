@@ -1,26 +1,19 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.pojo.Group;
-import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.Msg;
-import cn.hellohao.pojo.User;
 import cn.hellohao.service.GroupService;
 import cn.hellohao.service.KeysService;
 import cn.hellohao.service.UserService;
-import cn.hellohao.utils.StringUtils;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,8 +45,6 @@ public class GroupController {
         return msg;
     }
 
-
-    //获取code列表
     @PostMapping(value = "/getGroupList")//new
     @ResponseBody
     public Map<String, Object> getgrouplist(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -78,7 +69,6 @@ public class GroupController {
         return map;
     }
 
-
     @PostMapping(value = "/addGroup")//new
     @ResponseBody
     public Msg addisgroup(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -95,7 +85,6 @@ public class GroupController {
     @PostMapping("/updateGroup")//new
     @ResponseBody
     public Msg updategroup(@RequestParam(value = "data", defaultValue = "") String data) {
-
         JSONObject jsonObject = JSONObject.parseObject(data);
         Group group = new Group();
         group.setId(jsonObject.getInteger("id"));

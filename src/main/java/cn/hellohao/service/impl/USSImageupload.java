@@ -32,7 +32,6 @@ public class USSImageupload {
                 upyun.setContentMD5(UpYun.md5(file));
                 boolean result = upyun.writeFile(username + "/" + ShortUID + "." + entry.getKey(), file, true);
                 if(result){
-                    returnImage.setUid(ShortUID);
                     returnImage.setImgname(username + "/" + ShortUID + "." + entry.getKey());
                     returnImage.setImgurl(key.getRequestAddress() + "/" +username + "/" + ShortUID + "." + entry.getKey());
                     returnImage.setImgSize(entry.getValue().length());

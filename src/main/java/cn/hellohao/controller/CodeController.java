@@ -1,13 +1,8 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.pojo.Code;
-import cn.hellohao.pojo.Config;
 import cn.hellohao.pojo.Msg;
-import cn.hellohao.pojo.User;
 import cn.hellohao.service.CodeService;
-import cn.hellohao.service.KeysService;
-import cn.hellohao.service.UserService;
-import cn.hellohao.service.impl.ImgServiceImpl;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -18,8 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.servlet.http.HttpSession;
 import java.util.*;
 
 /**

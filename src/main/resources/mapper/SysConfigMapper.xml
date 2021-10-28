@@ -10,8 +10,12 @@
         UPDATE sysconfig
         <set>
             <if test="register != null">
-                `register` = #{register}
+                `register` = #{register},
             </if>
+            <if test="checkduplicate != null">
+                `checkduplicate` = #{checkduplicate},
+            </if>
+
         </set>
         where id=1
     </update>

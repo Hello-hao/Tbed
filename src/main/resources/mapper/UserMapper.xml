@@ -105,8 +105,8 @@
 
     <!-- 插入图片信息 -->
     <insert id="insertimg" parameterType="cn.hellohao.pojo.Images">
-        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype,md5key,imguid,shortlink,format,about,great,violation)
-        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},#{md5key},#{imguid},#{shortlink},#{format},#{about},"0",null)
+        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype,md5key,imguid,format,about,great,violation)
+        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},#{md5key},#{imguid},#{format},#{about},"0",null)
     </insert>
 
     <!-- 修改资料 -->
@@ -183,8 +183,7 @@
         isok,
         ceil((memory/1024/1024)) as memory,
         groupid,
-        (select groupname from `group` where id = groupid) as groupname,
-        token
+        (select groupname from `group` where id = groupid) as groupname
         FROM
         user
         where

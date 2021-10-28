@@ -211,8 +211,8 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer md5Count(String md5key) {
-        return imgMapper.md5Count(md5key);
+    public Integer md5Count(Images images) {
+        return imgMapper.md5Count(images);
     }
 
     @Override
@@ -242,6 +242,11 @@ public class ImgServiceImpl implements ImgService {
     @Override
     public List<Images> countByM(Images images) {
         return imgMapper.countByM(images);
+    }
+
+    @Override
+    public Images selectImgUrlByImgUID(String imguid) {
+        return imgMapper.selectImgUrlByImgUID(imguid);
     }
 
 }

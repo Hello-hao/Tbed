@@ -40,9 +40,6 @@
     <delete id="delImgAndExp" parameterType="string">
         DELETE imgtemp,imgdata FROM imgtemp LEFT JOIN imgdata ON imgtemp.imguid = imgdata.imguid
         WHERE imgdata.imguid =#{imguid}
-<!--        <foreach collection="list" item="imguid" index="index" open="(" close=")" separator=",">-->
-<!--            #{imguid}-->
-<!--        </foreach>-->
     </delete>
 
     <insert id="insertImgExp" parameterType="cn.hellohao.pojo.ImgTemp" >

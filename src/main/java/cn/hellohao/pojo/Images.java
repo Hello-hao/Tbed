@@ -22,7 +22,6 @@ public class Images {
     private String notes;
     private String useridlist;
     private String imguid;
-    private String shortlink;
     private String format;
     private String about;
     private Integer great;
@@ -41,7 +40,7 @@ public class Images {
         super();
     }
 
-    public Images(String imgurl, String sizes, String abnormal, String updatetime, String username, String md5key, String imguid,String shortlink) {
+    public Images(String imgurl, String sizes, String abnormal, String updatetime, String username, String md5key, String imguid) {
         this.imgurl = imgurl;
         this.sizes = sizes;
         this.abnormal = abnormal;
@@ -54,7 +53,7 @@ public class Images {
     public Images(Integer id, String imgname, String imgurl, Integer userid, String sizes, String abnormal, Integer source,
                   Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime,
                   String explains, String md5key, String notes, String useridlist, String imguid, String albumtitle,
-                  String password, Integer selecttype,Long countNum,Integer monthNum,String yyyy,String shortlink,
+                  String password, Integer selecttype,Long countNum,Integer monthNum,String yyyy,
                   String format,String about,Integer great,String[] classifuidlist,String classificationuid,String violation) {
         this.id = id;
         this.imgname = imgname;
@@ -74,7 +73,6 @@ public class Images {
         this.notes = notes;
         this.useridlist = useridlist;
         this.imguid = imguid;
-        this.shortlink = shortlink;
         this.albumtitle = albumtitle;
         this.password = password;
         this.selecttype = selecttype;
@@ -234,13 +232,6 @@ public class Images {
         this.imguid = imguid;
     }
 
-    public String getShortlink() {
-        return shortlink;
-    }
-
-    public void setShortlink(String shortlink) {
-        this.shortlink = shortlink;
-    }
 
     public String getAlbumtitle() {
         return albumtitle;

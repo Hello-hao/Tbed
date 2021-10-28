@@ -39,7 +39,6 @@ public class FTPImageupload {
                 if (flag) {
                     boolean isUpload = ftps.upload(file, "/" + userkey, "");
                     if(isUpload){
-                        returnImage.setUid(ShortUID);
                         returnImage.setImgname(userkey);
                         returnImage.setImgurl(key.getRequestAddress() + "/"+ userkey);
                         returnImage.setImgSize(entry.getValue().length());

@@ -13,6 +13,7 @@ import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.utils.*;
+import cn.hutool.core.util.HexUtil;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -54,16 +55,13 @@ public class UserController {
         String userIP = GetIPS.getIpAddr(request);
         String verifyCodeForRegister = jsonObj.getString("verifyCode");
         Object redis_verifyCodeForRegister = iRedisService.getValue(userIP+"_hellohao_verifyCodeForRegister");
-
         if(!SetText.checkEmail(email)){
-            //邮箱格式不正确
             msg.setCode("110403");
             msg.setInfo("邮箱格式不正确");
             return msg;
         }
         String regex = "^\\w+$";
         if(username.length()>20 || !username.matches (regex)){
-            //用户名格式不正确
             msg.setCode("110403");
             msg.setInfo("用户名不得超过20位字符");
             return msg;
@@ -135,7 +133,6 @@ public class UserController {
         return msg;
     }
 
-    //shiro登录认证
     @PostMapping("/login")//new
     @ResponseBody
     public Msg login(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {
@@ -156,15 +153,10 @@ public class UserController {
             return msg;
         }
         if((redis_VerifyCode.toString().toLowerCase()).compareTo((verifyCode.toLowerCase()))==0){
-//        if(true){
-            //获取当前用户
             Subject subject = SecurityUtils.getSubject();
-            //封装用户的登录数据（shiro认证的时候使用）
             UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(email,password);
-            //设置记住我
             tokenOBJ.setRememberMe(true);
             try {
-                //执行登录方法，如果没有异常，说明登录成功
                 subject.login(tokenOBJ);
                 SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时
                 JSONObject jsonObject = new JSONObject();
@@ -179,7 +171,6 @@ public class UserController {
                     msg.setCode("110403");
                     return msg;
                 }
-//                String token = TokenUtil.sign(user);
                 String token = JWTUtil.createToken(user);
                 Subject su = SecurityUtils.getSubject();
                 System.out.println("当前用户角色：admin:"+su.hasRole("admin"));
@@ -216,8 +207,33 @@ public class UserController {
         return msg;
     }
 
+
+
+    //邮箱激活
+    @RequestMapping(value = "/activation", method = RequestMethod.GET)
+    public String activation(Model model, HttpServletRequest request, HttpSession session, String activation, String username) {
+        Config config = configService.getSourceype();
+        Integer ret = 0;
+        User u2 = new User();
+        u2.setUid(activation);
+        User user = userService.getUsers(u2);
+        model.addAttribute("webhost",SubjectFilter.WEBHOST);
+        if (user != null && user.getIsok() == 0) {
+            userService.uiduser(activation);
+            model.addAttribute("title","激活成功");
+            model.addAttribute("name","Hi~"+username);
+            model.addAttribute("note","您的账号已成功激活看");
+            return "msg";
+        } else {
+            model.addAttribute("title","操作无效");
+            model.addAttribute("name","该页面为无效页面");
+            model.addAttribute("note","请返回首页");
+            return "msg";
+        }
+    }
+
     //退出
-    @PostMapping(value = "/logout")
+    @PostMapping(value = "/logout")//new
     @ResponseBody
     public Msg exit(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         Msg msg = new Msg();
@@ -228,7 +244,8 @@ public class UserController {
         return msg;
     }
 
-    @PostMapping("/retrievePass")
+    //retrievepass
+    @PostMapping("/retrievePass") //new
     @ResponseBody
     public Msg retrievePass(HttpServletRequest request, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -238,6 +255,7 @@ public class UserController {
             String retrieveCode = jsonObj.getString("retrieveCode");
             String userIP = GetIPS.getIpAddr(request);
             Object redis_verifyCodeForEmailRetrieve = iRedisService.getValue(userIP+"_hellohao_verifyCodeForEmailRetrieve");
+
             EmailConfig emailConfig = emailConfigService.getemail();
             if(null==redis_verifyCodeForEmailRetrieve){
                 msg.setCode("4035");
@@ -290,47 +308,43 @@ public class UserController {
     }
 
     //邮箱激活
-    @RequestMapping(value = "/activation", method = RequestMethod.GET)
-    public String activation(Model model, HttpServletRequest request, HttpSession session, String activation, String username) {
-        Config config = configService.getSourceype();
+    @RequestMapping(value = "/retrieve", method = RequestMethod.GET) //new
+    public String retrieve(Model model, String activation,String cip) {
         Integer ret = 0;
-        User u2 = new User();
-        u2.setUid(activation);
-        User user = userService.getUsers(u2);
+        try {
+            User u2 = new User();
+            u2.setUid(activation);
+            User user = userService.getUsers(u2);
+            user.setIsok(1);
+            String new_pass = HexUtil.decodeHexStr(cip);//解密密码
+            user.setPassword(Base64Encryption.encryptBASE64(new_pass.getBytes()));
+            String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            user.setUid(uid);
+            if (user != null) {
+                Integer r = userService.changeUser(user);
+                model.addAttribute("title","成功");
+                model.addAttribute("name","新密码:"+new_pass);//
+                model.addAttribute("note","密码已被系统重置，请即使登录修改你的新密码");
+            } else {
+                model.addAttribute("title","抱歉");
+                model.addAttribute("name","为获取到用户信息");
+                model.addAttribute("note","操作失败");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            model.addAttribute("title","抱歉");
+            model.addAttribute("name","系统操作过程中发生错误");
+            model.addAttribute("note","操作失败");
+        }
         model.addAttribute("webhost", SubjectFilter.WEBHOST);
-        if (user != null && user.getIsok() == 0) {
-            userService.uiduser(activation);
-            model.addAttribute("title","激活成功");
-            model.addAttribute("name","Hi~"+username);
-            model.addAttribute("note","您的账号已成功激活看");
-            return "msg";
-        } else {
-            model.addAttribute("title","操作无效");
-            model.addAttribute("name","该页面为无效页面");
-            model.addAttribute("note","请返回首页");
-            return "msg";
-        }
+        return "msg";
+    }
 
-    }
-    @PostMapping(value = "/verification")
-    @ResponseBody
-    public Integer verification(HttpSession session,Integer tmp,Integer type) {
-        Random random = new Random();
-        if(type==1){
-            number1 = random.nextInt(100);
-            istmp1 = tmp;
-            Print.Normal(tmp-number1);
-        }
-        if(type==2){
-            number2 = random.nextInt(100);
-            istmp2 = tmp;
-            Print.Normal(tmp-number2);
-        }
-        return 1;
-    }
 
     private Integer number1;
     private Integer istmp1;
     private Integer number2;
     private Integer istmp2;
+
+
 }

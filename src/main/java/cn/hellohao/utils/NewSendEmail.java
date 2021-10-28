@@ -9,7 +9,6 @@ import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import io.github.biezhi.ome.OhMyEmail;
 import org.springframework.core.io.ClassPathResource;
-
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -18,16 +17,6 @@ import java.util.Properties;
 import java.util.UUID;
 
 public class NewSendEmail {
-
-    public static void initialEmail(EmailConfig emailConfig) {
-//        Properties p = new Properties();
-//        p.setProperty("mail.smtp.auth", "true");
-//        p.setProperty("mail.smtp.host", emailConfig.getEmailurl());
-//        p.setProperty("mail.smtp.port", emailConfig.getPort());
-//        p.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-
-
-    }
 
     public static Integer sendEmail(EmailConfig emailConfig, String username, String uid, String toEmail,  Config config) {
 
@@ -114,7 +103,6 @@ public class NewSendEmail {
         // 配置一次即可，可以配置为静态方法
 //        OhMyEmail.config(OhMyEmail.SMTP_QQ(false), "xxxx@qq.com", "your@password");
         OhMyEmail.config(props, emailConfig.getEmails(), emailConfig.getEmailkey());
-
         String webname=config.getWebname();
         String domain = config.getDomain();
         String new_pass = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,10);
@@ -143,29 +131,6 @@ public class NewSendEmail {
         }
     }
 
-
-    public static void main(String[] args)throws Exception {
-
-        Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.ssl.enable", "true");
-        props.put("mail.debug", "false");
-        props.put("mail.transport.protocol", "smtp");
-        props.put("mail.debug",  "false");
-        props.put("mail.smtp.timeout", "20000");
-        props.put("mail.smtp.port", "25");//465  25
-        props.put("mail.smtp.host", "smtpdm.aliyun.com");
-
-        // 配置一次即可，可以配置为静态方法
-//        OhMyEmail.config(OhMyEmail.SMTP_QQ(false), "xxxx@qq.com", "your@password");
-        OhMyEmail.config(props, "hellohao@wwery.com", "TianShiHao1995");
-        OhMyEmail.subject("账号激活邮件测试")
-                .from("hahhaha")
-                .to("923453645@qq.com")
-                .html("<a href='http://www.hellohao.cn'>hellohao</a>")
-                .send();
-
-    }
 
 
 }

@@ -3,10 +3,7 @@ package cn.hellohao.controller;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
-import cn.hellohao.utils.GetCurrentSource;
-import cn.hellohao.utils.Print;
-import cn.hellohao.utils.SetFiles;
-import cn.hellohao.utils.StringUtils;
+import cn.hellohao.utils.*;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -53,10 +50,11 @@ public class AdminRootController {
     private GroupService groupService;
     @Autowired
     private ImgService imgService;
+    @Autowired
+    private ImgreviewService imgreviewService;
 
 
-    @PostMapping(value = "/getUserList")//new selectusertable
-    @ResponseBody
+    @PostMapping(value = "/getUserList")//new
     public Map<String, Object> getUserList(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer pageNum = jsonObj.getInteger("pageNum");
@@ -181,8 +179,6 @@ public class AdminRootController {
         return msg;
     }
 
-
-    //获取当前所有的存储策略信息
     @PostMapping("/LoadInfo")//new
     @ResponseBody
     public Msg LoadInfo(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -190,7 +186,6 @@ public class AdminRootController {
         try {
             JSONObject jsonData = JSONObject.parseObject(data);
             Integer keyId = jsonData.getInteger("keyId");
-
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id",keyId);
             Keys key = keysService.selectKeys(keyId);
@@ -210,7 +205,6 @@ public class AdminRootController {
             }else if(key.getStorageType()==8){
                 ret = UFileImageupload.Initialize(key);
             }
-
             Long l = imgService.getsourcememory(keyId);
             jsonObject.put("isok",ret);
             jsonObject.put("storagetype",key.getStorageType());
@@ -265,7 +259,7 @@ public class AdminRootController {
     }
 
 
-    @PostMapping("/getSettingConfig") //new upload配置表的相关设置
+    @PostMapping("/getSettingConfig") //new
     @ResponseBody
     public Msg getSettingConfig(@RequestParam(value = "data", defaultValue = "") String data) {
         final Msg msg = new Msg();
@@ -276,9 +270,6 @@ public class AdminRootController {
             UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
             Config config = configService.getSourceype();
             SysConfig sysConfig = sysConfigService.getstate();
-            //把字节换算一下，页面上显示M
-//            filesizetourists = (filesizetourists*1024*1024) ,filesizeuser=(filesizeuser*1024*1024)
-//            visitormemory=(visitormemory*1024*1024),usermemory=(usermemory*1024*1024)
             uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory())/1024/1024));
             uploadConfig.setVisitormemory(Long.toString(Long.valueOf(uploadConfig.getVisitormemory())/1024/1024));
             uploadConfig.setFilesizetourists(Long.toString(Long.valueOf(uploadConfig.getFilesizetourists())/1024/1024));
@@ -321,11 +312,9 @@ public class AdminRootController {
             uploadConfig.setFilesizetourists(Long.toString(Long.valueOf(uploadConfig.getFilesizetourists())*1024*1024));
             uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory())*1024*1024));
             uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser())*1024*1024));
-
             uploadConfigService.setUpdateConfig(uploadConfig);
             configService.setSourceype(config);
             sysConfigService.setstate(sysConfig);
-
             msg.setInfo("配置保存成功");
         }catch (Exception e){
             e.printStackTrace();
@@ -335,6 +324,71 @@ public class AdminRootController {
         return msg;
     }
 
+
+    @PostMapping(value = "/getOrderConfig")//new
+    @ResponseBody
+    public Msg emailconfig() {
+        final Msg msg = new Msg();
+        EmailConfig emailConfig = null;
+        Imgreview imgreview = null;
+        try {
+            final JSONObject jsonObject = new JSONObject();
+            emailConfig = emailConfigService.getemail();
+            imgreview = imgreviewService.selectByPrimaryKey(1);
+            jsonObject.put("emailConfig",emailConfig);
+            jsonObject.put("imgreview",imgreview);
+            msg.setData(jsonObject);
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("110500");
+            msg.setInfo("获取相关配置信息失败");
+        }
+        return msg;
+    }
+
+
+    @PostMapping("/updateEmailConfig") //new
+    @ResponseBody
+    public Msg updateemail(@RequestParam(value = "data", defaultValue = "") String data ) {
+        final Msg msg = new Msg();
+        try {
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            EmailConfig emailConfig = JSON.toJavaObject(jsonObj,EmailConfig.class);
+            if(null==emailConfig.getId() || null==emailConfig.getEmailname()  || null==emailConfig.getEmailurl() || null==emailConfig.getEmails()
+                    || null==emailConfig.getEmailkey()  || null==emailConfig.getPort() || null==emailConfig.getUsing()
+                    || emailConfig.getEmailname().equals("")  || emailConfig.getEmailurl().equals("")  || emailConfig.getEmails().equals("")
+                    || emailConfig.getEmailkey().equals("")   || emailConfig.getPort().equals("")){
+                msg.setCode("110400");
+                msg.setInfo("各参数不能为空");
+                return msg;
+            }
+            emailConfigService.updateemail(emailConfig);
+            msg.setInfo("保存成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("110500");
+            msg.setInfo("保存过程出现错误");
+        }
+        return msg;
+    }
+
+    @PostMapping("/mailTest") //new
+    @ResponseBody
+    public Msg mailTest(@RequestParam(value = "data", defaultValue = "") String data ) {
+        Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        String tomail = jsonObj.getString("tomail");
+        EmailConfig emailConfig = JSON.toJavaObject(jsonObj,EmailConfig.class);
+        if(null==emailConfig.getEmails() || null==emailConfig.getEmailkey() || null==emailConfig.getEmailurl()
+                || null==emailConfig.getPort()  || null==emailConfig.getEmailname() || null==tomail){
+//        if(jsonObj.size()==0){
+            msg.setCode("110400");
+            msg.setInfo("邮箱配置参数不能为空");
+        }else{
+            msg = NewSendEmail.sendTestEmail(emailConfig, tomail);
+        }
+        return msg;
+    }
 
 
 }

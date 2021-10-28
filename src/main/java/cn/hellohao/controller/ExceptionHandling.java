@@ -67,20 +67,5 @@ public class ExceptionHandling {
 
 
 
-//    @ExceptionHandler
-//    public String methodArgumentNotValid(BindException e) {
-//        List<ObjectError> allErrors = e.getBindingResult().getAllErrors();
-//        StringBuilder errorMessage = new StringBuilder();
-//        for (int i = 0; i < allErrors.size(); i++) {
-//            ObjectError error = allErrors.get(i);
-//            errorMessage.append(error.getDefaultMessage());
-//            if (i != allErrors.size() - 1) {
-//                errorMessage.append(", ");
-//            }
-//        }
-//        // do something
-//        System.out.println(errorMessage.toString());// 这里面是错误信息
-//        return errorMessage.toString();
-//    }
 
 }

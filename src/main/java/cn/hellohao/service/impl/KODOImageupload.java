@@ -58,7 +58,6 @@ public class KODOImageupload {
                 try {
                     Response response = uploadManager.put(file,username + "/" + ShortUID + "." + entry.getKey(),upToken);
                     DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    returnImage.setUid(ShortUID);
                     returnImage.setImgname(username + "/" + ShortUID + "." + entry.getKey());
                     returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + ShortUID + "." + entry.getKey());
                     returnImage.setImgSize(entry.getValue().length());

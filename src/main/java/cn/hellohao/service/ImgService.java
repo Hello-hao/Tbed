@@ -33,7 +33,7 @@ public interface ImgService {
 
     Long getsourcememory(Integer source);
 
-    Integer md5Count(String md5key);
+    Integer md5Count(Images images);
 
     Images selectImgUrlByMD5(String md5key);
 
@@ -46,5 +46,7 @@ public interface ImgService {
     List<String> getyyyy(Integer userid);
 
     List<Images> countByM(Images images);
+
+    Images selectImgUrlByImgUID( String imguid);
 
 }

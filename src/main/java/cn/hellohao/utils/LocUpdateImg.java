@@ -50,7 +50,6 @@ public class LocUpdateImg {
                 }
                 bos.flush();
                 bos.close();
-                returnImage.setUid(ShortUID);
                 returnImage.setImgname(username + "/" +ShortUID + "." + entry.getKey());//entry.getValue().getOriginalFilename()
                 returnImage.setImgurl(key.getRequestAddress() +"/ota/"+username + "/" + ShortUID + "." + entry.getKey());
                 returnImage.setImgSize(entry.getValue().length());

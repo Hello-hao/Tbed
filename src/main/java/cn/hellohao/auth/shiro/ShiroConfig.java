@@ -20,30 +20,14 @@ import java.util.Map;
 @Configuration
 public class ShiroConfig {
 
-
-    //shiro过滤对象
-    @Bean//(name = "shiroFilterFactoryBean")
+    @Bean
     public ShiroFilterFactoryBean shiroFilterFactoryBean(@Qualifier("defaultWebSecurityManager") DefaultWebSecurityManager defaultWebSecurityManager){
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
-        //设置安全管理器
         bean.setSecurityManager(defaultWebSecurityManager);
         Map<String, Filter> filters = bean.getFilters();
-//        Map<String,Filter> filter = new HashMap<>();
         filters.put("JWT",new SubjectFilter());
         bean.setFilters(filters);
-
-        //添加shiro内置过滤器
-/*
-        * anon: 无需认证就可以访问
-        * authc: 必须认证了才可以访问
-        * user: 必须拥有 记住我 功能才能访问
-        * perms: 拥有对某个资源的权限才能访问
-        * roles: 拥有某个角色的权限才能访问
-        * */
-
         Map<String,String> filterMap = new LinkedHashMap<>();
-
-        //放行页面
         filterMap.put("/verifyCode","anon");
         filterMap.put("/verifyCodeForRegister","anon");
         filterMap.put("/verifyCodeForRetrieve","anon");
@@ -52,16 +36,12 @@ public class ShiroConfig {
         filterMap.put("/ota/**","anon");
         filterMap.put("/admin/root/**","roles[admin]");
         filterMap.put("/**","JWT");
-
-        //认证失败的返回页面
         bean.setLoginUrl("/jurisError");
-        //未授权页面
         bean.setUnauthorizedUrl("/authError");
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
 
     }
-
 
     //安全对象
     @Bean
@@ -79,13 +59,6 @@ public class ShiroConfig {
         return new UserRealm();
     }
 
-
-    //配置禁用session
-//    @Bean
-//    public StatelessDefaultSubjectFactory statelessDefaultSubjectFactory(){
-//        StatelessDefaultSubjectFactory statelessDefaultSubjectFactory = new StatelessDefaultSubjectFactory();
-//        return statelessDefaultSubjectFactory;
-//    }
 
 }
 

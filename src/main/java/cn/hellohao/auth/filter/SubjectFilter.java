@@ -50,7 +50,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                 return false;
             }
         }
-        //验证Token
         String token = httpServletRequest.getHeader("Authorization");
         JSONObject jsonObject = JWTUtil.checkToken(token);
         if(!jsonObject.getBoolean("check")){
@@ -63,20 +62,14 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
         }else{
             Subject subject = SecurityUtils.getSubject();
             User user = (User) subject.getPrincipal();
-            //判断shiro里是否存有用户信息，如果没有，就再存进去。
             if(user==null){
-//                System.out.println("Token没过期，但是Shiro里的用户信息空了，重新执行登录");
-                //封装用户的登录数据（shiro认证的时候使用）
                 UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(jsonObject.getString("email"),jsonObject.getString("password"));
-                //设置记住我
                 tokenOBJ.setRememberMe(true);
                 try {
-                    //执行登录方法，如果没有异常，说明登录成功
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时
                 } catch (Exception e) {
-                    System.err.println("拦截器，登录失败，false");
-                    //e.printStackTrace();
+//                    System.err.println("拦截器，登录失败，false");
                     this.CODE = "403";
                     return false;
                 }
@@ -103,9 +96,7 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response, Object mappedValue)  {
         String info = "未知错误";
         try {
-            if(this.CODE.equals("405")){
-                info = "当前请求域名认证失败";
-            }else if(this.CODE.equals("406")){
+            if(this.CODE.equals("406")){
                 info = "前端域名配置不正确";
             }else if(this.CODE.equals("403")){
                 info = "当前用户无权访问该请求";

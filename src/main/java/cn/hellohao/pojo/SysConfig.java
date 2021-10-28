@@ -8,13 +8,15 @@ package cn.hellohao.pojo;
 public class SysConfig {
     private Integer id;
     private Integer register;
+    private String checkduplicate;
 
     public SysConfig() {
     }
 
-    public SysConfig(Integer id, Integer register) {
+    public SysConfig(Integer id, Integer register, String checkduplicate) {
         this.id = id;
         this.register = register;
+        this.checkduplicate = checkduplicate;
     }
 
     public Integer getId() {
@@ -32,4 +34,14 @@ public class SysConfig {
     public void setRegister(Integer register) {
         this.register = register;
     }
+
+    public String getCheckduplicate() {
+        return checkduplicate;
+    }
+
+    public void setCheckduplicate(String checkduplicate) {
+        this.checkduplicate = checkduplicate;
+    }
+
+
 }

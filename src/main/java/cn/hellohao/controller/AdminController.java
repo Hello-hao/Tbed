@@ -4,8 +4,7 @@ import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
-import cn.hellohao.service.impl.AlbumServiceImpl;
-import cn.hellohao.service.impl.UserServiceImpl;
+import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -43,7 +42,7 @@ public class AdminController {
     @Autowired
     private ImgreviewService imgreviewService;
     @Autowired
-    private ConfigService configService;
+    private ImgTempService imgTempService;
     @Autowired
     private UploadConfigService uploadConfigService;
     @Autowired
@@ -54,6 +53,22 @@ public class AdminController {
     private AlbumService albumService;
     @Autowired
     AlbumServiceImpl albumServiceI;
+
+    @Autowired
+    private NOSImageupload nosImageupload;
+    @Autowired
+    private OSSImageupload ossImageupload;
+    @Autowired
+    private COSImageupload cosImageupload;
+    @Autowired
+    private KODOImageupload kodoImageupload;
+    @Autowired
+    private USSImageupload ussImageupload;
+    @Autowired
+    private UFileImageupload uFileImageupload;
+    @Autowired
+    private FTPImageupload ftpImageupload;
+
 
     @PostMapping(value = "/overviewData") //new
     @ResponseBody
@@ -122,7 +137,7 @@ public class AdminController {
     }
 
 
-    @PostMapping(value = "/SpaceExpansion")//new kuorong
+    @PostMapping(value = "/SpaceExpansion")//new
     @ResponseBody
     public Msg SpaceExpansion(@RequestParam(value = "data", defaultValue = "") String data) {
         final Msg msg = new Msg();
@@ -158,67 +173,6 @@ public class AdminController {
         }
     }
 
-
-    @RequestMapping(value = "/tosurvey")
-    public String admin2(HttpSession session, Model model) {
-        User u = (User) session.getAttribute("user");
-        String sysetmname = System.getProperty("os.name");
-        String isarch = System.getProperty("os.arch");
-        String jdk = System.getProperty("java.version");
-        model.addAttribute("username", u.getUsername());
-        model.addAttribute("levels", u.getLevel());
-        model.addAttribute("sysetmname",sysetmname);
-        model.addAttribute("isarch", isarch);
-        model.addAttribute("jdk", jdk);
-        //空间大小
-        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        Long usermemory = imgService.getusermemory(u.getId());
-        if(usermemory==null){usermemory=0L;}
-        User user = userService.getUsers(u);
-        if(u!=null){
-            if (u.getLevel() == 1) {
-                model.addAttribute("level", "普通用户");
-            } else if (u.getLevel() == 2) {
-                model.addAttribute("level", "管理员");
-            } else {
-                model.addAttribute("level", "未 知");
-            }
-            model.addAttribute("levels", u.getLevel());
-            model.addAttribute("username", u.getUsername());
-            model.addAttribute("api", uploadConfig.getApi());
-
-            model.addAttribute("memory",user.getMemory());//单位M
-            if(usermemory==null){
-                model.addAttribute("usermemory", 0);//单位M
-            }else{
-                float d = (float) (Math.round((usermemory/1024.0F) * 100.0) / 100.0);
-                model.addAttribute("usermemory", d);//单位M
-            }
-        }
-        return "admin/survey";
-    }
-
-    @RequestMapping(value = "/getwebconfig")
-    @ResponseBody
-    public String getwebconfig(HttpSession session) {
-        JSONObject jsonObject = new JSONObject();
-        UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        User u = (User) session.getAttribute("user");
-        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
-        jsonObject.put("usercount", imgService.countimg(u.getId()));
-        jsonObject.put("counts", imgService.counts(null) );
-        jsonObject.put("getusertotal", userService.getUserTotal());
-        jsonObject.put("imgreviewcount", imgreview.getCount());
-        if(uploadConfig.getIsupdate()!=1){
-            jsonObject.put("VisitorUpload", 0);//是否禁用了游客上传
-        }else{
-            Long temp = imgService.getusermemory(0);
-            jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
-            jsonObject.put("UsedSize", (temp == null ? 0 : temp/1024));//访客已用大小
-            jsonObject.put("VisitorMemory", uploadConfig.getVisitormemory());//访客共大小
-        }
-        return jsonObject.toString();
-    }
 
     @PostMapping("/getRecently")//new 获取榜单和最近上传
     @ResponseBody
@@ -303,7 +257,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/getStorage")//new 获取当前一共有多少种存储源 这是种类
+    @PostMapping("/getStorage")//new
     @ResponseBody
     public Msg getStorage() {
         Msg msg = new Msg();
@@ -312,7 +266,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/getStorageName")//new 获取当前一共有多少个存储源  这是总个数
+    @PostMapping("/getStorageName")//new
     @ResponseBody
     public Msg getStorageName() {
         Msg msg = new Msg();
@@ -358,7 +312,6 @@ public class AdminController {
         }
         Images img = new Images();
         PageHelper.startPage(pageNum, pageSize);
-//        img.setUseridlist(user.getId().toString());
         if(violation){
             img.setViolation("true");
         }
@@ -431,7 +384,6 @@ public class AdminController {
                 msg.setInfo("用户名不得超过20位字符");
                 return msg;
             }
-
             if(subject.hasRole("admin")){
                 final User userOld = new User();
                 userOld.setId(u.getId());
@@ -475,9 +427,87 @@ public class AdminController {
     }
 
 
+    @PostMapping("/deleImages") //new
+    @ResponseBody
+    public Msg deleImages(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        JSONArray images = jsonObj.getJSONArray("images");
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
 
+        if(null == user){
+            msg.setCode("500");
+            msg.setInfo("当前用户信息不存在");
+            return msg;
+        }
+        if(images.size()==0){
+            msg.setCode("404");
+            msg.setInfo("为获取到图像信息");
+            return msg;
+        }
+        for (int i = 0; i < images.size(); i++) {
+            Integer imgid = images.getInteger(i);
+            Images image = imgService.selectByPrimaryKey(imgid);
+            Integer keyid = image.getSource();
+            String imgname = image.getImgname();
+            Keys key = keysService.selectKeys(keyid);
 
+            if(!subject.hasRole("admin")){
+                if(image.getUserid()!=user.getId()){
+                    break;
+                }
+            }
+            //删除图片
+            boolean isDele = false;
+            try{
+                if (key.getStorageType() == 1) {
+                    isDele = nosImageupload.delNOS(key.getId(), imgname);
+                } else if (key.getStorageType() == 2) {
+                    isDele = ossImageupload.delOSS(key.getId(), imgname);
+                } else if (key.getStorageType() == 3) {
+                    isDele = ussImageupload.delUSS(key.getId(), imgname);
+                } else if (key.getStorageType() == 4) {
+                    isDele = kodoImageupload.delKODO(key.getId(), imgname);
+                } else if (key.getStorageType() == 5) {
+                    isDele = LocUpdateImg.deleteLOCImg(imgname);
+                }else if (key.getStorageType() == 6) {
+                    isDele = cosImageupload.delCOS(key.getId(), imgname);
+                }else if (key.getStorageType() == 7) {
+                    isDele = ftpImageupload.delFTP(key.getId(), imgname);
+                }else if (key.getStorageType() == 8) {
+                    isDele = uFileImageupload.delUFile(key.getId(), imgname);
+                }else {
+                    System.err.println("未获取到对象存储参数，删除失败。");
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
+            //删除库
+            if(isDele){
+                try {
+                    //删除图像表之前先删除临时数据表，图像表也会删除
+                    imgTempService.delImgAndExp(image.getImguid());
+                    imgService.deleimg(imgid);
+                    imgAndAlbumService.deleteImgAndAlbum(imgname);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    msg.setInfo("图片记录删除失败，请重试");
+                    msg.setCode("500");
+                    return msg;
+                }
+                msg.setInfo("删除成功");
+            }else{
+                imgTempService.delImgAndExp(image.getImguid());
+                imgService.deleimg(imgid);
+                imgAndAlbumService.deleteImgAndAlbum(imgname);
+                msg.setInfo("图片记录已删除，但是图片源删除失败");
+            }
+        }
+        System.out.println("返回的值："+msg.toString());
+        return msg;
+    }
 
 
     //工具函数

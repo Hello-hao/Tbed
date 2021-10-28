@@ -14,62 +14,55 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.*;
 
 @Controller
 public class IndexController {
+    @Autowired
+    private ImgService imgService;
     @Autowired
     private SysConfigService sysConfigService;
     @Autowired
     IRedisService iRedisService;
     @Autowired
-    private NOSImageupload nOSImageupload;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private KeysService keysService;
-    @Autowired
     private ConfigService configService;
     @Autowired
     private UploadConfigService uploadConfigService;
     @Autowired
-    private USSImageupload ussImageupload;
+    private  UploadServicel uploadServicel;
     @Autowired
-    private KODOImageupload kodoImageupload;
+    private NOSImageupload nosImageupload;
+    @Autowired
+    private OSSImageupload ossImageupload;
     @Autowired
     private COSImageupload cosImageupload;
     @Autowired
+    private KODOImageupload kodoImageupload;
+    @Autowired
+    private USSImageupload ussImageupload;
+    @Autowired
+    private UFileImageupload uFileImageupload;
+    @Autowired
     private FTPImageupload ftpImageupload;
     @Autowired
-    private ImgService imgService;
+    AlbumServiceImpl albumService;
     @Autowired
-    private  UploadServicel uploadServicel;
+    private KeysService keysService;
+    @Autowired
+    private ImgTempService imgTempService;
+    @Autowired
+    private ImgAndAlbumService imgAndAlbumService;
 
-    private String[] iparr;
 
-    public static String vu;
-
-
-
-    @RequestMapping(value = "/webInfo")//upimg new
+    @RequestMapping(value = "/webInfo")
     @ResponseBody
-    public Msg webInfo(HttpSession httpSession) {
+    public Msg webInfo() {
         final Msg msg = new Msg();
         Config config = configService.getSourceype();
         UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
@@ -86,8 +79,6 @@ public class IndexController {
         jsonObject.put("aboutinfo",config.getAboutinfo());
         jsonObject.put("logo",config.getLogo());
         jsonObject.put("api",updateConfig.getApi());
-//        jsonObject.put("watermark",updateConfig.getWatermark());
-//        jsonObject.put("guidepage",sysConfig.getGuidepage());
         jsonObject.put("register",sysConfig.getRegister());
         msg.setData(jsonObject);
         return msg;
@@ -108,11 +99,6 @@ public class IndexController {
         }
         return uploadServicel.uploadForLoc(request,multipartFile,day,null,jsonArray);
     }
-
-
-
-
-
 
     @RequestMapping(value = "/getUploadInfo")//new
     @ResponseBody
@@ -148,19 +134,13 @@ public class IndexController {
         String token = request.getHeader("Authorization");
         if(token != null) {
             JSONObject tokenJson = JWTUtil.checkToken(token);
-//            boolean check = (boolean) result.get("check");
-//            String password = (String) result.get("password");
             if(tokenJson.getBoolean("check")){
-                //获取当前用户
                 Subject subject = SecurityUtils.getSubject();
-                //封装用户的登录数据（shiro认证的时候使用）
                 UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(tokenJson.getString("email"),tokenJson.getString("password"));
-                //设置记住我
                 tokenOBJ.setRememberMe(true);
                 try {
-                    //执行登录方法，如果没有异常，说明登录成功
                     subject.login(tokenOBJ);
-                    SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时
+                    SecurityUtils.getSubject().getSession().setTimeout(3600000);
                     User u = (User) subject.getPrincipal();
                     final JSONObject jsonObject = new JSONObject();
                     jsonObject.put("RoleLevel",u.getLevel()==2?"admin":"user");
@@ -168,7 +148,6 @@ public class IndexController {
                     msg.setCode("200");
                     msg.setData(jsonObject);
                 } catch (Exception e) {
-                    //此异常说明用户名不存在
                     msg.setCode("40041");
                     msg.setInfo("登录失效，请重新登录");
                     System.err.println("登录失效，请重新登录");
@@ -246,7 +225,91 @@ public class IndexController {
         }
     }
 
+    //删除图像
+    @PostMapping("/deleImagesByUid") //new
+    @ResponseBody
+    public Msg deleImagesByUid(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        String imguid = jsonObj.getString("imguid");
+        Images image = imgService.selectImgUrlByImgUID(imguid);
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        if(null!=user){
+            if(user.getId()!=image.getUserid()){
+                msg.setInfo("删除失败，该图片不允许你执行操作");
+                msg.setCode("100403");
+                return msg;
+            }
+        }
+        Integer keyid = image.getSource();
+        String imgname = image.getImgname();
+        Keys key = keysService.selectKeys(keyid);
+        //删除图片
+        boolean isDele = false;
+        if (key.getStorageType() == 1) {
+            isDele = nosImageupload.delNOS(key.getId(), imgname);
+        } else if (key.getStorageType() == 2) {
+            isDele = ossImageupload.delOSS(key.getId(), imgname);
+        } else if (key.getStorageType() == 3) {
+            isDele = ussImageupload.delUSS(key.getId(), imgname);
+        } else if (key.getStorageType() == 4) {
+            isDele = kodoImageupload.delKODO(key.getId(), imgname);
+        } else if (key.getStorageType() == 5) {
+            isDele = LocUpdateImg.deleteLOCImg(imgname);
+        }else if (key.getStorageType() == 6) {
+            isDele = cosImageupload.delCOS(key.getId(), imgname);
+        }else if (key.getStorageType() == 7) {
+            isDele = ftpImageupload.delFTP(key.getId(), imgname);
+        }else if (key.getStorageType() == 8) {
+            isDele = uFileImageupload.delUFile(key.getId(), imgname);
+        }else {
+            System.err.println("未获取到对象存储参数，删除失败。");
+        }
+        //删除库
+        if(isDele){
+            try {
+                imgAndAlbumService.deleteImgAndAlbum(imgname);
+                imgTempService.delImgAndExp(image.getImguid());
+                imgService.deleimg(image.getId());
+            } catch (Exception e) {
+                e.printStackTrace();
+                msg.setInfo("图片记录时发生错误");
+                msg.setCode("500");
+                return msg;
+            }
+            msg.setInfo("删除成功");
+        }else{
+            imgAndAlbumService.deleteImgAndAlbum(imgname);
+            imgTempService.delImgAndExp(image.getImguid());
+            imgService.deleimg(image.getId());
+            msg.setInfo("图片记录已删除，但是图片源删除失败");
+            msg.setCode("500");
+        }
+        System.out.println("返回的值："+msg.toString());
+        return msg;
+    }
 
+
+    //没有权限
+    @RequestMapping("/authError")
+    @ResponseBody
+    public Msg authError(HttpServletRequest request){
+        Msg msg = new Msg();
+        msg.setCode("4031");
+        msg.setInfo("You don't have authority");
+        return msg;
+    }
+
+    //认证失败
+    @RequestMapping("/jurisError")
+    @ResponseBody
+    public Msg jurisError(HttpServletRequest request){
+        Msg msg = new Msg();
+        msg.setCode("4031");
+        msg.setInfo("Authentication request failed");
+        return msg;
+    }
 
 
 
