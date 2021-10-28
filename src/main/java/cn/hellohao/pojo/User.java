@@ -18,13 +18,15 @@ public class User {
     private Integer isok;
     private  String memory;
     private Integer groupid;
+    private String groupname;
 
 
     public User() {
         super();
     }
 
-    public User(Integer id, String username, String password, String email, String birthder, Integer level, String uid, Integer isok, String memory, Integer groupid) {
+    public User(Integer id, String username, String password, String email, String birthder, Integer level, String uid,
+                Integer isok, String memory, Integer groupid,String groupname) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -35,6 +37,7 @@ public class User {
         this.isok = isok;
         this.memory = memory;
         this.groupid = groupid;
+        this.groupname = groupname;
     }
 
     public Integer getId() {
@@ -115,5 +118,13 @@ public class User {
 
     public void setGroupid(Integer groupid) {
         this.groupid = groupid;
+    }
+
+    public String getGroupname() {
+        return groupname;
+    }
+
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
     }
 }

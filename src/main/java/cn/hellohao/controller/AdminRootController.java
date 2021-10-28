@@ -55,6 +55,7 @@ public class AdminRootController {
 
 
     @PostMapping(value = "/getUserList")//new
+    @ResponseBody
     public Map<String, Object> getUserList(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer pageNum = jsonObj.getInteger("pageNum");
@@ -81,7 +82,7 @@ public class AdminRootController {
             JSONObject jsonObj = JSONObject.parseObject(data);
             Integer id = jsonObj.getInteger("id");
             String email = jsonObj.getString("email");
-            Integer memory = jsonObj.getInteger("memory");
+            Long memory = jsonObj.getLong("memory");
             Integer groupid = jsonObj.getInteger("groupid");
             Integer isok = jsonObj.getInteger("isok");
             if(memory<0 || memory>1048576L){
@@ -95,7 +96,7 @@ public class AdminRootController {
             User userInfo = userService.getUsers(user2);
             user.setId(id);
             user.setEmail(email);
-            user.setMemory(Integer.toString(memory*1024*1024));
+            user.setMemory(Long.toString(memory*1024*1024));
             user.setGroupid(groupid);
             if(userInfo.getLevel()==1){
                 user.setIsok(isok==1?1:-1);
