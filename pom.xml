@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.5.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>cn.hellohao</groupId>
     <artifactId>Tbed</artifactId>
@@ -58,9 +58,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <!--        自定义依赖添加 -->
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-redis -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
@@ -77,22 +74,12 @@
             <artifactId>java-jwt</artifactId>
             <version>3.16.0</version>
         </dependency>
-        <!--        下边两个都是为了检查类型-->
-        <!-- https://mvnrepository.com/artifact/jmimemagic/jmimemagic -->
-        <!--        <dependency>-->
-        <!--            <groupId>jmimemagic</groupId>-->
-        <!--            <artifactId>jmimemagic</artifactId>-->
-        <!--            <version>0.1.2</version>-->
-        <!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>2.0.0</version>
         </dependency>
 
-
-        <!-- 实体类标识注解如：不能为空 最大长度 等 -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-tx</artifactId>
@@ -118,11 +105,6 @@
             <artifactId>httpclient</artifactId>
             <version>4.5.13</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.httpcomponents</groupId>-->
-<!--            <artifactId>httpmime</artifactId>-->
-<!--            <version>4.5.12</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
@@ -171,7 +153,6 @@
             <version>0.0.4</version>
         </dependency>
 
-        <!--    对象存储依赖-->
         <dependency>
             <groupId>com.netease.cloud</groupId>
             <artifactId>nos-sdk-java-publiccloud</artifactId>
@@ -192,7 +173,6 @@
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
         </dependency>
-        <!-- no more than 2.3.3-->
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
@@ -231,15 +211,6 @@
             <version>5.2.6.RELEASE</version>
             <scope>compile</scope>
         </dependency>
-        <!--        解析xml的依赖-->
-        <!--        <dependency>-->
-        <!--            <groupId>dom4j</groupId>-->
-        <!--            <artifactId>dom4j</artifactId>-->
-        <!--            <version>1.6.1</version>-->
-        <!--        </dependency>-->
-
-
-
     </dependencies>
 
     <build>
