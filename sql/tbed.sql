@@ -11,7 +11,7 @@
  Target Server Version : 50720
  File Encoding         : 65001
 
- Date: 28/10/2021 22:17:33
+ Date: 29/10/2021 14:42:28
 */
 
 SET NAMES utf8mb4;
@@ -80,7 +80,7 @@ CREATE TABLE `config`  (
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 7, 1, 'Hellohao图床', 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/books_x264.mp4http://cdn.wwery.com/Hellohao/439550606022825.jpg', '1', '<p style=\"color:#7c7c88;\">&copy; 2019 <a href=\"http://www.Hellohao.cn/\" target=\"_blank\" title=\"Hellohao\">Hellohao</a><span>&nbsp;&nbsp;- All Rights Reserved</span> </p>', '也许...|这将是最好用的图床|为了更好的用户体验，建议您注册本站继续免费使用Hellohao图床。本站不得上传任何形式的非法图片，一旦发现，永久删除并禁封账户。情节严重者将相关资料交于相关部门处理。', 'var _hmt = _hmt || [];\n(function() {\n  var hm = document.createElement(\"script\");\n  hm.src = \"https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888\";\n  var s = document.getElementsByTagName(\"script\")[0]; \n  s.parentNode.insertBefore(hm, s);\n})();\n\n', 'http://api.hellohao.cn', '', 'http://cdn.wwery.com/Hellohao/3e1901120091153.jpg', 1, 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'hellohao图床,图床,图片上传,开源图床,hellohao,图像托管，图片分享', 'https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico', 2, '这将是你用过最优秀的图像托管程序', NULL, '<img width=\"300px\" src=\"http://img.wwery.com/Hellohao/7SpMQnE3.png\">\n            <br />\n            <br />\n            <p>也许,这将是你用到最优秀的图像托管程序</p>\n            <p>本程序为Hellohao图象托管程序的重构Dev</p>\n            <br/>\n            <p style=\"color: #656565;\">作者：hellohao独立开发</p>\n            <p style=\"color: #656565;\">www.hellohao.cn</p>');
+INSERT INTO `config` VALUES (1, 7, 1, 'Hellohao图床', 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/books_x264.mp4http://cdn.wwery.com/Hellohao/439550606022825.jpg', '1', '<p style=\"color:#7c7c88;\">&copy; 2019 <a href=\"http://www.Hellohao.cn/\" target=\"_blank\" title=\"Hellohao\">Hellohao</a><span>&nbsp;&nbsp;- All Rights Reserved</span> </p>', '也许...|这将是最好用的图床|为了更好的用户体验，建议您注册本站继续免费使用Hellohao图床。本站不得上传任何形式的非法图片，一旦发现，永久删除并禁封账户。情节严重者将相关资料交于相关部门处理。', 'var _hmt = _hmt || [];\n(function() {\n  var hm = document.createElement(\"script\");\n  hm.src = \"https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888\";\n  var s = document.getElementsByTagName(\"script\")[0]; \n  s.parentNode.insertBefore(hm, s);\n})();\n\n', 'http://api.hellohao.cn', '', 'http://cdn.wwery.com/Hellohao/3e1901120091153.jpg', 1, 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'hellohao图床,图床,图片上传,开源图床,hellohao,图像托管，图片分享', 'https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico', 2, '这将是你用过最优秀的图像托管程序', NULL, '<img width=\"300px\" src=\"http://img.wwery.com/Hellohao/rPscRYwz.png\">\n            <br />\n            <br />\n            <p>也许,这将是你用到最优秀的图像托管程序</p>\n            <p>本程序为Hellohao图象托管程序</p>\n            <br/>\n            <p style=\"color: #656565;\">作者：hellohao独立开发</p>\n            <p style=\"color: #656565;\">www.hellohao.cn</p>');
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -100,7 +100,7 @@ CREATE TABLE `emailconfig`  (
 -- ----------------------------
 -- Records of emailconfig
 -- ----------------------------
-INSERT INTO `emailconfig` VALUES (1, 'hellohao@hellohao.cn', '123456', 'smtp.qq.com', '465', 'Hellohao图床', 0);
+INSERT INTO `emailconfig` VALUES (1, '', '', '', '465', 'Hellohao图床', 0);
 
 -- ----------------------------
 -- Table structure for group
@@ -157,7 +157,7 @@ CREATE TABLE `imgdata`  (
   `violation` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_md5key_url`(`md5key`(255), `imgurl`(255)) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
 
 -- ----------------------------
 -- Records of imgdata
@@ -216,16 +216,14 @@ CREATE TABLE `keys`  (
 -- ----------------------------
 -- Records of keys
 -- ----------------------------
-INSERT INTO `keys` VALUES (1, '1', '1', '1', '1', '1', 2, '阿里云');
-INSERT INTO `keys` VALUES (2, '1', '1', '1', '1', '1', 1, '网易云');
-INSERT INTO `keys` VALUES (3, '1', '1', '0', '1', '1', 3, '又拍');
-INSERT INTO `keys` VALUES (4, '1', '1', '1', '1', '1', 4, '七牛云');
-INSERT INTO `keys` VALUES (5, '0', '0', '0', '0', 'http://127.0.0.1:8088', 5, 'Localhost');
-INSERT INTO `keys` VALUES (6, '1', '1', '1', '1', '1', 6, '腾讯云');
-INSERT INTO `keys` VALUES (8, '1', '1', '0', '1', '1', 8, 'UFile');
-INSERT INTO `keys` VALUES (9, '1', '1', '1', '1', '1', 9, 'B2');
-INSERT INTO `keys` VALUES (10, '1', '1', '1', '1', '1', 10, 'minio');
-INSERT INTO `keys` VALUES (13, '1', '1', '1', '0', '1', 7, 'ftp');
+INSERT INTO `keys` VALUES (1, '', '', '', '', '', 2, '阿里云');
+INSERT INTO `keys` VALUES (2, '', '', '', '', '', 1, '网易云');
+INSERT INTO `keys` VALUES (3, '', '', '0', '', '', 3, '又拍');
+INSERT INTO `keys` VALUES (4, '', '', '', '', '', 4, '七牛云');
+INSERT INTO `keys` VALUES (5, '0', '0', '0', '0', 'http://127.0.0.1:8089', 5, 'Localhost');
+INSERT INTO `keys` VALUES (6, '', '', '', '', '', 6, '腾讯云');
+INSERT INTO `keys` VALUES (8, '', '', '0', '', '', 8, 'UFile');
+INSERT INTO `keys` VALUES (13, '', '', '', '0', '', 7, 'ftp');
 
 -- ----------------------------
 -- Table structure for sysconfig
@@ -267,7 +265,7 @@ CREATE TABLE `uploadconfig`  (
 -- ----------------------------
 -- Records of uploadconfig
 -- ----------------------------
-INSERT INTO `uploadconfig` VALUES (1, '1048576', '5242880', 1, 5, 'gif,jpg,jpeg,bmp,png,jfif,webp,ico,svg', 1, 1, 1, '2147483648', '104857600', '', 1);
+INSERT INTO `uploadconfig` VALUES (1, '10485760', '20971520', 5, 10, 'gif,jpg,jpeg,bmp,png,jfif,webp', 1, 0, 0, '524288000', '104857600', '', 1);
 
 -- ----------------------------
 -- Table structure for user
@@ -285,12 +283,12 @@ CREATE TABLE `user`  (
   `memory` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `groupid` int(255) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, 'a7d513e6e0084057a6f1c7b395ddbe6b', 1, '2147483648', 1);
+INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, 'e95c0571bfe04ec680c249fb15cc22e9', 1, '2147483648', 1);
 
 -- ----------------------------
 -- Table structure for usergroup
