@@ -17,6 +17,8 @@ public interface ImgMapper {
 
     Integer deleimg(@Param("id") Integer id);
 
+    Integer deleimgForImgUid(@Param("imguid") String imguid);
+
     Images selectByPrimaryKey(@Param("id") Integer id);
 
     Integer counts(@Param("userid") Integer userid);

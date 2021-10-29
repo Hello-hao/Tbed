@@ -57,6 +57,10 @@ public class ImgServiceImpl implements ImgService {
         return imgMapper.deleimg(id);
     }
 
+    @Override
+    public Integer deleimgForImgUid(String imguid) {
+        return imgMapper.deleimgForImgUid(imguid);
+    }
 
     public Images selectByPrimaryKey(Integer id) {
         return imgMapper.selectByPrimaryKey(id);

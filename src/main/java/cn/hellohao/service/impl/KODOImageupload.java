@@ -76,7 +76,6 @@ public class KODOImageupload {
             returnImage.setCode("500");
         }
         return returnImage;
-
     }
 
     public static Integer Initialize(Keys k) {

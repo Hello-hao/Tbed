@@ -15,6 +15,8 @@ public interface ImgService {
 
     Integer deleimg(Integer id);
 
+    Integer deleimgForImgUid(String imguid);
+
     Integer countimg(Integer userid);
 
     Images selectByPrimaryKey(Integer id);

@@ -63,6 +63,9 @@
         DELETE FROM imgdata WHERE id=#{id}
     </delete>
 
+    <delete id="deleimgForImgUid" parameterType="string">
+        DELETE FROM imgdata WHERE imguid = #{imguid}
+    </delete>
 
     <select id="selectByPrimaryKey" parameterType="integer" resultType="cn.hellohao.pojo.Images">
         select * from imgdata where id = #{id}
