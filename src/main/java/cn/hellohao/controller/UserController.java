@@ -2,7 +2,6 @@ package cn.hellohao.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,8 +21,8 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
+import org.springframework.web.bind.annotation.*;
 
 
 @Controller
@@ -46,7 +45,7 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public Msg Register(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {//Validated
+    public Msg Register(HttpServletRequest request, @RequestParam(value = "data", defaultValue = "") String data) {//Validated
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String username = jsonObj.getString("username");
@@ -112,7 +111,6 @@ public class UserController {
             Integer type = 0;
             if(emailConfig.getUsing()==1){
                 user.setIsok(0);
-                //注册完发激活链接
                 Thread thread = new Thread() {
                     public void run() {
                         Integer a = NewSendEmail.sendEmail(emailConfig,user.getUsername(), uid, user.getEmail(),config);
@@ -121,7 +119,6 @@ public class UserController {
                 thread.start();
                 msg.setInfo("注册成功,请注意查收邮箱尽快激活账户");
             }else{
-                //直接注册
                 user.setIsok(1);
                 msg.setInfo("注册成功,快去登陆吧");
             }
@@ -208,8 +205,6 @@ public class UserController {
     }
 
 
-
-    //邮箱激活
     @RequestMapping(value = "/activation", method = RequestMethod.GET)
     public String activation(Model model, HttpServletRequest request, HttpSession session, String activation, String username) {
         Config config = configService.getSourceype();
@@ -232,7 +227,6 @@ public class UserController {
         }
     }
 
-    //退出
     @PostMapping(value = "/logout")//new
     @ResponseBody
     public Msg exit(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
@@ -244,7 +238,6 @@ public class UserController {
         return msg;
     }
 
-    //retrievepass
     @PostMapping("/retrievePass") //new
     @ResponseBody
     public Msg retrievePass(HttpServletRequest request, @RequestParam(value = "data", defaultValue = "") String data) {
@@ -307,7 +300,6 @@ public class UserController {
         return msg;
     }
 
-    //邮箱激活
     @RequestMapping(value = "/retrieve", method = RequestMethod.GET) //new
     public String retrieve(Model model, String activation,String cip) {
         Integer ret = 0;
@@ -340,11 +332,6 @@ public class UserController {
         return "msg";
     }
 
-
-    private Integer number1;
-    private Integer istmp1;
-    private Integer number2;
-    private Integer istmp2;
 
 
 }

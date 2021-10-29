@@ -100,6 +100,24 @@ public class IndexController {
         return uploadServicel.uploadForLoc(request,multipartFile,day,null,jsonArray);
     }
 
+    //根据网络图片url上传
+    @PostMapping(value = "/uploadForUrl") //new
+    @ResponseBody
+    public Msg upurlimg(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        final JSONArray jsonArray = new JSONArray();
+        Integer setday = jsonObj.getInteger("day");
+        String imgUrl = jsonObj.getString("imgUrl");
+        String selectTreeListStr = jsonObj.getString("classifications");
+        if(null != selectTreeListStr){
+            String[] calssif = selectTreeListStr.split(",");
+            for (int i = 0; i < calssif.length; i++) {
+                jsonArray.add(calssif[i]);
+            }
+        }
+        return uploadServicel.uploadForLoc(request,null,setday,imgUrl,jsonArray);
+    }
+
     @RequestMapping(value = "/getUploadInfo")//new
     @ResponseBody
     public Msg getUploadInfo() {

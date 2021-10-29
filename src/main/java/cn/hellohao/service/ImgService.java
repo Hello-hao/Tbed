@@ -41,8 +41,6 @@ public interface ImgService {
 
     List<User> RecentlyUser();
 
-    Integer addGreat(Integer id);
-
     List<String> getyyyy(Integer userid);
 
     List<Images> countByM(Images images);

@@ -230,10 +230,6 @@ public class ImgServiceImpl implements ImgService {
         return imgMapper.RecentlyUser();
     }
 
-    @Override
-    public Integer addGreat(Integer id) {
-        return imgMapper.addGreat(id);
-    }
 
     public List<String> getyyyy(Integer userid){
         return imgMapper.getyyyy(userid);

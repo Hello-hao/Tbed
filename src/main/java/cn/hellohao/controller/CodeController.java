@@ -26,7 +26,6 @@ public class CodeController {
     @Autowired
     private CodeService codeService;
 
-
     @RequestMapping(value = "/selectCodeList")//new
     @ResponseBody
     public Map<String, Object> selectCodeList(@RequestParam(value = "data", defaultValue = "") String data) {

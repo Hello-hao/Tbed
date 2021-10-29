@@ -19,7 +19,6 @@
         a.imguid,
         a.format,
         a.about,
-        a.great,
         a.violation
         FROM
         imgdata a
@@ -128,15 +127,11 @@
 
     <select id="RecentlyUser" resultType="cn.hellohao.pojo.User">
         select count(i.id) as counts ,i.userid,u.username from imgdata i
-                                                                   LEFT JOIN `user` u on i.userid = u.id
+         LEFT JOIN `user` u on i.userid = u.id
         where i.userid not in (0)
         GROUP BY i.userid ORDER BY counts DESC LIMIT 20
     </select>
 
-    <!--    点赞后累加数 -->
-    <update id="addGreat" parameterType="integer">
-        update imgdata set great = (great+1) where id = #{id}
-    </update>
 
 
     <select id="getyyyy" parameterType="integer" resultType="string">

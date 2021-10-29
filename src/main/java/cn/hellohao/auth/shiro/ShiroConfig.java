@@ -43,17 +43,14 @@ public class ShiroConfig {
 
     }
 
-    //安全对象
     @Bean
     public DefaultWebSecurityManager defaultWebSecurityManager(@Qualifier("userRealm") UserRealm userRealm){
         DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
-        //关联UserRealm
         defaultWebSecurityManager.setRealm(userRealm);
         defaultWebSecurityManager.setRememberMeManager(null);
         return defaultWebSecurityManager;
     }
 
-    //创建 realm 对象
     @Bean(name = "userRealm")
     public UserRealm userRealm(){
         return new UserRealm();

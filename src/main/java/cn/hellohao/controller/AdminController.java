@@ -14,10 +14,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -37,8 +35,6 @@ public class AdminController {
     private KeysService keysService;
     @Autowired
     private UserServiceImpl userService;
-    @Autowired
-    private UserServiceImpl userServiceImpl;
     @Autowired
     private ImgreviewService imgreviewService;
     @Autowired
@@ -81,11 +77,9 @@ public class AdminController {
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
         Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);//查询非法个数
         Imgreview isImgreviewOK = imgreviewService.selectByusing(1);//查询有没有启动鉴别功能
-        //普通用户
         String ok = "false";
         jsonObject.put("myImgTotal", imgService.countimg(user.getId())); //我的图片数
         jsonObject.put("myAlbumTitle", albumService.selectAlbumCount(user.getId()));//我的画廊数量
-        //计算自己的百分比 已用量/分配量
         long memory = Long.valueOf(user.getMemory());//分配量
         Long usermemory = imgService.getusermemory(user.getId())==null?0L:imgService.getusermemory(user.getId());
         if(memory==0){
@@ -174,7 +168,7 @@ public class AdminController {
     }
 
 
-    @PostMapping("/getRecently")//new 获取榜单和最近上传
+    @PostMapping("/getRecently")//new
     @ResponseBody
     public Msg getRecently(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -184,11 +178,9 @@ public class AdminController {
             User user = (User) subject.getPrincipal();
             user =  userService.getUsers(user);
             if(user.getLevel()>1){
-                //管理员 可以看榜单数据 和最近上传
                 jsonObject.put("RecentlyUser",imgService.RecentlyUser());
                 jsonObject.put("RecentlyUploaded",imgService.RecentlyUploaded(user.getId()));
             }else{
-                //普通用户只能看最近上传
                 jsonObject.put("RecentlyUploaded",imgService.RecentlyUploaded(user.getId()));
             }
         }catch (Exception e){
@@ -325,7 +317,6 @@ public class AdminController {
             img.setClassifuidlist(calssif);
         }
         if(subject.hasRole("admin")){
-            //管理员 sql根据userid是否等于空做的判断，
             img.setUserid(null);
         }else{
             //普通用户
@@ -389,7 +380,6 @@ public class AdminController {
                 userOld.setId(u.getId());
                 User userInfo = userService.getUsers(userOld);
                 if(!userInfo.getUsername().equals(username)){
-                    //要修改用户名
                     Integer countusername = userService.countusername(username);
                     if(countusername == 1 || !SysName.CheckSysName(username)){
                         msg.setCode("110406");
@@ -400,7 +390,6 @@ public class AdminController {
                     }
                 }
                 if(!userInfo.getEmail().equals(email)){
-                    //要修改邮箱
                     Integer countmail = userService.countmail(email);
                     if(countmail == 1){
                         msg.setCode("110407");
@@ -458,7 +447,6 @@ public class AdminController {
                     break;
                 }
             }
-            //删除图片
             boolean isDele = false;
             try{
                 if (key.getStorageType() == 1) {
@@ -483,11 +471,8 @@ public class AdminController {
             }catch (Exception e){
                 e.printStackTrace();
             }
-
-            //删除库
             if(isDele){
                 try {
-                    //删除图像表之前先删除临时数据表，图像表也会删除
                     imgTempService.delImgAndExp(image.getImguid());
                     imgService.deleimg(imgid);
                     imgAndAlbumService.deleteImgAndAlbum(imgname);
@@ -505,7 +490,6 @@ public class AdminController {
                 msg.setInfo("图片记录已删除，但是图片源删除失败");
             }
         }
-        System.out.println("返回的值："+msg.toString());
         return msg;
     }
 

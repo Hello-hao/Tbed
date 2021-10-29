@@ -1,26 +1,15 @@
 package cn.hellohao.controller;
 
-import cn.hellohao.pojo.*;
-import cn.hellohao.service.*;
-import cn.hellohao.service.impl.*;
-import cn.hellohao.utils.*;
-import cn.hutool.http.HttpUtil;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import cn.hellohao.pojo.Msg;
+import cn.hellohao.service.impl.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * @author Hellohao

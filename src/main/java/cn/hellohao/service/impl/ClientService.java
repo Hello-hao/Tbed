@@ -61,8 +61,6 @@ public class ClientService {
     @Autowired
     private UploadConfigMapper uploadConfigMapper;
     @Autowired
-    private NoticeMapper noticeMapper;
-    @Autowired
     private ImgMapper imgMapper;
     @Autowired
     ImgreviewMapper imgreviewMapper;

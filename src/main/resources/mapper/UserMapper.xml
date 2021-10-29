@@ -105,8 +105,8 @@
 
     <!-- 插入图片信息 -->
     <insert id="insertimg" parameterType="cn.hellohao.pojo.Images">
-        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype,md5key,imguid,format,about,great,violation)
-        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},#{md5key},#{imguid},#{format},#{about},"0",null)
+        INSERT INTO imgdata (id, imgname, imgurl, userid, updatetime,sizes,abnormal,source,imgtype,md5key,imguid,format,about,violation)
+        VALUES (NULL, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},#{md5key},#{imguid},#{format},#{about},null)
     </insert>
 
     <!-- 修改资料 -->

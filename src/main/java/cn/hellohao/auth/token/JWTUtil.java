@@ -22,9 +22,7 @@ public class JWTUtil {
     private static String EXPIRE_TIME = "";
     private static String SECRET = "www.hellohao.cn";
 
-    //生成Token
     public static String createToken(User user){
-//        Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.SECOND,604800 );//单位秒，604800 为7天
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
@@ -33,14 +31,11 @@ public class JWTUtil {
                 .withClaim("username", user.getUsername())
                 .withClaim("uid", user.getUid())
                 .withClaim("password", user.getPassword())
-                //到期时间
                 .withExpiresAt(calendar.getTime())
-                //创建一个新的JWT，并使用给定的算法进行标记
                 .sign(algorithm);
         return token;
     }
 
-    //验证Token
     public static JSONObject checkToken(String token){
         JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();//验证对象
         JSONObject jsonObject = new JSONObject();
@@ -68,13 +63,5 @@ public class JWTUtil {
     }
 
 
-    public static void main(String[] args) {
-        User user = new User();
-        user.setEmail("Hellohao@qq.com");
-        user.setUsername("Hellohao");
-        String token = createToken(user);
-        System.out.println(token);
-        checkToken(token);
-//        checkToken("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MjM3NDYwOTUsImVtYWlsIjoiSGVsbG9oYW9AcXEuY29tIiwidXNlcm5hbWUiOiJIZWxsb2hhbyJ9.sFnAq1VU0wuiowaTtgJNNkMzRHPmRg4leNguhh0OMCA");
-    }
+
 }

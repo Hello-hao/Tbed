@@ -3,8 +3,6 @@ package cn.hellohao.controller;
 import cn.hellohao.pojo.Group;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.service.GroupService;
-import cn.hellohao.service.KeysService;
-import cn.hellohao.service.UserService;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -28,18 +26,12 @@ import java.util.Map;
 public class GroupController {
     @Autowired
     private GroupService groupService;
-    @Autowired
-    private KeysService keysService;
-    @Autowired
-    private UserService userService;
-
 
 
     @PostMapping("/getGrouplistForUsers") //new
     @ResponseBody
     public Msg getGrouplistForUsers() {
         Msg msg = new Msg();
-        //只获取用户组type为0的，只有是0的才是未分配用户组的，才能给指定用户设置
         List<Group> groupList = groupService.grouplist(0);
         msg.setData(groupList);
         return msg;

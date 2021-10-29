@@ -40,8 +40,6 @@ public interface ImgMapper {
 
     List<User> RecentlyUser();
 
-    Integer addGreat(@Param("id") Integer id);
-
     List<String> getyyyy(@Param("userid") Integer userid);
 
     List<Images> countByM(Images images);

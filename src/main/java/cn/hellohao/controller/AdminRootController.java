@@ -31,8 +31,6 @@ import java.util.Map;
 @RequestMapping("/admin/root")
 public class AdminRootController {
     @Autowired
-    private NOSImageupload nOSImageupload;
-    @Autowired
     private ConfigService configService;
     @Autowired
     private KeysService keysService;
@@ -43,11 +41,7 @@ public class AdminRootController {
     @Autowired
     private UploadConfigService uploadConfigService;
     @Autowired
-    private NoticeService noticeService;
-    @Autowired
     private SysConfigService sysConfigService;
-    @Autowired
-    private GroupService groupService;
     @Autowired
     private ImgService imgService;
     @Autowired

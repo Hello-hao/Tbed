@@ -2,7 +2,8 @@ package cn.hellohao.controller;
 
 import cn.hellohao.pojo.*;
 import cn.hellohao.pojo.vo.PageResultBean;
-import cn.hellohao.service.*;
+import cn.hellohao.service.ImgAndAlbumService;
+import cn.hellohao.service.UserService;
 import cn.hellohao.service.impl.AlbumServiceImpl;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -13,10 +14,10 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -30,13 +31,7 @@ public class AlbumController {
     @Autowired
     AlbumServiceImpl albumServiceImpl;
     @Autowired
-    private ConfigService configService;
-    @Autowired
-    private ImgService imgService;
-    @Autowired
     ImgAndAlbumService imgAndAlbumService;
-    @Autowired
-    private UploadConfigService uploadConfigService;
     @Autowired
     private UserService userService;
 
