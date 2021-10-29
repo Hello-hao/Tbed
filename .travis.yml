@@ -1,4 +1,0 @@
-language: java
-rvm:
-  - 2.2
-  - jruby
