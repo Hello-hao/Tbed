@@ -24,9 +24,8 @@ public class OSSImageupload {
         meta.setHeader("Content-Disposition", "inline");
         try {
             for (Map.Entry<String, File> entry : fileMap.entrySet()) {
-                String ShortUID = SetText.getShortUuid();//UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5);//生成一个没有-的uuid，然后取前5位
+                String ShortUID = SetText.getShortUuid();
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
-//                    String times = format1.format(new Date());
                 file = entry.getValue();
                 System.out.println("待上传的图片："+username + "/" + ShortUID + "." + entry.getKey());
                 ossClient.putObject(key.getBucketname(), username + "/" + ShortUID + "." + entry.getKey(),file);
@@ -41,12 +40,9 @@ public class OSSImageupload {
         }
         return returnImage;
 
-
     }
 
-    //初始化
     public static Integer Initialize(Keys k) {
-
         int ret = -1;
         ObjectListing objectListing = null;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getAccessKey()!=null && k.getEndpoint()!=null

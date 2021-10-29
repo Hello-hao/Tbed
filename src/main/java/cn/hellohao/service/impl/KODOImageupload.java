@@ -79,7 +79,6 @@ public class KODOImageupload {
 
     }
 
-    //初始化
     public static Integer Initialize(Keys k) {
         int ret = -1;
         if (k.getEndpoint() != null && k.getAccessSecret() != null && k.getEndpoint() != null
@@ -101,7 +100,6 @@ public class KODOImageupload {
                 UploadManager uploadManager = new UploadManager(cfg);
                 Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
                 String upToken = auth.uploadToken(k.getBucketname(),null,7200,null);//auth.uploadToken(k.getBucketname());
-
                 BucketManager bucketManager = new BucketManager(auth, cfg);
                 BucketManager.FileListIterator fileListIterator = null;
                 try {
