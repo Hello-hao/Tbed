@@ -106,7 +106,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 - vuex
 - axios
 
-#### 	前端主要技术
+#### 	后端主要技术
 
 - SpringBoot
 - MyBatis
