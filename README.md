@@ -26,6 +26,9 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 ### 引导
 
+> 目前`*.hellohao.cn`在国内多个省被运营商劫持，部分省市打不开，恢复时间尚不明确。
+> 迫于无奈，我已经准备了备用域名，后续陆续添加备用域名。
+> 如：`xxx.hellohao.cn`打不开，请尝试访问`xxx.wwery.com`
 
 程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
 
@@ -36,6 +39,8 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 前端源码：[https://github.com/Hello-hao/tbed-web](https://github.com/Hello-hao/tbed-web)
 
 文档地址：[http://doc.hellohao.cn](http://doc.hellohao.cn)
+
+文档地址(备用)：[http://doc.wwery.com](http://doc.hellohao.cn)
 
 程序展示：[http://tc.hellohao.cn](http://tc.hellohao.cn)
 
