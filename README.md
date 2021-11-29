@@ -23,8 +23,7 @@
 Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,`U-File`,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`
 
 
-### 更新日志
-> `20211129`
+### 更新日志 `20211129`
 - 修复FTP存储源上传失败的问题
 - 修复MAC系统下路径问题
 - 优化系统部分代码
