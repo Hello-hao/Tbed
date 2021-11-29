@@ -12,7 +12,7 @@ public class WebImgConfigurer implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        String filePath = File.separator + "HellohaoData" + File.separator;
+        String filePath = GlobalConstant.LOCPATH + File.separator;
         registry.addResourceHandler("/ota/**").addResourceLocations("file:"+filePath);
     }
 

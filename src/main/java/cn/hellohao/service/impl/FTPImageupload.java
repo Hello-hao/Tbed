@@ -22,7 +22,6 @@ public class FTPImageupload {
 
     public ReturnImage ImageuploadFTP(Map<String, File> fileMap, String username,Integer keyID)  {
         ReturnImage returnImage = new ReturnImage();
-        Keys key = null;
         String[] host = key.getEndpoint().split("\\:");
         String h = host[0];
         Integer p = Integer.parseInt(host[1]);
