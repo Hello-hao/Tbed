@@ -44,11 +44,20 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 文档地址：[http://doc.hellohao.cn](http://doc.hellohao.cn)
 
-文档地址(备用)：[http://doc.wwery.com](http://doc.hellohao.cn)
-
 程序展示：[http://tc.hellohao.cn](http://tc.hellohao.cn)
 
 作者博客：[http://www.hellohao.cn](http://www.hellohao.cn)
+
+--- **备用地址** ---
+
+文档地址(备用)：[http://doc.wwery.com](http://doc.wwery.cn)
+
+官网(含Core版)(备用)：[http://Tbed.wwery.com](http://Tbed.wwery.com)
+
+程序展示(备用)：[http://tc.wwery.com](http://tc.wwery.com)
+
+作者博客(备用)：[http://www.wwery.com](http://www.wwery.com)
+
 
 
 
