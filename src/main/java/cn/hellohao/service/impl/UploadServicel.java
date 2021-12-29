@@ -110,7 +110,7 @@ public class UploadServicel {
                 e.printStackTrace();
                 System.out.println("未获取到图片的MD5,成成UUID");
             }
-            Msg fileMiME = TypeDict.FileMiME(file, uploadConfig.getSuffix());
+            Msg fileMiME = TypeDict.FileMiME(file);
             if(!fileMiME.getCode().equals("200")) {
                 //非图像文本
                 msg.setCode("4000");

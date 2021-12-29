@@ -47,14 +47,16 @@ public class COSImageupload {
                     returnImage.setImgSize(entry.getValue().length());
                     returnImage.setCode("200");
                 } catch (CosServiceException serverException) {
+                    returnImage.setCode("400");
                     serverException.printStackTrace();
                 } catch (CosClientException clientException) {
+                    returnImage.setCode("400");
                     clientException.printStackTrace();
                 }
             }
         }catch(Exception e){
             e.printStackTrace();
-            returnImage.setCode("200");
+            returnImage.setCode("500");
         }
         return returnImage;
     }

@@ -128,7 +128,7 @@ public class ImgUrlUtil {
             //下载并且保存成功后 判断格式 如果不是图像格式 就删除
 //
             if(new File(saveDir+File.separator+fileName).exists()){
-                Msg msg = TypeDict.FileMiME(file,null);
+                Msg msg = TypeDict.FileMiME(file);
                 if(msg.getCode().equals("200")){
                     File f = new File(saveDir+File.separator+fileName);
                     String imgPath = saveDir+File.separator+fileName+"."+(msg.getData().toString().replace("image/",""));

@@ -1,8 +1,6 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.service.impl.ImgServiceImpl;
-import cn.hellohao.service.impl.ImgreviewServiceImpl;
-
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -26,9 +24,6 @@ public class GetIPS implements Runnable {
         Thread thread = new Thread(getIPS);
         thread.start();
     }
-
-
-    /*** * 用于测试跨域 * @author huangweii * 2015年5月29日 */
 
     public static String getIpAddr(HttpServletRequest request){
         String ip = request.getHeader("X-Forwarded-For");

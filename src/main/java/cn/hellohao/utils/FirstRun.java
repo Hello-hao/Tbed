@@ -86,11 +86,11 @@ public class FirstRun implements InitializingBean {
             Print.Normal("Stage 7");
         }
 
-        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+"'imgandalbum' and column_name = 'notes' and TABLE_SCHEMA='picturebed'");
-        if(ret6==0){
-            RunSqlScript.RunInsert(sql11);
-            Print.Normal("Stage 8");
-        }
+//        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+"'imgandalbum' and column_name = 'notes' and TABLE_SCHEMA='picturebed'");
+//        if(ret6==0){
+//            RunSqlScript.RunInsert(sql11);
+//            Print.Normal("Stage 8");
+//        }
 
         RunSqlScript.RunInsert(sql10);
 
@@ -120,7 +120,7 @@ public class FirstRun implements InitializingBean {
     private String sql10 = "alter table config modify column `explain` varchar(1000),modify column links varchar(1000),modify column notice varchar(1000),modify column baidu varchar(1000)";
 
     //添加imgandalbum字段notes(添加画廊图片说明)
-    private String sql11 = "alter table imgandalbum add notes varchar(1000) DEFAULT ' '";
+//    private String sql11 = "alter table imgandalbum add notes varchar(1000) DEFAULT ' '";
 
     private String inddx_md5key = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( md5key,imgurl)";
     //                             create index yarn_app_result_i4 on yarn_app_result (flow_exec_id(100), another_column(50));

@@ -69,7 +69,7 @@ MIDI (mid)，文件头：4D546864
     }
 
     //apache大法
-    public static Msg FileMiME(File file, String suffix){
+    public static Msg FileMiME(File file ){
         final Msg msg = new Msg();
         try {
             Tika tika = new Tika();

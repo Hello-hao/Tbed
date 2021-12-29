@@ -1,6 +1,7 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Keys;
+import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.utils.*;
 import com.aliyun.oss.OSS;
@@ -27,6 +28,8 @@ public class OSSImageupload {
                 String ShortUID = SetText.getShortUuid();
                 java.text.DateFormat format1 = new java.text.SimpleDateFormat("MMddhhmmss");
                 file = entry.getValue();
+                Msg fileMiME = TypeDict.FileMiME(file);
+                meta.setHeader("content-type", fileMiME.getData().toString());
                 System.out.println("待上传的图片："+username + "/" + ShortUID + "." + entry.getKey());
                 ossClient.putObject(key.getBucketname(), username + "/" + ShortUID + "." + entry.getKey(),file);
                 returnImage.setImgname(username + "/" + ShortUID + "." + entry.getKey());//entry.getValue().getOriginalFilename()
