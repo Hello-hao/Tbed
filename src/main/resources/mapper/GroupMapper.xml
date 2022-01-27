@@ -10,7 +10,6 @@
 <!--        `group`-->
 <!--    </select>-->
 
-
     <select id="grouplist" resultType="cn.hellohao.pojo.Group" parameterType="integer">
         SELECT
         g.id,g.groupname,g.keyid,g.usertype,g.compress,k.storageType,k.keyname
