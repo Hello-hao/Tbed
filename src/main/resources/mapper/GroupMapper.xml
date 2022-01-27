@@ -33,7 +33,7 @@
     </select>
 
     <insert id="addgroup" parameterType="cn.hellohao.pojo.Group">
-        insert into `group` (id,groupname,keyid) values (null,#{groupname},#{keyid})
+        insert into `group` (id,groupname,keyid,usertype,compress) values (null,#{groupname},#{keyid},#{usertype},#{compress})
     </insert>
 
     <select id="GetCountFroUserType" parameterType="integer" resultType="integer">
@@ -49,7 +49,7 @@
     </delete>
 
     <update id="setgroup" parameterType="cn.hellohao.pojo.Group">
-        UPDATE `group` SET groupname=#{groupname},keyid=#{keyid} where id = #{id};
+        UPDATE `group` SET groupname=#{groupname},keyid=#{keyid},usertype=#{usertype},compress=#{compress} where id = #{id};
     </update>
 
     <select id="getGroupFroUserType" parameterType="integer" resultType="cn.hellohao.pojo.Group">
