@@ -23,11 +23,12 @@
 Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,`U-File`,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`
 
 
-### 更新日志 `20211229`
+### 更新日志 `20220127`
 
-- [x] 优化上传图片的响应头和返回值判断逻辑
-- [x] 后台菜单添加返回首页项
-- [x] 优化了页面组件显示问题
+- **修复** 添加分发群组时候数据不完善的问题
+- **修复** 首页咨询弹窗”三天不提示“勾选不生效的问题
+- 去除页面上关于图像压缩的无用展示(开源版无此功能)
+- 优化了部分代码显示
 
 ### 引导
 
@@ -39,15 +40,15 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 开源版编译包下载: [下载开源版程序包](https://github.com/Hello-hao/Tbed/releases/)
 
-官网(含Core版)：[http://Tbed.wwery.com](http://Tbed.wwery.com)
+官网(含Core版)：[http://Tbed.wwery.com](https://Tbed.wwery.com)
 
 前端源码：[https://github.com/Hello-hao/tbed-web](https://github.com/Hello-hao/tbed-web)
 
-文档地址：[http://doc.hellohao.cn](http://doc.hellohao.cn)
+文档地址：[http://doc.hellohao.cn](https://doc.hellohao.cn)
 
-程序展示：[http://tc.hellohao.cn](http://tc.hellohao.cn)
+程序展示：[http://tc.hellohao.cn](https://tc.hellohao.cn)
 
-作者博客：[http://www.hellohao.cn](http://www.hellohao.cn)
+作者博客：[http://www.hellohao.cn](https://www.hellohao.cn)
 
 --- **备用地址** ---
 
