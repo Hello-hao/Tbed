@@ -40,7 +40,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 开源版编译包下载: [下载开源版程序包](https://github.com/Hello-hao/Tbed/releases/)
 
-官网(含Core版)：[https://Tbed.hellohao.cn](https://Tbed.hellohao.cn)
+官网(含Core版)：[https://tbed.hellohao.cn](https://tbed.hellohao.cn)
 
 前端源码：[https://github.com/Hello-hao/tbed-web](https://github.com/Hello-hao/tbed-web)
 
@@ -52,9 +52,9 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 --- **备用地址** ---
 
-文档地址(备用)：[http://doc.wwery.com](http://doc.wwery.com)
+官网(含Core版)(备用)：[http://tbed.wwery.com](http://tbed.wwery.com)
 
-官网(含Core版)(备用)：[http://Tbed.wwery.com](http://Tbed.wwery.com)
+文档地址(备用)：[http://doc.wwery.com](http://doc.wwery.com)
 
 程序展示(备用)：[http://tc.wwery.com](http://tc.wwery.com)
 
