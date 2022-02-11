@@ -1,6 +1,7 @@
 # Hellohao图像托管程序 - 也许这会是最优秀的图床程序
 
-![banner.png](http://img.wwery.com/Hellohao/HqXVDR2b.png)
+![宣传图Banner](https://upload.cc/i1/2022/02/11/HSg5tX.png)
+
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
@@ -101,15 +102,21 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 ### 系统预览
 
-![首页](http://img.wwery.com/Hellohao/xI9TSKcI.png)
+![首页](https://upload.cc/i1/2022/02/11/t2wCEF.png)
 
-![控制台详情](http://img.wwery.com/Hellohao/klytOMWr.png)
+![控制台详情](https://upload.cc/i1/2022/02/11/Al8UrH.png)
 
-![相册](http://img.wwery.com/Hellohao/2UQkXTHw.png)
+![相册](https://upload.cc/i1/2022/02/11/2LhEHJ.png)
 
-![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
+![多存储源](https://upload.cc/i1/2022/02/11/gOPxZW.png)
 
-![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
+![站点设置](https://upload.cc/i1/2022/02/11/Hj7pWM.png)
+
+[^_^]: ![首页](http://img.wwery.com/Hellohao/xI9TSKcI.png)
+[^_^]: ![控制台详情](http://img.wwery.com/Hellohao/klytOMWr.png)
+[^_^]: ![相册](http://img.wwery.com/Hellohao/2UQkXTHw.png)
+[^_^]: ![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
+[^_^]: ![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
 
 
 ### 运行环境
@@ -152,9 +159,11 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 初始邮箱：`admin`
 初始密码`admin`
 
-### PC客户端
+### 微信小程序
+> 目前开发中，开发进度的快慢要根据作者的工作压力、心情状况等自身情况进行评估。
+> 暂时无法给出具体发布小程序的时间。大家期待吧。
 
-作者精力不够，工作繁忙，暂停更新
+![小程序UI](https://upload.cc/i1/2022/02/11/6kPmr8.png)
 
 ### 声明
 
@@ -173,5 +182,5 @@ Hellohao博客: [http://www.hellohao.cn/](http://www.hellohao.cn/)
 
 **如果你也支持Hellohao图床，可以请我喝杯咖啡。我会持续更新Hellohao图床**
 
-**捐赠地址:** [**http://tbed.hellohao.cn/pay**](http://tbed.hellohao.cn/pay)
+**捐赠地址:** [**https://tbed.hellohao.cn/pay**](https://tbed.hellohao.cn/pay)
 
