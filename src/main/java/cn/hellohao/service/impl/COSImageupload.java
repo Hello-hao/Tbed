@@ -73,16 +73,16 @@ public class COSImageupload {
                 COSCredentials cred = new BasicCOSCredentials(secretId, secretKey);
                 Region region = new Region(k.getEndpoint());
                 ClientConfig clientConfig = new ClientConfig(region);
-                COSClient cosClient = new COSClient(cred, clientConfig);
+                COSClient cos = new COSClient(cred, clientConfig);
                 ListObjectsRequest listObjectsRequest = new ListObjectsRequest();
                 listObjectsRequest.setBucketName(k.getBucketname());
                 listObjectsRequest.setDelimiter("/");
                 listObjectsRequest.setMaxKeys(1);
                 ObjectListing objectListing = null;
                 try {
-                    objectListing = cosClient.listObjects(listObjectsRequest);
+                    objectListing = cos.listObjects(listObjectsRequest);
                     ret = 1;
-                    cosClient = cosClient;
+                    cosClient = cos;
                     key = k;
                 } catch (Exception e) {
                     System.out.println("COS Object Is null");

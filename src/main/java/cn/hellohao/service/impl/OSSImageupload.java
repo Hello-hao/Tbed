@@ -15,7 +15,7 @@ import java.util.*;
 
 @Service
 public class OSSImageupload {
-    static OSSClient ossClient;
+    static OSS ossClient;
     static Keys key;
 
     public ReturnImage ImageuploadOSS(Map<String, File> fileMap, String username,Integer keyID){
@@ -52,11 +52,11 @@ public class OSSImageupload {
                 && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
             if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getAccessKey().equals("") && !k.getEndpoint().equals("")
                     && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
-                OSS ossClient = new OSSClientBuilder().build(k.getEndpoint(), k.getAccessKey(), k.getAccessSecret());
+                OSS ossObj = new OSSClientBuilder().build(k.getEndpoint(), k.getAccessKey(), k.getAccessSecret());
                 try {
-                    objectListing = ossClient.listObjects(k.getBucketname());
+                    objectListing = ossObj.listObjects(k.getBucketname());
                     ret=1;
-                    ossClient = ossClient;
+                    ossClient = ossObj;
                     key = k;
                 } catch (Exception e) {
                     System.out.println("OSS Object Is null");

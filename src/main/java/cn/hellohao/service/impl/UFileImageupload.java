@@ -57,12 +57,12 @@ public class UFileImageupload {
             if(!k.getAccessSecret().equals("") && !k.getAccessKey().equals("")
                     && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
                 // 创建UpYun实例。
-                UpYun uFile = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
+                UpYun ufObj = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
                 List<UpYun.FolderItem> items = null;
                 try {
-                    items = uFile.readDir("/",null);
+                    items = ufObj.readDir("/",null);
                     ret = 1;
-                    uFile = uFile;
+                    uFile = ufObj;
                     key = k;
                 } catch (Exception e) {
                     System.out.println("UFile Object Is null");

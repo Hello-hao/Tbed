@@ -61,12 +61,12 @@ public class USSImageupload {
                     && !k.getRequestAddress().equals("") ) {
                 // 初始化
                 // 创建UpYun实例。
-                UpYun upyun = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
+                UpYun upObj= new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
                 List<UpYun.FolderItem> items = null;
                 try {
-                    items = upyun.readDir("/",null);
+                    items = upObj.readDir("/",null);
                     ret = 1;
-                    upyun = upyun;
+                    upyun = upObj;
                     key = k;
                 } catch (Exception e) {
                     System.out.println("USS Object Is null");

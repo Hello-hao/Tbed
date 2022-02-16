@@ -58,13 +58,13 @@ public class NOSImageupload {
                     && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ){
                 // 初始化
                 Credentials credentials = new BasicCredentials(k.getAccessKey(), k.getAccessSecret());
-                NosClient nosClient = new NosClient(credentials);
-                nosClient.setEndpoint(k.getEndpoint());
+                NosClient nosObj = new NosClient(credentials);
+                nosObj.setEndpoint(k.getEndpoint());
                 ObjectListing objectListing = null;
                 try {
-                    objectListing = nosClient.listObjects(k.getBucketname());
+                    objectListing = nosObj.listObjects(k.getBucketname());
                     ret = 1;
-                    nosClient = nosClient;
+                    nosClient = nosObj;
                     key = k;
                 }catch (Exception e){
                     System.out.println("NOS Object Is null");

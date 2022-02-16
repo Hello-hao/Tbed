@@ -33,7 +33,6 @@ public class KODOImageupload {
 
     public ReturnImage ImageuploadKODO(Map<String, File> fileMap, String username, Integer keyID){
         ReturnImage returnImage = new ReturnImage();
-        Keys key = null;
         Configuration cfg;
         if (key.getEndpoint().equals("1")) {
             cfg = new Configuration(Zone.zone0());
@@ -99,14 +98,14 @@ public class KODOImageupload {
                 UploadManager uploadManager = new UploadManager(cfg);
                 Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
                 String upToken = auth.uploadToken(k.getBucketname(),null,7200,null);//auth.uploadToken(k.getBucketname());
-                BucketManager bucketManager = new BucketManager(auth, cfg);
+                BucketManager bmObj = new BucketManager(auth, cfg);
                 BucketManager.FileListIterator fileListIterator = null;
                 try {
-                    fileListIterator = bucketManager.createFileListIterator(k.getBucketname(), "", 1, "/");
+                    fileListIterator = bmObj.createFileListIterator(k.getBucketname(), "", 1, "/");
                     FileInfo[] items = fileListIterator.next();
                     if(items!=null){
                         ret = 1;
-                        bucketManager = bucketManager;
+                        bucketManager = bmObj;
                         key = k;
                     }
                 }catch (Exception e){
