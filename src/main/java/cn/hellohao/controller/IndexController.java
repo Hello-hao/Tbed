@@ -88,34 +88,56 @@ public class IndexController {
     @PostMapping(value = "/upload")//upimg new
     @ResponseBody
     public Msg upimg(HttpServletRequest request,HttpSession httpSession
-            , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer day,
-                     @RequestParam(value = "classifications", defaultValue = "" ) String classifications) {
-        final JSONArray jsonArray = new JSONArray();
-        if(!classifications.equals("")){
-            String[] calssif = classifications.split(",");
-            for (int i = 0; i < calssif.length; i++) {
-                jsonArray.add(calssif[i]);
-            }
-        }
-        return uploadServicel.uploadForLoc(request,multipartFile,day,null,jsonArray);
+            , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer day) {
+        return uploadServicel.uploadForLoc(request,multipartFile,day,null);
     }
 
-    //根据网络图片url上传
     @PostMapping(value = "/uploadForUrl") //new
     @ResponseBody
     public Msg upurlimg(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
-        final JSONArray jsonArray = new JSONArray();
         Integer setday = jsonObj.getInteger("day");
         String imgUrl = jsonObj.getString("imgUrl");
-        String selectTreeListStr = jsonObj.getString("classifications");
-        if(null != selectTreeListStr){
-            String[] calssif = selectTreeListStr.split(",");
-            for (int i = 0; i < calssif.length; i++) {
-                jsonArray.add(calssif[i]);
+        String[] URLArr = imgUrl.split("\n");
+
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
+        int syscounts = 0;
+        if(null==user){
+            syscounts = updateConfig.getImgcounttourists();
+        }else{
+            syscounts = updateConfig.getImgcountuser();
+        }
+        Msg retMsg = new Msg();
+        JSONObject jsonObject = new JSONObject();
+        JSONArray retArray = new JSONArray();
+        int errcounts = 0;
+        int excess = 0;
+        for (int i = 0; i < URLArr.length; i++) {
+            int temp = i+1;
+            if(syscounts>=temp){
+                Msg msg = uploadServicel.uploadForLoc(request, null, setday, URLArr[i]);
+                if(!msg.getCode().equals("200")){
+                    //失败的个数
+                    errcounts++;
+                }else{
+                    retArray.add(msg);
+                }
+            }else{
+                //超额的个数
+                excess++;
             }
         }
-        return uploadServicel.uploadForLoc(request,null,setday,imgUrl,jsonArray);
+        //共传过来的数量
+        jsonObject.put("counts",URLArr.length);
+        //上传失败的个数
+        jsonObject.put("errcounts",errcounts);
+        //超过系统定义值 不上传的数量
+        jsonObject.put("excess",excess);
+        jsonObject.put("urls",retArray);
+        retMsg.setData(jsonObject);
+        return retMsg;
     }
 
     @RequestMapping(value = "/getUploadInfo")//new
@@ -136,6 +158,8 @@ public class IndexController {
             }else{
                 jsonObject.put("filesize",Integer.valueOf(updateConfig.getFilesizeuser())/1024);
                 jsonObject.put("imgcount",updateConfig.getImgcountuser());
+                jsonObject.put("uploadSwitch",updateConfig.getUserclose());
+                jsonObject.put("uploadInfo","系统暂时关闭了用户上传功能");
             }
         }catch (Exception e){
             e.printStackTrace();

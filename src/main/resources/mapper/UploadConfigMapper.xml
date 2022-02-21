@@ -40,7 +40,10 @@
                 `usermemory` = #{usermemory},
             </if>
             <if test="blacklist != null">
-                `blacklist` = #{blacklist}
+                `blacklist` = #{blacklist},
+            </if>
+            <if test="userclose != null">
+                `userclose` = #{userclose}
             </if>
 
         </set>

@@ -52,7 +52,7 @@ public class UploadServicel {
 
 
     public Msg uploadForLoc(HttpServletRequest request,
-                            MultipartFile multipartFile, Integer setday, String imgUrl, JSONArray selectTreeList) {
+                            MultipartFile multipartFile, Integer setday, String imgUrl) {
         Msg msg = new Msg();
         try{
             JSONObject jsonObject = new JSONObject();
@@ -220,10 +220,10 @@ public class UploadServicel {
         //先判断是不是有效链接
 //        final boolean valid = ImgUrlUtil.isValid(imgurl);
         if(true){
-            Long imgsize = null;
+            Long imgsize = 0L;
             try {
-                imgsize = ImgUrlUtil.getFileLength(imgurl);
-                if(imgsize>0){
+//                imgsize = ImgUrlUtil.getFileLength(imgurl);
+                if(imgsize==0){
 //                    String uuid= UUID.randomUUID().toString().replace("-", "");
                     String ShortUID = SetText.getShortUuid();
                     String savePath = request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator;
@@ -245,7 +245,7 @@ public class UploadServicel {
                     msg.setCode("500");
                     msg.setInfo("获取资源失败");
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 msg.setCode("500");
                 msg.setInfo("获取资源失败");
             }
@@ -253,9 +253,9 @@ public class UploadServicel {
             msg.setCode("500");
             msg.setInfo("该链接无效");
         }
+
         return msg;
     }
-
 
     public static Group group; //上传用户或游客的所属分组
     public static Long memory;//上传用户或者游客的分配容量 memory

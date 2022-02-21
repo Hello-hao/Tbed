@@ -37,19 +37,31 @@
             and
             a.updatetime &lt;= #{stoptime}
         </if>
-
-        <if test="userid != null">
-            <choose>
-                <when test="selecttype != null">
-                    and
-                    a.userid not in (#{userid})
-                </when>
-                <otherwise>
-                    and
-                    a.userid = #{userid}
-                </otherwise>
-            </choose>
+        <if test="violation == 'true'">
+            and
+            a.violation !=""
         </if>
+
+        <choose>
+            <when test="userid!=null and userid!=''">
+                and
+                a.userid = #{userid}
+            </when>
+            <otherwise>
+                <if test="username != null and username != ''">
+                    <choose>
+                        <when test="selecttype==1">
+                            and
+                            a.userid in ( SELECT id  from `user` where username LIKE '%${username}%')
+                        </when>
+                        <otherwise>
+                            and
+                            a.userid not in ( SELECT id  from `user` where username LIKE '%${username}%')
+                        </otherwise>
+                    </choose>
+                </if>
+            </otherwise>
+        </choose>
 
 
         order by a.id desc

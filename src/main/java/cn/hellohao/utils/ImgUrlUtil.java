@@ -90,12 +90,11 @@ public class ImgUrlUtil {
      * @param savePath
      * @throws IOException
      */
-    public static Map<String ,Object> downLoadFromUrl(String urlStr, String fileName, String savePath){
+    public static Map<String ,Object>  downLoadFromUrl(String urlStr,String fileName,String savePath){
 
         Map<String ,Object> resmap = new HashMap<>();
         Map<String ,String> map = checkURLStatusCode(urlStr);
-        if(map.get("Check").equals("false")){
-//            StatusCode
+        if(map.size()==0 || map.get("Check").equals("false")){
             resmap.put("res",false);
             resmap.put("StatusCode",map.get("StatusCode"));
             return resmap;
@@ -135,6 +134,7 @@ public class ImgUrlUtil {
                     f.renameTo(new File(imgPath));
                     resmap.put("res",true);
                     resmap.put("imgPath",imgPath);
+                    resmap.put("imgsize",new File(imgPath).length());
                 }else{
                     new File(saveDir+File.separator+fileName).delete();
                     resmap.put("res",false);

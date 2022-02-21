@@ -276,12 +276,12 @@ public class AdminController {
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer pageNum = jsonObj.getInteger("pageNum");
         Integer pageSize = jsonObj.getInteger("pageSize");
-        String username = jsonObj.getString("username");
         Integer source = jsonObj.getInteger("source");
         String starttime = jsonObj.getString("starttime");
         String stoptime = jsonObj.getString("stoptime");
+        String selectUserType = jsonObj.getString("selectUserType");//me/all
+        String username = jsonObj.getString("username");
         Integer selecttype = jsonObj.getInteger("selecttype");
-        String classifuids = jsonObj.getString("classifuids");
         boolean violation = jsonObj.getBoolean("violation");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if(starttime!=null){
@@ -307,17 +307,18 @@ public class AdminController {
         if(violation){
             img.setViolation("true");
         }
-        img.setUsername(username);
-        img.setSource(source);
-        img.setSelecttype(selecttype);
         img.setStarttime(starttime);
         img.setStoptime(stoptime);
-        if(classifuids!=null){
-            String[] calssif = classifuids.split(",");
-            img.setClassifuidlist(calssif);
-        }
         if(subject.hasRole("admin")){
-            img.setUserid(null);
+            img.setSource(source);
+            if(selectUserType.equals("me")){
+                img.setUserid(user.getId());
+                img.setUsername(null);
+                img.setSelecttype(null);
+            }else{
+                img.setUsername(username);
+                img.setSelecttype(selecttype);
+            }
         }else{
             //普通用户
             img.setUserid(user.getId());
