@@ -46,17 +46,18 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 开源版编译包下载: [下载开源版程序包](https://github.com/Hello-hao/Tbed/releases/)
 
-官网(含Core版)：[https://tbed.hellohao.cn](https://tbed.hellohao.cn)
+[^_^]:官网(含Core版)：[https://tbed.hellohao.cn](https://tbed.hellohao.cn)
 
-前端源码：[https://github.com/Hello-hao/tbed-web](https://github.com/Hello-hao/tbed-web)
+[^_^]:前端源码：[https://github.com/Hello-hao/tbed-web](https://github.com/Hello-hao/tbed-web)
 
-文档地址：[https://doc.hellohao.cn](https://doc.hellohao.cn)
+[^_^]:文档地址：[https://doc.hellohao.cn](https://doc.hellohao.cn)
 
-程序展示：[https://tc.hellohao.cn](https://tc.hellohao.cn)
+[^_^]:程序展示：[https://tc.hellohao.cn](https://tc.hellohao.cn)
 
-作者博客：[https://www.hellohao.cn](https://www.hellohao.cn)
+[^_^]:作者博客：[https://www.hellohao.cn](https://www.hellohao.cn)
 
---- **备用地址** ---
+域名`hellohao.cn`目前正在转移备案，请使用一下备用地址进行访问
+ --- **备用地址** ---
 
 官网(含Core版)(备用)：[http://tbed.wwery.com](http://tbed.wwery.com)
 
