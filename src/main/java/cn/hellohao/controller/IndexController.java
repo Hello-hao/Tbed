@@ -84,8 +84,7 @@ public class IndexController {
         return msg;
     }
 
-
-    @PostMapping(value = "/upload")//upimg new
+    @PostMapping(value = "/upload")// new
     @ResponseBody
     public Msg upimg(HttpServletRequest request,HttpSession httpSession
             , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer day) {
@@ -119,21 +118,16 @@ public class IndexController {
             if(syscounts>=temp){
                 Msg msg = uploadServicel.uploadForLoc(request, null, setday, URLArr[i]);
                 if(!msg.getCode().equals("200")){
-                    //失败的个数
                     errcounts++;
                 }else{
                     retArray.add(msg);
                 }
             }else{
-                //超额的个数
                 excess++;
             }
         }
-        //共传过来的数量
         jsonObject.put("counts",URLArr.length);
-        //上传失败的个数
         jsonObject.put("errcounts",errcounts);
-        //超过系统定义值 不上传的数量
         jsonObject.put("excess",excess);
         jsonObject.put("urls",retArray);
         retMsg.setData(jsonObject);
@@ -205,8 +199,6 @@ public class IndexController {
         }
         return msg;
     }
-
-
 
     @GetMapping("/verifyCode")
     public void verifyCode(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {

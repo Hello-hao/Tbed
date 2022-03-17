@@ -62,7 +62,10 @@
                 </if>
             </otherwise>
         </choose>
-
+        <if test="imguid != null">
+            and
+            a.imguid = #{imguid}
+        </if>
 
         order by a.id desc
     </select>

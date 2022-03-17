@@ -39,8 +39,6 @@ public class UserController {
     @Autowired
     private SysConfigService sysConfigService;
     @Autowired
-    private UserGroupService userGroupService;
-    @Autowired
     IRedisService iRedisService;
 
     @PostMapping("/register")

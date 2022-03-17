@@ -96,10 +96,10 @@ public class AdminController {
         if(user.getLevel()>1){
             ok = "true";
             //管理员
-            jsonObject.put("imgTotal", imgService.counts(null) ); //admin  站点图片数
-            jsonObject.put("userTotal", userService.getUserTotal()); //admin  用户个数
-            jsonObject.put("ViolationImgTotal", imgreview.getCount()); //admin 非法图片
-            jsonObject.put("ViolationSwitch", isImgreviewOK==null?0:isImgreviewOK.getId()); //admin 非法图片开关
+            jsonObject.put("imgTotal", imgService.counts(null) ); //站点图片数
+            jsonObject.put("userTotal", userService.getUserTotal());
+            jsonObject.put("ViolationImgTotal", imgreview.getCount()); //非法图片
+            jsonObject.put("ViolationSwitch", isImgreviewOK==null?0:isImgreviewOK.getId()); //非法图片开关
             jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
             jsonObject.put("VisitorMemory", SetFiles.readableFileSize(Long.valueOf(uploadConfig.getVisitormemory())));//访客共大小
             if(uploadConfig.getIsupdate()!=1){
@@ -129,7 +129,6 @@ public class AdminController {
         msg.setData(jsonObject);
         return msg;
     }
-
 
     @PostMapping(value = "/SpaceExpansion")//new
     @ResponseBody
@@ -166,7 +165,6 @@ public class AdminController {
             return msg;
         }
     }
-
 
     @PostMapping("/getRecently")//new
     @ResponseBody
@@ -416,7 +414,6 @@ public class AdminController {
         return msg;
     }
 
-
     @PostMapping("/deleImages") //new
     @ResponseBody
     public Msg deleImages(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -467,7 +464,7 @@ public class AdminController {
                 }else if (key.getStorageType() == 8) {
                     isDele = uFileImageupload.delUFile(key.getId(), imgname);
                 }else {
-                    System.err.println("未获取到对象存储参数，删除失败。");
+                    System.err.println("未获取到对象存储参数，删除失败");
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -493,7 +490,6 @@ public class AdminController {
         }
         return msg;
     }
-
 
     //工具函数
     private static String getChinaes(int v){

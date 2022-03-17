@@ -62,7 +62,6 @@ public class AdminRootController {
         map.put("count", rolePageInfo.getTotal());
         map.put("users", rolePageInfo.getList());
         return map;
-
     }
 
 
@@ -253,7 +252,6 @@ public class AdminRootController {
         return msg;
     }
 
-
     @PostMapping("/getSettingConfig") //new
     @ResponseBody
     public Msg getSettingConfig(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -376,7 +374,6 @@ public class AdminRootController {
         EmailConfig emailConfig = JSON.toJavaObject(jsonObj,EmailConfig.class);
         if(null==emailConfig.getEmails() || null==emailConfig.getEmailkey() || null==emailConfig.getEmailurl()
                 || null==emailConfig.getPort()  || null==emailConfig.getEmailname() || null==tomail){
-//        if(jsonObj.size()==0){
             msg.setCode("110400");
             msg.setInfo("邮箱配置参数不能为空");
         }else{
