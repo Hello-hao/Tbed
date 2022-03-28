@@ -162,7 +162,6 @@ public class IndexController {
         return msg;
     }
 
-
     @RequestMapping("/checkStatus")
     @ResponseBody
     public Msg checkStatus(HttpServletRequest request) {
@@ -204,7 +203,6 @@ public class IndexController {
     public void verifyCode(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
         IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
         try {
-            //登录页面验证码
             VerifyCode verifyCode = iVerifyCodeGen.generate(80, 38);
             String code = verifyCode.getCode();
             String userIP = GetIPS.getIpAddr(request);
@@ -259,7 +257,6 @@ public class IndexController {
         }
     }
 
-    //删除图像
     @PostMapping("/deleImagesByUid") //new
     @ResponseBody
     public Msg deleImagesByUid(@RequestParam(value = "data", defaultValue = "") String data) {
@@ -324,8 +321,6 @@ public class IndexController {
         return msg;
     }
 
-
-    //没有权限
     @RequestMapping("/authError")
     @ResponseBody
     public Msg authError(HttpServletRequest request){
@@ -335,7 +330,6 @@ public class IndexController {
         return msg;
     }
 
-    //认证失败
     @RequestMapping("/jurisError")
     @ResponseBody
     public Msg jurisError(HttpServletRequest request){
