@@ -220,7 +220,7 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Images selectImgUrlByMD5(String md5key) {
+    public List<Images> selectImgUrlByMD5(String md5key) {
         return imgMapper.selectImgUrlByMD5(md5key);
     }
 

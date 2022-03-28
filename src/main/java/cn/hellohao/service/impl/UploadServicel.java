@@ -127,10 +127,10 @@ public class UploadServicel {
                 imaOBJ.setMd5key(md5key);
                 imaOBJ.setUserid(u==null?0:u.getId());
                 if(imgMapper.md5Count(imaOBJ)>0){
-                    Images images = imgMapper.selectImgUrlByMD5(md5key);
-                    jsonObject.put("url", images.getImgurl());
+                    List<Images>  images = imgMapper.selectImgUrlByMD5(md5key);
+                    jsonObject.put("url", images.get(0).getImgurl());
                     jsonObject.put("name",file.getName());
-                    jsonObject.put("imguid",images.getImguid());
+                    jsonObject.put("imguid",images.get(0).getImguid());
 //                    jsonObject.put("shortLink",images.getShortlink());
                     msg.setData(jsonObject);
                     return msg;

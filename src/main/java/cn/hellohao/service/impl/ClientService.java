@@ -153,10 +153,10 @@ public class ClientService {
                 imaOBJ.setMd5key(md5key);
                 imaOBJ.setUserid(u.getId());
                 if (imgMapper.md5Count(imaOBJ) > 0) {
-                    Images images = imgMapper.selectImgUrlByMD5(md5key);
-                    jsonObject.put("url", images.getImgurl());
+                    List<Images> images = imgMapper.selectImgUrlByMD5(md5key);
+                    jsonObject.put("url", images.get(0).getImgurl());
                     jsonObject.put("name", file.getName());
-                    jsonObject.put("size", images.getSizes());
+                    jsonObject.put("size", images.get(0).getSizes());
                     msg.setData(jsonObject);
                     return msg;
                 }
