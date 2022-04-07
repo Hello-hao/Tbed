@@ -441,7 +441,7 @@ public class AdminController {
             Keys key = keysService.selectKeys(keyid);
 
             if(!subject.hasRole("admin")){
-                if(image.getUserid()!=user.getId()){
+                if(!image.getUserid().equals(user.getId())){
                     break;
                 }
             }

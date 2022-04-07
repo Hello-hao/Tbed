@@ -88,8 +88,8 @@ public class GroupServiceImpl implements GroupService {
         if(group.getUsertype()!=0){
             Group groupFroUserType = groupMapper.getGroupFroUserType(group.getUsertype());
             if(groupFroUserType!=null){
-                if(groupFroUserType.getUsertype()==group.getUsertype()){
-                    if(groupFroUserType.getId()==group.getId()){
+                if(groupFroUserType.getUsertype().equals(group.getUsertype())){
+                    if(groupFroUserType.getId().equals(group.getId())){
                         groupMapper.setgroup(group);
                         msg.setInfo("修改成功");
                     }else{

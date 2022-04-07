@@ -267,7 +267,7 @@ public class IndexController {
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
         if(null!=user){
-            if(user.getId()!=image.getUserid()){
+            if(!user.getId().equals(image.getUserid())){
                 msg.setInfo("删除失败，该图片不允许你执行操作");
                 msg.setCode("100403");
                 return msg;
