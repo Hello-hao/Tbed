@@ -31,9 +31,9 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 ### 引导
 
-程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
+[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](http://doc.wwery.com) | [演示站](http://tc.wwery.com)
 
-开源版编译包下载: [下载开源版程序包](https://github.com/Hello-hao/Tbed/releases/)
+[^_^]:程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
 
 [^_^]:官网(含Core版)：[https://tbed.hellohao.cn](https://tbed.hellohao.cn)
 
@@ -46,13 +46,11 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 [^_^]:作者博客：[https://www.hellohao.cn](https://www.hellohao.cn)
 
 
- --- **备用地址** ---
+[^_^]:官网(含Core版)(备用)：[http://tbed.wwery.com](http://tbed.wwery.com)
 
-官网(含Core版)(备用)：[http://tbed.wwery.com](http://tbed.wwery.com)
+[^_^]:文档地址(备用)：[http://doc.wwery.com](http://doc.wwery.com)
 
-文档地址(备用)：[http://doc.wwery.com](http://doc.wwery.com)
-
-程序展示(备用)：[http://tc.wwery.com](http://tc.wwery.com)
+[^_^]:程序展示(备用)：[http://tc.wwery.com](http://tc.wwery.com)
 
 [^_^]:作者博客(备用)：[http://www.wwery.com](http://www.wwery.com)
 
@@ -61,41 +59,41 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 ### 主要功能
 
-- 前后端分离式架构设计，部署更方便
+- [x] 前后端分离式架构设计，部署更方便
 
-- 个人相册浏览，图像详细资料展示卡片
+- [x] 个人相册浏览，图像详细资料展示卡片
 
-- 支持 图片拖拽、截图直接(Ctrl+V)
+- [x] 支持 图片拖拽、截图直接(Ctrl+V)
 
-- 支持URL地址批量上传
+- [x] 支持URL地址批量上传
 
-- 一键复制嵌入式链接代码，也可以自定义嵌入式代码格式
+- [x] 一键复制嵌入式链接代码，也可以自定义嵌入式代码格式
 
-- 对接邮箱服务，注册/找回密码等功能
+- [x] 对接邮箱服务，注册/找回密码等功能
 
-- 违规图像实时多线程鉴别
+- [x] 违规图像实时多线程鉴别
 
-- 图片定期暂存
+- [x] 图片定期暂存
 
-- 支持多种图像格式如:`jfif`,`webp`,`ico`,`svg`等
+- [x] 支持多种图像格式如:`jfif`,`webp`,`ico`,`svg`等
 
-- 支持画廊批量分享模式
+- [x] 支持画廊批量分享模式
 
-- 账户图像查重上传
+- [x] 账户图像查重上传
 
-- 配置IP黑名单操作
+- [x] 配置IP黑名单操作
 
-- 站点上传可控API接口
+- [x] 站点上传可控API接口
 
-- 设置用户可用容量
+- [x] 设置用户可用容量
 
-- 账户扩容码批量生成
+- [x] 账户扩容码批量生成
 
-- 细致的上传分发配置，分发群组功能
+- [x] 细致的上传分发配置，分发群组功能
 
-- 游客、用户的上传管理
+- [x] 游客、用户的上传管理
 
-- 图像直链二维码生成
+- [x] 图像直链二维码生成
 
 
 
@@ -150,7 +148,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 > 2.自定义部署 前后端分离式部署:`Tbed.zip`（拓展性高适合有一定java前后端分离部署经验的人）
 > 需要注意：一键部署的端口为：服务器：`10088` 前端：`10089`
 
-详细部署教程参考程序文档：[开源版部署教程](http://doc.hellohao.cn/#/opensource)
+详细部署教程参考程序[相关文档](http://doc.hellohao.cn)
 
 ### 启动项目
 
@@ -174,8 +172,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 ### 反馈交流
 
-**如果你遇到BUG可以去我的博客反馈**
-Hellohao博客: [http://www.hellohao.cn/](http://www.hellohao.cn/)
+**如果你遇到BUG欢迎反馈**
 
 欢迎加入Hellohao开发者交流群，群聊号码：**864800972**
 
