@@ -473,7 +473,7 @@ public class AdminController {
                 try {
                     imgTempService.delImgAndExp(image.getImguid());
                     imgService.deleimg(imgid);
-                    imgAndAlbumService.deleteImgAndAlbum(imgname);
+                    imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
                 } catch (Exception e) {
                     e.printStackTrace();
                     msg.setInfo("图片记录删除失败，请重试");
@@ -484,7 +484,7 @@ public class AdminController {
             }else{
                 imgTempService.delImgAndExp(image.getImguid());
                 imgService.deleimg(imgid);
-                imgAndAlbumService.deleteImgAndAlbum(imgname);
+                imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
                 msg.setInfo("图片记录已删除，但是图片源删除失败");
             }
         }

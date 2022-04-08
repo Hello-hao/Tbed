@@ -300,7 +300,7 @@ public class IndexController {
         //删除库
         if(isDele){
             try {
-                imgAndAlbumService.deleteImgAndAlbum(imgname);
+                imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
                 imgTempService.delImgAndExp(image.getImguid());
                 imgService.deleimg(image.getId());
             } catch (Exception e) {
@@ -311,7 +311,7 @@ public class IndexController {
             }
             msg.setInfo("删除成功");
         }else{
-            imgAndAlbumService.deleteImgAndAlbum(imgname);
+            imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
             imgTempService.delImgAndExp(image.getImguid());
             imgService.deleimg(image.getId());
             msg.setInfo("图片记录已删除，但是图片源删除失败");

@@ -100,6 +100,25 @@ public class AlbumController {
 
     }
 
+    //后台列表要修改时的查询表单
+    @PostMapping("/admin/getAlbumListForKey") //new
+    @ResponseBody
+    public Msg getAlbumListForKey(@RequestParam(value = "data", defaultValue = "") String data){
+        Msg msg = new Msg();
+        try{
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            String key = jsonObject.getString("key");
+            List<Images> imagesList =  imgAndAlbumService.selectImgForAlbumkey(key);
+            msg.setData(imagesList);
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+            msg.setInfo("获取画廊数据错误");
+        }
+        return msg;
+
+    }
+
     @PostMapping("/getAlbumImgList") //new
     @ResponseBody
     public Msg getAlbumImgList(@RequestParam("data") String data) {
