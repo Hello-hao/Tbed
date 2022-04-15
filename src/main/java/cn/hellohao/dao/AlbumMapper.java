@@ -23,4 +23,6 @@ public interface AlbumMapper {
     List<Album> selectAlbumURLList(Album album);
 
     Integer selectAlbumCount(@Param("userid")  Integer userid);
+
+    Integer updateAlbum(Album album);
 }

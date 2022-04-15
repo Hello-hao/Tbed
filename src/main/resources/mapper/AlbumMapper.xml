@@ -63,5 +63,18 @@
         </where>
     </select>
 
+    <update id="updateAlbum" parameterType="cn.hellohao.pojo.Album">
+        UPDATE `album`
+        <set>
+            <if test="albumtitle != null">
+                albumtitle = #{albumtitle},
+            </if>
+            <if test="password != null">
+                password = #{password},
+            </if>
+        </set>
+        WHERE
+        albumkey = #{albumkey}
+    </update>
 
 </mapper>

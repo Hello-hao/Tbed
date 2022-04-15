@@ -257,11 +257,11 @@ public class UploadServicel {
         return msg;
     }
 
-    public static Group group; //上传用户或游客的所属分组
-    public static Long memory;//上传用户或者游客的分配容量 memory
-    public static Long TotleMemory;//用户或者游客下可使用的总容量 //maxsize
-    public static Long UsedTotleMemory;//用户或者游客已经用掉的总容量 //usermemory
-    public static String updatePath="tourist";
+    private static Group group; //上传用户或游客的所属分组
+    private static Long memory;//上传用户或者游客的分配容量 memory
+    private static Long TotleMemory;//用户或者游客下可使用的总容量 //maxsize
+    private static Long UsedTotleMemory;//用户或者游客已经用掉的总容量 //usermemory
+    private static String updatePath="tourist";
 
     //判断用户 或 游客 当前上传图片的一系列校验
     private Msg updateImgCheck(User user, UploadConfig uploadConfig){
@@ -276,6 +276,7 @@ public class UploadServicel {
                     msg.setInfo("系统已禁用游客上传");
                     return msg;
                 }
+                updatePath="tourist";
                 group = GetCurrentSource.GetSource(null);
                 memory = Long.valueOf(uploadConfig.getVisitormemory());//单位 B 游客设置总量
                 TotleMemory = Long.valueOf(uploadConfig.getFilesizetourists());//单位 B  游客单文件大小

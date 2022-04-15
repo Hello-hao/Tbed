@@ -26,4 +26,6 @@ public interface AlbumService {
     List<Album> selectAlbumURLList(Album album);
 
     Integer selectAlbumCount(Integer userid);
+
+    Integer updateAlbum(Album album);
 }

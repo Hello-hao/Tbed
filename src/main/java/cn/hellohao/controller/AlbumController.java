@@ -108,8 +108,21 @@ public class AlbumController {
         try{
             JSONObject jsonObject = JSONObject.parseObject(data);
             String key = jsonObject.getString("key");
+            Subject subject = SecurityUtils.getSubject();
+            User user = (User) subject.getPrincipal();
+            Album album = new Album();
+            album.setAlbumkey(key);
+            if(subject.hasRole("admin")){
+                album.setUserid(null);
+            }else{
+                album.setUserid(user.getId());
+            }
+            JSONObject jsonObj = new JSONObject();
+            Album album1 = albumServiceImpl.selectAlbum(album);
             List<Images> imagesList =  imgAndAlbumService.selectImgForAlbumkey(key);
-            msg.setData(imagesList);
+            jsonObj.put("album",album1);
+            jsonObj.put("imagesList",imagesList);
+            msg.setData(jsonObj);
         }catch (Exception e){
             e.printStackTrace();
             msg.setCode("500");
@@ -155,7 +168,7 @@ public class AlbumController {
             }
             Subject subject = SecurityUtils.getSubject();
             User u = (User) subject.getPrincipal();
-            String uuid = "TOALBUM"+ UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,5)+"N";
+            String uuid = "TOALBUM"+ UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,7)+"N";
             SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Album album = new Album();
             album.setAlbumtitle(albumtitle);
@@ -187,6 +200,65 @@ public class AlbumController {
             e.printStackTrace();
             msg.setCode("500");
             msg.setInfo("创建画廊链接失败");
+        }
+        return msg;
+    }
+
+
+    @PostMapping("/admin/UpdateForAlbum")//new
+    @ResponseBody
+    public Msg UpdateForAlbum(@RequestParam(value = "data", defaultValue = "") String data){
+        data = StringEscapeUtils.unescapeHtml4(data);
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            String albumkey = jsonObject.getString("albumkey");
+            String albumtitle = jsonObject.getString("albumtitle");
+            String password = jsonObject.getString("password");
+            JSONArray jsonArray = JSONArray.parseArray(jsonObject.getString("albumlist"));
+            if(null!=password){
+//                String regex = "^[a-z0-9A-Z\u4e00-\u9fa5]+$";
+//                return str.matches(regex);
+                password = password.replace(" ", "");
+                if(password.replace(" ", "").equals("") || password.length()<3){
+                    msg.setCode("110403");
+                    msg.setInfo("密码长度不得小于三位有效字符");
+                    return msg;
+                }
+            }
+            if(albumtitle==null || jsonArray.size()==0){
+                msg.setCode("110404");
+                msg.setInfo("标题和图片参数不能为空");
+                return msg;
+            }
+            Subject subject = SecurityUtils.getSubject();
+            User u = (User) subject.getPrincipal();
+            Album album = new Album();
+            album.setAlbumtitle(albumtitle);
+            album.setPassword(password);
+            album.setAlbumkey(albumkey);
+
+            albumServiceImpl.updateAlbum(album);
+            imgAndAlbumService.deleteImgAndAlbumForKey(albumkey);
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JSONObject img = jsonArray.getJSONObject(i);
+                ImgAndAlbum imgAndAlbum = new ImgAndAlbum();
+                imgAndAlbum.setImgname(img.getString("imgurl"));
+                imgAndAlbum.setAlbumkey(albumkey);
+                imgAndAlbum.setNotes(img.getString("notes"));
+                albumServiceImpl.addAlbumForImgAndAlbumMapper(imgAndAlbum);
+            }
+            final JSONObject json = new JSONObject();
+            json.put("url",albumkey);
+            json.put("title",albumtitle);
+            json.put("password",password);
+            msg.setCode("200");
+            msg.setInfo("画廊修改成功");
+            msg.setData(json);
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+            msg.setInfo("修改画廊失败");
         }
         return msg;
     }

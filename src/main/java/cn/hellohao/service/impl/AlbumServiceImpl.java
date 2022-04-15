@@ -84,6 +84,11 @@ public class AlbumServiceImpl implements AlbumService {
         return albumMapper.selectAlbumCount(userid);
     }
 
+    @Override
+    public Integer updateAlbum(Album album) {
+        return albumMapper.updateAlbum(album);
+    }
+
     @Transactional
     public Integer delete(String albumkey) {
         Integer ret1 = albumMapper.deleteAlbum(albumkey);
@@ -108,4 +113,6 @@ public class AlbumServiceImpl implements AlbumService {
         }
         return ret1;
     }
+
+
 }
