@@ -328,7 +328,6 @@ public class AdminController {
         return msg;
     }
 
-
     @PostMapping(value = "/getUserInfo") //new
     @ResponseBody
     public Msg getUserInfo() {
