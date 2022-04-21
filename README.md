@@ -31,7 +31,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 - **优化** 修复多个页面显示的问题
 ### 引导
 
-[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](http://doc.wwery.com) | [演示站](http://tc.wwery.com)
+[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn)
 
 [^_^]:程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
 
