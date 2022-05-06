@@ -8,6 +8,10 @@
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
 
+### 引导
+
+[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn)
+
 
 ### 前言
 
@@ -29,9 +33,6 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 - [x] 优化重写删除图像功能，修复部分场景下图像删除失败的问题（支持进度展示）
 - [x] 优化多个页面细节
 
-### 引导
-
-[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn)
 
 [^_^]:程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
 
