@@ -1,9 +1,7 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.pojo.Keys;
-import cn.hellohao.pojo.Msg;
-import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.*;
 import cn.hellohao.utils.*;
 import com.UpYun;
 import com.aliyun.oss.OSSClient;
@@ -77,10 +75,10 @@ public class USSImageupload {
         return ret;
     }
 
-    public Boolean delUSS(Integer keyID, String fileName) {
+    public Boolean delUSS(Integer keyID, Images images) {
         boolean b = true;
         try {
-            boolean result = upyun.deleteFile(fileName, null);
+            boolean result = upyun.deleteFile(images.getImgname(), null);
         } catch (Exception e) {
             e.printStackTrace();
             b=false;

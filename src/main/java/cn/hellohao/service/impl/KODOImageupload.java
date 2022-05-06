@@ -1,5 +1,7 @@
 package cn.hellohao.service.impl;
 
+import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
@@ -117,10 +119,10 @@ public class KODOImageupload {
         return ret;
     }
 
-    public Boolean delKODO(Integer keyID, String fileName) {
+    public Boolean delKODO(Integer keyID, Images images) {
         boolean b = true;
         try {
-            bucketManager.delete(key.getBucketname(), fileName);
+            bucketManager.delete(key.getBucketname(), images.getImgname());
         } catch (Exception ex) {
             b = false;
         }

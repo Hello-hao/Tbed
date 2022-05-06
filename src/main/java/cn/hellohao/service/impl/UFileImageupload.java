@@ -1,9 +1,7 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.pojo.Keys;
-import cn.hellohao.pojo.Msg;
-import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.pojo.UploadConfig;
+import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.*;
 import cn.hellohao.utils.*;
 import com.UpYun;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -73,10 +71,10 @@ public class UFileImageupload {
         return ret;
     }
 
-    public Boolean delUFile(Integer keyID, String fileName) {
+    public Boolean delUFile(Integer keyID, Images images) {
         boolean b = true;
         try {
-            boolean result = uFile.deleteFile(fileName, null);
+            boolean result = uFile.deleteFile(images.getImgname(), null);
         } catch (Exception e) {
             e.printStackTrace();
             b = false;

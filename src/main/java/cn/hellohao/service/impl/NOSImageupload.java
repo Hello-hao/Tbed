@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.*;
 
+import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.exception.StorageSourceInitException;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.utils.*;
@@ -76,15 +78,13 @@ public class NOSImageupload {
         return ret;
     }
 
-
-    public Boolean delNOS(Integer keyID, String fileName) {
+    public Boolean delNOS(Integer keyID, Images images) {
         boolean b =true;
         try {
             //这种方法不能删除指定文件夹下的文件
-            boolean isExist = nosClient.doesObjectExist(key.getBucketname(), fileName, null);
-            if (isExist) {
-                nosClient.deleteObject(key.getBucketname(), fileName);
-            }
+//            boolean isExist = nosClient.doesObjectExist(key.getBucketname(), fileName, null);
+//            if (isExist) { }
+            nosClient.deleteObject(key.getBucketname(), images.getImgname());
         } catch (Exception e) {
             e.printStackTrace();
             b =false;

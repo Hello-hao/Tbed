@@ -1,5 +1,7 @@
 package cn.hellohao.service.impl;
 
+import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.ReturnImage;
@@ -67,10 +69,11 @@ public class OSSImageupload {
         return ret;
     }
 
-    public boolean delOSS(Integer keyID, String fileName){
+    public boolean delOSS(Integer keyID, Images images){
         boolean b =true;
         try {
-            ossClient.deleteObject(key.getBucketname(), fileName);
+//            OSSClient ossClient = new OSSClient(key.getEndpoint(), key.getAccessKey(), key.getAccessSecret());
+            ossClient.deleteObject(key.getBucketname(), images.getImgname());
         } catch (Exception e) {
             e.printStackTrace();
             b = false;

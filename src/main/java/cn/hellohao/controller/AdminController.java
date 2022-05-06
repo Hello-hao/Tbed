@@ -6,6 +6,7 @@ import cn.hellohao.pojo.vo.PageResultBean;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.*;
+import cn.hellohao.utils.progress.MyProgress;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -49,21 +51,8 @@ public class AdminController {
     private AlbumService albumService;
     @Autowired
     AlbumServiceImpl albumServiceI;
-
     @Autowired
-    private NOSImageupload nosImageupload;
-    @Autowired
-    private OSSImageupload ossImageupload;
-    @Autowired
-    private COSImageupload cosImageupload;
-    @Autowired
-    private KODOImageupload kodoImageupload;
-    @Autowired
-    private USSImageupload ussImageupload;
-    @Autowired
-    private UFileImageupload uFileImageupload;
-    @Autowired
-    private FTPImageupload ftpImageupload;
+    private deleImages deleimages;
 
 
     @PostMapping(value = "/overviewData") //new
@@ -415,10 +404,16 @@ public class AdminController {
 
     @PostMapping("/deleImages") //new
     @ResponseBody
-    public Msg deleImages(@RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg deleImages(HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
-        JSONArray images = jsonObj.getJSONArray("images");
+        final String images = jsonObj.getString("images");
+        if(images==null){
+            msg.setCode("404");
+            msg.setInfo("为获取到图像信息");
+            return msg;
+        }
+        final String[] split = images.split(",");
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
 
@@ -427,65 +422,55 @@ public class AdminController {
             msg.setInfo("当前用户信息不存在");
             return msg;
         }
-        if(images.size()==0){
+        if(split.length==0){
             msg.setCode("404");
             msg.setInfo("为获取到图像信息");
             return msg;
         }
-        for (int i = 0; i < images.size(); i++) {
-            Integer imgid = images.getInteger(i);
+        List<Integer> imgIds = new ArrayList<Integer>();
+        for (int i = 0; i < split.length; i++) {
+            Integer imgid = Integer.valueOf(split[i]);
             Images image = imgService.selectByPrimaryKey(imgid);
-            Integer keyid = image.getSource();
-            String imgname = image.getImgname();
-            Keys key = keysService.selectKeys(keyid);
-
             if(!subject.hasRole("admin")){
                 if(!image.getUserid().equals(user.getId())){
                     break;
                 }
             }
-            boolean isDele = false;
-            try{
-                if (key.getStorageType() == 1) {
-                    isDele = nosImageupload.delNOS(key.getId(), imgname);
-                } else if (key.getStorageType() == 2) {
-                    isDele = ossImageupload.delOSS(key.getId(), imgname);
-                } else if (key.getStorageType() == 3) {
-                    isDele = ussImageupload.delUSS(key.getId(), imgname);
-                } else if (key.getStorageType() == 4) {
-                    isDele = kodoImageupload.delKODO(key.getId(), imgname);
-                } else if (key.getStorageType() == 5) {
-                    isDele = LocUpdateImg.deleteLOCImg(imgname);
-                }else if (key.getStorageType() == 6) {
-                    isDele = cosImageupload.delCOS(key.getId(), imgname);
-                }else if (key.getStorageType() == 7) {
-                    isDele = ftpImageupload.delFTP(key.getId(), imgname);
-                }else if (key.getStorageType() == 8) {
-                    isDele = uFileImageupload.delUFile(key.getId(), imgname);
-                }else {
-                    System.err.println("未获取到对象存储参数，删除失败");
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            if(isDele){
-                try {
-                    imgTempService.delImgAndExp(image.getImguid());
-                    imgService.deleimg(imgid);
-                    imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    msg.setInfo("图片记录删除失败，请重试");
-                    msg.setCode("500");
-                    return msg;
-                }
-                msg.setInfo("删除成功");
-            }else{
-                imgTempService.delImgAndExp(image.getImguid());
-                imgService.deleimg(imgid);
-                imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
-                msg.setInfo("图片记录已删除，但是图片源删除失败");
-            }
+            imgIds.add(imgid);
+        }
+        if(imgIds.size()==0){
+            msg.setCode("110404");
+        }else{
+            deleimages.dele(httpSession,imgIds.stream().toArray(Integer[]::new));
+            msg.setCode("200");
+        }
+        return msg;
+    }
+
+    @PostMapping("/GetDelprogress") //new
+    @ResponseBody
+    public Msg GetDelprogress(HttpSession httpSession) {
+        Msg msg =new Msg();
+        JSONObject jsonObject = new JSONObject();
+        MyProgress myProgress = (MyProgress)httpSession.getAttribute("myProgressForDel");
+        if(null==myProgress){
+            jsonObject.put("succ",myProgress.getDelSuccessCount());
+            jsonObject.put("errorlist",new ArrayList<String>());
+            jsonObject.put("oklist",new ArrayList<Long>());
+            jsonObject.put("delover",false);
+        }else{
+            jsonObject.put("succ",myProgress.getDelSuccessCount());
+            jsonObject.put("errorlist",myProgress.getDelErrorImgListt());
+            jsonObject.put("oklist",myProgress.getDelSuccessImgList());
+            jsonObject.put("delover",myProgress.getDelOCT());
+        }
+        msg.setData(jsonObject);
+        if(myProgress.getDelOCT()){
+            System.out.println("循环遍历的值："+myProgress.getDelOCT());
+            msg.setCode("100");
+        }else{
+            msg.setCode("110666");
+            msg.setInfo("正在执行");
         }
         return msg;
     }

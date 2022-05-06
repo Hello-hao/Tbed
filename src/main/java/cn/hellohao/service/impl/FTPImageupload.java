@@ -1,5 +1,7 @@
 package cn.hellohao.service.impl;
 
+import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
@@ -114,7 +116,7 @@ public class FTPImageupload {
         }
     }
 
-    public Boolean delFTP(Integer keyID, String fileName) {
+    public Boolean delFTP(Integer keyID, Images images) {
         boolean b = true;
         try {
             String[] host = key.getEndpoint().split("\\:");
@@ -123,7 +125,7 @@ public class FTPImageupload {
             //创建FTP客户端，所有的操作都基于FTPClinet
             FTPUtils ftps = new FTPUtils(h, p, key.getAccessKey(), key.getAccessSecret());
             ftps.open();
-            b = ftps.deleteFile(fileName);
+            b = ftps.deleteFile(images.getImgname());
         } catch (Exception e) {
             e.printStackTrace();
             b = false;

@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.util.List;
 
 @Controller
 public class IndexController {
@@ -37,27 +38,9 @@ public class IndexController {
     @Autowired
     private  UploadServicel uploadServicel;
     @Autowired
-    private NOSImageupload nosImageupload;
-    @Autowired
-    private OSSImageupload ossImageupload;
-    @Autowired
-    private COSImageupload cosImageupload;
-    @Autowired
-    private KODOImageupload kodoImageupload;
-    @Autowired
-    private USSImageupload ussImageupload;
-    @Autowired
-    private UFileImageupload uFileImageupload;
-    @Autowired
-    private FTPImageupload ftpImageupload;
+    private deleImages deleimages;
     @Autowired
     AlbumServiceImpl albumService;
-    @Autowired
-    private KeysService keysService;
-    @Autowired
-    private ImgTempService imgTempService;
-    @Autowired
-    private ImgAndAlbumService imgAndAlbumService;
 
 
     @RequestMapping(value = "/webInfo")
@@ -264,60 +247,31 @@ public class IndexController {
         JSONObject jsonObj = JSONObject.parseObject(data);
         String imguid = jsonObj.getString("imguid");
         Images image = imgService.selectImgUrlByImgUID(imguid);
+        if(null==image){
+            msg.setInfo("图像已不存在，删除成功");
+            return msg;
+        }
+        //判断是不是自己的图片 因为这里的删除功能只能是首页上传后才会调用的接口  能删除的图片只能是自己的
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
         if(null!=user){
+            //由于integer类型的==比较方式适用于-128~127之间，所以超过这个范围就会不对
+//            if(user.getId()!=image.getUserid()){
             if(!user.getId().equals(image.getUserid())){
                 msg.setInfo("删除失败，该图片不允许你执行操作");
                 msg.setCode("100403");
                 return msg;
             }
         }
-        Integer keyid = image.getSource();
-        String imgname = image.getImgname();
-        Keys key = keysService.selectKeys(keyid);
-        //删除图片
-        boolean isDele = false;
-        if (key.getStorageType() == 1) {
-            isDele = nosImageupload.delNOS(key.getId(), imgname);
-        } else if (key.getStorageType() == 2) {
-            isDele = ossImageupload.delOSS(key.getId(), imgname);
-        } else if (key.getStorageType() == 3) {
-            isDele = ussImageupload.delUSS(key.getId(), imgname);
-        } else if (key.getStorageType() == 4) {
-            isDele = kodoImageupload.delKODO(key.getId(), imgname);
-        } else if (key.getStorageType() == 5) {
-            isDele = LocUpdateImg.deleteLOCImg(imgname);
-        }else if (key.getStorageType() == 6) {
-            isDele = cosImageupload.delCOS(key.getId(), imgname);
-        }else if (key.getStorageType() == 7) {
-            isDele = ftpImageupload.delFTP(key.getId(), imgname);
-        }else if (key.getStorageType() == 8) {
-            isDele = uFileImageupload.delUFile(key.getId(), imgname);
-        }else {
-            System.err.println("未获取到对象存储参数，删除失败。");
-        }
-        //删除库
-        if(isDele){
-            try {
-                imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
-                imgTempService.delImgAndExp(image.getImguid());
-                imgService.deleimg(image.getId());
-            } catch (Exception e) {
-                e.printStackTrace();
-                msg.setInfo("图片记录时发生错误");
-                msg.setCode("500");
-                return msg;
-            }
-            msg.setInfo("删除成功");
-        }else{
-            imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
-            imgTempService.delImgAndExp(image.getImguid());
-            imgService.deleimg(image.getId());
-            msg.setInfo("图片记录已删除，但是图片源删除失败");
+        msg = deleimages.dele(null,image.getId());
+        List<Long> Delids = (List<Long>)msg.getData();
+        if(!Delids.contains(image.getId())){
             msg.setCode("500");
+            msg.setInfo("图像删除失败");
+        }else{
+            msg.setCode("200");
+            msg.setInfo("图像已成功删除");
         }
-        System.out.println("返回的值："+msg.toString());
         return msg;
     }
 

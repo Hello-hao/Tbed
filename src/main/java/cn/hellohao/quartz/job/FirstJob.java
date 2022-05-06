@@ -63,21 +63,21 @@ public class FirstJob {
 				imgService.deleimgForImgUid(images.getImguid());
 				Keys keys = keysService.selectKeys(images.getSource());
 				if(keys.getStorageType()==1){
-					firstJob.nosImageupload.delNOS(keys.getId(),images.getImgname());
+					firstJob.nosImageupload.delNOS(keys.getId(),images);
 				}else if (keys.getStorageType()==2){
-					firstJob.ossImageupload.delOSS(keys.getId(), images.getImgname());
+					firstJob.ossImageupload.delOSS(keys.getId(), images);
 				}else if(keys.getStorageType()==3){
-					firstJob.ussImageupload.delUSS(keys.getId(), images.getImgname());
+					firstJob.ussImageupload.delUSS(keys.getId(), images);
 				}else if(keys.getStorageType()==4){
-					firstJob.kodoImageupload.delKODO(keys.getId(), images.getImgname());
+					firstJob.kodoImageupload.delKODO(keys.getId(), images);
 				}else if(keys.getStorageType()==5){
-					LocUpdateImg.deleteLOCImg(images.getImgname());
+					LocUpdateImg.deleteLOCImg(images);
 				}else if(keys.getStorageType()==6){
-					firstJob.cosImageupload.delCOS(keys.getId(),images.getImgname());
+					firstJob.cosImageupload.delCOS(keys.getId(),images);
 				}else if(keys.getStorageType()==7){
-					firstJob.ftpImageupload.delFTP(keys.getId(), images.getImgname());
+					firstJob.ftpImageupload.delFTP(keys.getId(), images);
 				}else if(keys.getStorageType()==8){
-					firstJob.uFileImageupload.delUFile(keys.getId(), images.getImgname());
+					firstJob.uFileImageupload.delUFile(keys.getId(), images);
 				}else{
 					System.err.println("未获取到对象存储参数，上传失败。");
 				}

@@ -85,11 +85,10 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(sql9);
             Print.Normal("Stage 7");
         }
-
-//        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+"'imgandalbum' and column_name = 'notes' and TABLE_SCHEMA='picturebed'");
+//        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'imgdata' and column_name = 'idname'");
 //        if(ret6==0){
 //            RunSqlScript.RunInsert(sql11);
-//            Print.Normal("Stage 8");
+//            Print.Normal("Add imgdata.idname");
 //        }
 
         RunSqlScript.RunInsert(sql10);
@@ -116,8 +115,10 @@ public class FirstRun implements InitializingBean {
     //添加imgdata表字段md5key
     private String sql8 = "alter table imgdata add md5key varchar(5000)";
     private String sql9 = "ALTER TABLE config ADD theme int(4) DEFAULT '1' COMMENT '主题'  ";
-//修改字段长度
+    //修改字段长度
     private String sql10 = "alter table config modify column `explain` varchar(1000),modify column links varchar(1000),modify column notice varchar(1000),modify column baidu varchar(1000)";
+    //  图片标识名字段
+    private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
 
     //添加imgandalbum字段notes(添加画廊图片说明)
 //    private String sql11 = "alter table imgandalbum add notes varchar(1000) DEFAULT ' '";

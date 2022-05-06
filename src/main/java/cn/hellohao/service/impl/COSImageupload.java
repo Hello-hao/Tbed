@@ -1,5 +1,7 @@
 package cn.hellohao.service.impl;
 
+import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
@@ -93,10 +95,10 @@ public class COSImageupload {
         return ret;
     }
 
-    public Boolean delCOS(Integer keyID, String fileName) {
+    public Boolean delCOS(Integer keyID, Images images) {
         boolean b = true;
         try {
-            cosClient.deleteObject(key.getBucketname(), fileName);
+            cosClient.deleteObject(key.getBucketname(), images.getImgname());
         } catch (Exception e) {
             e.printStackTrace();
             b = false;

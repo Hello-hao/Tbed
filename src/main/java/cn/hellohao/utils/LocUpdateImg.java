@@ -1,6 +1,7 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.config.GlobalConstant;
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.pojo.UploadConfig;
@@ -14,10 +15,10 @@ import java.util.Map;
 import java.util.UUID;
 
 public class LocUpdateImg {
-    public static boolean deleteLOCImg(String imagename){
+    public static boolean deleteLOCImg(Images images){
         boolean isDele = false;
         try {
-            String filePath = GlobalConstant.LOCPATH + File.separator+imagename;
+            String filePath = GlobalConstant.LOCPATH + File.separator+images.getImgname();
             File file = new File(filePath);
             isDele = file.delete();
         }catch (Exception e){
