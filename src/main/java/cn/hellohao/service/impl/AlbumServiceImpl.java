@@ -35,7 +35,6 @@ public class AlbumServiceImpl implements AlbumService {
     @Autowired
     ImgMapper imgMapper;
 
-
     @Override
     public JSONArray getAlbumList(JSONArray array) {
         JSONArray jsonArray = new JSONArray();

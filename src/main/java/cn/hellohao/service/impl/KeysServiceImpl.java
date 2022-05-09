@@ -52,9 +52,8 @@ public class KeysServiceImpl implements KeysService {
     public Msg updateKey(Keys key) {
         Msg msg = new Msg();
         Integer ret = -2;
-        //修改完初始化
         if(key.getStorageType()==1){
-            ret =nOSImageupload.Initialize(key);//实例化网易
+            ret =nOSImageupload.Initialize(key);
         }else if (key.getStorageType()==2){
             ret = ossImageupload.Initialize(key);
         }else if(key.getStorageType()==3 ){

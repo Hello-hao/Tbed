@@ -1,15 +1,17 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.config.GlobalConstant;
-import cn.hellohao.pojo.*;
-import cn.hellohao.utils.*;
+import cn.hellohao.pojo.Images;
+import cn.hellohao.pojo.Keys;
+import cn.hellohao.pojo.Msg;
+import cn.hellohao.pojo.ReturnImage;
+import cn.hellohao.utils.SetText;
+import cn.hellohao.utils.TypeDict;
 import com.UpYun;
 import com.aliyun.oss.model.ObjectMetadata;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UFileImageupload {
@@ -47,14 +49,12 @@ public class UFileImageupload {
 
     }
 
-    //ufile初始化
     public static Integer Initialize(Keys k) {
         int ret = -1;
         if(k.getAccessSecret()!=null && k.getAccessKey()!=null
                 && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
             if(!k.getAccessSecret().equals("") && !k.getAccessKey().equals("")
                     && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
-                // 创建UpYun实例。
                 UpYun ufObj = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
                 List<UpYun.FolderItem> items = null;
                 try {

@@ -13,12 +13,9 @@ import java.util.List;
  */
 @Service
 public interface CodeService {
-    //查询扩容码
     List<Code> selectCode(String value);
     Code selectCodekey(String code);
-    //添加
     Integer addCode(Code code);
-    //删除扩容码
     Integer deleteCode(String code);
 
 }

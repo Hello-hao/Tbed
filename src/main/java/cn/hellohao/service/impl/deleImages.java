@@ -74,7 +74,6 @@ public class deleImages {
                 } else {
                     System.err.println("未获取到对象存储参数，删除失败。");
                 }
-//            Integer delret = imgMapper.deleimg(images.getId());
                 if(isDele){
                     try {
                         imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());

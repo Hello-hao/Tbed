@@ -12,6 +12,8 @@ import java.util.List;
 @Service
 public interface ImgTempService {
     List<Images> selectDelImgUidList(String datatime);
+
     Integer delImgAndExp(String imguid);
+
     Integer insertImgExp(ImgTemp imgDataExp);
 }

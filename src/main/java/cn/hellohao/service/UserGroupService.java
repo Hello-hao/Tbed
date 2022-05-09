@@ -10,10 +10,17 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public interface UserGroupService {
+
     UserGroup useridgetusergroup(Integer userid);
+
     UserGroup idgetusergroup(Integer id);
+
     Integer addusergroup(UserGroup userGroup);
+
     Integer updateusergroup(UserGroup userGroup);
+
     Integer updateusergroupdefault(Integer groupid);
+
     Integer deleusergroup(Integer userid);
+
 }

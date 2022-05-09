@@ -1,28 +1,17 @@
 package cn.hellohao.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.*;
-
-import cn.hellohao.config.GlobalConstant;
-import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.Images;
+import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.*;
-import com.netease.cloud.services.nos.model.NOSObjectSummary;
-import com.netease.cloud.services.nos.model.ObjectListing;
-import com.netease.cloud.services.nos.model.ObjectMetadata;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
+import cn.hellohao.utils.SetText;
 import com.netease.cloud.auth.BasicCredentials;
 import com.netease.cloud.auth.Credentials;
 import com.netease.cloud.services.nos.NosClient;
-import com.netease.cloud.services.nos.model.Bucket;
-import com.netease.cloud.services.nos.transfer.TransferManager;
+import com.netease.cloud.services.nos.model.ObjectListing;
+import org.springframework.stereotype.Service;
 
-import cn.hellohao.pojo.Keys;
+import java.io.File;
+import java.util.Map;
 
 @Service
 public class NOSImageupload {
@@ -51,7 +40,6 @@ public class NOSImageupload {
     }
 
 
-    //初始化网易NOS对象存储
     public static Integer Initialize(Keys k) {
         int ret = -1;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
@@ -74,16 +62,12 @@ public class NOSImageupload {
                 }
             }
         }
-        //throw new StorageSourceInitException("当前数据源配置不完整，请管理员前往后台配置。");
         return ret;
     }
 
     public Boolean delNOS(Integer keyID, Images images) {
         boolean b =true;
         try {
-            //这种方法不能删除指定文件夹下的文件
-//            boolean isExist = nosClient.doesObjectExist(key.getBucketname(), fileName, null);
-//            if (isExist) { }
             nosClient.deleteObject(key.getBucketname(), images.getImgname());
         } catch (Exception e) {
             e.printStackTrace();

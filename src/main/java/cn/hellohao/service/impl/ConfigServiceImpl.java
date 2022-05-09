@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class ConfigServiceImpl implements ConfigService {
     @Autowired
     private ConfigMapper configMapper;
+
     @Override
     public Config getSourceype() {
         return configMapper.getSourceype();

@@ -1,25 +1,23 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.*;
+import cn.hellohao.utils.FTPUtils;
+import cn.hellohao.utils.Print;
+import cn.hellohao.utils.SetText;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class FTPImageupload {
-    static FTPClient ftpClient1 ;
     static Keys key;
 
     public ReturnImage ImageuploadFTP(Map<String, File> fileMap, String username,Integer keyID)  {
@@ -53,13 +51,10 @@ public class FTPImageupload {
         }catch (Exception e){
             e.printStackTrace();
             returnImage.setCode("500");
-//                ImgUrl.put(null, 500);
         }
         return returnImage;
-
     }
 
-    //初始化FTP对象存储
     public static Integer Initialize(Keys k) {
         int ret = -1;
         if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null && k.getRequestAddress()!=null ) {
@@ -84,7 +79,6 @@ public class FTPImageupload {
                         }
                         ret = 1;
                         key = k;
-//                        KeyObjectMap objectMap = new KeyObjectMap(ftp,k);
                     } catch (IOException e) {
                         System.out.println("FTP Object Is null");
                         return -1;
@@ -100,12 +94,12 @@ public class FTPImageupload {
         try{
             File afile=new File(a);
             File bfile=new File(p2);//定义一个复制后的文件路径
-            bfile.createNewFile();//新建文件
-            FileInputStream c=new FileInputStream(afile);//定义FileInputStream对象
-            FileOutputStream d=new FileOutputStream(bfile);//定义FileOutputStream对象
-            byte[] date=new byte[512];//定义一个byte数组
+            bfile.createNewFile();
+            FileInputStream c=new FileInputStream(afile);
+            FileOutputStream d=new FileOutputStream(bfile);
+            byte[] date=new byte[512];
             int i=0;
-            while((i=c.read(date))>0){//判断有没有读取到文件末尾
+            while((i=c.read(date))>0){
                 d.write(date);
             }
             c.close();

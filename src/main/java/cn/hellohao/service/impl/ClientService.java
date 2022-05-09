@@ -2,24 +2,16 @@ package cn.hellohao.service.impl;
 
 import cn.hellohao.dao.*;
 import cn.hellohao.pojo.*;
-import cn.hellohao.pojo.vo.PageResultBean;
-import cn.hellohao.service.ImgAndAlbumService;
 import cn.hellohao.service.SysConfigService;
 import cn.hellohao.utils.*;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.aip.contentcensor.AipContentCensor;
 import com.baidu.aip.contentcensor.EImgType;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import net.coobird.thumbnailator.filters.Watermark;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,23 +27,7 @@ import java.util.*;
 public class ClientService {
 
     @Autowired
-    private ImgAndAlbumService imgAndAlbumService;
-    @Autowired
-    private NOSImageupload nOSImageupload;
-    @Autowired
-    private OSSImageupload ossImageupload;
-    @Autowired
-    private USSImageupload ussImageupload;
-    @Autowired
-    private KODOImageupload kodoImageupload;
-    @Autowired
-    private COSImageupload cosImageupload;
-    @Autowired
     private SysConfigService sysConfigService;
-    @Autowired
-    private FTPImageupload ftpImageupload;
-    @Autowired
-    private UFileImageupload uFileImageupload;
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -74,7 +50,6 @@ public class ClientService {
             String md5key = null;
             Integer setday = 0;
             JSONObject jsonObject = new JSONObject();
-            Config config = configMapper.getSourceype();
             String userip = GetIPS.getIpAddr(request);
             UploadConfig uploadConfig = uploadConfigMapper.getUpdateConfig();
             if (uploadConfig.getApi() != 1) {
@@ -92,14 +67,12 @@ public class ClientService {
             u2.setEmail(email);
             u2.setPassword(Base64Encryption.encryptBASE64(pass.getBytes()));
             User u = userMapper.getUsers(u2);
-            //判断用户的账号密码是否存在（正确）
             if (null == u || u.getIsok() != 1) {
                 msg.setCode("4006");
                 msg.setInfo("用户信息不正确,账号异常");
                 return msg;
             }
             String imguid = UUID.randomUUID().toString().replace("-", "");
-            //判断上传前的一些用户限制信息
             Msg msg1 = updateImgCheck(u, uploadConfig);
             if (!msg1.getCode().equals("300")) {
                 return msg1;
@@ -128,7 +101,6 @@ public class ClientService {
             }
             Msg fileMiME = TypeDict.FileMiME(file);
             if (!fileMiME.getCode().equals("200")) {
-                //非图像文本
                 msg.setCode("4009");
                 msg.setInfo(fileMiME.getInfo());
                 return msg;
@@ -147,7 +119,6 @@ public class ClientService {
                     }
                 }
             }
-            //判断图片是否存在
             if(Integer.valueOf(sysConfigService.getstate().getCheckduplicate())==1) {
                 Images imaOBJ = new Images();
                 imaOBJ.setMd5key(md5key);
@@ -162,7 +133,6 @@ public class ClientService {
                 }
             }
             Map<String, File> map = new HashMap<>();
-            String fileName = file.getName();
             if (file.exists()) {
                 map.put(prefix, file);
             }
@@ -196,7 +166,6 @@ public class ClientService {
                 jsonObject.put("url", img.getImgurl());
                 jsonObject.put("name", imgname);
                 jsonObject.put("size", img.getSizes());
-                //启动鉴黄线程
                 new Thread(() -> {
                     LegalImageCheck(img);
                 }).start();
@@ -207,7 +176,6 @@ public class ClientService {
             }
             file.delete();
             msg.setData(jsonObject);
-//            新代码结束=========
             return msg;
         }catch (Exception e){
             e.printStackTrace();
@@ -268,7 +236,6 @@ public class ClientService {
     }
 
     //图片鉴黄
-
     private synchronized void LegalImageCheck(Images images){
         System.out.println("非法图像鉴别进程启动");
         Imgreview imgreview = null;
@@ -301,7 +268,7 @@ public class ClientService {
                                 if (imgdata.getInteger("type") == 1) {
                                     Images img = new Images();
                                     img.setImgname(images.getImgname());
-                                    img.setViolation("1[1]");//数字是鉴别平台的主键ID，括号是非法的类型，参考上面的注释
+                                    img.setViolation("1[1]");
                                     imgMapper.setImg(img);
                                     Imgreview imgv = new Imgreview();
                                     imgv.setId(1);

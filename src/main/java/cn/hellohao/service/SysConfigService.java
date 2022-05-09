@@ -11,5 +11,6 @@ import org.springframework.stereotype.Service;
 @Service
 public interface SysConfigService {
     SysConfig getstate();
+
     Integer setstate(SysConfig sysConfig);
 }

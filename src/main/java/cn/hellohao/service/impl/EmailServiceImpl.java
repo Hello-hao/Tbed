@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 public class EmailServiceImpl implements EmailConfigService {
     @Autowired
     EmailConfigMapper emailConfigMapper;
+
     @Override
     public EmailConfig getemail() {
         return emailConfigMapper.getemail();

@@ -40,13 +40,9 @@ public class AdminController {
     @Autowired
     private ImgreviewService imgreviewService;
     @Autowired
-    private ImgTempService imgTempService;
-    @Autowired
     private UploadConfigService uploadConfigService;
     @Autowired
     private CodeService codeService;
-    @Autowired
-    private ImgAndAlbumService imgAndAlbumService;
     @Autowired
     private AlbumService albumService;
     @Autowired

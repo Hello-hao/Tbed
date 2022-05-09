@@ -5,10 +5,7 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.service.ImgTempService;
 import cn.hellohao.service.SysConfigService;
 import cn.hellohao.utils.*;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.aip.contentcensor.AipContentCensor;
 import com.baidu.aip.contentcensor.EImgType;
@@ -20,7 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -50,7 +48,6 @@ public class UploadServicel {
     ImgTempService imgTempService;
 
 
-
     public Msg uploadForLoc(HttpServletRequest request,
                             MultipartFile multipartFile, Integer setday, String imgUrl) {
         Msg msg = new Msg();
@@ -70,7 +67,6 @@ public class UploadServicel {
             if(imgUrl==null){
                 file = SetFiles.changeFile_new(multipartFile);
             }else{
-                //说明是URL上传
                 Msg imgData = uploadForURL(request, imgUrl);
                 if(imgData.getCode().equals("200")){
                     file = new File((String) imgData.getData());
@@ -79,13 +75,10 @@ public class UploadServicel {
                 }
             }
             String imguid = UUID.randomUUID().toString().replace("-", "");
-            //判断上传前的一些用户限制信息
             Msg msg1 = updateImgCheck(u,uploadConfig);
             if(!msg1.getCode().equals("300")){
                 return msg1;
             }
-
-            //判断可用容量
             sourceKeyId = group.getKeyid();
             Keys key = keysMapper.selectKeys(sourceKeyId);
             Long tmp = (memory == -1 ? -2 : UsedTotleMemory);
@@ -94,8 +87,6 @@ public class UploadServicel {
                 msg.setInfo(u==null?"游客空间已用尽":"您的可用空间不足");
                 return msg;
             }
-
-            //判断图片有没有超出设定大小
             if (file.length() > TotleMemory) {
                 System.err.println("文件大小："+file.length());
                 System.err.println("最大限制："+TotleMemory);
@@ -112,7 +103,6 @@ public class UploadServicel {
             }
             Msg fileMiME = TypeDict.FileMiME(file);
             if(!fileMiME.getCode().equals("200")) {
-                //非图像文本
                 msg.setCode("4000");
                 msg.setInfo(fileMiME.getInfo());
                 return msg;
@@ -120,8 +110,6 @@ public class UploadServicel {
             if(md5key==null || md5key.equals("")){
                 md5key = UUID.randomUUID().toString().replace("-", "");
             }
-
-            //判断图片是否存在
             if(Integer.valueOf(sysConfigService.getstate().getCheckduplicate())==1){
                 Images imaOBJ = new Images();
                 imaOBJ.setMd5key(md5key);
@@ -131,13 +119,10 @@ public class UploadServicel {
                     jsonObject.put("url", images.get(0).getImgurl());
                     jsonObject.put("name",file.getName());
                     jsonObject.put("imguid",images.get(0).getImguid());
-//                    jsonObject.put("shortLink",images.getShortlink());
                     msg.setData(jsonObject);
                     return msg;
                 }
             }
-
-
             String prefix = file.getName().substring(file.getName().lastIndexOf(".")+1);
             //判断黑名单
             if (uploadConfig.getBlacklist() != null) {
@@ -151,7 +136,6 @@ public class UploadServicel {
                     }
                 }
             }
-
             Map<String, File> map = new HashMap<>();
             if (file.exists()) {
                 map.put(prefix, file);//prefix
@@ -194,7 +178,6 @@ public class UploadServicel {
                 jsonObject.put("url", img.getImgurl());
                 jsonObject.put("name", imgname);
                 jsonObject.put("imguid",img.getImguid());
-//                jsonObject.put("shortLink", img.getShortlink());
                 new Thread(()->{LegalImageCheck(img);}).start();
             }else{
                 msg.setCode("5001");
@@ -213,25 +196,18 @@ public class UploadServicel {
 
     }
 
-
-    //通过图片Url上传图片
     public static Msg uploadForURL(HttpServletRequest request, String imgurl){
         final Msg msg = new Msg();
-        //先判断是不是有效链接
-//        final boolean valid = ImgUrlUtil.isValid(imgurl);
         if(true){
             Long imgsize = 0L;
             try {
-//                imgsize = ImgUrlUtil.getFileLength(imgurl);
                 if(imgsize==0){
-//                    String uuid= UUID.randomUUID().toString().replace("-", "");
                     String ShortUID = SetText.getShortUuid();
                     String savePath = request.getSession().getServletContext().getRealPath("/")+File.separator+"hellohaotmp"+File.separator;
                     Map<String ,Object> bl =ImgUrlUtil.downLoadFromUrl (imgurl, ShortUID, savePath);
                     if((Boolean) bl.get("res")==true){
-//                        File file = new File();
                         msg.setCode("200");
-                        msg.setData(bl.get("imgPath"));//savePath + File.separator + ShortUID
+                        msg.setData(bl.get("imgPath"));
                         return msg;
                     }else{
                         if(bl.get("StatusCode").equals("110403")){
@@ -270,7 +246,6 @@ public class UploadServicel {
         try {
             dateFormat = new SimpleDateFormat("yyyy/MM/dd");
             if (user == null) {
-                //用户没有登陆，值判断游客能不能上传即可
                 if(uploadConfig.getIsupdate()!=1){
                     msg.setCode("1000");
                     msg.setInfo("系统已禁用游客上传");
@@ -282,7 +257,6 @@ public class UploadServicel {
                 TotleMemory = Long.valueOf(uploadConfig.getFilesizetourists());//单位 B  游客单文件大小
                 UsedTotleMemory = imgMapper.getusermemory(0)==null?0L : imgMapper.getusermemory(0);//单位 B
             } else {
-                //判断用户能不能上传
                 if(uploadConfig.getUserclose()!=1){
                     msg.setCode("1001");
                     msg.setInfo("系统已禁用上传功能");
@@ -365,7 +339,6 @@ public class UploadServicel {
 
         }
     }
-
 
     //计算时间
     public static String plusDay(int setday){

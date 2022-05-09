@@ -19,7 +19,6 @@ public class CodeServiceImpl implements CodeService {
     @Autowired
     private CodeMapper codeMapper;
 
-
     @Override
     public List<Code> selectCode(String value) {
         return codeMapper.selectCode(value);

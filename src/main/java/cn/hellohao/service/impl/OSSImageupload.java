@@ -1,19 +1,19 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.utils.*;
+import cn.hellohao.utils.SetText;
+import cn.hellohao.utils.TypeDict;
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.ObjectMetadata;
 import org.springframework.stereotype.Service;
+
 import java.io.File;
-import java.util.*;
+import java.util.Map;
 
 @Service
 public class OSSImageupload {
@@ -72,7 +72,6 @@ public class OSSImageupload {
     public boolean delOSS(Integer keyID, Images images){
         boolean b =true;
         try {
-//            OSSClient ossClient = new OSSClient(key.getEndpoint(), key.getAccessKey(), key.getAccessSecret());
             ossClient.deleteObject(key.getBucketname(), images.getImgname());
         } catch (Exception e) {
             e.printStackTrace();
