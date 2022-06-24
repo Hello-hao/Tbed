@@ -12,6 +12,8 @@ public interface UserService {
 
     Integer login(String email, String password,String uid);
 
+    User loginByToken (String token);
+
     User getUsers(User user);
 
     Integer insertimg(Images img);

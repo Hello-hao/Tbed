@@ -4,8 +4,8 @@
 
     <!-- 用户注册 -->
     <insert id="register" parameterType="cn.hellohao.pojo.User">
-        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok,memory,groupid)
-        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok},#{memory},#{groupid}   )
+        INSERT INTO user (id, username, PASSWORD, email, birthder, LEVEL,uid,isok,memory,groupid,token)
+        VALUES (NULL, #{username}, #{password}, #{email}, #{birthder}, #{level},#{uid},#{isok},#{memory},#{groupid},#{token})
     </insert>
     <!--  查询是否有username  -->
     <select id="countusername" parameterType="string" resultType="integer">
@@ -22,7 +22,6 @@
     </select>
     <!--  uid查询用户并修改  -->
     <update id="uiduser" parameterType="cn.hellohao.pojo.User">
-        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
         UPDATE `user` set `isok`=1 where uid=#{uid}
     </update>
 
@@ -30,8 +29,6 @@
     <select id="login" parameterType="string" resultType="integer">
         select COUNT(*)
         from user
-<!--        where email = #{email}-->
-<!--        and password = #{password}-->
         <where>
              1=1
             <if test="email != null">
@@ -47,6 +44,15 @@
         </where>
     </select>
 
+    <!-- Token登录 -->
+    <select id="loginByToken" parameterType="string" resultType="cn.hellohao.pojo.User">
+        select *
+        from user
+        <where>
+            token = #{token}
+        </where>
+    </select>
+
     <!-- 查询当前用户:根据邮箱,根据id -->
     <select id="getUsers" parameterType="cn.hellohao.pojo.User" resultType="cn.hellohao.pojo.User">
         SELECT id,
@@ -58,7 +64,8 @@
         uid,
         isok,
         memory,
-        groupid
+        groupid,
+        token
         FROM user
         <where>
             <if test="id != null">
@@ -69,6 +76,9 @@
             </if>
             <if test="uid != null">
                 and uid = #{uid}
+            </if>
+            <if test="token != null">
+                and token = #{token}
             </if>
         </where>
     </select>
@@ -83,7 +93,8 @@
                uid,
                isok,
                memory,
-               groupid
+               groupid,
+               token
         FROM user
         WHERE id = #{id}
     </select>
@@ -98,7 +109,8 @@
         uid,
         isok,
         memory,
-        groupid
+        groupid,
+        token
         FROM user
         WHERE uid = #{uid}
     </select>
@@ -111,7 +123,6 @@
 
     <!-- 修改资料 -->
     <update id="change" parameterType="cn.hellohao.pojo.User">
-        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
         UPDATE `user`
         <set>
             <if test="email != null">
@@ -128,6 +139,9 @@
             </if>
             <if test="groupid != null">
                 `groupid` = #{groupid}
+            </if>
+            <if test="token != null">
+                `token` = #{token},
             </if>
         </set>
         where uid=#{uid}
@@ -157,6 +171,9 @@
             <if test="uid != null">
                 `uid` = #{uid},
             </if>
+            <if test="token != null">
+                `token` = #{token},
+            </if>
         </set>
         where id=#{id}
     </update>
@@ -183,6 +200,7 @@
         isok,
         ceil((memory/1024/1024)) as memory,
         groupid,
+        token,
         (select groupname from `group` where id = groupid) as groupname
         FROM
         user
@@ -203,11 +221,9 @@
     </delete>
 
     <update id="setisok" parameterType="cn.hellohao.pojo.User">
-        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
         UPDATE `user` set `isok`=#{isok} where id=#{id}
     </update>
     <update id="setmemory" parameterType="cn.hellohao.pojo.User">
-        <!-- UPDATE `user` set username=#{username},`password`=#{password} where email=#{email} -->
         UPDATE `user` set `memory`=#{memory} where id=#{id}
     </update>
 

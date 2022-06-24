@@ -3,11 +3,14 @@ package cn.hellohao.controller;
 import cn.hellohao.auth.token.JWTUtil;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
-import cn.hellohao.service.impl.*;
-import cn.hellohao.utils.*;
+import cn.hellohao.service.impl.AlbumServiceImpl;
+import cn.hellohao.service.impl.UploadServicel;
+import cn.hellohao.service.impl.deleImages;
 import cn.hellohao.utils.verifyCode.IVerifyCodeGen;
 import cn.hellohao.utils.verifyCode.SimpleCharVerifyCodeGenImpl;
-import cn.hellohao.utils.verifyCode.VerifyCode;
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.ShearCaptcha;
+import cn.hutool.captcha.generator.MathGenerator;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
@@ -17,11 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.*;
+import java.io.IOException;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Controller
 public class IndexController {
@@ -29,8 +35,6 @@ public class IndexController {
     private ImgService imgService;
     @Autowired
     private SysConfigService sysConfigService;
-    @Autowired
-    IRedisService iRedisService;
     @Autowired
     private ConfigService configService;
     @Autowired
@@ -41,6 +45,8 @@ public class IndexController {
     private deleImages deleimages;
     @Autowired
     AlbumServiceImpl albumService;
+    @Autowired
+    AppClientService appClientService;
 
 
     @RequestMapping(value = "/webInfo")
@@ -51,6 +57,7 @@ public class IndexController {
         UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
         SysConfig sysConfig = sysConfigService.getstate();
         JSONObject jsonObject = new JSONObject();
+        AppClient appClient = appClientService.getAppClientData("app");
         jsonObject.put("webname",config.getWebname());
         jsonObject.put("websubtitle",config.getWebsubtitle());
         jsonObject.put("keywords",config.getWebkeywords());
@@ -63,18 +70,22 @@ public class IndexController {
         jsonObject.put("logo",config.getLogo());
         jsonObject.put("api",updateConfig.getApi());
         jsonObject.put("register",sysConfig.getRegister());
+        jsonObject.put("isuse",appClient.getIsuse());
+        jsonObject.put("packurl",appClient.getPackurl());
+        jsonObject.put("clientname",appClient.getAppname());
+        jsonObject.put("clientlogo",appClient.getApplogo());
+        jsonObject.put("appupdate",appClient.getAppupdate());
         msg.setData(jsonObject);
         return msg;
     }
 
-    @PostMapping(value = "/upload")// new
+    @PostMapping(value = {"/upload","/client/upload"})// new
     @ResponseBody
-    public Msg upimg(HttpServletRequest request,HttpSession httpSession
-            , @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer day) {
+    public Msg upimg(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer day) {
         return uploadServicel.uploadForLoc(request,multipartFile,day,null);
     }
 
-    @PostMapping(value = "/uploadForUrl") //new
+    @PostMapping(value = {"/uploadForUrl","/client/uploadForUrl"}) //new
     @ResponseBody
     public Msg upurlimg(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
@@ -186,15 +197,22 @@ public class IndexController {
     public void verifyCode(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
         IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
         try {
-            VerifyCode verifyCode = iVerifyCodeGen.generate(80, 38);
-            String code = verifyCode.getCode();
-            String userIP = GetIPS.getIpAddr(request);
-            iRedisService.setValue(userIP+"_hellohao_verifyCode",code);
+            ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
+            captcha.setGenerator(new MathGenerator(1));
+            httpSession.setAttribute("_hellohao_verifyCode",captcha);
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);
             response.setContentType("image/jpeg");
-            response.getOutputStream().write(verifyCode.getImgBytes());
+            captcha.write(response.getOutputStream());
+            final Timer timer=new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    httpSession.removeAttribute("_hellohao_verifyCode");
+                    timer.cancel();
+                }
+            },5*60*1000);
             response.getOutputStream().flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -205,15 +223,21 @@ public class IndexController {
     public void verifyCodeForRegister(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
         IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
         try {
-            VerifyCode verifyCode = iVerifyCodeGen.generate(80, 38);
-            String code = verifyCode.getCode();
-            String userIP = GetIPS.getIpAddr(request);
-            iRedisService.setValue(userIP+"_hellohao_verifyCodeForRegister",code);
+            ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
+             httpSession.setAttribute("_hellohao_verifyCodeForRegister",captcha);
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);
             response.setContentType("image/jpeg");
-            response.getOutputStream().write(verifyCode.getImgBytes());
+            captcha.write(response.getOutputStream());
+            final Timer timer=new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    httpSession.removeAttribute("_hellohao_verifyCodeForRegister");
+                    timer.cancel();
+                }
+            },5*60*1000);
             response.getOutputStream().flush();
         } catch (IOException e) {
             e.printStackTrace();
@@ -224,23 +248,28 @@ public class IndexController {
     public void verifyCodeForRetrieve(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
         IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
         try {
-            VerifyCode verifyCode = iVerifyCodeGen.generate(80, 38);
-            String code = verifyCode.getCode();
-            System.out.println("verifyCodeForRetrieve-zhaoHui httpSession ID==="+httpSession.getId());
-            String userIP = GetIPS.getIpAddr(request);
-            iRedisService.setValue(userIP+"_hellohao_verifyCodeForEmailRetrieve",code);
+            ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
+             httpSession.setAttribute("_hellohao_verifyCodeForEmailRetrieve",captcha);
             response.setHeader("Pragma", "no-cache");
             response.setHeader("Cache-Control", "no-cache");
             response.setDateHeader("Expires", 0);
             response.setContentType("image/jpeg");
-            response.getOutputStream().write(verifyCode.getImgBytes());
+            captcha.write(response.getOutputStream());
+            final Timer timer=new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    httpSession.removeAttribute("_hellohao_verifyCodeForEmailRetrieve");
+                    timer.cancel();
+                }
+            },5*60*1000);
             response.getOutputStream().flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    @PostMapping("/deleImagesByUid") //new
+    @PostMapping({"/deleImagesByUid","/client/deleImagesByUid"}) //new
     @ResponseBody
     public Msg deleImagesByUid(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();

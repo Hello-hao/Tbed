@@ -16,7 +16,6 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -51,7 +50,7 @@ public class AdminController {
     private deleImages deleimages;
 
 
-    @PostMapping(value = "/overviewData") //new
+    @PostMapping(value = "/overviewData")
     @ResponseBody
     public Msg overviewData(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -60,12 +59,13 @@ public class AdminController {
         user =  userService.getUsers(user);
         JSONObject jsonObject = new JSONObject();
         UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);//查询非法个数
-        Imgreview isImgreviewOK = imgreviewService.selectByusing(1);//查询有没有启动鉴别功能
+        Imgreview imgreview = imgreviewService.selectByPrimaryKey(1);
+        Imgreview isImgreviewOK = imgreviewService.selectByusing(1);
         String ok = "false";
-        jsonObject.put("myImgTotal", imgService.countimg(user.getId())); //我的图片数
-        jsonObject.put("myAlbumTitle", albumService.selectAlbumCount(user.getId()));//我的画廊数量
-        long memory = Long.valueOf(user.getMemory());//分配量
+        jsonObject.put("myToken", user.getToken());
+        jsonObject.put("myImgTotal", imgService.countimg(user.getId()));
+        jsonObject.put("myAlbumTitle", albumService.selectAlbumCount(user.getId()));
+        long memory = Long.valueOf(user.getMemory());
         Long usermemory = imgService.getusermemory(user.getId())==null?0L:imgService.getusermemory(user.getId());
         if(memory==0){
             jsonObject.put("myMemory","无容量");
@@ -80,32 +80,31 @@ public class AdminController {
         jsonObject.put("myMemorySum",SetFiles.readableFileSize(memory));
         if(user.getLevel()>1){
             ok = "true";
-            //管理员
-            jsonObject.put("imgTotal", imgService.counts(null) ); //站点图片数
+            jsonObject.put("imgTotal", imgService.counts(null) );
             jsonObject.put("userTotal", userService.getUserTotal());
-            jsonObject.put("ViolationImgTotal", imgreview.getCount()); //非法图片
-            jsonObject.put("ViolationSwitch", isImgreviewOK==null?0:isImgreviewOK.getId()); //非法图片开关
-            jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());//是否禁用了游客上传
+            jsonObject.put("ViolationImgTotal", imgreview.getCount());
+            jsonObject.put("ViolationSwitch", isImgreviewOK==null?0:isImgreviewOK.getId());
+            jsonObject.put("VisitorUpload", uploadConfig.getIsupdate());
             jsonObject.put("VisitorMemory", SetFiles.readableFileSize(Long.valueOf(uploadConfig.getVisitormemory())));//访客共大小
             if(uploadConfig.getIsupdate()!=1){
-                jsonObject.put("VisitorUpload", 0);//是否禁用了游客上传
-                jsonObject.put("VisitorProportion",100.00);//游客用量%占比
-                jsonObject.put("VisitorMemory", "禁用");//访客共大小
+                jsonObject.put("VisitorUpload", 0);
+                jsonObject.put("VisitorProportion",100.00);
+                jsonObject.put("VisitorMemory", "禁用");
             }else{
                 Long temp = imgService.getusermemory(0)==null?0:imgService.getusermemory(0);
-                jsonObject.put("UsedMemory", (temp == null ? 0 : SetFiles.readableFileSize(temp)));//访客已用大小
+                jsonObject.put("UsedMemory", (temp == null ? 0 : SetFiles.readableFileSize(temp)));
                 if(Long.valueOf(uploadConfig.getVisitormemory())==0){
-                    jsonObject.put("VisitorProportion",100.00);//游客用量%占比
+                    jsonObject.put("VisitorProportion",100.00);
                 }else if(Long.valueOf(uploadConfig.getVisitormemory())==-1){
-                    jsonObject.put("VisitorProportion",0);//游客用量%占比
-                    jsonObject.put("VisitorMemory", "无限");//访客共大小
+                    jsonObject.put("VisitorProportion",0);
+                    jsonObject.put("VisitorMemory", "无限");
                 }else{
                     double sum = Double.valueOf(uploadConfig.getVisitormemory());
                     Double aDouble = Double.valueOf(String.format("%.2f", ((double) temp / sum) * 100));
                     if(aDouble>=999){
-                        jsonObject.put("VisitorProportion",999);//游客用量%占比
+                        jsonObject.put("VisitorProportion",999);
                     }else{
-                        jsonObject.put("VisitorProportion",aDouble);//游客用量%占比
+                        jsonObject.put("VisitorProportion",aDouble);
                     }
                 }
             }
@@ -115,7 +114,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping(value = "/SpaceExpansion")//new
+    @PostMapping(value = "/SpaceExpansion")
     @ResponseBody
     public Msg SpaceExpansion(@RequestParam(value = "data", defaultValue = "") String data) {
         final Msg msg = new Msg();
@@ -151,9 +150,9 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/getRecently")//new
+    @PostMapping("/getRecently")
     @ResponseBody
-    public Msg getRecently(@RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg getRecently() {
         Msg msg = new Msg();
         final JSONObject jsonObject = new JSONObject();
         try {
@@ -176,9 +175,32 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/getYyyy")//new
+    @PostMapping("/updateToken")
     @ResponseBody
-    public Msg getYyyy(@RequestParam(value = "data", defaultValue = "") String data){
+    public Msg updateToken() {
+        Msg msg = new Msg();
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            User user = (User) subject.getPrincipal();
+            User u = new User();
+            u.setId(user.getId());
+            u.setToken(UUID.randomUUID().toString().replace("-", ""));
+            userService.changeUser(u);
+            user.setToken(u.getToken());
+            msg.setData(u.getToken());
+            msg.setInfo("Token更新成功,即可生效");
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+            msg.setInfo("Token更新失败");
+        }
+        return msg;
+
+    }
+
+    @PostMapping("/getYyyy") 
+    @ResponseBody
+    public Msg getYyyy(){
         final Msg msg = new Msg();
         Subject subject = SecurityUtils.getSubject();
         User u = (User) subject.getPrincipal();
@@ -189,14 +211,13 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/getChart")//new
+    @PostMapping("/getChart") 
     @ResponseBody
     public Msg getChart(@RequestParam(value = "data", defaultValue = "") String data){
         Msg msg = new Msg();
         JSONObject jsonObject = JSONObject.parseObject(data);
         String yyyy = jsonObject.getString("yyyy");
         Integer type = jsonObject.getInteger("type");
-
         Subject subject = SecurityUtils.getSubject();
         User u = (User) subject.getPrincipal();
         List<Images> list =null;
@@ -232,7 +253,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/getStorage")//new
+    @PostMapping("/getStorage") 
     @ResponseBody
     public Msg getStorage() {
         Msg msg = new Msg();
@@ -241,7 +262,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/getStorageName")//new
+    @PostMapping("/getStorageName") 
     @ResponseBody
     public Msg getStorageName() {
         Msg msg = new Msg();
@@ -250,7 +271,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping(value = "/selectPhoto")//new
+    @PostMapping(value = {"/selectPhoto","/client/selectPhoto"}) 
     @ResponseBody
     public Msg selectPhoto(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -313,7 +334,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping(value = "/getUserInfo") //new
+    @PostMapping(value = "/getUserInfo")  
     @ResponseBody
     public Msg getUserInfo() {
         Msg msg = new Msg();
@@ -335,7 +356,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/setUserInfo") //new
+    @PostMapping("/setUserInfo")  
     @ResponseBody
     public Msg setUserInfo(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -398,7 +419,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/deleImages") //new
+    @PostMapping({"/deleImages","/client/deleImages"})  
     @ResponseBody
     public Msg deleImages(HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -412,7 +433,6 @@ public class AdminController {
         final String[] split = images.split(",");
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
-
         if(null == user){
             msg.setCode("500");
             msg.setInfo("当前用户信息不存在");
@@ -443,7 +463,7 @@ public class AdminController {
         return msg;
     }
 
-    @PostMapping("/GetDelprogress") //new
+    @PostMapping({"/GetDelprogress","/client/GetDelprogress"})  
     @ResponseBody
     public Msg GetDelprogress(HttpSession httpSession) {
         Msg msg =new Msg();
@@ -514,9 +534,7 @@ public class AdminController {
             default : ch = "";//可选
                 //语句
         }
-
         return ch;
-
     }
 
 }

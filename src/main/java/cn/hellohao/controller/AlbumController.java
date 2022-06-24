@@ -35,13 +35,13 @@ public class AlbumController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/admin/getGalleryList") //new
+    @PostMapping("/admin/getGalleryList")  
     @ResponseBody
-    public Map<String, Object> getGalleryList (@RequestParam(value = "data", defaultValue = "") String data){
+    public Msg getGalleryList (@RequestParam(value = "data", defaultValue = "") String data){
+        Msg msg = new Msg();
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
         user =  userService.getUsers(user);
-        Map<String, Object> map = new HashMap<String, Object>();
         Album album = new Album();
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer pageNum = jsonObj.getInteger("pageNum");
@@ -56,20 +56,17 @@ public class AlbumController {
         try {
             albums = albumServiceImpl.selectAlbumURLList(album);
             PageInfo<Album> rolePageInfo = new PageInfo<>(albums);
-            map.put("code", 200);
-            map.put("info", "");
-            map.put("count", rolePageInfo.getTotal());
-            map.put("data", rolePageInfo.getList());
+            msg.setData(rolePageInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("code", 500);
-            map.put("info", "获取数据异常");
+            msg.setInfo("获取数据异常");
+            msg.setCode("500");
         }
-        return map;
+        return msg;
 
     }
 
-    @PostMapping("/admin/deleGallery") //new 删除画廊
+    @PostMapping("/admin/deleGallery")
     @ResponseBody
     public Msg deleGallery (@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -101,7 +98,7 @@ public class AlbumController {
     }
 
     //后台列表要修改时的查询表单
-    @PostMapping("/admin/getAlbumListForKey") //new
+    @PostMapping("/admin/getAlbumListForKey")  
     @ResponseBody
     public Msg getAlbumListForKey(@RequestParam(value = "data", defaultValue = "") String data){
         Msg msg = new Msg();
@@ -132,7 +129,7 @@ public class AlbumController {
 
     }
 
-    @PostMapping("/getAlbumImgList") //new
+    @PostMapping("/getAlbumImgList")  
     @ResponseBody
     public Msg getAlbumImgList(@RequestParam("data") String data) {
         Msg msg = new Msg();
@@ -143,7 +140,7 @@ public class AlbumController {
         return msg;
     }
 
-    @PostMapping("/SaveForAlbum")//new
+    @PostMapping("/SaveForAlbum") 
     @ResponseBody
     public Msg SaveForAlbum(@RequestParam(value = "data", defaultValue = "") String data){
         data = StringEscapeUtils.unescapeHtml4(data);
@@ -205,7 +202,7 @@ public class AlbumController {
     }
 
 
-    @PostMapping("/admin/UpdateForAlbum")//new
+    @PostMapping("/admin/UpdateForAlbum") 
     @ResponseBody
     public Msg UpdateForAlbum(@RequestParam(value = "data", defaultValue = "") String data){
         data = StringEscapeUtils.unescapeHtml4(data);
@@ -264,7 +261,7 @@ public class AlbumController {
     }
 
 
-    @PostMapping("/checkPass")//new
+    @PostMapping("/checkPass") 
     @ResponseBody
     public Msg checkPass(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -298,7 +295,7 @@ public class AlbumController {
         return msg;
     }
 
-    @PostMapping("/getAlbumList") //new
+    @PostMapping("/getAlbumList")  
     @ResponseBody
     public Msg getAlbumList(@RequestParam(value = "data", defaultValue = "") String data){
         Msg msg = new Msg();

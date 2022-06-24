@@ -26,10 +26,10 @@ public class CodeController {
     @Autowired
     private CodeService codeService;
 
-    @RequestMapping(value = "/selectCodeList")//new
+    @RequestMapping(value = "/selectCodeList") 
     @ResponseBody
-    public Map<String, Object> selectCodeList(@RequestParam(value = "data", defaultValue = "") String data) {
-        Map<String, Object> map = new HashMap<String, Object>();
+    public Msg selectCodeList(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer pageNum = jsonObj.getInteger("pageNum");
         Integer pageSize = jsonObj.getInteger("pageSize");
@@ -38,19 +38,16 @@ public class CodeController {
         try {
             codes = codeService.selectCode(null);
             PageInfo<Code> rolePageInfo = new PageInfo<>(codes);
-            map.put("code", 200);
-            map.put("info", "");
-            map.put("count", rolePageInfo.getTotal());
-            map.put("data", rolePageInfo.getList());
+            msg.setData(rolePageInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("code", 500);
-            map.put("info", "获取数据异常");
+            msg.setCode("500");
+            msg.setInfo("获取数据异常");
         }
-        return map;
+        return msg;
     }
 
-    @RequestMapping("/deleteCodes")//new
+    @RequestMapping("/deleteCodes") 
     @ResponseBody
     public Msg deletecodes(@RequestParam(value = "data", defaultValue = "") String data){
         final Msg msg = new Msg();
@@ -72,7 +69,7 @@ public class CodeController {
     }
 
 
-    @RequestMapping("/addCode")//new
+    @RequestMapping("/addCode") 
     @ResponseBody
     public Msg addcode(@RequestParam(value = "data", defaultValue = "") String data){
         final Msg msg = new Msg();

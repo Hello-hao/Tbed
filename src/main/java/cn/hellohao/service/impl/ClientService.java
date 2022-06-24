@@ -219,7 +219,7 @@ public class ClientService {
                 }
                 updatePath = user.getUsername();
                 group= GetCurrentSource.GetSource(user.getId());
-                memory = Long.valueOf(user.getMemory())*1024*1024;//单位 B
+                memory = Long.valueOf(user.getMemory());//单位 B
                 TotleMemory = Long.valueOf(uploadConfig.getFilesizeuser());//单位 B
                 UsedTotleMemory = imgMapper.getusermemory(user.getId())==null?0L:imgMapper.getusermemory(user.getId());//单位 B
             }

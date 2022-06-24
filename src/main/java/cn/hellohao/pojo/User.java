@@ -16,6 +16,7 @@ public class User {
     private  String memory;
     private Integer groupid;
     private String groupname;
+    private String token;
 
     private Long counts;//用户img counts
 
@@ -25,7 +26,7 @@ public class User {
     }
 
     public User(Integer id, String username, String password, String email, String birthder, Integer level, String uid,
-                Integer isok, String memory, Integer groupid,String groupname,Long counts) {
+                Integer isok, String memory, Integer groupid,String groupname,Long counts,String token) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -38,6 +39,7 @@ public class User {
         this.groupid = groupid;
         this.groupname = groupname;
         this.counts = counts;
+        this.token = token;
     }
 
     public Integer getId() {
@@ -134,5 +136,13 @@ public class User {
 
     public void setCounts(Long counts) {
         this.counts = counts;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

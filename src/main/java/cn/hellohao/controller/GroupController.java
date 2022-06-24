@@ -12,9 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.HashMap;
+
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Hellohao
@@ -28,7 +27,7 @@ public class GroupController {
     private GroupService groupService;
 
 
-    @PostMapping("/getGrouplistForUsers") //new
+    @PostMapping("/getGrouplistForUsers")  
     @ResponseBody
     public Msg getGrouplistForUsers() {
         Msg msg = new Msg();
@@ -37,10 +36,10 @@ public class GroupController {
         return msg;
     }
 
-    @PostMapping(value = "/getGroupList")//new
+    @PostMapping(value = "/getGroupList") 
     @ResponseBody
-    public Map<String, Object> getgrouplist(@RequestParam(value = "data", defaultValue = "") String data) {
-        Map<String, Object> map = new HashMap<String, Object>();
+    public Msg getgrouplist(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer pageNum = jsonObj.getInteger("pageNum");
         Integer pageSize = jsonObj.getInteger("pageSize");
@@ -49,19 +48,16 @@ public class GroupController {
         try {
             group = groupService.grouplist(null);
             PageInfo<Group> rolePageInfo = new PageInfo<>(group);
-            map.put("code", 200);
-            map.put("info", "");
-            map.put("count", rolePageInfo.getTotal());
-            map.put("data", rolePageInfo.getList());
+            msg.setData(rolePageInfo);
         } catch (Exception e) {
             e.printStackTrace();
-            map.put("code", 500);
-            map.put("info", "获取数据异常");
+            msg.setCode("500");
+            msg.setInfo("获取数据异常");
         }
-        return map;
+        return msg;
     }
 
-    @PostMapping(value = "/addGroup")//new
+    @PostMapping(value = "/addGroup") 
     @ResponseBody
     public Msg addisgroup(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
@@ -74,7 +70,7 @@ public class GroupController {
         return msg;
     }
 
-    @PostMapping("/updateGroup")//new
+    @PostMapping("/updateGroup") 
     @ResponseBody
     public Msg updategroup(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);
@@ -93,7 +89,7 @@ public class GroupController {
         return msg;
     }
 
-    @PostMapping(value = "/deleGroup")//new
+    @PostMapping(value = "/deleGroup") 
     @ResponseBody
     public Msg delegroup(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObject = JSONObject.parseObject(data);

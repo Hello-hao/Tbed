@@ -32,9 +32,10 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
         HttpServletResponse httpServletResponse =(HttpServletResponse) response;
         String serviceName = httpServletRequest.getServletPath();//获取接口
         String Users_Origin = httpServletRequest.getHeader("usersOrigin");
-
+        String token = httpServletRequest.getHeader("Authorization");
         //验证前端域名
-        if(httpServletRequest.getMethod().equals("POST") && !serviceName.contains("/api") && !serviceName.contains("/verifyCode")){
+        if(httpServletRequest.getMethod().equals("POST") && !serviceName.contains("/api")
+                && !serviceName.contains("/verifyCode") && !serviceName.contains("/client")){
             try{
                 if(Users_Origin.compareTo(SecureUtil.md5(WEBHOST))!=0){
                     System.out.println("前端域名校验未通过");
@@ -50,10 +51,40 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                 return false;
             }
         }
-        String token = httpServletRequest.getHeader("Authorization");
+
+        if(serviceName.contains("/client")){
+            token = httpServletRequest.getHeader("jwttoken");
+            String userToken = httpServletRequest.getHeader("userToken");
+            User user = new User();
+            user.setToken(userToken);
+            User userData = userService.loginByToken(userToken);
+            if(null==userData){
+                this.CODE = "110404";
+                return false;
+            }else{
+                if(userData.getIsok()<1){
+                    this.CODE = "110403";
+                    return false;
+                }
+                Subject sub = SecurityUtils.getSubject();
+                User u = (User) sub.getPrincipal();
+                if(null==u){
+                    httpServletRequest.getSession().setAttribute("user",userData);
+                    Subject subject = SecurityUtils.getSubject();
+                    UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(userData.getEmail(),userData.getPassword());
+                    tokenOBJ.setRememberMe(true);
+                    //执行登录方法，如果没有异常，说明登录成功
+                    subject.login(tokenOBJ);
+                    SecurityUtils.getSubject().getSession().setTimeout(3600000);
+                    User loginUser = (User) SecurityUtils.getSubject().getPrincipal();
+                }
+            }
+        }
+
+//        String token = httpServletRequest.getHeader("Authorization");
         JSONObject jsonObject = JWTUtil.checkToken(token);
         if(!jsonObject.getBoolean("check")){
-            if(!serviceName.contains("admin")){
+            if(!serviceName.contains("admin") || serviceName.contains("admin/client")){
                 return true;
             }else{
                 this.CODE = "403";
@@ -102,6 +133,10 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                 info = "当前用户无权访问该请求";
             }else if(this.CODE.equals("402")){
                 info = "当前web请求不合规";
+            }else if(this.CODE.equals("110403")){
+                info = "该账户暂时无法使用";
+            }else if(this.CODE.equals("110404")){
+                info = "用户未找到";
             }
             System.err.println("拦截器False-"+info);
             response.setContentType("application/json;charset=UTF-8");

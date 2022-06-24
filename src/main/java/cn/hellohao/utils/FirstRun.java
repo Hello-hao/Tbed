@@ -1,14 +1,11 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.config.GlobalConstant;
-import org.omg.CORBA.Environment;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
-import java.sql.SQLException;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -46,8 +43,6 @@ public class FirstRun implements InitializingBean {
         if(ret1==0){
             Print.Normal("In execution...");
             RunSqlScript.RunInsert(sql2);
-            ;
-
         }else{
             if(ret1>0){
                 Print.Normal("Stage 1");
@@ -85,6 +80,17 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(sql9);
             Print.Normal("Stage 7");
         }
+        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'tbed.user' and column_name = 'token'");
+        if(ret6==0){
+            RunSqlScript.RunInsert(sql12);
+            Print.Normal("Add user.token");
+        }
+        Integer isappclient = RunSqlScript.RunSelectCount(isTableName+"'appclient'");
+        if(isappclient==0){
+            Integer integer = RunSqlScript.RunInsert(createAppclient);
+            RunSqlScript.RunInsert(instartAppclient);
+            Print.Normal("Add table.appclient");
+        }
 //        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'imgdata' and column_name = 'idname'");
 //        if(ret6==0){
 //            RunSqlScript.RunInsert(sql11);
@@ -102,11 +108,12 @@ public class FirstRun implements InitializingBean {
     }
 
     //检查表是否存在，后边加'imgdata' and column_name = 'explains'  检查字段是否存在
+    private String isTableName = "SELECT count(table_name) FROM information_schema.TABLES WHERE table_name =";
     private String judgeTable = "select count(*) from information_schema.columns where table_name = ";
     //创建blacklist  2019-11-29
     private String sql1 = "select count(*) from information_schema.columns where table_name = 'uploadconfig' and column_name = 'blacklist'";
     private String sql2 = "alter table uploadconfig add blacklist varchar(500);";
-    //创建imgandalbum和album  添加imgdata表字段explain 2019-12-20
+    //创建imgandalbum和album 添加imgdata表字段explain 2019-12-20
     private String sql3 ="CREATE TABLE `imgandalbum`  (`imgname` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,`albumkey` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic";
     private String sql4 ="CREATE TABLE `album`  (`albumkey` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,`albumtitle` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,`createdate` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, `password` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic";
     private String sql6 = "alter table imgdata add explains varchar(5000)";
@@ -120,8 +127,11 @@ public class FirstRun implements InitializingBean {
     //  图片标识名字段
     private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
 
-    //添加imgandalbum字段notes(添加画廊图片说明)
-//    private String sql11 = "alter table imgandalbum add notes varchar(1000) DEFAULT ' '";
+    private String sql12 = "alter table user add `token` varchar(255)";
+    //创建客户端程序相关表
+    private String createAppclient = "CREATE TABLE `appclient`  (`id` varchar(10) NOT NULL,`isuse` varchar(10) NOT NULL,`packurl` varchar(255) NULL DEFAULT NULL,`appname` varchar(20) NULL,`applogo` varchar(255) NULL,`appupdate` varchar(10) NOT NULL) ";
+    private String instartAppclient = "INSERT INTO `appclient` VALUES ('app', 'on', NULL, 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', 'off');";
+
 
     private String inddx_md5key = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( md5key,imgurl)";
     //                             create index yarn_app_result_i4 on yarn_app_result (flow_exec_id(100), another_column(50));

@@ -32,6 +32,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User loginByToken(String token) {
+        return userMapper.loginByToken(token);
+    }
+
+    @Override
     public User getUsers(User user) {
         // TODO Auto-generated method stub
         return userMapper.getUsers(user);

@@ -1,18 +1,14 @@
 package cn.hellohao.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.UUID;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import cn.hellohao.auth.filter.SubjectFilter;
 import cn.hellohao.auth.token.JWTUtil;
 import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.utils.*;
+import cn.hutool.captcha.ShearCaptcha;
 import cn.hutool.core.util.HexUtil;
+import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -21,8 +17,14 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import com.alibaba.fastjson.JSONObject;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 
 @Controller
@@ -43,15 +45,14 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public Msg Register(HttpServletRequest request, @RequestParam(value = "data", defaultValue = "") String data) {//Validated
+    public Msg Register(HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {//Validated
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String username = jsonObj.getString("username");
         String email = jsonObj.getString("email");
         String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
-        String userIP = GetIPS.getIpAddr(request);
         String verifyCodeForRegister = jsonObj.getString("verifyCode");
-        Object redis_verifyCodeForRegister = iRedisService.getValue(userIP+"_hellohao_verifyCodeForRegister");
+        ShearCaptcha redis_verifyCodeForRegister = (ShearCaptcha) httpSession.getAttribute("_hellohao_verifyCodeForRegister");//iRedisService.getValue(userIP+"_verifyCodeForRegister");
         if(!SetText.checkEmail(email)){
             msg.setCode("110403");
             msg.setInfo("邮箱格式不正确");
@@ -72,7 +73,7 @@ public class UserController {
             msg.setInfo("验证码不能为空。");
             return msg;
         }
-        if((redis_verifyCodeForRegister.toString().toLowerCase()).compareTo((verifyCodeForRegister.toLowerCase()))==0){
+        if(redis_verifyCodeForRegister.verify(verifyCodeForRegister.toLowerCase())){
             User user = new User();
             UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
             EmailConfig emailConfig = emailConfigService.getemail();
@@ -130,14 +131,13 @@ public class UserController {
 
     @PostMapping("/login")//new
     @ResponseBody
-    public Msg login(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg login(HttpServletRequest request,HttpSession httpSession,@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String email = jsonObj.getString("email");
         String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
         String verifyCode = jsonObj.getString("verifyCode");
-        String userIP = GetIPS.getIpAddr(request);
-        Object redis_VerifyCode = iRedisService.getValue(userIP+"_hellohao_verifyCode");
+        ShearCaptcha redis_VerifyCode = (ShearCaptcha)httpSession.getAttribute("_hellohao_verifyCode");
         if(null==redis_VerifyCode){
             msg.setCode("4035");
             msg.setInfo("验证码已失效，请重新弄获取。");
@@ -147,7 +147,7 @@ public class UserController {
             msg.setInfo("验证码不能为空。");
             return msg;
         }
-        if((redis_VerifyCode.toString().toLowerCase()).compareTo((verifyCode.toLowerCase()))==0){
+        if(redis_VerifyCode.verify(verifyCode.toLowerCase())){
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(email,password);
             tokenOBJ.setRememberMe(true);
@@ -238,15 +238,13 @@ public class UserController {
 
     @PostMapping("/retrievePass") //new
     @ResponseBody
-    public Msg retrievePass(HttpServletRequest request, @RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg retrievePass(HttpServletRequest request,HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         try {
             JSONObject jsonObj = JSONObject.parseObject(data);
             String email = jsonObj.getString("email");
             String retrieveCode = jsonObj.getString("retrieveCode");
-            String userIP = GetIPS.getIpAddr(request);
-            Object redis_verifyCodeForEmailRetrieve = iRedisService.getValue(userIP+"_hellohao_verifyCodeForEmailRetrieve");
-
+            ShearCaptcha redis_verifyCodeForEmailRetrieve =(ShearCaptcha) httpSession.getAttribute("_hellohao_verifyCodeForEmailRetrieve");// iRedisService.getValue(userIP+"_verifyCodeForEmailRetrieve");
             EmailConfig emailConfig = emailConfigService.getemail();
             if(null==redis_verifyCodeForEmailRetrieve){
                 msg.setCode("4035");
@@ -257,7 +255,7 @@ public class UserController {
                 msg.setInfo("验证码不能为空。");
                 return msg;
             }
-            if((redis_verifyCodeForEmailRetrieve.toString().toLowerCase()).compareTo((retrieveCode.toLowerCase()))!=0){
+            if(!redis_verifyCodeForEmailRetrieve.verify(retrieveCode.toLowerCase())){
                 msg.setCode("40034");
                 msg.setInfo("验证码不正确");
                 return msg;
@@ -277,7 +275,7 @@ public class UserController {
                     Config config = configService.getSourceype();
                     Thread thread = new Thread() {
                         public void run() {
-                            Integer a = NewSendEmail.sendEmailFindPass(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),config);//SendEmail.sendEmailT(message, user.getUsername(), user.getUid(), user.getEmail(),emailConfig,config);
+                        Integer a = NewSendEmail.sendEmailFindPass(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),config);//SendEmail.sendEmailT(message, user.getUsername(), user.getUid(), user.getEmail(),emailConfig,config);
                         }
                     };
                     thread.start();
