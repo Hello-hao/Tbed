@@ -80,7 +80,7 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(sql9);
             Print.Normal("Stage 7");
         }
-        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'tbed.user' and column_name = 'token'");
+        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'user' and column_name = 'token'");
         if(ret6==0){
             RunSqlScript.RunInsert(sql12);
             Print.Normal("Add user.token");
@@ -108,8 +108,8 @@ public class FirstRun implements InitializingBean {
     }
 
     //检查表是否存在，后边加'imgdata' and column_name = 'explains'  检查字段是否存在
-    private String isTableName = "SELECT count(table_name) FROM information_schema.TABLES WHERE table_name =";
-    private String judgeTable = "select count(*) from information_schema.columns where table_name = ";
+    private String isTableName = "SELECT count(table_name) FROM information_schema.TABLES WHERE TABLE_SCHEMA='tbed' and table_name =";
+    private String judgeTable = "select count(*) from information_schema.columns where TABLE_SCHEMA='tbed' and table_name = ";
     //创建blacklist  2019-11-29
     private String sql1 = "select count(*) from information_schema.columns where table_name = 'uploadconfig' and column_name = 'blacklist'";
     private String sql2 = "alter table uploadconfig add blacklist varchar(500);";
@@ -127,10 +127,10 @@ public class FirstRun implements InitializingBean {
     //  图片标识名字段
     private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
 
-    private String sql12 = "alter table user add `token` varchar(255)";
+    private String sql12 = "alter table tbed.user add `token` varchar(255)";
     //创建客户端程序相关表
-    private String createAppclient = "CREATE TABLE `appclient`  (`id` varchar(10) NOT NULL,`isuse` varchar(10) NOT NULL,`packurl` varchar(255) NULL DEFAULT NULL,`appname` varchar(20) NULL,`applogo` varchar(255) NULL,`appupdate` varchar(10) NOT NULL) ";
-    private String instartAppclient = "INSERT INTO `appclient` VALUES ('app', 'on', NULL, 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', 'off');";
+    private String createAppclient = "CREATE TABLE `appclient`  (`id` varchar(10) NOT NULL,`isuse` varchar(10) NOT NULL,`winpackurl` varchar(255) NULL DEFAULT NULL,`macpackurl` varchar(255) NULL DEFAULT NULL,`appname` varchar(20) NULL,`applogo` varchar(255) NULL,`appupdate` varchar(10) NOT NULL) ";
+    private String instartAppclient = "INSERT INTO `appclient` VALUES ('app', 'on', NULL, NULL, 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', 'off');";
 
 
     private String inddx_md5key = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( md5key,imgurl)";

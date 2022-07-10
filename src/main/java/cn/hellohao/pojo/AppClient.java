@@ -4,17 +4,19 @@ public class AppClient {
 
     private String id;
     private String isuse;
-    private String packurl;
+    private String winpackurl;
+    private String macpackurl;
     private String appname;
     private String applogo;
     private String appupdate;
 
     public AppClient(){}
 
-    public AppClient(String id, String isuse, String packurl, String appname, String applogo, String appupdate) {
+    public AppClient(String id, String isuse, String winpackurl, String macpackurl, String appname, String applogo, String appupdate) {
         this.id = id;
         this.isuse = isuse;
-        this.packurl = packurl;
+        this.winpackurl = winpackurl;
+        this.macpackurl = macpackurl;
         this.appname = appname;
         this.applogo = applogo;
         this.appupdate = appupdate;
@@ -36,12 +38,20 @@ public class AppClient {
         this.isuse = isuse;
     }
 
-    public String getPackurl() {
-        return packurl;
+    public String getWinpackurl() {
+        return winpackurl;
     }
 
-    public void setPackurl(String packurl) {
-        this.packurl = packurl;
+    public void setWinpackurl(String winpackurl) {
+        this.winpackurl = winpackurl;
+    }
+
+    public String getMacpackurl() {
+        return macpackurl;
+    }
+
+    public void setMacpackurl(String macpackurl) {
+        this.macpackurl = macpackurl;
     }
 
     public String getAppname() {

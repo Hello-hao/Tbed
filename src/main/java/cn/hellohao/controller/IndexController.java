@@ -71,7 +71,7 @@ public class IndexController {
         jsonObject.put("api",updateConfig.getApi());
         jsonObject.put("register",sysConfig.getRegister());
         jsonObject.put("isuse",appClient.getIsuse());
-        jsonObject.put("packurl",appClient.getPackurl());
+//        jsonObject.put("packurl",appClient.getPackurl());
         jsonObject.put("clientname",appClient.getAppname());
         jsonObject.put("clientlogo",appClient.getApplogo());
         jsonObject.put("appupdate",appClient.getAppupdate());

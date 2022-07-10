@@ -19,7 +19,7 @@
 
     <!-- 查询对象存储有多少种-->
     <select id="getStorage"  resultType="cn.hellohao.pojo.Keys">
-        SELECT id,storageType,
+        SELECT storageType,id,
                CASE WHEN storageType=1 THEN '网易云'
                     WHEN storageType=2 THEN '阿里云'
                     WHEN storageType=3 THEN '又拍云'
@@ -30,7 +30,7 @@
                     WHEN storageType=8 THEN 'UFile'
                     ELSE  '未知' END AS storageName,
                keyname
-        FROM `keys`  GROUP BY storageType
+        FROM `keys`  GROUP BY storageType,id,storageName,keyname
 
     </select>
 

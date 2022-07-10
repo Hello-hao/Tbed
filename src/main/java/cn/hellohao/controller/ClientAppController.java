@@ -86,7 +86,10 @@ public class ClientAppController {
         try {
             AppClient app = appClientService.getAppClientData("app");
             if(app.getAppupdate().equals("on")){
-                msg.setData(app.getPackurl());
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("winpackurl",app.getWinpackurl());
+                jsonObject.put("macpackurl",app.getMacpackurl());
+                msg.setData(jsonObject);
             }else{
                 msg.setCode("000");
             }

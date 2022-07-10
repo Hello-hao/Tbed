@@ -11,8 +11,11 @@
             <if test="isuse != null and isuse != ''">
                 isuse = #{isuse},
             </if>
-            <if test="packurl != null">
-                packurl = #{packurl},
+            <if test="winpackurl != null">
+                winpackurl = #{winpackurl},
+            </if>
+            <if test="macpackurl != null">
+                macpackurl = #{macpackurl},
             </if>
             <if test="appname != null">
                 appname = #{appname},
