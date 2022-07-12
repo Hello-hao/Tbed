@@ -324,7 +324,6 @@ public class AdminController {
                 img.setSelecttype(selecttype);
             }
         }else{
-            //普通用户
             img.setUserid(user.getId());
         }
         List<Images> images = imgService.selectimg(img);
@@ -491,7 +490,6 @@ public class AdminController {
         return msg;
     }
 
-    //工具函数
     private static String getChinaes(int v){
         String ch = "";
         switch(v){

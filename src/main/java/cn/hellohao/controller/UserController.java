@@ -124,12 +124,12 @@ public class UserController {
             userService.register(user);
         }else{
             msg.setCode("110408");
-            msg.setInfo("验证码不正确");//失效也要处理。
+            msg.setInfo("验证码不正确");
         }
         return msg;
     }
 
-    @PostMapping("/login")//new
+    @PostMapping("/login")
     @ResponseBody
     public Msg login(HttpServletRequest request,HttpSession httpSession,@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -176,7 +176,6 @@ public class UserController {
                 msg.setData(jsonObject);
                 return msg;
             } catch (UnknownAccountException e) {
-                //此异常说明用户名不存在
                 msg.setCode("4000");
                 msg.setInfo("登录邮箱不存在");
                 System.err.println("邮箱不存在");
@@ -225,7 +224,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/logout")//new
+    @PostMapping(value = "/logout")
     @ResponseBody
     public Msg exit(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         Msg msg = new Msg();
@@ -236,7 +235,7 @@ public class UserController {
         return msg;
     }
 
-    @PostMapping("/retrievePass") //new
+    @PostMapping("/retrievePass")
     @ResponseBody
     public Msg retrievePass(HttpServletRequest request,HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
@@ -296,7 +295,7 @@ public class UserController {
         return msg;
     }
 
-    @RequestMapping(value = "/retrieve", method = RequestMethod.GET) //new
+    @RequestMapping(value = "/retrieve", method = RequestMethod.GET)
     public String retrieve(Model model, String activation,String cip) {
         Integer ret = 0;
         try {

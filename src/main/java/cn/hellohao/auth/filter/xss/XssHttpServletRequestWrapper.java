@@ -89,8 +89,6 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
         String line = "";
         StringBuilder body = new StringBuilder();
         int counter = 0;
-
-        // 读取POST提交的数据内容
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, Charset.forName("UTF-8")));
         try {
             while ((line = reader.readLine()) != null) {

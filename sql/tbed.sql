@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : locMysql
  Source Server Type    : MySQL
- Source Server Version : 50720
+ Source Server Version : 80028
  Source Host           : localhost:3306
  Source Schema         : tbed
 
  Target Server Type    : MySQL
- Target Server Version : 50720
+ Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 29/10/2021 14:42:28
+ Date: 12/07/2022 22:23:39
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `album`  (
   `albumtitle` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `createdate` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `userid` int(10) NULL DEFAULT NULL
+  `userid` int(0) NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
@@ -34,15 +34,34 @@ CREATE TABLE `album`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for appclient
+-- ----------------------------
+DROP TABLE IF EXISTS `appclient`;
+CREATE TABLE `appclient`  (
+  `id` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `isuse` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `winpackurl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `macpackurl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `appname` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `applogo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `appupdate` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of appclient
+-- ----------------------------
+INSERT INTO `appclient` VALUES ('app', 'on', '', '', 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', 'off');
+
+-- ----------------------------
 -- Table structure for code
 -- ----------------------------
 DROP TABLE IF EXISTS `code`;
 CREATE TABLE `code`  (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `value` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `code` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of code
@@ -53,9 +72,9 @@ CREATE TABLE `code`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `config`;
 CREATE TABLE `config`  (
-  `id` int(4) NOT NULL AUTO_INCREMENT,
-  `sourcekey` int(4) NULL DEFAULT NULL,
-  `emails` int(4) NULL DEFAULT NULL COMMENT '邮箱配置',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `sourcekey` int(0) NULL DEFAULT NULL,
+  `emails` int(0) NULL DEFAULT NULL COMMENT '邮箱配置',
   `webname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '网站名',
   `explain` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `video` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -66,11 +85,11 @@ CREATE TABLE `config`  (
   `domain` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `background1` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `background2` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `sett` int(2) NOT NULL COMMENT '首页样式',
+  `sett` int(0) NOT NULL COMMENT '首页样式',
   `webms` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `webkeywords` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `webfavicons` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `theme` int(4) NULL DEFAULT 1 COMMENT '主题',
+  `theme` int(0) NULL DEFAULT 1 COMMENT '主题',
   `websubtitle` mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `logo` mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `aboutinfo` mediumtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
@@ -87,13 +106,13 @@ INSERT INTO `config` VALUES (1, 7, 1, 'Hellohao图床', 'Hellohao图像托管，
 -- ----------------------------
 DROP TABLE IF EXISTS `emailconfig`;
 CREATE TABLE `emailconfig`  (
-  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `emails` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',
   `emailkey` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '授权码',
   `emailurl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '服务器',
   `port` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '端口',
   `emailname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户名',
-  `using` int(4) NULL DEFAULT NULL COMMENT '1为可用，其他为不使用',
+  `using` int(0) NULL DEFAULT NULL COMMENT '1为可用，其他为不使用',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
@@ -107,13 +126,13 @@ INSERT INTO `emailconfig` VALUES (1, '', '', '', '465', 'Hellohao图床', 0);
 -- ----------------------------
 DROP TABLE IF EXISTS `group`;
 CREATE TABLE `group`  (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `groupname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '组名称',
-  `keyid` int(255) NULL DEFAULT NULL,
-  `usertype` int(4) NULL DEFAULT NULL,
-  `compress` int(4) NULL DEFAULT NULL,
+  `keyid` int(0) NULL DEFAULT NULL,
+  `usertype` int(0) NULL DEFAULT NULL,
+  `compress` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of group
@@ -140,15 +159,15 @@ INSERT INTO `imgandalbum` VALUES ('http://img.wwery.com/ccx51/5GBv93Ks.jpg', 'TO
 -- ----------------------------
 DROP TABLE IF EXISTS `imgdata`;
 CREATE TABLE `imgdata`  (
-  `id` int(255) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `imgname` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图片名',
   `imgurl` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '图片链接',
-  `userid` int(10) NULL DEFAULT NULL COMMENT '用户名',
+  `userid` int(0) NULL DEFAULT NULL COMMENT '用户名',
   `updatetime` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上传时间',
   `sizes` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `abnormal` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `source` int(2) NULL DEFAULT NULL COMMENT '存储源',
-  `imgtype` int(2) NULL DEFAULT NULL,
+  `source` int(0) NULL DEFAULT NULL COMMENT '存储源',
+  `imgtype` int(0) NULL DEFAULT NULL,
   `explains` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `md5key` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `imguid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -157,7 +176,7 @@ CREATE TABLE `imgdata`  (
   `violation` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_md5key_url`(`md5key`(255), `imgurl`(255)) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
 
 -- ----------------------------
 -- Records of imgdata
@@ -168,12 +187,12 @@ CREATE TABLE `imgdata`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `imgreview`;
 CREATE TABLE `imgreview`  (
-  `id` int(4) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `app_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `api_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `secret_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `Using` int(4) NULL DEFAULT NULL,
-  `count` int(255) NULL DEFAULT NULL COMMENT '拦截数量',
+  `Using` int(0) NULL DEFAULT NULL,
+  `count` int(0) NULL DEFAULT NULL COMMENT '拦截数量',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
@@ -187,7 +206,7 @@ INSERT INTO `imgreview` VALUES (1, '', '', '', 0, 0);
 -- ----------------------------
 DROP TABLE IF EXISTS `imgtemp`;
 CREATE TABLE `imgtemp`  (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `imguid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `deltime` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
@@ -202,13 +221,13 @@ CREATE TABLE `imgtemp`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `keys`;
 CREATE TABLE `keys`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `AccessKey` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `AccessSecret` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `Endpoint` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `Bucketname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `RequestAddress` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `storageType` int(11) NULL DEFAULT NULL,
+  `storageType` int(0) NULL DEFAULT NULL,
   `keyname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '未定义策略名称' COMMENT '策略名称',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
@@ -230,8 +249,8 @@ INSERT INTO `keys` VALUES (13, '', '', '', '0', '', 7, 'ftp');
 -- ----------------------------
 DROP TABLE IF EXISTS `sysconfig`;
 CREATE TABLE `sysconfig`  (
-  `id` int(2) NOT NULL AUTO_INCREMENT,
-  `register` int(2) NOT NULL COMMENT '是否可以注册',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `register` int(0) NOT NULL COMMENT '是否可以注册',
   `checkduplicate` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
@@ -246,19 +265,19 @@ INSERT INTO `sysconfig` VALUES (1, 1, '0');
 -- ----------------------------
 DROP TABLE IF EXISTS `uploadconfig`;
 CREATE TABLE `uploadconfig`  (
-  `id` int(2) NOT NULL AUTO_INCREMENT,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `filesizetourists` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `filesizeuser` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `imgcounttourists` int(10) NULL DEFAULT NULL COMMENT '游客文件总数量, 超出则不允许加入队列',
-  `imgcountuser` int(10) NULL DEFAULT NULL COMMENT '用户文件总数量, 超出则不允许加入队列',
+  `imgcounttourists` int(0) NULL DEFAULT NULL COMMENT '游客文件总数量, 超出则不允许加入队列',
+  `imgcountuser` int(0) NULL DEFAULT NULL COMMENT '用户文件总数量, 超出则不允许加入队列',
   `suffix` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支持后缀',
-  `urltype` int(2) NULL DEFAULT NULL COMMENT 'url类型',
-  `isupdate` int(2) NULL DEFAULT NULL COMMENT '禁止游客上传',
-  `api` int(2) NOT NULL COMMENT '开启api',
+  `urltype` int(0) NULL DEFAULT NULL COMMENT 'url类型',
+  `isupdate` int(0) NULL DEFAULT NULL COMMENT '禁止游客上传',
+  `api` int(0) NOT NULL COMMENT '开启api',
   `visitormemory` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `usermemory` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `blacklist` varchar(4000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `userclose` int(4) NULL DEFAULT 0 COMMENT '用户上传开关',
+  `userclose` int(0) NULL DEFAULT 0 COMMENT '用户上传开关',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
@@ -272,34 +291,35 @@ INSERT INTO `uploadconfig` VALUES (1, '10485760', '20971520', 5, 10, 'gif,jpg,jp
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
-  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名',
   `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `birthder` date NULL DEFAULT NULL COMMENT '注册时间',
-  `level` int(10) NULL DEFAULT NULL COMMENT '等级',
+  `level` int(0) NULL DEFAULT NULL COMMENT '等级',
   `uid` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户唯一标识',
-  `isok` int(2) NOT NULL,
+  `isok` int(0) NOT NULL,
   `memory` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `groupid` int(255) NULL DEFAULT NULL,
+  `groupid` int(0) NULL DEFAULT NULL,
+  `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, 'e95c0571bfe04ec680c249fb15cc22e9', 1, '2147483648', 1);
+INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, '6c58804b45794d52ad76770ae3a5cbff', 1, '2147483648', 1, '');
 
 -- ----------------------------
 -- Table structure for usergroup
 -- ----------------------------
 DROP TABLE IF EXISTS `usergroup`;
 CREATE TABLE `usergroup`  (
-  `id` int(255) NOT NULL AUTO_INCREMENT,
-  `userid` int(255) NULL DEFAULT NULL,
-  `groupid` int(255) NULL DEFAULT NULL,
+  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `userid` int(0) NULL DEFAULT NULL,
+  `groupid` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of usergroup

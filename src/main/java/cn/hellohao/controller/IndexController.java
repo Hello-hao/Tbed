@@ -280,12 +280,9 @@ public class IndexController {
             msg.setInfo("图像已不存在，删除成功");
             return msg;
         }
-        //判断是不是自己的图片 因为这里的删除功能只能是首页上传后才会调用的接口  能删除的图片只能是自己的
         Subject subject = SecurityUtils.getSubject();
         User user = (User) subject.getPrincipal();
         if(null!=user){
-            //由于integer类型的==比较方式适用于-128~127之间，所以超过这个范围就会不对
-//            if(user.getId()!=image.getUserid()){
             if(!user.getId().equals(image.getUserid())){
                 msg.setInfo("删除失败，该图片不允许你执行操作");
                 msg.setCode("100403");
