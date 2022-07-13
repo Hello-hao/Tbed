@@ -23,7 +23,7 @@
 
 开源版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`
 
-Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`
+Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`等通用S3协议
 
 
 ### 更新日志 `20220712`
@@ -60,6 +60,8 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 
 
 ### 主要功能
+
+- [x] 全端支持，不限于(web/windows/mac/移动小程序)
 
 - [x] 前后端分离式架构设计，部署更方便
 
@@ -157,6 +159,11 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 初始用户名：`admin`
 初始邮箱：`admin`
 初始密码：`admin`
+
+### 客户端(win64/mac)
+> 目前正在开发过程中，预计将于近期上线。
+![电脑客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
+
 
 ### 微信小程序
 > 目前已有测试版，更多功能开发中，开发进度的快慢要根据作者的工作压力、心情状况等自身情况进行评估。
