@@ -1,7 +1,6 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.auth.token.JWTUtil;
-import cn.hellohao.pojo.AppClient;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.pojo.User;
@@ -75,26 +74,6 @@ public class ClientAppController {
             e.printStackTrace();
             msg.setCode("110500");
             msg.setInfo("未获取到用户，请先在设置中添加Token");
-        }
-        return msg;
-    }
-
-    @PostMapping("/getVersion")
-    @ResponseBody
-    public Msg getVersion() {
-        Msg msg = new Msg();
-        try {
-            AppClient app = appClientService.getAppClientData("app");
-            if(app.getAppupdate().equals("on")){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("winpackurl",app.getWinpackurl());
-                jsonObject.put("macpackurl",app.getMacpackurl());
-                msg.setData(jsonObject);
-            }else{
-                msg.setCode("000");
-            }
-        }catch (Exception e){
-            msg.setCode("000");
         }
         return msg;
     }
