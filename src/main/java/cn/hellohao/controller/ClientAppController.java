@@ -8,11 +8,17 @@ import cn.hellohao.pojo.User;
 import cn.hellohao.service.AppClientService;
 import cn.hellohao.service.ImgService;
 import cn.hellohao.service.UploadConfigService;
+import cn.hellohao.service.impl.UploadServicel;
 import cn.hellohao.service.impl.UserServiceImpl;
+import cn.hellohao.utils.Base64ToMultipartFile;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import sun.misc.BASE64Decoder;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author Hellohao
@@ -31,14 +37,16 @@ public class ClientAppController {
     private UserServiceImpl userService;
     @Autowired
     private UploadConfigService uploadConfigService;
+    @Autowired
+    private UploadServicel uploadServicel;
 
     @PostMapping("/loginByToken")
     @ResponseBody
     public Msg loginByToken(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
-        JSONObject jsonObj = JSONObject.parseObject(data);
-        JSONObject jsonObject = new JSONObject();
         try{
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            JSONObject jsonObject = new JSONObject();
             User newUser = new User();
             String userToken = jsonObj.getString("userToken");
             newUser.setToken(userToken);
@@ -97,6 +105,27 @@ public class ClientAppController {
             msg.setCode("000");
         }
         return msg;
+    }
+
+    @PostMapping("/imgUploading")
+    public Msg imgUploading(@RequestParam(required = true, value = "data") String data, HttpServletRequest request)  {
+        Msg msg = new Msg();
+        try{
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            String imgstr = jsonObj.getString("imgstr");
+            Integer days = jsonObj.getInteger("days");
+//            String imgclass = jsonObj.getString("imgclass");
+            if (null != imgstr && !imgstr.isEmpty()) {
+                MultipartFile multipartFile = Base64ToMultipartFile.base64Convert(imgstr);
+                msg = uploadServicel.uploadForLoc(request, multipartFile, days, null);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+        }
+
+        return msg;
+
     }
 
 
