@@ -34,8 +34,8 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
         String Users_Origin = httpServletRequest.getHeader("usersOrigin");
         String token = httpServletRequest.getHeader("Authorization");
         //验证前端域名
-        if(httpServletRequest.getMethod().equals("POST") && !serviceName.contains("/api")
-                && !serviceName.contains("/verifyCode") && !serviceName.contains("/client")){
+        if(httpServletRequest.getMethod().equals("POST") && !serviceName.contains("/api") && !serviceName.contains("/verifyCode")
+                && !serviceName.contains("/getClientVersion") && !serviceName.contains("/client")){
             try{
                 if(Users_Origin.compareTo(SecureUtil.md5(WEBHOST))!=0){
                     System.out.println("前端域名校验未通过");

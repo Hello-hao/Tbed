@@ -6,6 +6,7 @@ import cn.hellohao.service.*;
 import cn.hellohao.service.impl.AlbumServiceImpl;
 import cn.hellohao.service.impl.UploadServicel;
 import cn.hellohao.service.impl.deleImages;
+import cn.hellohao.utils.MyVersion;
 import cn.hellohao.utils.verifyCode.IVerifyCodeGen;
 import cn.hellohao.utils.verifyCode.SimpleCharVerifyCodeGenImpl;
 import cn.hutool.captcha.CaptchaUtil;
@@ -13,6 +14,7 @@ import cn.hutool.captcha.ShearCaptcha;
 import cn.hutool.captcha.generator.MathGenerator;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
@@ -303,6 +305,32 @@ public class IndexController {
         }
         return msg;
     }
+
+    @PostMapping("/getClientVersion")
+    @ResponseBody
+    public Msg getClientVersion(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        msg.setCode("000");
+        try {
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            String appv = jsonObj.getString("version");
+            AppClient app = appClientService.getAppClientData("app");
+            if(!StringUtils.isBlank(app.getAppupdate())){
+                String version = app.getAppupdate().replaceAll("\\.","");
+                if(MyVersion.compareVersion(app.getAppupdate(),appv)==1){
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("winpackurl",app.getWinpackurl());
+                    jsonObject.put("macpackurl",app.getMacpackurl());
+                    msg.setCode("200");
+                    msg.setData(jsonObject);
+                }
+            }
+        }catch (Exception e){
+            msg.setCode("000");
+        }
+        return msg;
+    }
+
 
     @RequestMapping("/authError")
     @ResponseBody

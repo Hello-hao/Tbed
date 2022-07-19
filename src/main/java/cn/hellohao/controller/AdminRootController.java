@@ -313,9 +313,6 @@ public class AdminRootController {
             if (!appClient.getIsuse().equals("on")) {
                 appClient.setIsuse("off");
             }
-            if (!appClient.getAppupdate().equals("on")) {
-                appClient.setAppupdate("off");
-            }
             appClientService.editAppClientData(appClient);
             msg.setInfo("配置保存成功");
         } catch (Exception e) {

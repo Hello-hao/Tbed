@@ -10,6 +10,7 @@ public class AppClient {
     private String applogo;
     private String appupdate;
 
+
     public AppClient(){}
 
     public AppClient(String id, String isuse, String winpackurl, String macpackurl, String appname, String applogo, String appupdate) {
