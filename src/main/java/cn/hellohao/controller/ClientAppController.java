@@ -87,26 +87,6 @@ public class ClientAppController {
         return msg;
     }
 
-    @PostMapping("/getVersion")
-    @ResponseBody
-    public Msg getVersion() {
-        Msg msg = new Msg();
-        try {
-            AppClient app = appClientService.getAppClientData("app");
-            if(app.getAppupdate().equals("on")){
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("winpackurl",app.getWinpackurl());
-                jsonObject.put("macpackurl",app.getMacpackurl());
-                msg.setData(jsonObject);
-            }else{
-                msg.setCode("000");
-            }
-        }catch (Exception e){
-            msg.setCode("000");
-        }
-        return msg;
-    }
-
     @PostMapping("/imgUploading")
     public Msg imgUploading(@RequestParam(required = true, value = "data") String data, HttpServletRequest request)  {
         Msg msg = new Msg();
