@@ -97,7 +97,7 @@ public class FirstRun implements InitializingBean {
 //            Print.Normal("Add imgdata.idname");
 //        }
 
-        RunSqlScript.RunInsert(sql10);
+        RunSqlScript.RunInsert("alter table `config` modify column `explain` text,modify column `links` text,modify column `notice` text,modify column `baidu` text");
 
         //RunSqlScript.RunInsert("alter table imgdata drop index index_md5key_url");
         RunSqlScript.RunInsert(inddx_md5key);
@@ -122,8 +122,6 @@ public class FirstRun implements InitializingBean {
     //添加imgdata表字段md5key
     private String sql8 = "alter table imgdata add md5key varchar(5000)";
     private String sql9 = "ALTER TABLE config ADD theme int(4) DEFAULT '1' COMMENT '主题'  ";
-    //修改字段长度
-    private String sql10 = "alter table config modify column `explain` varchar(1000),modify column links varchar(1000),modify column notice varchar(1000),modify column baidu varchar(1000)";
     //  图片标识名字段
     private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
 
