@@ -73,7 +73,6 @@ public class IndexController {
         jsonObject.put("api",updateConfig.getApi());
         jsonObject.put("register",sysConfig.getRegister());
         jsonObject.put("isuse",appClient.getIsuse());
-//        jsonObject.put("packurl",appClient.getPackurl());
         jsonObject.put("clientname",appClient.getAppname());
         jsonObject.put("clientlogo",appClient.getApplogo());
         jsonObject.put("appupdate",appClient.getAppupdate());
@@ -81,13 +80,13 @@ public class IndexController {
         return msg;
     }
 
-    @PostMapping(value = {"/upload","/client/upload"})// new
+    @PostMapping(value = {"/upload","/client/upload"})
     @ResponseBody
     public Msg upimg(HttpServletRequest request, @RequestParam(value = "file", required = false) MultipartFile multipartFile,Integer day) {
         return uploadServicel.uploadForLoc(request,multipartFile,day,null);
     }
 
-    @PostMapping(value = {"/uploadForUrl","/client/uploadForUrl"}) //new
+    @PostMapping(value = {"/uploadForUrl","/client/uploadForUrl"})
     @ResponseBody
     public Msg upurlimg(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
@@ -130,7 +129,7 @@ public class IndexController {
         return retMsg;
     }
 
-    @RequestMapping(value = "/getUploadInfo")//new
+    @RequestMapping(value = "/getUploadInfo")
     @ResponseBody
     public Msg getUploadInfo() {
         Msg msg = new Msg();
