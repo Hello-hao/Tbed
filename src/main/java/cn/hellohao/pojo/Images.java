@@ -36,6 +36,8 @@ public class Images {
     private String[] classifuidlist; //类别uid集合
     private String classificationuid; //类别uid集合
 
+    private String idname;
+
     public Images() {
         super();
     }
@@ -54,7 +56,7 @@ public class Images {
                   Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime,
                   String explains, String md5key, String notes, String useridlist, String imguid, String albumtitle,
                   String password, Integer selecttype,Long countNum,Integer monthNum,String yyyy,
-                  String format,String about,Integer great,String[] classifuidlist,String classificationuid,String violation) {
+                  String format,String about,Integer great,String[] classifuidlist,String classificationuid,String violation,String idname) {
         this.id = id;
         this.imgname = imgname;
         this.imgurl = imgurl;
@@ -85,6 +87,7 @@ public class Images {
         this.classifuidlist = classifuidlist;
         this.classificationuid = classificationuid;
         this.violation = violation;
+        this.idname = idname;
 
     }
 
@@ -327,6 +330,14 @@ public class Images {
 
     public void setViolation(String violation) {
         this.violation = violation;
+    }
+
+    public String getIdname() {
+        return idname;
+    }
+
+    public void setIdname(String idname) {
+        this.idname = idname;
     }
 }
 	

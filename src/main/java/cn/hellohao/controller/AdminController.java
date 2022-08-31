@@ -150,6 +150,25 @@ public class AdminController {
         }
     }
 
+    @PostMapping(value={"/setImgFileName","/client/setImgFileName"})
+    @ResponseBody
+    public Msg setImgFileName(@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(data);
+            String name = jsonObject.getString("name");
+            String imgname = jsonObject.getString("imgname");
+            Images images = new Images();
+            images.setIdname(name.replaceAll(" ", ""));
+            images.setImgname(imgname);
+            imgService.setImg(images);
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+        }
+        return msg;
+    }
+
     @PostMapping("/getRecently")
     @ResponseBody
     public Msg getRecently() {

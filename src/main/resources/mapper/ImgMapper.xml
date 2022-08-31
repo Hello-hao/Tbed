@@ -19,7 +19,8 @@
         a.imguid,
         a.format,
         a.about,
-        a.violation
+        a.violation,
+        a.idname
         FROM
         imgdata a
         LEFT JOIN user b ON a.userid = b.id
@@ -66,7 +67,9 @@
             and
             a.imguid = #{imguid}
         </if>
-
+        <if test="idname != null and idname !=''">
+            and idname LIKE '%${idname}%'
+        </if>
         order by a.id desc
     </select>
     <!-- 此用户下总数 -->
@@ -103,6 +106,9 @@
                  </if>
                  <if test="explains!=null">
                      explains=#{explains}
+                 </if>
+                 <if test="idname!=null and idname!=''">
+                     idname=#{idname}
                  </if>
              </set>
               where imgname=#{imgname}

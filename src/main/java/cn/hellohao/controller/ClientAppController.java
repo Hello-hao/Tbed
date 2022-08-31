@@ -1,7 +1,6 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.auth.token.JWTUtil;
-import cn.hellohao.pojo.AppClient;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.pojo.User;
@@ -16,7 +15,6 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -103,9 +101,7 @@ public class ClientAppController {
             e.printStackTrace();
             msg.setCode("500");
         }
-
         return msg;
-
     }
 
 
