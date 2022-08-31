@@ -24,7 +24,6 @@ public class XssFilter implements Filter {
         //由于我的@WebFilter注解配置的是urlPatterns="/*"(过滤所有请求),所以这里对不需要过滤的静态资源url,作忽略处理(大家可以依照具体需求配置)
         String[] exclusionsUrls = {".js",".gif",".jpg",".png",".bmp",".css",".ico"};//,"/","/index","/admin/root/"
         for (String str : exclusionsUrls) {
-            //System.out.println(path.contains(str));
             if (path.contains(str)) {
                 filterChain.doFilter(servletRequest,servletResponse);
                 return;

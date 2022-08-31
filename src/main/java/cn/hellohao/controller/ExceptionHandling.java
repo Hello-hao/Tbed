@@ -24,7 +24,6 @@ public class ExceptionHandling {
         ModelAndView modelAndView = new ModelAndView("index");
         Print.Normal("异常拦截成功："+ ssie.getMessage());
         modelAndView.addObject("error",ssie.getMessage());
-        //返回错误信息，并显示给用户
         return modelAndView;
     }
 

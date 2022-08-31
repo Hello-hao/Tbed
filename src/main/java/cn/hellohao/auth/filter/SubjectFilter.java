@@ -25,7 +25,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
 
     public static String WEBHOST = null;
     private String CODE ="000";
-
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
         UserServiceImpl userService = SpringContextHolder.getBean(UserServiceImpl.class);
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -73,15 +72,12 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                     Subject subject = SecurityUtils.getSubject();
                     UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(userData.getEmail(),userData.getPassword());
                     tokenOBJ.setRememberMe(true);
-                    //执行登录方法，如果没有异常，说明登录成功
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);
                     User loginUser = (User) SecurityUtils.getSubject().getPrincipal();
                 }
             }
         }
-
-//        String token = httpServletRequest.getHeader("Authorization");
         JSONObject jsonObject = JWTUtil.checkToken(token);
         if(!jsonObject.getBoolean("check")){
             if(!serviceName.contains("admin") || serviceName.contains("admin/client")){
@@ -100,7 +96,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时
                 } catch (Exception e) {
-//                    System.err.println("拦截器，登录失败，false");
                     this.CODE = "403";
                     return false;
                 }
