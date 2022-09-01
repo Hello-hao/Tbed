@@ -270,7 +270,7 @@ public class IndexController {
         }
     }
 
-    @PostMapping({"/deleImagesByUid","/client/deleImagesByUid"}) //new
+    @PostMapping({"/deleImagesByUid","/client/deleImagesByUid"})
     @ResponseBody
     public Msg deleImagesByUid(@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();

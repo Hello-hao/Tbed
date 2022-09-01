@@ -97,7 +97,7 @@ public class UserController {
             }
             String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-            String birthder = df.format(new Date());// new Date()为获取当前系统时间
+            String birthder = df.format(new Date());
             user.setLevel(1);
             user.setUid(uid);
             user.setBirthder(birthder);

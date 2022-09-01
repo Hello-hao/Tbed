@@ -20,7 +20,7 @@ public class ImageReviewController {
     private ImgreviewService imgreviewService;
 
 
-    @PostMapping("/updateimgReviewConfig") //new
+    @PostMapping("/updateimgReviewConfig")
     @ResponseBody
     public Msg updateimgReviewConfig(@RequestParam(value = "data", defaultValue = "") String data ) {
         final Msg msg = new Msg();
