@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 12/07/2022 22:23:39
+ Date: 01/09/2022 00:28:28
 */
 
 SET NAMES utf8mb4;
@@ -50,7 +50,7 @@ CREATE TABLE `appclient`  (
 -- ----------------------------
 -- Records of appclient
 -- ----------------------------
-INSERT INTO `appclient` VALUES ('app', 'on', '', '', 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', 'off');
+INSERT INTO `appclient` VALUES ('app', 'on', '', '', 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', '1.0.1');
 
 -- ----------------------------
 -- Table structure for code
@@ -61,7 +61,7 @@ CREATE TABLE `code`  (
   `value` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `code` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of code
@@ -76,12 +76,12 @@ CREATE TABLE `config`  (
   `sourcekey` int(0) NULL DEFAULT NULL,
   `emails` int(0) NULL DEFAULT NULL COMMENT '邮箱配置',
   `webname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '网站名',
-  `explain` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `explain` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `video` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `backtype` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '背景类型',
-  `links` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `notice` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `baidu` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `links` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `notice` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `baidu` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `domain` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `background1` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `background2` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -132,7 +132,7 @@ CREATE TABLE `group`  (
   `usertype` int(0) NULL DEFAULT NULL,
   `compress` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of group
@@ -174,9 +174,10 @@ CREATE TABLE `imgdata`  (
   `format` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `about` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `violation` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `idname` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '未命名图像',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `index_md5key_url`(`md5key`(255), `imgurl`(255)) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
+) ENGINE = InnoDB AUTO_INCREMENT = 12 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compressed;
 
 -- ----------------------------
 -- Records of imgdata
@@ -308,7 +309,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, '6c58804b45794d52ad76770ae3a5cbff', 1, '2147483648', 1, '');
+INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, '9b76655b2706483780bf54988ca12531', 1, '2147483648', 1, '');
 
 -- ----------------------------
 -- Table structure for usergroup
