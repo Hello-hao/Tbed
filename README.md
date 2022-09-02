@@ -10,7 +10,7 @@
 
 ### 引导
 
-[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn) | [前端源码](https://github.com/Hello-hao/tbed-web)
+[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn) | [前端源码](https://github.com/Hello-hao/tbed-web) | [客户端程序](https://tbed.hellohao.cn/app)
 
 
 ### 前言
