@@ -6,6 +6,7 @@ import cn.hellohao.service.*;
 import cn.hellohao.service.impl.AlbumServiceImpl;
 import cn.hellohao.service.impl.UploadServicel;
 import cn.hellohao.service.impl.deleImages;
+import cn.hellohao.utils.GetIPS;
 import cn.hellohao.utils.MyVersion;
 import cn.hellohao.utils.verifyCode.IVerifyCodeGen;
 import cn.hellohao.utils.verifyCode.SimpleCharVerifyCodeGenImpl;
@@ -20,6 +21,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,6 +32,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 @Controller
 public class IndexController {
@@ -46,10 +49,20 @@ public class IndexController {
     @Autowired
     private deleImages deleimages;
     @Autowired
+    IRedisService iRedisService;
+    @Autowired
     AlbumServiceImpl albumService;
     @Autowired
     AppClientService appClientService;
 
+    @RequestMapping(value = "/")
+    public String Welcome(Model model, HttpServletRequest httpServletRequest) {
+        model.addAttribute("name","服务端程序");
+        model.addAttribute("version","20221027");
+        model.addAttribute("ip",GetIPS.getIpAddr(httpServletRequest));
+        model.addAttribute("links","tbed.hellohao.cn");
+        return "welcome";
+    }
 
     @RequestMapping(value = "/webInfo")
     @ResponseBody
@@ -194,80 +207,88 @@ public class IndexController {
         return msg;
     }
 
-    @GetMapping("/verifyCode")
-    public void verifyCode(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
-        IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
+
+    @PostMapping("/verifyCode")
+    @ResponseBody
+    public Msg verifyCode() {
+        Msg msg = new Msg();
         try {
             ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
             captcha.setGenerator(new MathGenerator(1));
-            httpSession.setAttribute("_hellohao_verifyCode",captcha);
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expires", 0);
-            response.setContentType("image/jpeg");
-            captcha.write(response.getOutputStream());
-            final Timer timer=new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    httpSession.removeAttribute("_hellohao_verifyCode");
-                    timer.cancel();
-                }
-            },5*60*1000);
-            response.getOutputStream().flush();
-        } catch (IOException e) {
+            String code = getVerifyCodeOperator(captcha.getCode());
+            String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            iRedisService.setValue("verifyCode_"+uid,code);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("codeKey",uid);
+            jsonObject.put("codeImg",captcha.getImageBase64());
+            msg.setData(jsonObject);
+            return msg;
+        } catch (Exception e) {
             e.printStackTrace();
+            msg.setCode("500");
+            return msg;
         }
     }
 
-    @GetMapping("/verifyCodeForRegister")
-    public void verifyCodeForRegister(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
-        IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
+    @PostMapping("/verifyCodeForRegister")
+    @ResponseBody
+    public Msg verifyCodeForRegister() {
+        Msg msg = new Msg();
         try {
             ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
-             httpSession.setAttribute("_hellohao_verifyCodeForRegister",captcha);
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expires", 0);
-            response.setContentType("image/jpeg");
-            captcha.write(response.getOutputStream());
-            final Timer timer=new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    httpSession.removeAttribute("_hellohao_verifyCodeForRegister");
-                    timer.cancel();
-                }
-            },5*60*1000);
-            response.getOutputStream().flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+            captcha.setGenerator(new MathGenerator(1));
+            String code = getVerifyCodeOperator(captcha.getCode());
+            String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            iRedisService.setValue("verifyCodeForRegister_"+uid,code);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("codeKey",uid);
+            jsonObject.put("codeImg",captcha.getImageBase64());
+            msg.setData(jsonObject);
+            return msg;
+        } catch (Exception e) {
+            e.printStackTrace();msg.setCode("500");
+            return msg;
         }
     }
 
-    @GetMapping("/verifyCodeForRetrieve")
-    public void verifyCodeForRetrieve(HttpServletRequest request, HttpServletResponse response,HttpSession httpSession) {
-        IVerifyCodeGen iVerifyCodeGen = new SimpleCharVerifyCodeGenImpl();
+    @PostMapping("/verifyCodeForRetrieve")
+    @ResponseBody
+    public Msg verifyCodeForRetrieve() {
+        Msg msg = new Msg();
         try {
             ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
-             httpSession.setAttribute("_hellohao_verifyCodeForEmailRetrieve",captcha);
-            response.setHeader("Pragma", "no-cache");
-            response.setHeader("Cache-Control", "no-cache");
-            response.setDateHeader("Expires", 0);
-            response.setContentType("image/jpeg");
-            captcha.write(response.getOutputStream());
-            final Timer timer=new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    httpSession.removeAttribute("_hellohao_verifyCodeForEmailRetrieve");
-                    timer.cancel();
-                }
-            },5*60*1000);
-            response.getOutputStream().flush();
-        } catch (IOException e) {
+            captcha.setGenerator(new MathGenerator(1));
+            String code = getVerifyCodeOperator(captcha.getCode());
+            String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            iRedisService.setValue("verifyCodeForRetrieve_"+uid,code);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("codeKey",uid);
+            jsonObject.put("codeImg",captcha.getImageBase64());
+            msg.setData(jsonObject);
+            return msg;
+        } catch (Exception e) {
             e.printStackTrace();
+            msg.setCode("500");
+            return msg;
         }
+    }
+
+    public static String getVerifyCodeOperator(String str){
+        int a = Integer.valueOf(str.substring(0,1));
+        String yxf = str.substring(1,2);
+        int b = Integer.valueOf(str.substring(2,3));
+        switch(yxf) {
+            case "*":
+                return Integer.toString(a * b);
+            case "+":
+                return Integer.toString(a + b);
+            case ",":
+            default:
+                return Integer.toString(82);
+            case "-":
+                return Integer.toString(a - b);
+        }
+
     }
 
     @PostMapping({"/deleImagesByUid","/client/deleImagesByUid"})
