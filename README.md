@@ -10,7 +10,7 @@
 
 ### 引导
 
-[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn) | [前端源码](https://github.com/Hello-hao/tbed-web) | [客户端程序](https://tbed.hellohao.cn/app)
+[官网](https://tbed.hellohao.cn) | [宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn) | [前端源码](https://github.com/Hello-hao/tbed-web) | [桌面客户端](https://tbed.hellohao.cn/app)
 
 
 ### 前言
@@ -26,12 +26,11 @@
 Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`等通用S3协议
 
 
-### 更新日志 `20220901`
+### 更新日志 `20221027`
 
-- `增加`图片名称显示/编辑功能（为后续图像精准搜索打基础）
-- `增加`数据库命名检测（数据库名称必须为：tbed）
-- `调整`站点设置表单的部分字段字符数限制
-- `调整`页面部分表单的文字显示
+- `修复`部分场景下登录或者注册时出现验证码一直不正确的问题
+- `调整`URL转存时提示登陆的限制
+- `优化`服务端返回值的一些问题
   
 
 [^_^]:程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
@@ -162,7 +161,7 @@ Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,
 初始密码：`admin`
 
 ### 客户端(win64/mac)
-> 目前正在开发过程中，预计将于近期上线。
+> 目前已经正式上线
 ![桌面客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
 
 
