@@ -4,15 +4,10 @@ import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.pojo.UploadConfig;
 import cn.hellohao.service.impl.KeysServiceImpl;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class LocUpdateImg {
     public static boolean deleteLOCImg(Images images){
@@ -20,7 +15,11 @@ public class LocUpdateImg {
         try {
             String filePath = GlobalConstant.LOCPATH + File.separator+images.getImgname();
             File file = new File(filePath);
-            isDele = file.delete();
+            if(file.exists()){
+                isDele = file.delete();
+            }else{
+                isDele = true;
+            }
         }catch (Exception e){
             e.printStackTrace();
             isDele = false;

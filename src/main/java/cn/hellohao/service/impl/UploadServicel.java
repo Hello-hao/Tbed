@@ -52,7 +52,6 @@ public class UploadServicel {
                             MultipartFile multipartFile, Integer setday, String imgUrl) {
         Msg msg = new Msg();
         try{
-            String imageFileName = "未命名图像";
             JSONObject jsonObject = new JSONObject();
             UploadConfig uploadConfig = uploadConfigMapper.getUpdateConfig();
             String userip = GetIPS.getIpAddr(request);
@@ -66,7 +65,6 @@ public class UploadServicel {
             FileInputStream fis = null;
             File file =null;
             if(imgUrl==null){
-                imageFileName = multipartFile.getOriginalFilename();
                 file = SetFiles.changeFile_new(multipartFile);
             }else{
                 Msg imgData = uploadForURL(request, imgUrl);
@@ -174,7 +172,6 @@ public class UploadServicel {
                 img.setMd5key(md5key);
                 img.setImguid(imguid);
                 img.setFormat(fileMiME.getData().toString());
-                img.setIdname(imageFileName);
                 userMapper.insertimg(img);
                 long etime = System.currentTimeMillis();
                 Print.Normal("上传图片所用总时长：" + String.valueOf(etime - stime) + "ms");

@@ -22,6 +22,7 @@ public class ClientController {
     @Autowired
     private ClientService clientService;
 
+
     @PostMapping(value = "/uploadbymail")
     @ResponseBody
     public Msg uploadbymail(HttpServletRequest request, @RequestParam("file") MultipartFile file, String mail, String pass)  {

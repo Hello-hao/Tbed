@@ -45,14 +45,15 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public Msg Register(HttpServletRequest httpServletRequest, @RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg Register(HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {//Validated
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String username = jsonObj.getString("username");
         String email = jsonObj.getString("email");
         String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
         String verifyCodeForRegister = jsonObj.getString("verifyCode");
-        Object redis_verifyCodeForRegister = iRedisService.getValue("verifyCodeForRegister_"+httpServletRequest.getHeader("verifyCodeForRegister"));        if(!SetText.checkEmail(email)){
+        ShearCaptcha redis_verifyCodeForRegister = (ShearCaptcha) httpSession.getAttribute("_hellohao_verifyCodeForRegister");//iRedisService.getValue(userIP+"_verifyCodeForRegister");
+        if(!SetText.checkEmail(email)){
             msg.setCode("110403");
             msg.setInfo("邮箱格式不正确");
             return msg;
@@ -72,7 +73,7 @@ public class UserController {
             msg.setInfo("验证码不能为空。");
             return msg;
         }
-        if((redis_verifyCodeForRegister.toString().toLowerCase()).compareTo((verifyCodeForRegister.toLowerCase()))==0){
+        if(redis_verifyCodeForRegister.verify(verifyCodeForRegister.toLowerCase())){
             User user = new User();
             UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
             EmailConfig emailConfig = emailConfigService.getemail();
@@ -96,7 +97,7 @@ public class UserController {
             }
             String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
-            String birthder = df.format(new Date());
+            String birthder = df.format(new Date());// new Date()为获取当前系统时间
             user.setLevel(1);
             user.setUid(uid);
             user.setBirthder(birthder);
@@ -123,20 +124,20 @@ public class UserController {
             userService.register(user);
         }else{
             msg.setCode("110408");
-            msg.setInfo("验证码不正确");
+            msg.setInfo("验证码不正确");//失效也要处理。
         }
         return msg;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/login")//new
     @ResponseBody
-    public Msg login(HttpServletRequest httpServletRequest, @RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg login(HttpServletRequest request,HttpSession httpSession,@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String email = jsonObj.getString("email");
         String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
         String verifyCode = jsonObj.getString("verifyCode");
-        Object redis_VerifyCode = iRedisService.getValue("verifyCode_"+httpServletRequest.getHeader("verifyCode"));
+        ShearCaptcha redis_VerifyCode = (ShearCaptcha)httpSession.getAttribute("_hellohao_verifyCode");
         if(null==redis_VerifyCode){
             msg.setCode("4035");
             msg.setInfo("验证码已失效，请重新弄获取。");
@@ -146,7 +147,7 @@ public class UserController {
             msg.setInfo("验证码不能为空。");
             return msg;
         }
-        if((redis_VerifyCode.toString().toLowerCase()).compareTo((verifyCode.toLowerCase()))==0){
+        if(redis_VerifyCode.verify(verifyCode.toLowerCase())){
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(email,password);
             tokenOBJ.setRememberMe(true);
@@ -175,6 +176,7 @@ public class UserController {
                 msg.setData(jsonObject);
                 return msg;
             } catch (UnknownAccountException e) {
+                //此异常说明用户名不存在
                 msg.setCode("4000");
                 msg.setInfo("登录邮箱不存在");
                 System.err.println("邮箱不存在");
@@ -223,7 +225,7 @@ public class UserController {
         }
     }
 
-    @PostMapping(value = "/logout")
+    @PostMapping(value = "/logout")//new
     @ResponseBody
     public Msg exit(Model model, HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         Msg msg = new Msg();
@@ -234,15 +236,15 @@ public class UserController {
         return msg;
     }
 
-    @PostMapping("/retrievePass")
+    @PostMapping("/retrievePass") //new
     @ResponseBody
-    public Msg retrievePass(HttpServletRequest httpServletRequest, @RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg retrievePass(HttpServletRequest request,HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         try {
             JSONObject jsonObj = JSONObject.parseObject(data);
             String email = jsonObj.getString("email");
             String retrieveCode = jsonObj.getString("retrieveCode");
-            Object redis_verifyCodeForEmailRetrieve =iRedisService.getValue("verifyCodeForRetrieve_"+httpServletRequest.getHeader("verifyCodeForRetrieve"));
+            ShearCaptcha redis_verifyCodeForEmailRetrieve =(ShearCaptcha) httpSession.getAttribute("_hellohao_verifyCodeForEmailRetrieve");// iRedisService.getValue(userIP+"_verifyCodeForEmailRetrieve");
             EmailConfig emailConfig = emailConfigService.getemail();
             if(null==redis_verifyCodeForEmailRetrieve){
                 msg.setCode("4035");
@@ -253,11 +255,12 @@ public class UserController {
                 msg.setInfo("验证码不能为空。");
                 return msg;
             }
-            if((redis_verifyCodeForEmailRetrieve.toString().toLowerCase()).compareTo((retrieveCode.toLowerCase()))!=0){
+            if(!redis_verifyCodeForEmailRetrieve.verify(retrieveCode.toLowerCase())){
                 msg.setCode("40034");
                 msg.setInfo("验证码不正确");
                 return msg;
             }
+
             Integer ret = userService.countmail(email);
             if(ret>0){
                 if(emailConfig.getUsing()==1){
@@ -293,7 +296,7 @@ public class UserController {
         return msg;
     }
 
-    @RequestMapping(value = "/retrieve", method = RequestMethod.GET)
+    @RequestMapping(value = "/retrieve", method = RequestMethod.GET) //new
     public String retrieve(Model model, String activation,String cip) {
         Integer ret = 0;
         try {

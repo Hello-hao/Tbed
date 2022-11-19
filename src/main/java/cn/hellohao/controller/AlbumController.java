@@ -97,7 +97,8 @@ public class AlbumController {
 
     }
 
-    @PostMapping("/admin/getAlbumListForKey")
+    //后台列表要修改时的查询表单
+    @PostMapping("/admin/getAlbumListForKey")  
     @ResponseBody
     public Msg getAlbumListForKey(@RequestParam(value = "data", defaultValue = "") String data){
         Msg msg = new Msg();
@@ -213,6 +214,8 @@ public class AlbumController {
             String password = jsonObject.getString("password");
             JSONArray jsonArray = JSONArray.parseArray(jsonObject.getString("albumlist"));
             if(null!=password){
+//                String regex = "^[a-z0-9A-Z\u4e00-\u9fa5]+$";
+//                return str.matches(regex);
                 password = password.replace(" ", "");
                 if(password.replace(" ", "").equals("") || password.length()<3){
                     msg.setCode("110403");

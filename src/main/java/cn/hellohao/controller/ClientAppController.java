@@ -85,14 +85,30 @@ public class ClientAppController {
         return msg;
     }
 
-    @PostMapping("/imgUploading")
-    public Msg imgUploading(@RequestParam(required = true, value = "data") String data, HttpServletRequest request)  {
+    @PostMapping("/imgUpload")
+    public Msg imgUpload(HttpServletRequest request, @RequestParam(required = true, value = "file") MultipartFile file,
+                         @RequestParam(required = true, value = "days") String days)  {
+        Msg msg = new Msg();
+        try{
+            if (null != file) {
+                msg = uploadServicel.uploadForLoc(request,file,Integer.valueOf(days),null);
+            }else{
+                msg.setCode("500");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            msg.setCode("500");
+        }
+        return msg;
+    }
+
+    @PostMapping("/imgUploadForCopy")
+    public Msg imgUploadForCopy(@RequestParam(required = true, value = "data") String data, HttpServletRequest request)  {
         Msg msg = new Msg();
         try{
             JSONObject jsonObj = JSONObject.parseObject(data);
             String imgstr = jsonObj.getString("imgstr");
             Integer days = jsonObj.getInteger("days");
-//            String imgclass = jsonObj.getString("imgclass");
             if (null != imgstr && !imgstr.isEmpty()) {
                 MultipartFile multipartFile = Base64ToMultipartFile.base64Convert(imgstr);
                 msg = uploadServicel.uploadForLoc(request, multipartFile, days, null);
