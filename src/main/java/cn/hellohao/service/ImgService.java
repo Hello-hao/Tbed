@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 public interface ImgService {
     List<Images> selectimg(Images images);
 
+    Integer insertImgData(Images images);
+
     Integer deleimg(Integer id);
 
     Integer deleimgForImgUid(String imguid);

@@ -35,8 +35,8 @@ public class Images {
     private String yyyy;
     private String[] classifuidlist; //类别uid集合
     private String classificationuid; //类别uid集合
-
     private String idname;
+    private Integer isRepeat;//如果没有开启查重的时候他是0，开启为1
 
     public Images() {
         super();
@@ -56,7 +56,8 @@ public class Images {
                   Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime,
                   String explains, String md5key, String notes, String useridlist, String imguid, String albumtitle,
                   String password, Integer selecttype,Long countNum,Integer monthNum,String yyyy,
-                  String format,String about,Integer great,String[] classifuidlist,String classificationuid,String violation,String idname) {
+                  String format,String about,Integer great,String[] classifuidlist,String classificationuid,String violation,
+                  String idname,Integer isRepeat) {
         this.id = id;
         this.imgname = imgname;
         this.imgurl = imgurl;
@@ -88,6 +89,7 @@ public class Images {
         this.classificationuid = classificationuid;
         this.violation = violation;
         this.idname = idname;
+        this.isRepeat = isRepeat;
 
     }
 
@@ -338,6 +340,14 @@ public class Images {
 
     public void setIdname(String idname) {
         this.idname = idname;
+    }
+
+    public Integer getIsRepeat() {
+        return isRepeat;
+    }
+
+    public void setIsRepeat(Integer isRepeat) {
+        this.isRepeat = isRepeat;
     }
 }
 	

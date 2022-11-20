@@ -72,6 +72,51 @@
         </if>
         order by a.id desc
     </select>
+
+    <insert  id="insertImgData" parameterType="cn.hellohao.pojo.Images">
+        INSERT INTO imgdata (
+            id,
+            imgname,
+            imgurl,
+            userid,
+            updatetime,
+            sizes,
+            abnormal,
+            `source`,
+            imgtype,
+            explains,
+            md5key,
+            imguid,
+            `format`,
+            about,
+            violation,
+            idname
+        )
+        select * from (
+                          SELECT  NULL id,
+                                  #{imgname} imgname,
+                                  #{imgurl} imgurl,
+                                  #{userid} userid,
+                                  #{updatetime} updatetime,
+                                  #{sizes} sizes,
+                                  #{abnormal} abnormal,
+                                  #{source} `source`,
+                                  #{imgtype} imgtype,
+                                  #{explains} explains,
+                                  #{md5key} md5key,
+                                  #{imguid} imguid,
+                                  #{format} `format`,
+                                  #{about} about,
+                                  null violation,
+                                  #{idname} idname
+                      ) temp_t
+
+        where not exists (
+                select md5key from imgdata img_t where temp_t.md5key = img_t.md5key
+            ) and (select (select checkduplicate from sysconfig where id =1)=1)
+    </insert>
+
+
     <!-- 此用户下总数 -->
     <select id="countimg" parameterType="integer" resultType="integer">
         select count(*) from imgdata where userid = #{userid}

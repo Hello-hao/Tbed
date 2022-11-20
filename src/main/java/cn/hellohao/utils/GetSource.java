@@ -14,7 +14,7 @@ import java.util.Map;
  * @date 2019/11/7 17:12
  */
 public class GetSource {
-    public static ReturnImage  storageSource(Integer type, Map<String, File> fileMap, String userpath,Integer keyID){
+    public static ReturnImage  storageSource(Integer type, Map<Map<String, String>, File> fileMap, String userpath,Integer keyID){
         NOSImageupload nosImageupload = SpringContextHolder.getBean(NOSImageupload.class);
         OSSImageupload ossImageupload = SpringContextHolder.getBean(OSSImageupload.class);
         USSImageupload ussImageupload = SpringContextHolder.getBean(USSImageupload.class);

@@ -13,6 +13,8 @@ public interface ImgMapper {
 
     List<Images> selectimg(Images images);
 
+    Integer insertImgData(Images images);
+
     Integer countimg(@Param("userid") Integer userid);
 
     Integer deleimg(@Param("id") Integer id);

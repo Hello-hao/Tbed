@@ -18,30 +18,30 @@ public class USSImageupload {
     static UpYun upyun;
     static Keys key;
 
-    public ReturnImage ImageuploadUSS(Map<String, File> fileMap, String username,Integer keyID) {
+    public ReturnImage ImageuploadUSS(Map<Map<String, String>, File> fileMap, String username,Integer keyID) {
         ReturnImage returnImage = new ReturnImage();
         File file = null;
         ObjectMetadata meta = new ObjectMetadata();
         meta.setHeader("Content-Disposition", "inline");
         try {
-            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
-                String ShortUID = SetText.getShortUuid();
+            for (Map.Entry<Map<String, String>, File> entry : fileMap.entrySet()) {
+                String prefix = entry.getKey().get("prefix");
+                String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
                 Msg fileMiME = TypeDict.FileMiME(file);
                 meta.setHeader("content-type", fileMiME.getData().toString());
                 upyun.setContentMD5(UpYun.md5(file));
-                boolean result = upyun.writeFile(username + "/" + ShortUID + "." + entry.getKey(), file, true);
-                if(result){
-                    returnImage.setImgname(username + "/" + ShortUID + "." + entry.getKey());
-                    returnImage.setImgurl(key.getRequestAddress() + "/" +username + "/" + ShortUID + "." + entry.getKey());
-                    returnImage.setImgSize(entry.getValue().length());
-                    returnImage.setCode("200");
-                }else{
-                    returnImage.setCode("400");
+                boolean result =
+                        upyun.writeFile(username + "/" + ShortUIDName + "." + prefix, file, true);
+                if (result) {
+
+                } else {
                     System.err.println("上传失败");
+                    returnImage.setCode("400");
                 }
             }
-        }catch (Exception e){
+            returnImage.setCode("200");
+        } catch (Exception e) {
             e.printStackTrace();
             returnImage.setCode("500");
         }

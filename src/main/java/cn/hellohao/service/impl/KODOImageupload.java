@@ -33,7 +33,7 @@ public class KODOImageupload {
     static BucketManager bucketManager;
     static Keys key;
 
-    public ReturnImage ImageuploadKODO(Map<String, File> fileMap, String username, Integer keyID){
+    public ReturnImage ImageuploadKODO(Map<Map<String, String>, File> fileMap, String username, Integer keyID){
         ReturnImage returnImage = new ReturnImage();
         Configuration cfg;
         if (key.getEndpoint().equals("1")) {
@@ -49,19 +49,20 @@ public class KODOImageupload {
         }
         UploadManager uploadManager = new UploadManager(cfg);
         Auth auth = Auth.create(key.getAccessKey(), key.getAccessSecret());
-        String upToken = auth.uploadToken(key.getBucketname(),null,7200,null);
+        String upToken = auth.uploadToken(key.getBucketname(), null, 7200, null);
         File file = null;
         try {
-            for (Map.Entry<String, File> entry : fileMap.entrySet()) {
-                String ShortUID = SetText.getShortUuid();
+            for (Map.Entry<Map<String, String>, File> entry : fileMap.entrySet()) {
+                String prefix = entry.getKey().get("prefix");
+                String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
                 try {
-                    Response response = uploadManager.put(file,username + "/" + ShortUID + "." + entry.getKey(),upToken);
-                    DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                    returnImage.setImgname(username + "/" + ShortUID + "." + entry.getKey());
-                    returnImage.setImgurl(key.getRequestAddress() + "/" + username + "/" + ShortUID + "." + entry.getKey());
-                    returnImage.setImgSize(entry.getValue().length());
-                    returnImage.setCode("200");
+                    Response response =
+                            uploadManager.put(
+                                    file, username + "/" + ShortUIDName + "." + prefix, upToken);
+                    DefaultPutRet putRet =
+                            new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
+
                 } catch (QiniuException ex) {
                     returnImage.setCode("400");
                     Response r = ex.response;
@@ -72,7 +73,8 @@ public class KODOImageupload {
                     }
                 }
             }
-        }catch (Exception e){
+            returnImage.setCode("200");
+        } catch (Exception e) {
             e.printStackTrace();
             returnImage.setCode("500");
         }

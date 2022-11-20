@@ -78,15 +78,17 @@ public class deleImages {
             errorIds.add(image.getImgurl());
           }
         }
-        myProgress.setDelSuccessCount(successCount);
-        myProgress.setDelSuccessImgList(ids);
-        myProgress.setDelErrorImgListt(errorIds);
-        if (imgIds.length == (i + 1)) {
-          myProgress.setDelOCT(1);
-        } else {
-          myProgress.setDelOCT(0);
+        if(uuid!=null){
+          myProgress.setDelSuccessCount(successCount);
+          myProgress.setDelSuccessImgList(ids);
+          myProgress.setDelErrorImgListt(errorIds);
+          if (imgIds.length == (i + 1)) {
+            myProgress.setDelOCT(1);
+          } else {
+            myProgress.setDelOCT(0);
+          }
+          iRedisService.setTimeValue(uuid, JSONObject.toJSONString(myProgress), 24L);
         }
-        iRedisService.setTimeValue(uuid, JSONObject.toJSONString(myProgress), 24L);
         //        if (null != httpSession) {
         //          httpSession.setAttribute("myProgressForDel", myProgress);
         //        }

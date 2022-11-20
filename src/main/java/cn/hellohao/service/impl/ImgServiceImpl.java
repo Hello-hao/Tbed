@@ -21,6 +21,11 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
+    public Integer insertImgData(Images images) {
+        return imgMapper.insertImgData(images);
+    }
+
+    @Override
     public Integer deleimg(Integer id) {
         // TODO Auto-generated method stub
         return imgMapper.deleimg(id);
