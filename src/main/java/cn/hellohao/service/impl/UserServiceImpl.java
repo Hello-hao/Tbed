@@ -3,7 +3,6 @@ package cn.hellohao.service.impl;
 import cn.hellohao.dao.CodeMapper;
 import cn.hellohao.dao.UserMapper;
 import cn.hellohao.exception.CodeException;
-import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.UserService;
 import cn.hellohao.utils.Print;
@@ -42,11 +41,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.getUsers(user);
     }
 
-    @Override
-    public Integer insertimg(Images img) {
-        // TODO Auto-generated method stub
-        return userMapper.insertimg(img);
-    }
 
     @Override
     public Integer change(User user) {

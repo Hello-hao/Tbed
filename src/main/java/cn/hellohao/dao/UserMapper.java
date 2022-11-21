@@ -1,10 +1,8 @@
 package cn.hellohao.dao;
 
+import cn.hellohao.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-
-import cn.hellohao.pojo.Images;
-import cn.hellohao.pojo.User;
 
 import java.util.List;
 
@@ -14,7 +12,6 @@ public interface UserMapper {
     Integer login(@Param("email") String email, @Param("password") String password,@Param("uid") String uid);
     User getUsers(User user);
     User loginByToken (@Param("token") String token);
-    Integer insertimg(Images img);
     Integer change(User user);
     Integer changeUser(User user);
     Integer checkUsername(@Param("username") String username);

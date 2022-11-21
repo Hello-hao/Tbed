@@ -110,10 +110,9 @@
                                   null violation,
                                   #{idname} idname
                       ) temp_t
-
-        where not exists (
-                select md5key from imgdata img_t where temp_t.md5key = img_t.md5key
-            ) and (select (select checkduplicate from sysconfig where id =1)=1)
+        where
+            IF((select (select checkduplicate from sysconfig where id =1)=1),
+               not exists (select md5key from imgdata img_t where temp_t.md5key = img_t.md5key),true)
     </insert>
 
 

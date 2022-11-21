@@ -1,13 +1,8 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.pojo.UploadConfig;
-import cn.hellohao.utils.*;
-import com.aliyun.oss.OSSClient;
-import com.aliyun.oss.model.ObjectMetadata;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;
@@ -18,14 +13,11 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class KODOImageupload {
@@ -33,7 +25,8 @@ public class KODOImageupload {
     static BucketManager bucketManager;
     static Keys key;
 
-    public ReturnImage ImageuploadKODO(Map<Map<String, String>, File> fileMap, String username, Integer keyID){
+    public ReturnImage ImageuploadKODO(
+            Map<Map<String, String>, File> fileMap, String username, Integer keyID) {
         ReturnImage returnImage = new ReturnImage();
         Configuration cfg;
         if (key.getEndpoint().equals("1")) {
@@ -83,40 +76,46 @@ public class KODOImageupload {
 
     public static Integer Initialize(Keys k) {
         int ret = -1;
-        if (k.getEndpoint() != null && k.getAccessSecret() != null && k.getEndpoint() != null
-                && k.getBucketname() != null && k.getRequestAddress() != null) {
-            if (!k.getEndpoint().equals("") && !k.getAccessSecret() .equals("") && !k.getEndpoint() .equals("")
-                    && !k.getBucketname().equals("") && !k.getRequestAddress() .equals("")) {
-                Configuration cfg;
-                if (k.getEndpoint().equals("1")) {
-                    cfg = new Configuration(Zone.zone0());
-                } else if (k.getEndpoint().equals("2")) {
-                    cfg = new Configuration(Zone.zone1());
-                } else if (k.getEndpoint().equals("3")) {
-                    cfg = new Configuration(Zone.zone2());
-                } else if (k.getEndpoint().equals("4")) {
-                    cfg = new Configuration(Zone.zoneNa0());
-                } else {
-                    cfg = new Configuration(Zone.zoneAs0());
-                }
-                UploadManager uploadManager = new UploadManager(cfg);
-                Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
-                String upToken = auth.uploadToken(k.getBucketname(),null,7200,null);//auth.uploadToken(k.getBucketname());
-                BucketManager bmObj = new BucketManager(auth, cfg);
-                BucketManager.FileListIterator fileListIterator = null;
-                try {
-                    fileListIterator = bmObj.createFileListIterator(k.getBucketname(), "", 1, "/");
-                    FileInfo[] items = fileListIterator.next();
-                    if(items!=null){
-                        ret = 1;
-                        bucketManager = bmObj;
-                        key = k;
-                    }
-                }catch (Exception e){
-                    System.out.println("KODO Object Is null");
-                    ret = -1;
-                }
+        if (org.apache.commons.lang3.StringUtils.isBlank(k.getAccessKey())
+                || org.apache.commons.lang3.StringUtils.isBlank(k.getAccessSecret())
+                || org.apache.commons.lang3.StringUtils.isBlank(k.getEndpoint())
+                || org.apache.commons.lang3.StringUtils.isBlank(k.getBucketname())
+                || StringUtils.isBlank(k.getRequestAddress())) {
+            return -1;
+        }
+        Configuration cfg;
+        if (k.getEndpoint().equals("1")) {
+            cfg = new Configuration(Zone.zone0());
+        } else if (k.getEndpoint().equals("2")) {
+            cfg = new Configuration(Zone.zone1());
+        } else if (k.getEndpoint().equals("3")) {
+            cfg = new Configuration(Zone.zone2());
+        } else if (k.getEndpoint().equals("4")) {
+            cfg = new Configuration(Zone.zoneNa0());
+        } else {
+            cfg = new Configuration(Zone.zoneAs0());
+        }
+        UploadManager uploadManager = new UploadManager(cfg);
+        Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
+        String upToken =
+                auth.uploadToken(
+                        k.getBucketname(),
+                        null,
+                        7200,
+                        null); // auth.uploadToken(k.getBucketname());
+        BucketManager bmObj = new BucketManager(auth, cfg);
+        BucketManager.FileListIterator fileListIterator = null;
+        try {
+            fileListIterator = bmObj.createFileListIterator(k.getBucketname(), "", 1, "/");
+            FileInfo[] items = fileListIterator.next();
+            if (items != null) {
+                ret = 1;
+                bucketManager = bmObj;
+                key = k;
             }
+        } catch (Exception e) {
+            System.out.println("KODO Object Is null");
+            ret = -1;
         }
         return ret;
     }
@@ -130,6 +129,4 @@ public class KODOImageupload {
         }
         return b;
     }
-
-
 }

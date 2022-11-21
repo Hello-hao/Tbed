@@ -1,6 +1,5 @@
 package cn.hellohao.service;
 
-import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +14,6 @@ public interface UserService {
     User loginByToken (String token);
 
     User getUsers(User user);
-
-    Integer insertimg(Images img);
 
     Integer change(User user);
 

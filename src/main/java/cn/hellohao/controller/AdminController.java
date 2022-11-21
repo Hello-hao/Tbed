@@ -500,8 +500,10 @@ public class AdminController {
             JSONObject jsonObj = JSONObject.parseObject(data);
             String uuid = jsonObj.getString("uuid");
             JSONObject jsonObject = new JSONObject();
-            MyProgress myProgress =
-                    JSON.parseObject(iRedisService.getValue(uuid).toString(), MyProgress.class);
+            MyProgress myProgress = null;
+            try{
+                myProgress = JSON.parseObject(iRedisService.getValue(uuid).toString(), MyProgress.class);
+            }catch (Exception e){ }
             if (null == myProgress) {
                 jsonObject.put("succ", myProgress.getDelSuccessCount());
                 jsonObject.put("errorlist", new ArrayList<String>());

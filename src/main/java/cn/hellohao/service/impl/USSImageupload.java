@@ -4,11 +4,12 @@ import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.ReturnImage;
-import cn.hellohao.utils.SetText;
 import cn.hellohao.utils.TypeDict;
 import com.UpYun;
 import com.aliyun.oss.model.ObjectMetadata;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,8 @@ public class USSImageupload {
     static UpYun upyun;
     static Keys key;
 
-    public ReturnImage ImageuploadUSS(Map<Map<String, String>, File> fileMap, String username,Integer keyID) {
+    public ReturnImage ImageuploadUSS(
+            Map<Map<String, String>, File> fileMap, String username, Integer keyID) {
         ReturnImage returnImage = new ReturnImage();
         File file = null;
         ObjectMetadata meta = new ObjectMetadata();
@@ -46,30 +48,30 @@ public class USSImageupload {
             returnImage.setCode("500");
         }
         return returnImage;
-
     }
 
-    //初始化
+    // 初始化
     public static Integer Initialize(Keys k) {
         int ret = -1;
-        if(k.getStorageType()!=null && k.getAccessKey() != null && k.getAccessSecret() != null && k.getBucketname() != null
-                && k.getRequestAddress() !=null ) {
-            if(!k.getStorageType().equals("") && !k.getAccessKey().equals("") && !k.getAccessSecret().equals("") && !k.getBucketname().equals("")
-                    && !k.getRequestAddress().equals("") ) {
-                // 初始化
-                // 创建UpYun实例。
-                UpYun upObj= new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
-                List<UpYun.FolderItem> items = null;
-                try {
-                    items = upObj.readDir("/",null);
-                    ret = 1;
-                    upyun = upObj;
-                    key = k;
-                } catch (Exception e) {
-                    System.out.println("USS Object Is null");
-                    ret = -1;
-                }
-            }
+        if (StringUtils.isBlank(k.getAccessKey())
+                || StringUtils.isBlank(k.getKeyname())
+                || StringUtils.isBlank(k.getAccessSecret())
+                || StringUtils.isBlank(k.getEndpoint())
+                || StringUtils.isBlank(k.getBucketname())
+                || StringUtils.isBlank(k.getRequestAddress())
+                || k.getStorageType() == null) {
+            return -1;
+        }
+        UpYun upObj = new UpYun(k.getBucketname(), k.getAccessKey(), k.getAccessSecret());
+        List<UpYun.FolderItem> items = null;
+        try {
+            items = upObj.readDir("/", null);
+            ret = 1;
+            upyun = upObj;
+            key = k;
+        } catch (Exception e) {
+            System.out.println("USS Object Is null");
+            ret = -1;
         }
         return ret;
     }
@@ -80,10 +82,8 @@ public class USSImageupload {
             boolean result = upyun.deleteFile(images.getImgname(), null);
         } catch (Exception e) {
             e.printStackTrace();
-            b=false;
+            b = false;
         }
         return b;
     }
-
-
 }
