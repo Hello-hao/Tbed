@@ -11,7 +11,7 @@
  Target Server Version : 80028
  File Encoding         : 65001
 
- Date: 01/09/2022 00:28:28
+ Date: 01/01/2023 23:02:40
 */
 
 SET NAMES utf8mb4;
@@ -99,7 +99,7 @@ CREATE TABLE `config`  (
 -- ----------------------------
 -- Records of config
 -- ----------------------------
-INSERT INTO `config` VALUES (1, 7, 1, 'Hellohao图床', 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/books_x264.mp4http://cdn.wwery.com/Hellohao/439550606022825.jpg', '1', '<p style=\"color:#7c7c88;\">&copy; 2019 <a href=\"http://www.Hellohao.cn/\" target=\"_blank\" title=\"Hellohao\">Hellohao</a><span>&nbsp;&nbsp;- All Rights Reserved</span> </p>', '也许...|这将是最好用的图床|为了更好的用户体验，建议您注册本站继续免费使用Hellohao图床。本站不得上传任何形式的非法图片，一旦发现，永久删除并禁封账户。情节严重者将相关资料交于相关部门处理。', 'var _hmt = _hmt || [];\n(function() {\n  var hm = document.createElement(\"script\");\n  hm.src = \"https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888\";\n  var s = document.getElementsByTagName(\"script\")[0]; \n  s.parentNode.insertBefore(hm, s);\n})();\n\n', 'http://api.hellohao.cn', '', 'http://cdn.wwery.com/Hellohao/3e1901120091153.jpg', 1, 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'hellohao图床,图床,图片上传,开源图床,hellohao,图像托管，图片分享', 'https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico', 2, '这将是你用过最优秀的图像托管程序', NULL, '<img width=\"300px\" src=\"http://img.wwery.com/Hellohao/rPscRYwz.png\">\n            <br />\n            <br />\n            <p>也许,这将是你用到最优秀的图像托管程序</p>\n            <p>本程序为Hellohao图象托管程序</p>\n            <br/>\n            <p style=\"color: #656565;\">作者：hellohao独立开发</p>\n            <p style=\"color: #656565;\">www.hellohao.cn</p>');
+INSERT INTO `config` VALUES (1, 7, 1, 'Hellohao图床', 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'https://hellohao-cloud.oss-cn-beijing.aliyuncs.com/books_x264.mp4http://cdn.wwery.com/Hellohao/439550606022825.jpg', '1', '<p style=\"color:#7c7c88;\">版权所有&copy;<a href=\"http://tbed.Hellohao.cn/\" target=\"_blank\" title=\"Hellohao\">Hellohao图像托管</a><span>&nbsp;2019- 2023 </span> </p>', '也许...|这将是最好用的图床|为了更好的用户体验，建议您注册本站继续免费使用Hellohao图床。本站不得上传任何形式的非法图片，一旦发现，永久删除并禁封账户。情节严重者将相关资料交于相关部门处理。', 'var _hmt = _hmt || [];\n(function() {\n  var hm = document.createElement(\"script\");\n  hm.src = \"https://hm.baidu.com/hm.js?16c326e608c984c9bae6a63eda861888\";\n  var s = document.getElementsByTagName(\"script\")[0]; \n  s.parentNode.insertBefore(hm, s);\n})();\n\n', 'http://api.hellohao.cn', '', 'http://cdn.wwery.com/Hellohao/3e1901120091153.jpg', 1, 'Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。', 'hellohao图床,图床,图片上传,开源图床,hellohao,图像托管，图片分享', 'https://hellohao.nos-eastchina1.126.net/BlogImg/favicon.ico', 2, '这将是你用过最优秀的图像托管程序', NULL, '<img width=\"300px\" src=\"http://img.wwery.com/Hellohao/rPscRYwz.png\">\n            <br />\n            <br />\n            <p>也许,这将是你用到最优秀的图像托管程序</p>\n            <p>本程序为Hellohao图象托管程序</p>\n            <br/>\n            <p style=\"color: #656565;\">作者：hellohao独立开发</p>\n            <p style=\"color: #656565;\">www.hellohao.cn</p>');
 
 -- ----------------------------
 -- Table structure for emailconfig
@@ -292,7 +292,7 @@ INSERT INTO `uploadconfig` VALUES (1, '10485760', '20971520', 5, 10, 'gif,jpg,jp
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int(0) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '用户名',
   `password` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
   `email` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -309,7 +309,7 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, '9b76655b2706483780bf54988ca12531', 1, '2147483648', 1, '');
+INSERT INTO `user` VALUES (1, 'admin', 'YWRtaW4=', 'admin', '2019-01-10', 2, '05bc9cdc2d454ab59e9cd7eaa9ed296a', 1, '2147483648', 1, '');
 
 -- ----------------------------
 -- Table structure for usergroup
@@ -320,7 +320,7 @@ CREATE TABLE `usergroup`  (
   `userid` int(0) NULL DEFAULT NULL,
   `groupid` int(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of usergroup
