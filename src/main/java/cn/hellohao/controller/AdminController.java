@@ -504,8 +504,10 @@ public class AdminController {
             try{
                 myProgress = JSON.parseObject(iRedisService.getValue(uuid).toString(), MyProgress.class);
             }catch (Exception e){ }
+            msg.setCode("110666");
+            msg.setInfo("正在执行");
             if (null == myProgress) {
-                jsonObject.put("succ", myProgress.getDelSuccessCount());
+                jsonObject.put("succ", 0);
                 jsonObject.put("errorlist", new ArrayList<String>());
                 jsonObject.put("oklist", new ArrayList<Long>());
                 jsonObject.put("delover", false);
@@ -514,15 +516,12 @@ public class AdminController {
                 jsonObject.put("errorlist", myProgress.getDelErrorImgListt());
                 jsonObject.put("oklist", myProgress.getDelSuccessImgList());
                 jsonObject.put("delover", myProgress.getDelOCT());
+                if(myProgress.getDelOCT()==1){
+                    System.out.println("循环遍历的值："+myProgress.getDelOCT());
+                    msg.setCode("100");
+                }
             }
             msg.setData(jsonObject);
-            if (myProgress.getDelOCT()==1) {
-                System.out.println("循环遍历的值：" + myProgress.getDelOCT());
-                msg.setCode("100");
-            } else {
-                msg.setCode("110666");
-                msg.setInfo("正在执行");
-            }
             return msg;
         } catch (Exception e) {
             e.printStackTrace();

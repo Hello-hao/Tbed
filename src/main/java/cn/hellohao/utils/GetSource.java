@@ -3,6 +3,8 @@ package cn.hellohao.utils;
 import cn.hellohao.exception.StorageSourceInitException;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.service.impl.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -13,15 +15,25 @@ import java.util.Map;
  * @version 1.0
  * @date 2019/11/7 17:12
  */
+@Service
 public class GetSource {
-    public static ReturnImage  storageSource(Integer type, Map<Map<String, String>, File> fileMap, String userpath,Integer keyID){
-        NOSImageupload nosImageupload = SpringContextHolder.getBean(NOSImageupload.class);
-        OSSImageupload ossImageupload = SpringContextHolder.getBean(OSSImageupload.class);
-        USSImageupload ussImageupload = SpringContextHolder.getBean(USSImageupload.class);
-        KODOImageupload kodoImageupload = SpringContextHolder.getBean(KODOImageupload.class);
-        COSImageupload cosImageupload = SpringContextHolder.getBean(COSImageupload.class);
-        FTPImageupload ftpImageupload = SpringContextHolder.getBean(FTPImageupload.class);
-        UFileImageupload uFileImageupload = SpringContextHolder.getBean(UFileImageupload.class);
+
+    @Autowired
+    NOSImageupload nosImageupload;
+    @Autowired
+    OSSImageupload ossImageupload;
+    @Autowired
+    USSImageupload ussImageupload;
+    @Autowired
+    KODOImageupload kodoImageupload;
+    @Autowired
+    COSImageupload cosImageupload;
+    @Autowired
+    FtpServiceImpl ftpService;
+    @Autowired
+    UFileImageupload uFileImageupload;
+
+    public ReturnImage storageSource(Integer type, Map<Map<String, String>, File> fileMap, String userpath,Integer keyID){
         ReturnImage returnImage = null;
         try {
             if(type==1){
@@ -37,7 +49,7 @@ public class GetSource {
             }else if(type==6){
                 returnImage = cosImageupload.ImageuploadCOS(fileMap, userpath,keyID);;
             }else if(type==7){
-                returnImage =  ftpImageupload.ImageuploadFTP(fileMap, userpath,keyID);
+                returnImage =  ftpService.FtpUploadFile(fileMap, userpath,keyID);
             }else if(type==8){
                 returnImage =  uFileImageupload.ImageuploadUFile(fileMap, userpath,keyID);
             }

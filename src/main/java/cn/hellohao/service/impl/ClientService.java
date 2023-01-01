@@ -35,13 +35,14 @@ public class ClientService {
     @Autowired private ImgMapper imgMapper;
     @Autowired private ImgreviewMapper imgreviewMapper;
     @Autowired private ImgTempService imgTempService;
-    @Autowired private KeysServiceImpl keysService;
+    @Autowired private GetSource getSource;
 
     public Msg uploadImg(
             HttpServletRequest request, MultipartFile multipartFile, String email, String pass,Integer setday) {
         Msg msg = new Msg();
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String imageFileName = "未命名图像";
             Integer sourceKeyId = 0;
             FileInputStream fis = null;
             String md5key = null;
@@ -53,6 +54,7 @@ public class ClientService {
                 msg.setInfo("管理员关闭了API接口");
                 return msg;
             }
+            imageFileName = multipartFile.getOriginalFilename();
             File file = SetFiles.changeFile_new(multipartFile);
             User u2 = new User();
             if (!file.exists() || email == null || pass == null) {
@@ -115,19 +117,6 @@ public class ClientService {
                     }
                 }
             }
-//            if (Integer.valueOf(sysConfigService.getstate().getCheckduplicate()) == 1) {
-//                Images imaOBJ = new Images();
-//                imaOBJ.setMd5key(md5key);
-//                imaOBJ.setUserid(u.getId());
-//                if (imgMapper.md5Count(imaOBJ) > 0) {
-//                    List<Images> images = imgMapper.selectImgUrlByMD5(md5key);
-//                    jsonObject.put("url", images.get(0).getImgurl());
-//                    jsonObject.put("name", file.getName());
-//                    jsonObject.put("size", images.get(0).getSizes());
-//                    msg.setData(jsonObject);
-//                    return msg;
-//                }
-//            }
             Images imgObj = new Images();
             String imgnameEd = null;
             Map<Map<String, String>, File> map = new HashMap<>();
@@ -145,6 +134,10 @@ public class ClientService {
                     imgObj.setImgurl(key.getRequestAddress() + "/" + imgnameEd);
                 }
                 imgObj.setSizes(Long.toString(file.length()));
+            }else{
+                msg.setInfo("未获取到指定图像:110503");
+                msg.setCode("110503");
+                return msg;
             }
             imgObj.setUpdatetime(df.format(new Date()));
             imgObj.setSource(key.getId());
@@ -162,6 +155,7 @@ public class ClientService {
             imgObj.setMd5key(md5key);
             imgObj.setImguid(imguid);
             imgObj.setFormat(fileMiME.getData().toString());
+            imgObj.setIdname(imageFileName);
             Integer insertRet = imgMapper.insertImgData(imgObj);
             if (insertRet == 0) {
                 Images imaOBJ = new Images();
@@ -191,9 +185,7 @@ public class ClientService {
                 }
             }
             long stime = System.currentTimeMillis();
-            Map<ReturnImage, Integer> m = null;
-            ReturnImage returnImage =
-                    GetSource.storageSource(key.getStorageType(), map, updatePath, key.getId());
+            ReturnImage returnImage = getSource.storageSource(key.getStorageType(), map, updatePath, key.getId());
             if (returnImage.getCode().equals("200")) {
                 long etime = System.currentTimeMillis();
                 Print.Normal("上传图片所用总时长：" + String.valueOf(etime - stime) + "ms");

@@ -96,12 +96,10 @@ public class FirstRun implements InitializingBean {
 //            RunSqlScript.RunInsert(sql11);
 //            Print.Normal("Add imgdata.idname");
 //        }
-
-        RunSqlScript.RunInsert("alter table `config` modify column `explain` text,modify column `links` text,modify column `notice` text,modify column `baidu` text");
-
-        //RunSqlScript.RunInsert("alter table imgdata drop index index_md5key_url");
-        RunSqlScript.RunInsert(inddx_md5key);
-        RunSqlScript.RunInsert("UPDATE `keys` SET `Endpoint` = '0' WHERE `id` = 8");
+        RunSqlScript.RunInsert("alter table tbed.`config` modify column `explain` text,modify column `links` text,modify column `notice` text,modify column `baidu` text");
+//        RunSqlScript.RunInsert(inddx_md5key);
+        RunSqlScript.RunInsert("UPDATE tbed.`keys` SET `Endpoint` = '0' WHERE `id` = 8");
+        RunSqlScript.RunInsert("ALTER TABLE tbed.`user` MODIFY id int auto_increment;");
         Print.Normal("Stage success");
 
         clears();

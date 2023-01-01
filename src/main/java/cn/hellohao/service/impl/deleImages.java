@@ -25,7 +25,7 @@ public class deleImages {
   @Autowired private KODOImageupload kodoImageupload;
   @Autowired private USSImageupload ussImageupload;
   @Autowired private UFileImageupload uFileImageupload;
-  @Autowired private FTPImageupload ftpImageupload;
+  @Autowired private FtpServiceImpl ftpService;
   @Autowired private ImgAndAlbumService imgAndAlbumService;
   @Autowired private ImgTempService imgTempService;
   @Autowired private ImgService imgService;
@@ -58,26 +58,26 @@ public class deleImages {
         } else if (key.getStorageType() == 6) {
           isDele = cosImageupload.delCOS(key.getId(), image);
         } else if (key.getStorageType() == 7) {
-          isDele = ftpImageupload.delFTP(key.getId(), image);
+          isDele = ftpService.delFTP(key.getId(), image);
         } else if (key.getStorageType() == 8) {
           isDele = uFileImageupload.delUFile(key.getId(), image);
         } else {
           System.err.println("未获取到对象存储参数，删除失败。");
         }
-        if (isDele) {
-          try {
-            imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
-            imgTempService.delImgAndExp(image.getImguid());
-            imgService.deleimg(image.getId());
-            ids.add(image.getId());
-            successCount++;
-            System.out.println("删除成功加一个" + image.getId());
-          } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println(image.getImgname() + ":图片数据库记录时发生错误");
-            errorIds.add(image.getImgurl());
-          }
+//        if (isDele) {
+        try {
+          imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
+          imgTempService.delImgAndExp(image.getImguid());
+          imgService.deleimg(image.getId());
+          ids.add(image.getId());
+          successCount++;
+          System.out.println("删除成功加一个" + image.getId());
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.err.println(image.getImgname() + ":图片数据库记录时发生错误");
+          errorIds.add(image.getImgurl());
         }
+//        }
         if(uuid!=null){
           myProgress.setDelSuccessCount(successCount);
           myProgress.setDelSuccessImgList(ids);
@@ -89,11 +89,21 @@ public class deleImages {
           }
           iRedisService.setTimeValue(uuid, JSONObject.toJSONString(myProgress), 24L);
         }
-        //        if (null != httpSession) {
-        //          httpSession.setAttribute("myProgressForDel", myProgress);
-        //        }
       } catch (Exception e) {
         System.err.println("删除的时候发生了一些异常");
+        ids.add(imgIds[i]);
+        successCount++;
+        if(uuid!=null){
+          myProgress.setDelSuccessCount(successCount);
+          myProgress.setDelSuccessImgList(ids);
+          myProgress.setDelErrorImgListt(errorIds);
+          if (imgIds.length == (i + 1)) {
+            myProgress.setDelOCT(1);
+          } else {
+            myProgress.setDelOCT(0);
+          }
+          iRedisService.setTimeValue(uuid, JSONObject.toJSONString(myProgress), 24L);
+        }
         e.printStackTrace();
       }
     }

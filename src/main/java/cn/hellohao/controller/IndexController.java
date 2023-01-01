@@ -39,13 +39,12 @@ public class IndexController {
     @Autowired private UploadServicel uploadServicel;
     @Autowired private deleImages deleimages;
     @Autowired private IRedisService iRedisService;
-    @Autowired private AlbumServiceImpl albumService;
     @Autowired private AppClientService appClientService;
 
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序");
-        model.addAttribute("version", "20221027");
+        model.addAttribute("version", "20230101");
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
         model.addAttribute("links", "tbed.hellohao.cn");
         return "welcome";

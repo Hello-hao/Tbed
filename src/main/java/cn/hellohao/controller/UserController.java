@@ -45,21 +45,23 @@ public class UserController {
 
     @PostMapping("/register")
     @ResponseBody
-    public Msg Register(HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {//Validated
+    public Msg Register(HttpServletRequest httpServletRequest, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String username = jsonObj.getString("username");
         String email = jsonObj.getString("email");
         String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
         String verifyCodeForRegister = jsonObj.getString("verifyCode");
-        ShearCaptcha redis_verifyCodeForRegister = (ShearCaptcha) httpSession.getAttribute("_hellohao_verifyCodeForRegister");//iRedisService.getValue(userIP+"_verifyCodeForRegister");
+        Object redis_verifyCodeForRegister = iRedisService.getValue("verifyCodeForRegister_"+httpServletRequest.getHeader("verifyCodeForRegister"));
         if(!SetText.checkEmail(email)){
+            //邮箱格式不正确
             msg.setCode("110403");
             msg.setInfo("邮箱格式不正确");
             return msg;
         }
         String regex = "^\\w+$";
         if(username.length()>20 || !username.matches (regex)){
+            //用户名格式不正确
             msg.setCode("110403");
             msg.setInfo("用户名不得超过20位字符");
             return msg;
@@ -73,7 +75,7 @@ public class UserController {
             msg.setInfo("验证码不能为空。");
             return msg;
         }
-        if(redis_verifyCodeForRegister.verify(verifyCodeForRegister.toLowerCase())){
+        if((redis_verifyCodeForRegister.toString().toLowerCase()).compareTo((verifyCodeForRegister.toLowerCase()))==0){
             User user = new User();
             UploadConfig updateConfig = uploadConfigService.getUpdateConfig();
             EmailConfig emailConfig = emailConfigService.getemail();
@@ -106,10 +108,12 @@ public class UserController {
             user.setEmail(email);
             user.setUsername(username);
             user.setPassword(password);
+            user.setToken(UUID.randomUUID().toString().replace("-", ""));
             Config config = configService.getSourceype();
             Integer type = 0;
             if(emailConfig.getUsing()==1){
                 user.setIsok(0);
+                //注册完发激活链接
                 Thread thread = new Thread() {
                     public void run() {
                         Integer a = NewSendEmail.sendEmail(emailConfig,user.getUsername(), uid, user.getEmail(),config);
@@ -118,6 +122,7 @@ public class UserController {
                 thread.start();
                 msg.setInfo("注册成功,请注意查收邮箱尽快激活账户");
             }else{
+                //直接注册
                 user.setIsok(1);
                 msg.setInfo("注册成功,快去登陆吧");
             }
@@ -131,13 +136,25 @@ public class UserController {
 
     @PostMapping("/login")//new
     @ResponseBody
-    public Msg login(HttpServletRequest request,HttpSession httpSession,@RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg login(HttpServletRequest httpServletRequest,@RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String email = jsonObj.getString("email");
         String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
         String verifyCode = jsonObj.getString("verifyCode");
-        ShearCaptcha redis_VerifyCode = (ShearCaptcha)httpSession.getAttribute("_hellohao_verifyCode");
+        if(null == email || null == password || null == verifyCode){
+            msg.setCode("5000");
+            msg.setInfo("登录信息不正确");
+            return msg;
+        }
+        if(email.replace(" ","").equals("") || password.replace(" ","").equals("")
+                || verifyCode.replace(" ","").equals("")){
+            msg.setCode("5000");
+            msg.setInfo("登录信息不正确");
+            return msg;
+        }
+
+        Object redis_VerifyCode = iRedisService.getValue("verifyCode_"+httpServletRequest.getHeader("verifyCode"));
         if(null==redis_VerifyCode){
             msg.setCode("4035");
             msg.setInfo("验证码已失效，请重新弄获取。");
@@ -147,13 +164,13 @@ public class UserController {
             msg.setInfo("验证码不能为空。");
             return msg;
         }
-        if(redis_VerifyCode.verify(verifyCode.toLowerCase())){
+        if((redis_VerifyCode.toString().toLowerCase()).compareTo((verifyCode.toLowerCase()))==0){
             Subject subject = SecurityUtils.getSubject();
             UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(email,password);
             tokenOBJ.setRememberMe(true);
             try {
                 subject.login(tokenOBJ);
-                SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时
+                SecurityUtils.getSubject().getSession().setTimeout(3600000);
                 JSONObject jsonObject = new JSONObject();
                 User user = (User) SecurityUtils.getSubject().getPrincipal();
                 if(user.getIsok()==0){
@@ -197,7 +214,7 @@ public class UserController {
             }
         }else{
             msg.setCode("40034");
-            msg.setInfo("验证码不正确");//失效也要处理。
+            msg.setInfo("验证码不正确");
         }
         return msg;
     }
@@ -236,15 +253,15 @@ public class UserController {
         return msg;
     }
 
-    @PostMapping("/retrievePass") //new
+    @PostMapping("/retrievePass")
     @ResponseBody
-    public Msg retrievePass(HttpServletRequest request,HttpSession httpSession, @RequestParam(value = "data", defaultValue = "") String data) {
+    public Msg retrievePass(HttpServletRequest httpServletRequest, @RequestParam(value = "data", defaultValue = "") String data) {
         Msg msg = new Msg();
         try {
             JSONObject jsonObj = JSONObject.parseObject(data);
             String email = jsonObj.getString("email");
             String retrieveCode = jsonObj.getString("retrieveCode");
-            ShearCaptcha redis_verifyCodeForEmailRetrieve =(ShearCaptcha) httpSession.getAttribute("_hellohao_verifyCodeForEmailRetrieve");// iRedisService.getValue(userIP+"_verifyCodeForEmailRetrieve");
+            Object redis_verifyCodeForEmailRetrieve =iRedisService.getValue("verifyCodeForRetrieve_"+httpServletRequest.getHeader("verifyCodeForRetrieve"));
             EmailConfig emailConfig = emailConfigService.getemail();
             if(null==redis_verifyCodeForEmailRetrieve){
                 msg.setCode("4035");
@@ -255,12 +272,11 @@ public class UserController {
                 msg.setInfo("验证码不能为空。");
                 return msg;
             }
-            if(!redis_verifyCodeForEmailRetrieve.verify(retrieveCode.toLowerCase())){
+            if((redis_verifyCodeForEmailRetrieve.toString().toLowerCase()).compareTo((retrieveCode.toLowerCase()))!=0){
                 msg.setCode("40034");
                 msg.setInfo("验证码不正确");
                 return msg;
             }
-
             Integer ret = userService.countmail(email);
             if(ret>0){
                 if(emailConfig.getUsing()==1){
@@ -275,7 +291,7 @@ public class UserController {
                     Config config = configService.getSourceype();
                     Thread thread = new Thread() {
                         public void run() {
-                        Integer a = NewSendEmail.sendEmailFindPass(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),config);//SendEmail.sendEmailT(message, user.getUsername(), user.getUid(), user.getEmail(),emailConfig,config);
+                            Integer a = NewSendEmail.sendEmailFindPass(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),config);
                         }
                     };
                     thread.start();
@@ -296,7 +312,7 @@ public class UserController {
         return msg;
     }
 
-    @RequestMapping(value = "/retrieve", method = RequestMethod.GET) //new
+    @RequestMapping(value = "/retrieve", method = RequestMethod.GET)
     public String retrieve(Model model, String activation,String cip) {
         Integer ret = 0;
         try {

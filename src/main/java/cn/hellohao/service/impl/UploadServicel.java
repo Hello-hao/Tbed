@@ -34,7 +34,7 @@ public class UploadServicel {
     @Autowired private UserMapper userMapper;
     @Autowired private ImgreviewMapper imgreviewMapper;
     @Autowired private ImgTempService imgTempService;
-    @Autowired private KeysServiceImpl keysService;
+    @Autowired private GetSource getSource;
 
     public Msg uploadForLoc(
             HttpServletRequest request,
@@ -44,6 +44,7 @@ public class UploadServicel {
         Msg msg = new Msg();
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String imageFileName = "未命名图像";
             JSONObject jsonObject = new JSONObject();
             UploadConfig uploadConfig = uploadConfigMapper.getUpdateConfig();
             String userip = GetIPS.getIpAddr(request);
@@ -57,8 +58,10 @@ public class UploadServicel {
             FileInputStream fis = null;
             File file = null;
             if (imgUrl == null) {
+                imageFileName = multipartFile.getOriginalFilename();
                 file = SetFiles.changeFile_new(multipartFile);
             } else {
+                imageFileName = "URL转存图像";
                 Msg imgData = uploadForURL(request, imgUrl);
                 if (imgData.getCode().equals("200")) {
                     file = new File((String) imgData.getData());
@@ -102,19 +105,6 @@ public class UploadServicel {
             if (md5key == null || md5key.equals("")) {
                 md5key = UUID.randomUUID().toString().replace("-", "");
             }
-            //            if(Integer.valueOf(sysConfigService.getstate().getCheckduplicate())==1){
-            //                Images imaOBJ = new Images();
-            //                imaOBJ.setMd5key(md5key);
-            //                imaOBJ.setUserid(u==null?0:u.getId());
-            //                if(imgMapper.md5Count(imaOBJ)>0){
-            //                    List<Images>  images = imgMapper.selectImgUrlByMD5(md5key);
-            //                    jsonObject.put("url", images.get(0).getImgurl());
-            //                    jsonObject.put("name",file.getName());
-            //                    jsonObject.put("imguid",images.get(0).getImguid());
-            //                    msg.setData(jsonObject);
-            //                    return msg;
-            //                }
-            //            }
             String prefix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
             // 判断黑名单
             if (uploadConfig.getBlacklist() != null) {
@@ -146,6 +136,10 @@ public class UploadServicel {
                     imgObj.setImgurl(key.getRequestAddress() + "/" + imgnameEd);
                 }
                 imgObj.setSizes(Long.toString(file.length()));
+            }else{
+                msg.setInfo("未获取到指定图像:110503");
+                msg.setCode("110503");
+                return msg;
             }
             imgObj.setUpdatetime(df.format(new Date()));
             imgObj.setSource(key.getId());
@@ -163,6 +157,7 @@ public class UploadServicel {
             imgObj.setMd5key(md5key);
             imgObj.setImguid(imguid);
             imgObj.setFormat(fileMiME.getData().toString());
+            imgObj.setIdname(imageFileName);
             Integer insertRet = imgMapper.insertImgData(imgObj);
             if (insertRet == 0) {
                 Images imaOBJ = new Images();
@@ -192,8 +187,7 @@ public class UploadServicel {
                 }
             }
             long stime = System.currentTimeMillis();
-            ReturnImage returnImage =
-                    GetSource.storageSource(key.getStorageType(), map, updatePath, key.getId());
+            ReturnImage returnImage = getSource.storageSource(key.getStorageType(), map, updatePath, key.getId());
             if (returnImage.getCode().equals("200")) {
                 long etime = System.currentTimeMillis();
                 Print.Normal("上传图片所用总时长：" + String.valueOf(etime - stime) + "ms");

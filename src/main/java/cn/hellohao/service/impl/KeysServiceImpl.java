@@ -28,7 +28,7 @@ public class KeysServiceImpl implements KeysService {
     @Autowired
     private COSImageupload cosImageupload;
     @Autowired
-    private FTPImageupload ftpImageupload;
+    private FtpServiceImpl ftpService;
     @Autowired
     private UFileImageupload uFileImageupload;
 
@@ -65,7 +65,7 @@ public class KeysServiceImpl implements KeysService {
         }else if(key.getStorageType()==6){
             ret = cosImageupload.Initialize(key);
         }else if(key.getStorageType()==7){
-            ret = ftpImageupload.Initialize(key);
+            ret = ftpService.Initialize(key);
         }else if(key.getStorageType()==8){
             ret = uFileImageupload.Initialize(key);
         }else{

@@ -34,7 +34,7 @@ public class FirstJob {
 	@Autowired
 	private UFileImageupload uFileImageupload;
 	@Autowired
-	private FTPImageupload ftpImageupload;
+	private FtpServiceImpl ftpService;
 	@Autowired
 	ImgTempService imgTempService;
 	@Autowired
@@ -75,7 +75,7 @@ public class FirstJob {
 				}else if(keys.getStorageType()==6){
 					firstJob.cosImageupload.delCOS(keys.getId(),images);
 				}else if(keys.getStorageType()==7){
-					firstJob.ftpImageupload.delFTP(keys.getId(), images);
+					firstJob.ftpService.delFTP(keys.getId(), images);
 				}else if(keys.getStorageType()==8){
 					firstJob.uFileImageupload.delUFile(keys.getId(), images);
 				}else{
