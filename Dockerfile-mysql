@@ -1,0 +1,4 @@
+# syntax=docker/dockerfile:1
+FROM mysql:8.0.31
+#把sql文件复制到工作目录下
+COPY ./tbed_core.sql /docker-entrypoint-initdb.d

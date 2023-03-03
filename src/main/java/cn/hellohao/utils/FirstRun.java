@@ -91,6 +91,12 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(instartAppclient);
             Print.Normal("Add table.appclient");
         }
+        Integer isconfdata = RunSqlScript.RunSelectCount(isTableName+"'confdata'");
+        if(isconfdata==0){
+            Integer integer = RunSqlScript.RunInsert(createConfdata);
+            RunSqlScript.RunInsert(instartConfdata);
+            Print.Normal("Add table.confdata");
+        }
 //        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'imgdata' and column_name = 'idname'");
 //        if(ret6==0){
 //            RunSqlScript.RunInsert(sql11);
@@ -127,6 +133,26 @@ public class FirstRun implements InitializingBean {
     //创建客户端程序相关表
     private String createAppclient = "CREATE TABLE `appclient`  (`id` varchar(10) NOT NULL,`isuse` varchar(10) NOT NULL,`winpackurl` varchar(255) NULL DEFAULT NULL,`macpackurl` varchar(255) NULL DEFAULT NULL,`appname` varchar(20) NULL,`applogo` varchar(255) NULL,`appupdate` varchar(10) NOT NULL) ";
     private String instartAppclient = "INSERT INTO `appclient` VALUES ('app', 'on', NULL, NULL, 'Hellohao图像托管', 'https://hellohao.nos-eastchina1.126.net/TbedClient/app.png', '1.0.1');";
+    //创建confdata表
+    private String createConfdata = "CREATE TABLE tbed.confdata ( `key` varchar(100) NULL, jsondata LONGTEXT NULL )";
+    private String instartConfdata = "INSERT INTO `confdata` VALUES ('config', '{" +
+            "    \"sourcekey\":7," +
+            "    \"emails\":1," +
+            "    \"webname\":\"Hellohao图床\"," +
+            "    \"explain\":\"Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。\"," +
+            "    \"links\":\"&lt;p style=\\\"color:#7c7c88;\\\"&gt;© 2019 &lt;a href=\\\"http://www.Hellohao.cn/\\\" target=\\\"_blank\\\" title=\\\"Hellohao\\\"&gt;Hellohao&lt;/a&gt;&lt;span&gt;  - All Rights Reserved&lt;/span&gt; &lt;/p&gt;\",\n" +
+            "    \"notice\":\"也许...|这将是最好用的图床|为了更好的用户体验，建议您注册本站继续免费使用Hellohao图床。本站不得上传任何形式的非法图片，一旦发现，永久删除并禁封账户。情节严重者将相关资料交于相关部门处理。\",\n" +
+            "    \"domain\":\"http://127.0.0.1:10088\"," +
+            "    \"background1\":\"\"," +
+            "    \"sett\":\"1\"," +
+            "    \"webms\":\"Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。\"," +
+            "    \"webkeywords\":\"hellohao图床,图床,图片上传,开源图床,hellohao,图像托管，图片分享\"," +
+            "    \"theme\":2," +
+            "    \"websubtitle\":\"这将是你用过最优秀的图像托管程序\"," +
+            "    \"logo\":null," +
+            "    \"aboutinfo\":\"&lt;img width=\\\"300px\\\" src=\\\"http://img.wwery.com/hellohao/rPscRYwz.png\\\"&gt;\\n            &lt;br /&gt;\\n            &lt;br /&gt;\\n            &lt;p&gt;也许,这将是你用到最优秀的图像托管程序&lt;/p&gt;\\n            &lt;p&gt;本程序为Hellohao图象托管程序&lt;/p&gt;\\n            &lt;br/&gt;\\n            &lt;p style=\\\"color: #656565;\\\"&gt;作者：hellohao独立开发&lt;/p&gt;\\n            &lt;p style=\\\"color: #656565;\\\"&gt;www.hellohao.cn&lt;/p&gt;\"" +
+            "}');";
+
 
 
     private String inddx_md5key = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( md5key,imgurl)";

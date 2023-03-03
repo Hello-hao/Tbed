@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  hellohao-tbed:
+    build:
+      # dockerfile存放路径
+      context: .
+      # 配置启动参数
+      args:
+        JAR_FILE: tbed.jar
+      dockerfile: Dockerfile
+    ports:
+      - "10088:10088"
+      - "10089:10089"
+    volumes:
+      - /HellohaoData/:/HellohaoData/
+    environment:
+      # 环境变量, 在application.yml中读取
+      MYSQL_URL: jdbc:mysql://hellohaodb/tbed?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+      MYSQL_PASS: 923453645
+      HELLOHAO_SERVER_HOST: http://152.32.134.33:10088
+      HELLOHAO_WEB_HOST: http://152.32.134.33:10089
+  hellohaodb:
+    image: mysql:8.0.31
+#    container_name: tbed
+    build:
+      context: .
+      dockerfile: Dockerfile-mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - /HellohaoData/mysql:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 923453645
+
+# docker-compose中需要声明named volumes
+volumes:
+  sb-10-docker-mysql-data:
+

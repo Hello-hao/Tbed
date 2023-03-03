@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/root")
 public class AdminRootController {
     @Autowired
-    private ConfigService configService;
+    private ConfdataService confdataService;
     @Autowired
     private KeysService keysService;
     @Autowired
@@ -260,7 +260,7 @@ public class AdminRootController {
         User u = (User) subject.getPrincipal();
         try {
             UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-            Config config = configService.getSourceype();
+            final Confdata confdata = confdataService.selectConfdata("config");
             SysConfig sysConfig = sysConfigService.getstate();
             AppClient appClientData = appClientService.getAppClientData("app");
             uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory()) / 1024 / 1024));
@@ -268,7 +268,7 @@ public class AdminRootController {
             uploadConfig.setFilesizetourists(Long.toString(Long.valueOf(uploadConfig.getFilesizetourists()) / 1024 / 1024));
             uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser()) / 1024 / 1024));
             jsonObject.put("uploadConfig", uploadConfig);
-            jsonObject.put("config", config);
+            jsonObject.put("config", JSONObject.parseObject(confdata.getJsondata()));
             jsonObject.put("sysConfig", sysConfig);
             jsonObject.put("appClient", appClientData);
             msg.setData(jsonObject);
@@ -296,7 +296,7 @@ public class AdminRootController {
                 msg.setCode("500");
                 return msg;
             }
-            Config config = JSON.toJavaObject((JSON) jsonObject.get("config"), Config.class);
+//            Config config = JSON.toJavaObject((JSON) jsonObject.get("config"), Config.class);
             SysConfig sysConfig = JSON.toJavaObject((JSON) jsonObject.get("sysConfig"), SysConfig.class);
             AppClient appClient = JSON.toJavaObject((JSON) jsonObject.get("appClient"), AppClient.class);
             if (Integer.valueOf(vm) == -1) {
@@ -308,7 +308,10 @@ public class AdminRootController {
             uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory()) * 1024 * 1024));
             uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser()) * 1024 * 1024));
             uploadConfigService.setUpdateConfig(uploadConfig);
-            configService.setSourceype(config);
+            Confdata confdata = new Confdata();
+            confdata.setKey("config");
+            confdata.setJsondata(jsonObject.getJSONObject("config").toJSONString());
+            confdataService.updateConfdata(confdata);
             sysConfigService.setstate(sysConfig);
             if (!appClient.getIsuse().equals("on")) {
                 appClient.setIsuse("off");
