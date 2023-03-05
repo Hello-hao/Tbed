@@ -33,7 +33,7 @@ public class FirstRun implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         if(!DockerWebHost.contains("null")){
-            contentToTxt("/web/webapps/hellohao/config.json", "{\"serverHost\": \""+DockerWebHost+"\"}");
+            contentToTxt("/hellohaotbed/webapps/hellohao/config.json", "{\"serverHost\": \""+DockerWebHost+"\"}");
             System.out.println("====>"+DockerWebHost);
         }
         isWindows();
