@@ -5,7 +5,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
+import java.io.*;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -26,8 +26,16 @@ public class FirstRun implements InitializingBean {
     @Value("${spring.datasource.url}")
     private String jdbcurl;
 
+    @Value("${DockerWebHost}")
+    private String DockerWebHost;
+
+
     @Override
     public void afterPropertiesSet() {
+        if(!DockerWebHost.contains("null")){
+            contentToTxt("/web/webapps/hellohao/config.json", "{\"serverHost\": \""+DockerWebHost+"\"}");
+            System.out.println("====>"+DockerWebHost);
+        }
         isWindows();
         RunSqlScript.USERNAME = jdbcusername;
         RunSqlScript.PASSWORD = jdbcpass;
@@ -189,6 +197,32 @@ public class FirstRun implements InitializingBean {
             GlobalConstant.LOCPATH = props.getProperty("user.home")+File.separator+".HellohaoData";
         }
         return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+    }
+
+    public static void contentToTxt(String filePath, String content) {
+//        String str = new String(); //原有txt内容
+        String s1 = new String();//内容更新
+        try {
+            File f = new File(filePath);
+            if (f.exists()) {
+                System.out.print("文件存在");
+            } else {
+                System.out.print("文件不存在");
+                f.createNewFile();// 不存在则创建
+            }
+//            BufferedReader input = new BufferedReader(new FileReader(f));
+//            while ((str = input.readLine()) != null) {
+//                s1 += str + "\n";
+//            }
+//            input.close();
+            s1 += content + "\n";
+            BufferedWriter output = new BufferedWriter(new FileWriter(f));
+            output.write(s1);
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+        }
     }
 
 }

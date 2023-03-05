@@ -22,6 +22,11 @@ services:
       HELLOHAO_WEB_HOST: http://152.32.134.33:10089
   hellohaodb:
     image: mysql:8.0.31
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_general_ci
+      - --explicit_defaults_for_timestamp=true
 #    container_name: tbed
     build:
       context: .
