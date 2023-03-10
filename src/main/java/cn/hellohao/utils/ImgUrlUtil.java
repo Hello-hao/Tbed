@@ -104,7 +104,7 @@ public class ImgUrlUtil {
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
             //设置超时间为3秒
             conn.setConnectTimeout(5*1000);
-            //防止屏蔽程序抓取而返回403错误
+            //防止屏蔽程序抓取而返回403错误 Referer
             conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
 
             //得到输入流
