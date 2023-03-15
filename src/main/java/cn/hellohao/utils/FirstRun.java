@@ -47,6 +47,13 @@ public class FirstRun implements InitializingBean {
         String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
         RunSqlScript.RunInsert("update user set uid='"+uid+"' where id = 1");
 
+        Integer ret0 =
+                RunSqlScript.RunSelectCount(judgeTable + "'keys' and column_name = 'Region'");
+        if (ret0 == 0) {
+            RunSqlScript.RunInsert(sql0);
+            Print.Normal("Add keys.Region||RootPath");
+        }
+
         Integer ret1 = RunSqlScript.RunSelectCount(sql1);
         if(ret1==0){
             Print.Normal("In execution...");
@@ -83,11 +90,7 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(sql8);
             Print.Normal("Stage 6");
         }
-        Integer ret5 = RunSqlScript.RunSelectCount(judgeTable+"'config' and column_name = 'theme'");
-        if(ret5==0){
-            RunSqlScript.RunInsert(sql9);
-            Print.Normal("Stage 7");
-        }
+
         Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'user' and column_name = 'token'");
         if(ret6==0){
             RunSqlScript.RunInsert(sql12);
@@ -105,12 +108,6 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(instartConfdata);
             Print.Normal("Add table.confdata");
         }
-//        Integer ret6 = RunSqlScript.RunSelectCount(judgeTable+" 'imgdata' and column_name = 'idname'");
-//        if(ret6==0){
-//            RunSqlScript.RunInsert(sql11);
-//            Print.Normal("Add imgdata.idname");
-//        }
-        RunSqlScript.RunInsert("alter table tbed.`config` modify column `explain` text,modify column `links` text,modify column `notice` text,modify column `baidu` text");
 //        RunSqlScript.RunInsert(inddx_md5key);
         RunSqlScript.RunInsert("UPDATE tbed.`keys` SET `Endpoint` = '0' WHERE `id` = 8");
         RunSqlScript.RunInsert("ALTER TABLE tbed.`user` MODIFY id int auto_increment;");
@@ -123,6 +120,8 @@ public class FirstRun implements InitializingBean {
     private String isTableName = "SELECT count(table_name) FROM information_schema.TABLES WHERE TABLE_SCHEMA='tbed' and table_name =";
     private String judgeTable = "select count(*) from information_schema.columns where TABLE_SCHEMA='tbed' and table_name = ";
     //创建blacklist  2019-11-29
+    private String sql0 =
+            "alter table `keys` add (Region varchar(255) DEFAULT null,RootPath varchar(255) DEFAULT '/');";
     private String sql1 = "select count(*) from information_schema.columns where table_name = 'uploadconfig' and column_name = 'blacklist'";
     private String sql2 = "alter table uploadconfig add blacklist varchar(500);";
     //创建imgandalbum和album 添加imgdata表字段explain 2019-12-20
@@ -133,7 +132,6 @@ public class FirstRun implements InitializingBean {
     private String sql7 = "alter table album add userid int(10)";
     //添加imgdata表字段md5key
     private String sql8 = "alter table imgdata add md5key varchar(5000)";
-    private String sql9 = "ALTER TABLE config ADD theme int(4) DEFAULT '1' COMMENT '主题'  ";
     //  图片标识名字段
     private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
 

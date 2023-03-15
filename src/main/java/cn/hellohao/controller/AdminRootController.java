@@ -196,7 +196,7 @@ public class AdminRootController {
             } else if (key.getStorageType() == 7) {
                 ret = FtpServiceImpl.Initialize(key);
             } else if (key.getStorageType() == 8) {
-                ret = UFileImageupload.Initialize(key);
+                ret = S3Imageupload.Initialize(key);
             }
             Long l = imgService.getsourcememory(keyId);
             jsonObject.put("isok", ret);

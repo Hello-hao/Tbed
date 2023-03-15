@@ -24,7 +24,7 @@ public class deleImages {
   @Autowired private COSImageupload cosImageupload;
   @Autowired private KODOImageupload kodoImageupload;
   @Autowired private USSImageupload ussImageupload;
-  @Autowired private UFileImageupload uFileImageupload;
+  @Autowired private S3Imageupload s3Imageupload;
   @Autowired private FtpServiceImpl ftpService;
   @Autowired private ImgAndAlbumService imgAndAlbumService;
   @Autowired private ImgTempService imgTempService;
@@ -60,7 +60,7 @@ public class deleImages {
         } else if (key.getStorageType() == 7) {
           isDele = ftpService.delFTP(key.getId(), image);
         } else if (key.getStorageType() == 8) {
-          isDele = uFileImageupload.delUFile(key.getId(), image);
+          isDele = s3Imageupload.deleS3(key.getId(), image);
         } else {
           System.err.println("未获取到对象存储参数，删除失败。");
         }

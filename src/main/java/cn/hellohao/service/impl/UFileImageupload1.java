@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class UFileImageupload {
+public class UFileImageupload1 {
     static UpYun uFile;
     static Keys key;
 

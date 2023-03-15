@@ -5,7 +5,6 @@ import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.service.impl.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class GetSource {
     @Autowired
     FtpServiceImpl ftpService;
     @Autowired
-    UFileImageupload uFileImageupload;
+    S3Imageupload s3Imageupload;
 
     public ReturnImage storageSource(Integer type, Map<Map<String, String>, File> fileMap, String userpath,Integer keyID){
         ReturnImage returnImage = null;
@@ -51,7 +50,7 @@ public class GetSource {
             }else if(type==7){
                 returnImage =  ftpService.FtpUploadFile(fileMap, userpath,keyID);
             }else if(type==8){
-                returnImage =  uFileImageupload.ImageuploadUFile(fileMap, userpath,keyID);
+                returnImage =  s3Imageupload.ImageuploadS3(fileMap, userpath,keyID);
             }
             else{
                 new StorageSourceInitException("GetSource类捕捉异常：未找到存储源");

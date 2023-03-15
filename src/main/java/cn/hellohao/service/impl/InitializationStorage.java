@@ -30,7 +30,7 @@ public class InitializationStorage implements CommandLineRunner {
     private KeysMapper keysMapper;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         SubjectFilter.WEBHOST = allowedOrigins;
         String name = ManagementFactory.getRuntimeMXBean().getName();
         String pid = name.split("@")[0];
@@ -41,21 +41,20 @@ public class InitializationStorage implements CommandLineRunner {
         List<Keys> keylist = keysMapper.getKeys();
         for (Keys key : keylist) {
             if(key.getStorageType()!=0 && key.getStorageType()!=null){
-                int ret =0;
                 if(key.getStorageType()==1){
-                    ret =NOSImageupload.Initialize(key);
+                    NOSImageupload.Initialize(key);
                 }else if (key.getStorageType()==2){
-                    ret =OSSImageupload.Initialize(key);
+                    OSSImageupload.Initialize(key);
                 }else if(key.getStorageType()==3){
-                    ret = USSImageupload.Initialize(key);
+                    USSImageupload.Initialize(key);
                 }else if(key.getStorageType()==4){
-                    ret = KODOImageupload.Initialize(key);
+                    KODOImageupload.Initialize(key);
                 }else if(key.getStorageType()==6){
-                    ret = COSImageupload.Initialize(key);
+                    COSImageupload.Initialize(key);
                 }else if(key.getStorageType()==7){
-                    ret = FtpServiceImpl.Initialize(key);
+                    FtpServiceImpl.Initialize(key);
                 }else if(key.getStorageType()==8){
-                    ret = UFileImageupload.Initialize(key);
+                    S3Imageupload.Initialize(key);
                 }
             }
         }

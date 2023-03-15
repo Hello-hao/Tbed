@@ -16,7 +16,6 @@ public class KeysServiceImpl implements KeysService {
 
     @Autowired
     private KeysMapper keysMapper;
-
     @Autowired
     private NOSImageupload nOSImageupload;
     @Autowired
@@ -30,7 +29,7 @@ public class KeysServiceImpl implements KeysService {
     @Autowired
     private FtpServiceImpl ftpService;
     @Autowired
-    private UFileImageupload uFileImageupload;
+    private S3Imageupload s3Imageupload;
 
 
     @Override
@@ -67,7 +66,7 @@ public class KeysServiceImpl implements KeysService {
         }else if(key.getStorageType()==7){
             ret = ftpService.Initialize(key);
         }else if(key.getStorageType()==8){
-            ret = uFileImageupload.Initialize(key);
+            ret = s3Imageupload.Initialize(key);
         }else{
             Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
         }
