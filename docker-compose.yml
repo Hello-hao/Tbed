@@ -8,11 +8,12 @@ services:
       # 配置启动参数
       args:
         JAR_FILE: tbed.jar
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile-tbed
     ports:
       - "10088:10088"
       - "10089:10089"
     volumes:
+      - /HellohaoData/web:/hellohaotbed/webapps
       - /HellohaoData/:/HellohaoData/
     environment:
       # 环境变量, 在application.yml中读取

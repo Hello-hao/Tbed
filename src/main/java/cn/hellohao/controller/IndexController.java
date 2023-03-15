@@ -68,6 +68,7 @@ public class IndexController {
         jsonObject.put("links", cd.getString("links"));
         jsonObject.put("aboutinfo", cd.getString("aboutinfo"));
         jsonObject.put("logo", cd.getString("logo"));
+        jsonObject.put("webfavicons", cd.getString("webfavicons"));
         jsonObject.put("api", updateConfig.getApi());
         jsonObject.put("register", sysConfig.getRegister());
         jsonObject.put("isuse", appClient.getIsuse());

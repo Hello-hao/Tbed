@@ -219,23 +219,24 @@ public class AdminRootController {
     @ResponseBody
     public Msg updateStorage(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
-        Integer id = jsonObj.getInteger("id");
-        String AccessKey = jsonObj.getString("AccessKey");
-        String AccessSecret = jsonObj.getString("AccessSecret");
-        String Endpoint = jsonObj.getString("Endpoint");
-        String Bucketname = jsonObj.getString("Bucketname");
-        String RequestAddress = jsonObj.getString("RequestAddress");
-        Integer storageType = jsonObj.getInteger("storageType");
-        String keyname = jsonObj.getString("keyname");
-        Keys keys = new Keys();
-        keys.setId(id);
-        keys.setAccessKey(AccessKey);
-        keys.setAccessSecret(AccessSecret);
-        keys.setEndpoint(Endpoint);
-        keys.setBucketname(Bucketname);
-        keys.setRequestAddress(RequestAddress);
-        keys.setStorageType(storageType);
-        keys.setKeyname(keyname);
+//        Integer id = jsonObj.getInteger("id");
+//        String AccessKey = jsonObj.getString("AccessKey");
+//        String AccessSecret = jsonObj.getString("AccessSecret");
+//        String Endpoint = jsonObj.getString("Endpoint");
+//        String Bucketname = jsonObj.getString("Bucketname");
+//        String RequestAddress = jsonObj.getString("RequestAddress");
+//        Integer storageType = jsonObj.getInteger("storageType");
+//        String keyname = jsonObj.getString("keyname");
+//        Keys keys = new Keys();
+//        keys.setId(id);
+//        keys.setAccessKey(AccessKey);
+//        keys.setAccessSecret(AccessSecret);
+//        keys.setEndpoint(Endpoint);
+//        keys.setBucketname(Bucketname);
+//        keys.setRequestAddress(RequestAddress);
+//        keys.setStorageType(storageType);
+//        keys.setKeyname(keyname);
+        Keys keys = JSON.toJavaObject(jsonObj,Keys.class);
         Msg msg = keysService.updateKey(keys);
         return msg;
     }
