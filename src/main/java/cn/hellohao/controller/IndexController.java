@@ -43,9 +43,9 @@ public class IndexController {
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序");
-        model.addAttribute("version", "20230101");
+        model.addAttribute("version", "20230316");
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
-        model.addAttribute("links", "tbed.hellohao.cn");
+        model.addAttribute("links", "www.hellohao.cn");
         return "welcome";
     }
 

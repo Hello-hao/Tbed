@@ -198,6 +198,7 @@ public class ClientService {
                                 })
                         .start();
             } else {
+                imgMapper.deleimgForImgUid(imgObj.getImguid());
                 msg.setCode("5001");
                 msg.setInfo("上传服务内部错误");
                 return msg;
@@ -292,8 +293,8 @@ public class ClientService {
                                 imgreview.getSecretKey());
                 client.setConnectionTimeoutInMillis(5000);
                 client.setSocketTimeoutInMillis(30000);
-                org.json.JSONObject res = client.antiPorn(images.getImgurl());
-                res = client.imageCensorUserDefined(images.getImgurl(), EImgType.URL, null);
+//                org.json.JSONObject res = client.antiPorn(images.getImgurl());
+                org.json.JSONObject res = client.imageCensorUserDefined(images.getImgurl(), EImgType.URL, null);
                 com.alibaba.fastjson.JSONArray jsonArray =
                         JSON.parseArray("[" + res.toString() + "]");
                 for (Object o : jsonArray) {

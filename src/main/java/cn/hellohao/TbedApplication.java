@@ -41,17 +41,22 @@ public static void main(String[] args) {
     @Bean
     public static BeanFactoryPostProcessor dependsOnPostProcessor() {
         return bf -> {
-            // Let beans that need the database depend on the DatabaseStartupValidator
-            // like the JPA EntityManagerFactory or Flyway
-            String[] flyway = bf.getBeanNamesForType(FirstRun.class);
-            Stream.of(flyway)
-                    .map(bf::getBeanDefinition)
-                    .forEach(it -> it.setDependsOn("databaseStartupValidator"));
+            try{
+                // Let beans that need the database depend on the DatabaseStartupValidator
+                // like the JPA EntityManagerFactory or Flyway
+                String[] flyway = bf.getBeanNamesForType(FirstRun.class);
+                Stream.of(flyway)
+                        .map(bf::getBeanDefinition)
+                        .forEach(it -> it.setDependsOn("databaseStartupValidator"));
 
-            String[] jpa = bf.getBeanNamesForType(KeysMapper.class);
-            Stream.of(jpa)
-                    .map(bf::getBeanDefinition)
-                    .forEach(it -> it.setDependsOn("databaseStartupValidator"));
+                String[] jpa = bf.getBeanNamesForType(KeysMapper.class);
+                Stream.of(jpa)
+                        .map(bf::getBeanDefinition)
+                        .forEach(it -> it.setDependsOn("databaseStartupValidator"));
+            }catch (Exception e){
+                System.out.println("错错错");
+            }
+
         };
     }
     /**

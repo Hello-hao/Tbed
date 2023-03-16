@@ -11,6 +11,8 @@ import com.baidu.aip.contentcensor.EImgType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,8 @@ import java.util.*;
  */
 @Service
 public class UploadServicel {
+
+    private static Logger logger = LoggerFactory.getLogger(UploadServicel.class);
     @Autowired private UploadConfigMapper uploadConfigMapper;
     @Autowired private KeysMapper keysMapper;
     @Autowired private ImgMapper imgMapper;
@@ -200,6 +204,7 @@ public class UploadServicel {
                                 })
                         .start();
             } else {
+                imgMapper.deleimgForImgUid(imgObj.getImguid());
                 msg.setCode("5001");
                 msg.setInfo("上传服务内部错误");
                 return msg;
@@ -333,9 +338,9 @@ public class UploadServicel {
                                 imgreview.getSecretKey());
                 client.setConnectionTimeoutInMillis(5000);
                 client.setSocketTimeoutInMillis(30000);
-                org.json.JSONObject res = client.antiPorn(images.getImgurl());
-                res = client.imageCensorUserDefined(images.getImgurl(), EImgType.URL, null);
-                System.err.println("返回的鉴黄json:" + res.toString());
+//                org.json.JSONObject res = client.antiPorn(images.getImgurl());
+                org.json.JSONObject res = client.imageCensorUserDefined(images.getImgurl(), EImgType.URL, null);
+                logger.info("百度图像审核返回的JSON："+res.toString());
                 com.alibaba.fastjson.JSONArray jsonArray =
                         JSON.parseArray("[" + res.toString() + "]");
                 for (Object o : jsonArray) {
