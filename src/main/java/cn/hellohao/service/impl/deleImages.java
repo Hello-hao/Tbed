@@ -32,11 +32,11 @@ public class deleImages {
   @Autowired private KeysServiceImpl keysService;
   @Autowired private IRedisService iRedisService;
 
-  public Msg dele(String uuid, Integer... imgIds) {
+  public Msg dele(String uuid, Long... imgIds) {
     Msg msg = new Msg();
     MyProgress myProgress = new MyProgress();
     myProgress.InitializeDelImg();
-    List<Integer> ids = new ArrayList<>();
+    List<Long> ids = new ArrayList<>();
     int successCount = 0;
     List<String> errorIds = new ArrayList<>();
     for (int i = 0; i < imgIds.length; i++) {
@@ -111,9 +111,50 @@ public class deleImages {
     return msg;
   }
 
-  public static void main(String[] args) {
-    MyProgress myProgress = new MyProgress();
-    myProgress.InitializeDelImg();
-    System.out.println(JSONObject.toJSONString(myProgress));
+  public Msg dele2(String... imgIds) {
+    Msg msg = new Msg();
+    List<Long> ids = new ArrayList<>();
+    for (int i = 0; i < imgIds.length; i++) {
+      try {
+        Images image = imgService.selectByPrimaryKey(Long.valueOf(imgIds[i]));
+        Keys key = keysService.selectKeys(image.getSource());
+        if (key.getStorageType() == 1) {
+          nosImageupload.delNOS(key.getId(), image);
+        } else if (key.getStorageType() == 2) {
+          ossImageupload.delOSS(key.getId(), image);
+        } else if (key.getStorageType() == 3) {
+          ussImageupload.delUSS(key.getId(), image);
+        } else if (key.getStorageType() == 4) {
+          kodoImageupload.delKODO(key.getId(), image);
+        } else if (key.getStorageType() == 5) {
+          LocUpdateImg.deleteLOCImg(image);
+        } else if (key.getStorageType() == 6) {
+          cosImageupload.delCOS(key.getId(), image);
+        } else if (key.getStorageType() == 7) {
+          ftpService.delFTP(key.getId(), image);
+        } else if (key.getStorageType() == 8) {
+          s3Imageupload.deleS3(key.getId(), image);
+        } else {
+          System.err.println("未获取到对象存储参数，删除失败。");
+        }
+        try {
+          imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
+          imgTempService.delImgAndExp(image.getImguid());
+          imgService.deleimg(image.getId());
+          ids.add(image.getId());
+        } catch (Exception e) {
+          e.printStackTrace();
+          System.err.println(image.getImgname() + ":图片数据库记录时发生错误");
+        }
+      } catch (Exception e) {
+        System.err.println("删除的时候发生了一些异常");
+//        ids.add(Long.valueOf(imgIds[i]));
+        e.printStackTrace();
+      }
+    }
+    msg.setData(ids);
+    return msg;
   }
+
+
 }

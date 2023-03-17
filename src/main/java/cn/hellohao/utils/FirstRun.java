@@ -1,11 +1,15 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.config.GlobalConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -16,7 +20,7 @@ import java.util.UUID;
  */
 @Configuration
 public class FirstRun implements InitializingBean {
-
+    private static Logger logger = LoggerFactory.getLogger(FirstRun.class);
     @Value("${spring.datasource.username}")
     private String jdbcusername;
 
@@ -34,13 +38,12 @@ public class FirstRun implements InitializingBean {
     public void afterPropertiesSet() {
         if(!DockerWebHost.contains("null")){
             contentToTxt("/hellohaotbed/webapps/hellohao/config.json", "{\"serverHost\": \""+DockerWebHost+"\"}");
-            System.out.println("====>"+DockerWebHost);
         }
         isWindows();
         RunSqlScript.USERNAME = jdbcusername;
         RunSqlScript.PASSWORD = jdbcpass;
         RunSqlScript.DBURL = jdbcurl;
-        Print.Normal("正在校验数据库参数...");
+        logger.info("正在校验数据库参数...");
         RunSqlScript.RunInsert(dynamic);
         RunSqlScript.RunInsert(compressed);
 
@@ -109,7 +112,6 @@ public class FirstRun implements InitializingBean {
             Print.Normal("Add table.confdata");
         }
 //        RunSqlScript.RunInsert(inddx_md5key);
-        RunSqlScript.RunInsert("UPDATE tbed.`keys` SET `Endpoint` = '0' WHERE `id` = 8");
         RunSqlScript.RunInsert("ALTER TABLE tbed.`user` MODIFY id int auto_increment;");
         Print.Normal("Stage success");
 

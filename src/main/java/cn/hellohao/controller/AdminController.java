@@ -472,9 +472,9 @@ public class AdminController {
             msg.setInfo("为获取到图像信息");
             return msg;
         }
-        List<Integer> imgIds = new ArrayList<Integer>();
+        List<Long> imgIds = new ArrayList<Long>();
         for (int i = 0; i < split.length; i++) {
-            Integer imgid = Integer.valueOf(split[i]);
+            Long imgid = Long.valueOf(split[i]);
             Images image = imgService.selectByPrimaryKey(imgid);
             if (!subject.hasRole("admin")) {
                 if (!image.getUserid().equals(user.getId())) {
@@ -486,7 +486,7 @@ public class AdminController {
         if (imgIds.size() == 0) {
             msg.setCode("110404");
         } else {
-            deleimages.dele(uuid, imgIds.stream().toArray(Integer[]::new));
+            deleimages.dele(uuid, imgIds.stream().toArray(Long[]::new));
             msg.setCode("200");
         }
         return msg;

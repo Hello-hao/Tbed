@@ -26,7 +26,7 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer deleimg(Integer id) {
+    public Integer deleimg(Long id) {
         // TODO Auto-generated method stub
         return imgMapper.deleimg(id);
     }
@@ -36,7 +36,7 @@ public class ImgServiceImpl implements ImgService {
         return imgMapper.deleimgForImgUid(imguid);
     }
 
-    public Images selectByPrimaryKey(Integer id) {
+    public Images selectByPrimaryKey(Long id) {
         return imgMapper.selectByPrimaryKey(id);
     }
 
@@ -63,7 +63,7 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
-    public Integer deleall(Integer id) {
+    public Integer deleall(Long id) {
         return imgMapper.deleall(id);
     }
 

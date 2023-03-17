@@ -125,18 +125,20 @@
 	</appender>
 
 	<!--name包下的类的日志输出-->
-	<logger name="cn.hellohao" additivity="true" level="DEBUG" >
+	<logger name="cn.hellohao" additivity="false" level="DEBUG" >
 		<appender-ref ref="CONSOLE" />
-		<!--		<appender-ref ref="INFO" />-->
+		<appender-ref ref="INFO" />
+		<appender-ref ref="DEBUG" />
+		<appender-ref ref="ERROR" />
+	</logger>
+	<logger name="proxy.system.log" additivity="false">
+		<appender-ref ref="INFO" />
+		<appender-ref ref="DEBUG" />
+		<appender-ref ref="ERROR" />
 	</logger>
 
 
 	<!-- root级别   DEBUG -->
-	<root level="DEBUG">
-		<!-- 控制台输出 -->
-		<!--		<appender-ref ref="CONSOLE"/>-->
-		<!-- 不管什么包下的日志都输出文件 -->
-		<appender-ref ref="DEBUG"/>
-		<appender-ref ref="ERROR" />
-	</root>
+<!--	<root level="DEBUG">-->
+<!--	</root>-->
 </configuration>

@@ -4,6 +4,8 @@ import cn.hellohao.auth.filter.SubjectFilter;
 import cn.hellohao.dao.KeysMapper;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.utils.Print;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -23,6 +25,7 @@ import java.util.List;
 @Order(2)
 public class InitializationStorage implements CommandLineRunner {
 
+    private static Logger logger = LoggerFactory.getLogger(InitializationStorage.class);
     @Value("${CROS_ALLOWED_ORIGINS}")
     private String allowedOrigins;
 

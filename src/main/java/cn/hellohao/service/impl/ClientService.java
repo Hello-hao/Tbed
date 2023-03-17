@@ -3,12 +3,8 @@ package cn.hellohao.service.impl;
 import cn.hellohao.dao.*;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.ImgTempService;
-import cn.hellohao.service.SysConfigService;
 import cn.hellohao.utils.*;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baidu.aip.contentcensor.AipContentCensor;
-import com.baidu.aip.contentcensor.EImgType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +24,6 @@ import java.util.*;
 @Service
 public class ClientService {
 
-    @Autowired private SysConfigService sysConfigService;
     @Autowired private UserMapper userMapper;
     @Autowired private KeysMapper keysMapper;
     @Autowired private UploadConfigMapper uploadConfigMapper;
@@ -36,6 +31,7 @@ public class ClientService {
     @Autowired private ImgreviewMapper imgreviewMapper;
     @Autowired private ImgTempService imgTempService;
     @Autowired private GetSource getSource;
+    @Autowired private ImgViolationJudgeServiceImpl imgViolationJudgeService;
 
     public Msg uploadImg(
             HttpServletRequest request, MultipartFile multipartFile, String email, String pass,Integer setday) {
@@ -164,16 +160,6 @@ public class ClientService {
                 List<Images> images = imgMapper.selectImgUrlByMD5(md5key);
                 if (images.size() > 0) {
                     jsonObject.put("url", images.get(0).getImgurl());
-//                    Keys imgFromKey = keysService.selectKeys(images.get(0).getSource());
-//                    if (imgFromKey.getStorageType().equals(5)) {
-//                        jsonObject.put(
-//                                "url",
-//                                imgFromKey.getRequestAddress()
-//                                        + "/ota/"
-//                                        + images.get(0).getImgname());
-//                    } else {
-//                        jsonObject.put("url", images.get(0).getImgurl());
-//                    }
                     jsonObject.put("name", file.getName());
                     jsonObject.put("size", images.get(0).getSizes());
                     msg.setData(jsonObject);
@@ -192,11 +178,7 @@ public class ClientService {
                 jsonObject.put("url", imgObj.getImgurl());
                 jsonObject.put("name", imgObj.getImgname());
                 jsonObject.put("size", imgObj.getSizes());
-                new Thread(
-                                () -> {
-                                    LegalImageCheck(imgObj);
-                                })
-                        .start();
+                imgViolationJudgeService.LegalImageCheck(imgObj,key);
             } else {
                 imgMapper.deleimgForImgUid(imgObj.getImguid());
                 msg.setCode("5001");
@@ -266,67 +248,4 @@ public class ClientService {
         return msg;
     }
 
-    // 图片鉴黄
-    private synchronized void LegalImageCheck(Images images) {
-        Imgreview imgreview = null;
-        try {
-            imgreview = imgreviewMapper.selectByusing(1);
-        } catch (Exception e) {
-            Print.warning("获取鉴别程序的时候发生错误");
-            e.printStackTrace();
-        }
-        if(imgreview==null){
-            System.out.println("没有找到可用的图像鉴别进程");
-        }else{
-            LegalImageCheckForBaiDu(imgreview, images);
-        }
-
-    }
-
-    private void LegalImageCheckForBaiDu(Imgreview imgreview, Images images) {
-        if (imgreview.getUsing() == 1) {
-            try {
-                AipContentCensor client =
-                        new AipContentCensor(
-                                imgreview.getAppId(),
-                                imgreview.getApiKey(),
-                                imgreview.getSecretKey());
-                client.setConnectionTimeoutInMillis(5000);
-                client.setSocketTimeoutInMillis(30000);
-//                org.json.JSONObject res = client.antiPorn(images.getImgurl());
-                org.json.JSONObject res = client.imageCensorUserDefined(images.getImgurl(), EImgType.URL, null);
-                com.alibaba.fastjson.JSONArray jsonArray =
-                        JSON.parseArray("[" + res.toString() + "]");
-                for (Object o : jsonArray) {
-                    JSONObject jsonObject = (JSONObject) o;
-                    com.alibaba.fastjson.JSONArray data = jsonObject.getJSONArray("data");
-                    Integer conclusionType = jsonObject.getInteger("conclusionType");
-                    if (conclusionType != null) {
-                        if (conclusionType == 2) {
-                            for (Object datum : data) {
-                                JSONObject imgdata = (JSONObject) datum;
-                                if (imgdata.getInteger("type") == 1) {
-                                    Images img = new Images();
-                                    img.setImgname(images.getImgname());
-                                    img.setViolation("1[1]");
-                                    imgMapper.setImg(img);
-                                    Imgreview imgv = new Imgreview();
-                                    imgv.setId(1);
-                                    Integer count = imgreview.getCount();
-                                    System.out.println("违法图片总数：" + count);
-                                    imgv.setCount(count + 1);
-                                    imgreviewMapper.updateByPrimaryKeySelective(imgv);
-                                    System.err.println("存在非法图片，进行处理操作");
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                System.out.println("图像鉴黄线程执行过程中出现异常");
-                e.printStackTrace();
-            }
-        }
-    }
 }

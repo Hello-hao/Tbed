@@ -42,10 +42,10 @@ public class IndexController {
 
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
-        model.addAttribute("name", "服务端程序");
-        model.addAttribute("version", "20230316");
+        model.addAttribute("name", "服务端程序(开源版)");
+        model.addAttribute("version", "20230318");
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
-        model.addAttribute("links", "www.hellohao.cn");
+        model.addAttribute("links", "https://github.com/Hello-hao/tbed");
         return "welcome";
     }
 
