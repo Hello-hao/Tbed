@@ -112,17 +112,17 @@
 	</appender>
 
 	<!--设置一个向上传递的appender,所有级别的日志都会输出-->
-	<appender name="app" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-			<fileNamePattern>${log.log_dir}/app/%d{yyyy-MM-dd}/app_${log.log_name}-%i.log</fileNamePattern>
-			<maxHistory>${log.maxHistory}</maxHistory>
-			<MaxFileSize>${log.maxSize}</MaxFileSize>
-			<cleanHistoryOnStart>true</cleanHistoryOnStart>
-		</rollingPolicy>
-		<encoder>
-			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger - %msg%n</pattern>
-		</encoder>
-	</appender>
+<!--	<appender name="app" class="ch.qos.logback.core.rolling.RollingFileAppender">-->
+<!--		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">-->
+<!--			<fileNamePattern>${log.log_dir}/app/%d{yyyy-MM-dd}/app_${log.log_name}-%i.log</fileNamePattern>-->
+<!--			<maxHistory>${log.maxHistory}</maxHistory>-->
+<!--			<MaxFileSize>${log.maxSize}</MaxFileSize>-->
+<!--			<cleanHistoryOnStart>true</cleanHistoryOnStart>-->
+<!--		</rollingPolicy>-->
+<!--		<encoder>-->
+<!--			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level] %logger - %msg%n</pattern>-->
+<!--		</encoder>-->
+<!--	</appender>-->
 
 	<!--name包下的类的日志输出-->
 	<logger name="cn.hellohao" additivity="false" level="DEBUG" >
