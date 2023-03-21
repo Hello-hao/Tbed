@@ -25,7 +25,7 @@ import java.util.List;
 @RequestMapping("/admin/root")
 public class AdminRootController {
     @Autowired
-    private ConfigService configService;
+    private ConfdataService confdataService;
     @Autowired
     private KeysService keysService;
     @Autowired
@@ -196,7 +196,7 @@ public class AdminRootController {
             } else if (key.getStorageType() == 7) {
                 ret = FtpServiceImpl.Initialize(key);
             } else if (key.getStorageType() == 8) {
-                ret = UFileImageupload.Initialize(key);
+                ret = S3Imageupload.Initialize(key);
             }
             Long l = imgService.getsourcememory(keyId);
             jsonObject.put("isok", ret);
@@ -219,23 +219,24 @@ public class AdminRootController {
     @ResponseBody
     public Msg updateStorage(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
-        Integer id = jsonObj.getInteger("id");
-        String AccessKey = jsonObj.getString("AccessKey");
-        String AccessSecret = jsonObj.getString("AccessSecret");
-        String Endpoint = jsonObj.getString("Endpoint");
-        String Bucketname = jsonObj.getString("Bucketname");
-        String RequestAddress = jsonObj.getString("RequestAddress");
-        Integer storageType = jsonObj.getInteger("storageType");
-        String keyname = jsonObj.getString("keyname");
-        Keys keys = new Keys();
-        keys.setId(id);
-        keys.setAccessKey(AccessKey);
-        keys.setAccessSecret(AccessSecret);
-        keys.setEndpoint(Endpoint);
-        keys.setBucketname(Bucketname);
-        keys.setRequestAddress(RequestAddress);
-        keys.setStorageType(storageType);
-        keys.setKeyname(keyname);
+//        Integer id = jsonObj.getInteger("id");
+//        String AccessKey = jsonObj.getString("AccessKey");
+//        String AccessSecret = jsonObj.getString("AccessSecret");
+//        String Endpoint = jsonObj.getString("Endpoint");
+//        String Bucketname = jsonObj.getString("Bucketname");
+//        String RequestAddress = jsonObj.getString("RequestAddress");
+//        Integer storageType = jsonObj.getInteger("storageType");
+//        String keyname = jsonObj.getString("keyname");
+//        Keys keys = new Keys();
+//        keys.setId(id);
+//        keys.setAccessKey(AccessKey);
+//        keys.setAccessSecret(AccessSecret);
+//        keys.setEndpoint(Endpoint);
+//        keys.setBucketname(Bucketname);
+//        keys.setRequestAddress(RequestAddress);
+//        keys.setStorageType(storageType);
+//        keys.setKeyname(keyname);
+        Keys keys = JSON.toJavaObject(jsonObj,Keys.class);
         Msg msg = keysService.updateKey(keys);
         return msg;
     }
@@ -260,7 +261,7 @@ public class AdminRootController {
         User u = (User) subject.getPrincipal();
         try {
             UploadConfig uploadConfig = uploadConfigService.getUpdateConfig();
-            Config config = configService.getSourceype();
+            final Confdata confdata = confdataService.selectConfdata("config");
             SysConfig sysConfig = sysConfigService.getstate();
             AppClient appClientData = appClientService.getAppClientData("app");
             uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory()) / 1024 / 1024));
@@ -268,7 +269,7 @@ public class AdminRootController {
             uploadConfig.setFilesizetourists(Long.toString(Long.valueOf(uploadConfig.getFilesizetourists()) / 1024 / 1024));
             uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser()) / 1024 / 1024));
             jsonObject.put("uploadConfig", uploadConfig);
-            jsonObject.put("config", config);
+            jsonObject.put("config", JSONObject.parseObject(confdata.getJsondata()));
             jsonObject.put("sysConfig", sysConfig);
             jsonObject.put("appClient", appClientData);
             msg.setData(jsonObject);
@@ -296,7 +297,7 @@ public class AdminRootController {
                 msg.setCode("500");
                 return msg;
             }
-            Config config = JSON.toJavaObject((JSON) jsonObject.get("config"), Config.class);
+//            Config config = JSON.toJavaObject((JSON) jsonObject.get("config"), Config.class);
             SysConfig sysConfig = JSON.toJavaObject((JSON) jsonObject.get("sysConfig"), SysConfig.class);
             AppClient appClient = JSON.toJavaObject((JSON) jsonObject.get("appClient"), AppClient.class);
             if (Integer.valueOf(vm) == -1) {
@@ -308,7 +309,10 @@ public class AdminRootController {
             uploadConfig.setUsermemory(Long.toString(Long.valueOf(uploadConfig.getUsermemory()) * 1024 * 1024));
             uploadConfig.setFilesizeuser(Long.toString(Long.valueOf(uploadConfig.getFilesizeuser()) * 1024 * 1024));
             uploadConfigService.setUpdateConfig(uploadConfig);
-            configService.setSourceype(config);
+            Confdata confdata = new Confdata();
+            confdata.setKey("config");
+            confdata.setJsondata(jsonObject.getJSONObject("config").toJSONString());
+            confdataService.updateConfdata(confdata);
             sysConfigService.setstate(sysConfig);
             if (!appClient.getIsuse().equals("on")) {
                 appClient.setIsuse("off");

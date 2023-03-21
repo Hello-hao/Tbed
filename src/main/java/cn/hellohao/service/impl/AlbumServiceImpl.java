@@ -1,7 +1,6 @@
 package cn.hellohao.service.impl;
 
 import cn.hellohao.dao.AlbumMapper;
-import cn.hellohao.dao.ConfigMapper;
 import cn.hellohao.dao.ImgAndAlbumMapper;
 import cn.hellohao.dao.ImgMapper;
 import cn.hellohao.exception.CodeException;
@@ -25,7 +24,6 @@ import java.util.List;
 public class AlbumServiceImpl implements AlbumService {
   @Autowired AlbumMapper albumMapper;
   @Autowired ImgAndAlbumMapper andAlbumMapper;
-  @Autowired ConfigMapper configMapper;
   @Autowired ImgMapper imgMapper;
 
   @Override

@@ -27,7 +27,7 @@
                     WHEN storageType=5 THEN '本地'
                     WHEN storageType=6 THEN '腾讯云'
                     WHEN storageType=7 THEN 'FTP'
-                    WHEN storageType=8 THEN 'UFile'
+                    WHEN storageType=8 THEN 'S3协议'
                     ELSE  '未知' END AS storageName,
                keyname
         FROM `keys`  GROUP BY storageType,id,storageName,keyname
@@ -49,7 +49,9 @@
         Endpoint = #{Endpoint},
         Bucketname = #{Bucketname},
         RequestAddress = #{RequestAddress},
-        keyname = #{keyname}
+        keyname = #{keyname},
+        Region = #{Region},
+        RootPath = #{RootPath}
         WHERE
             storageType = #{storageType}
     </update>

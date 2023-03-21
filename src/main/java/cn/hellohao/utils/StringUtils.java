@@ -1,64 +1,6 @@
 package cn.hellohao.utils;
 
-import cn.hellohao.pojo.Keys;
-
-import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.Map;
-
 public class StringUtils {
-    //此方法目前未使用2020-04-06
-    public static Boolean doNull(Integer sourcekey,Keys k) {
-        if(sourcekey==1){
-            if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
-                    && k.getBucketname()!=null && k.getRequestAddress()!=null ){
-                if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
-                        && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ){
-                    return true;
-                }
-            }
-        }else if(sourcekey==2){
-            if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
-                    && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
-                if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
-                        && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
-                    return true;
-                }
-            }
-        }else if(sourcekey==3){
-            if(k.getEndpoint()!=null && k.getAccessSecret()!=null
-                    && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
-                if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("")
-                        && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
-                    return true;
-                }
-            }
-        }else if(sourcekey==4){
-            if (k.getEndpoint() != null && k.getAccessSecret() != null && k.getEndpoint() != null
-                    && k.getBucketname() != null && k.getRequestAddress() != null) {
-                if (!k.getEndpoint().equals("") && !k.getAccessSecret() .equals("") && !k.getEndpoint() .equals("")
-                        && !k.getBucketname() .equals("") && !k.getRequestAddress().equals("")) {
-                    return true;
-                }
-            }
-        }else if(sourcekey==6){
-            if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null
-                    && k.getBucketname()!=null && k.getRequestAddress()!=null ) {
-                if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("")
-                        && !k.getBucketname().equals("") && !k.getRequestAddress().equals("") ) {
-                    return true;
-                }
-            }
-        }else if(sourcekey==7){
-            if(k.getEndpoint()!=null && k.getAccessSecret()!=null && k.getEndpoint()!=null && k.getRequestAddress()!=null ) {
-                if(!k.getEndpoint().equals("") && !k.getAccessSecret().equals("") && !k.getEndpoint().equals("") && !k.getRequestAddress().equals("") ) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     /**
      * 移除 URL 中的第一个 '/'
      * @return 如 path = '/folder1/file1', 返回 'folder1/file1'

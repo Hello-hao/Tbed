@@ -1,12 +1,11 @@
 package cn.hellohao.dao;
 
-import java.util.List;
-
+import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import cn.hellohao.pojo.Images;
+import java.util.List;
 
 @Mapper
 public interface ImgMapper {
@@ -17,18 +16,18 @@ public interface ImgMapper {
 
     Integer countimg(@Param("userid") Integer userid);
 
-    Integer deleimg(@Param("id") Integer id);
+    Integer deleimg(@Param("id") Long id);
 
     Integer deleimgForImgUid(@Param("imguid") String imguid);
 
-    Images selectByPrimaryKey(@Param("id") Integer id);
+    Images selectByPrimaryKey(@Param("id") Long id);
 
     Integer counts(@Param("userid") Integer userid);
 
     Integer setImg(Images images);
 
     Integer deleimgname(@Param("imgname") String imgname);
-    Integer deleall(@Param("id") Integer id);
+    Integer deleall(@Param("id") Long id);
 
     List<Images> gettimeimg(@Param("time") String time);
 

@@ -5,8 +5,10 @@ import cn.hellohao.auth.token.JWTUtil;
 import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
-import cn.hellohao.utils.*;
-import cn.hutool.captcha.ShearCaptcha;
+import cn.hellohao.utils.Base64Encryption;
+import cn.hellohao.utils.NewSendEmail;
+import cn.hellohao.utils.Print;
+import cn.hellohao.utils.SetText;
 import cn.hutool.core.util.HexUtil;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.SecurityUtils;
@@ -35,7 +37,7 @@ public class UserController {
     @Autowired
     private EmailConfigService emailConfigService;
     @Autowired
-    private ConfigService configService;
+    private ConfdataService confdataService;
     @Autowired
     private UploadConfigService uploadConfigService;
     @Autowired
@@ -109,14 +111,15 @@ public class UserController {
             user.setUsername(username);
             user.setPassword(password);
             user.setToken(UUID.randomUUID().toString().replace("-", ""));
-            Config config = configService.getSourceype();
+            final Confdata confdata = confdataService.selectConfdata("config");
+            JSONObject jsonObject = JSONObject.parseObject(confdata.getJsondata());
             Integer type = 0;
             if(emailConfig.getUsing()==1){
                 user.setIsok(0);
                 //注册完发激活链接
                 Thread thread = new Thread() {
                     public void run() {
-                        Integer a = NewSendEmail.sendEmail(emailConfig,user.getUsername(), uid, user.getEmail(),config);
+                        Integer a = NewSendEmail.sendEmail(emailConfig,user.getUsername(), uid, user.getEmail(),jsonObject);
                     }
                 };
                 thread.start();
@@ -222,7 +225,6 @@ public class UserController {
 
     @RequestMapping(value = "/activation", method = RequestMethod.GET)
     public String activation(Model model, HttpServletRequest request, HttpSession session, String activation, String username) {
-        Config config = configService.getSourceype();
         Integer ret = 0;
         User u2 = new User();
         u2.setUid(activation);
@@ -288,10 +290,11 @@ public class UserController {
                         msg.setInfo("当前用户已被冻结，禁止操作");
                         return msg;
                     }
-                    Config config = configService.getSourceype();
+                    final Confdata confdata = confdataService.selectConfdata("config");
+                    JSONObject jsonObject = JSONObject.parseObject(confdata.getJsondata());
                     Thread thread = new Thread() {
                         public void run() {
-                            Integer a = NewSendEmail.sendEmailFindPass(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),config);
+                            Integer a = NewSendEmail.sendEmailFindPass(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),jsonObject);
                         }
                     };
                     thread.start();

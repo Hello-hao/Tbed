@@ -1,14 +1,15 @@
 package cn.hellohao.utils;
 
-import cn.hellohao.pojo.Config;
 import cn.hellohao.pojo.EmailConfig;
 import cn.hellohao.pojo.Msg;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.HexUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.mitchellbosecke.pebble.PebbleEngine;
 import com.mitchellbosecke.pebble.template.PebbleTemplate;
 import io.github.biezhi.ome.OhMyEmail;
 import org.springframework.core.io.ClassPathResource;
+
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.UUID;
 
 public class NewSendEmail {
 
-    public static Integer sendEmail(EmailConfig emailConfig, String username, String uid, String toEmail,  Config config) {
+    public static Integer sendEmail(EmailConfig emailConfig, String username, String uid, String toEmail,  JSONObject jsonObject) {
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
@@ -33,8 +34,8 @@ public class NewSendEmail {
 //        OhMyEmail.config(OhMyEmail.SMTP_QQ(false), "xxxx@qq.com", "your@password");
         OhMyEmail.config(props, emailConfig.getEmails(), emailConfig.getEmailkey());
 
-        String webname=config.getWebname();
-        String domain = config.getDomain();
+        String webname=jsonObject.getString("webname");
+        String domain = jsonObject.getString("domain");
         try {
             //生成模板
             PebbleEngine engine = new PebbleEngine.Builder().build();
@@ -90,7 +91,7 @@ public class NewSendEmail {
     }
 
 
-    public static Integer sendEmailFindPass(EmailConfig emailConfig,String username, String uid, String toEmail,  Config config) {
+    public static Integer sendEmailFindPass(EmailConfig emailConfig,String username, String uid, String toEmail,  JSONObject jsonObject) {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.ssl.enable", "true");
@@ -103,8 +104,8 @@ public class NewSendEmail {
         // 配置一次即可，可以配置为静态方法
 //        OhMyEmail.config(OhMyEmail.SMTP_QQ(false), "xxxx@qq.com", "your@password");
         OhMyEmail.config(props, emailConfig.getEmails(), emailConfig.getEmailkey());
-        String webname=config.getWebname();
-        String domain = config.getDomain();
+        String webname=jsonObject.getString("webname");
+        String domain = jsonObject.getString("domain");
         String new_pass = UUID.randomUUID().toString().replace("-", "").toLowerCase().substring(0,10);
         try {
             //生成模板

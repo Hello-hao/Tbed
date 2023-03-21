@@ -121,7 +121,7 @@
         select count(*) from imgdata where userid = #{userid}
     </select>
 
-    <delete id="deleimg" parameterType="integer">
+    <delete id="deleimg" parameterType="Long">
         DELETE FROM imgdata WHERE id=#{id}
     </delete>
 
@@ -129,7 +129,7 @@
         DELETE FROM imgdata WHERE imguid = #{imguid}
     </delete>
 
-    <select id="selectByPrimaryKey" parameterType="integer" resultType="cn.hellohao.pojo.Images">
+    <select id="selectByPrimaryKey" parameterType="Long" resultType="cn.hellohao.pojo.Images">
         select * from imgdata where id = #{id}
     </select>
 
@@ -154,6 +154,10 @@
                  <if test="idname!=null and idname!=''">
                      idname=#{idname}
                  </if>
+                 <if test="violation!=null and violation!=''">
+                     violation=#{violation}
+                 </if>
+
              </set>
               where imgname=#{imgname}
     </update>
@@ -163,7 +167,7 @@
     </delete>
 
 <!--    批量删除-->
-    <delete id="deleall" parameterType="integer">
+    <delete id="deleall" parameterType="Long">
         DELETE FROM imgdata WHERE id = #{id}
     </delete>
 

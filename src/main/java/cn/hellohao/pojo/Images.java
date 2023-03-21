@@ -4,7 +4,7 @@ public class Images {
     // 默认的时间字符串格式
 
     //id, imgname, imgurl, userid
-    private Integer id;
+    private Long id;
     private String imgname;
     private String imgurl;
     private Integer userid;
@@ -52,7 +52,7 @@ public class Images {
         this.imguid = imguid;
     }
 
-    public Images(Integer id, String imgname, String imgurl, Integer userid, String sizes, String abnormal, Integer source,
+    public Images(Long id, String imgname, String imgurl, Integer userid, String sizes, String abnormal, Integer source,
                   Integer imgtype, String updatetime, String username, Integer storageType, String starttime, String stoptime,
                   String explains, String md5key, String notes, String useridlist, String imguid, String albumtitle,
                   String password, Integer selecttype,Long countNum,Integer monthNum,String yyyy,
@@ -93,11 +93,11 @@ public class Images {
 
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -4,13 +4,12 @@ import cn.hellohao.dao.*;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.ImgTempService;
 import cn.hellohao.utils.*;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baidu.aip.contentcensor.AipContentCensor;
-import com.baidu.aip.contentcensor.EImgType;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,13 +27,16 @@ import java.util.*;
  */
 @Service
 public class UploadServicel {
+
+    private static Logger logger = LoggerFactory.getLogger(UploadServicel.class);
     @Autowired private UploadConfigMapper uploadConfigMapper;
     @Autowired private KeysMapper keysMapper;
     @Autowired private ImgMapper imgMapper;
     @Autowired private UserMapper userMapper;
-    @Autowired private ImgreviewMapper imgreviewMapper;
     @Autowired private ImgTempService imgTempService;
     @Autowired private GetSource getSource;
+    @Autowired deleImages deleimages;
+    @Autowired ImgViolationJudgeServiceImpl imgViolationJudgeService;
 
     public Msg uploadForLoc(
             HttpServletRequest request,
@@ -194,12 +196,14 @@ public class UploadServicel {
                 jsonObject.put("url", imgObj.getImgurl());
                 jsonObject.put("name", imgObj.getImgname());
                 jsonObject.put("imguid", imgObj.getImguid());
-                new Thread(
-                                () -> {
-                                    LegalImageCheck(imgObj);
-                                })
-                        .start();
+                imgViolationJudgeService.LegalImageCheck(imgObj,key);
+//                new Thread(
+//                                () -> {
+//                                    LegalImageCheck(imgObj);
+//                                })
+//                        .start();
             } else {
+                imgMapper.deleimgForImgUid(imgObj.getImguid());
                 msg.setCode("5001");
                 msg.setInfo("上传服务内部错误");
                 return msg;
@@ -308,70 +312,6 @@ public class UploadServicel {
         return msg;
     }
 
-    private synchronized void LegalImageCheck(Images images) {
-        System.out.println("非法图像鉴别进程启动");
-        Imgreview imgreview = null;
-        try {
-            imgreview = imgreviewMapper.selectByusing(1);
-        } catch (Exception e) {
-            Print.warning("获取鉴别程序的时候发生错误");
-            e.printStackTrace();
-        }
-        if (null != imgreview) {
-            LegalImageCheckForBaiDu(imgreview, images);
-        }
-    }
-
-    private void LegalImageCheckForBaiDu(Imgreview imgreview, Images images) {
-        System.out.println("非法图像鉴别进程启动-BaiDu");
-        if (imgreview.getUsing() == 1) {
-            try {
-                AipContentCensor client =
-                        new AipContentCensor(
-                                imgreview.getAppId(),
-                                imgreview.getApiKey(),
-                                imgreview.getSecretKey());
-                client.setConnectionTimeoutInMillis(5000);
-                client.setSocketTimeoutInMillis(30000);
-                org.json.JSONObject res = client.antiPorn(images.getImgurl());
-                res = client.imageCensorUserDefined(images.getImgurl(), EImgType.URL, null);
-                System.err.println("返回的鉴黄json:" + res.toString());
-                com.alibaba.fastjson.JSONArray jsonArray =
-                        JSON.parseArray("[" + res.toString() + "]");
-                for (Object o : jsonArray) {
-                    com.alibaba.fastjson.JSONObject jsonObject =
-                            (com.alibaba.fastjson.JSONObject) o;
-                    com.alibaba.fastjson.JSONArray data = jsonObject.getJSONArray("data");
-                    Integer conclusionType = jsonObject.getInteger("conclusionType");
-                    if (conclusionType != null) {
-                        if (conclusionType == 2) {
-                            for (Object datum : data) {
-                                com.alibaba.fastjson.JSONObject imgdata =
-                                        (com.alibaba.fastjson.JSONObject) datum;
-                                if (imgdata.getInteger("type") == 1) {
-                                    Images img = new Images();
-                                    img.setImgname(images.getImgname());
-                                    img.setViolation("1[1]");
-                                    imgMapper.setImg(img);
-                                    Imgreview imgv = new Imgreview();
-                                    imgv.setId(1);
-                                    Integer count = imgreview.getCount();
-                                    System.out.println("违法图片总数：" + count);
-                                    imgv.setCount(count + 1);
-                                    imgreviewMapper.updateByPrimaryKeySelective(imgv);
-                                    System.err.println("存在非法图片，进行处理操作");
-                                }
-                            }
-                        }
-                    }
-                }
-
-            } catch (Exception e) {
-                System.out.println("图像鉴黄线程执行过程中出现异常");
-                e.printStackTrace();
-            }
-        }
-    }
 
     // 计算时间
     public static String plusDay(int setday) {

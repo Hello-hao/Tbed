@@ -7,7 +7,7 @@ public class MyProgress {
     private int delSuccessCount=0;//已经成功的个数
     private List<String> delErrorImgListt =  new ArrayList<>();//已经失败的图片
     private int delOCT=0; //控制开关
-    private List<Integer> delSuccessImgList =  new ArrayList<>(); //删除成功的图片
+    private List<Long> delSuccessImgList =  new ArrayList<>(); //删除成功的图片
 
     public void InitializeDelImg(){
         this.delSuccessCount=0;//已经成功的个数
@@ -19,7 +19,7 @@ public class MyProgress {
     public MyProgress() {
     }
 
-    public MyProgress(int delSuccessCount, List<String> delErrorImgListt, int delOCT, List<Integer> delSuccessImgList) {
+    public MyProgress(int delSuccessCount, List<String> delErrorImgListt, int delOCT, List<Long> delSuccessImgList) {
         this.delSuccessCount = delSuccessCount;
         this.delErrorImgListt = delErrorImgListt;
         this.delOCT = delOCT;
@@ -50,11 +50,11 @@ public class MyProgress {
         this.delOCT = delOCT;
     }
 
-    public List<Integer> getDelSuccessImgList() {
+    public List<Long> getDelSuccessImgList() {
         return delSuccessImgList;
     }
 
-    public void setDelSuccessImgList(List<Integer> delSuccessImgList) {
+    public void setDelSuccessImgList(List<Long> delSuccessImgList) {
         this.delSuccessImgList = delSuccessImgList;
     }
 

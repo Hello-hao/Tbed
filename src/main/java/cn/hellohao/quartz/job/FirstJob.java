@@ -32,7 +32,7 @@ public class FirstJob {
 	@Autowired
 	private USSImageupload ussImageupload;
 	@Autowired
-	private UFileImageupload uFileImageupload;
+	private S3Imageupload s3Imageupload;
 	@Autowired
 	private FtpServiceImpl ftpService;
 	@Autowired
@@ -77,7 +77,7 @@ public class FirstJob {
 				}else if(keys.getStorageType()==7){
 					firstJob.ftpService.delFTP(keys.getId(), images);
 				}else if(keys.getStorageType()==8){
-					firstJob.uFileImageupload.delUFile(keys.getId(), images);
+					firstJob.s3Imageupload.deleS3(keys.getId(), images);
 				}else{
 					System.err.println("未获取到对象存储参数，上传失败。");
 				}

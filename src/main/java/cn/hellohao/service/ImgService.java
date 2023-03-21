@@ -1,13 +1,11 @@
 package cn.hellohao.service;
 
 
-import java.util.List;
-
-import cn.hellohao.pojo.User;
-import org.apache.ibatis.annotations.Param;
-
 import cn.hellohao.pojo.Images;
+import cn.hellohao.pojo.User;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface ImgService {
@@ -15,13 +13,13 @@ public interface ImgService {
 
     Integer insertImgData(Images images);
 
-    Integer deleimg(Integer id);
+    Integer deleimg(Long id);
 
     Integer deleimgForImgUid(String imguid);
 
     Integer countimg(Integer userid);
 
-    Images selectByPrimaryKey(Integer id);
+    Images selectByPrimaryKey(Long id);
 
     Integer counts(Integer userid);
 
@@ -29,7 +27,7 @@ public interface ImgService {
 
     Integer deleimgname(String imgname);
 
-    Integer deleall(Integer id);
+    Integer deleall(Long id);
 
     List<Images> gettimeimg(String time);
 
