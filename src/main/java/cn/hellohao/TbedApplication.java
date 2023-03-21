@@ -52,7 +52,6 @@ public static void main(String[] args) {
             Stream.of(jpa)
                     .map(bf::getBeanDefinition)
                     .forEach(it -> it.setDependsOn("databaseStartupValidator"));
-
         };
     }
     /**
