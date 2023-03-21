@@ -2,19 +2,16 @@ FROM openjdk:8
 
 MAINTAINER 923453645@qq.com
 
-ARG JAR_FILE
-#ADD target/${JAR_FILE} /usr/share/docker-springboot.jar
-
 ADD hellohaotbed/ /hellohaotbed
+
 COPY appstart.sh /appstart.sh
 
 COPY application.properties /application.properties
-#COPY hellohao /hellohao
+
 COPY Tbed.jar /Tbed.jar
 
 EXPOSE 10088
+
 EXPOSE 10089
 
 CMD ["/bin/bash","/appstart.sh"]
-#ENTRYPOINT["/start.sh"]
-#ENTRYPOINT ["java","-jar", "./Tbed.jar"]
