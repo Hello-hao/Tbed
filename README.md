@@ -21,22 +21,46 @@
 
 **存储源支持：**
 
-开源版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`,`AWS S3协议`(`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`等兼容S3协议)
+开源版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`
 
-Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储商家可开多个存储源（可添加至90+存储源）
-
-
-### 更新日志 `20230320`
-
-- 修复了修改/保存存储源时，状态不能及时更新
-- 优化移动端后台状态栏遮罩关闭异常的情况
-- 修复百度图像鉴别不能使用的情况，鉴别违规图像不自动删除的情况
-- 优化图像鉴别线程池配置
-- 适配移动端页面首页状态栏
-- 新增支持Docker-compose方式部署程序
+Core版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`,`Backblaze(B2)`,`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`,`AWS S3`等通用S3协议
 
 
-[^_^]: 程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
+### 更新日志 `20230101`
+
+- 优化个人相册，适配右键菜单功能。
+- 修复筛选全部图片时候出现重复的问题。
+- 修复上传图片后不记录图片原始名称
+- 调整了上传图像的代码逻辑
+- 优化 ftp 上传逻辑
+- 优化多线程上传图像的查重逻辑
+- 新增用户协议相关协议内容展示
+- 提高系统安全性
+- 优化多个页面异常问题
+
+
+[^_^]:程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
+
+[^_^]:官网(含Core版)：[https://tbed.hellohao.cn](https://tbed.hellohao.cn)
+
+[^_^]:前端源码：[https://github.com/Hello-hao/tbed-web](https://github.com/Hello-hao/tbed-web)
+
+[^_^]:文档地址：[https://doc.hellohao.cn](https://doc.hellohao.cn)
+
+[^_^]:程序展示：[https://tc.hellohao.cn](https://tc.hellohao.cn)
+
+[^_^]:作者博客：[https://www.hellohao.cn](https://www.hellohao.cn)
+
+
+[^_^]:官网(含Core版)(备用)：[http://tbed.wwery.com](http://tbed.wwery.com)
+
+[^_^]:文档地址(备用)：[http://doc.wwery.com](http://doc.wwery.com)
+
+[^_^]:程序展示(备用)：[http://tc.wwery.com](http://tc.wwery.com)
+
+[^_^]:作者博客(备用)：[http://www.wwery.com](http://www.wwery.com)
+
+
 
 
 ### 主要功能
@@ -127,66 +151,14 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 - Shiro
 
 
-### 快速开始
+### 部署
 
-**Docker-compose部署:**
-
-1. 创建`docker-compose.yml`文件
-
-   > 在服务器的任意目录创建的文件夹中创建`docker-compose.yml`文件，内容如下：
-   >
-   > (修改下方前`端域名`，`后端域名`，`数据库密码`等注释的信息，特别要注意文件格式缩进不可以乱改)
-
-   ```yml
-   version: "3"
-   services:
-     tbed-free:
-       image: hellohao/tbed-free:20230320
-       networks:
-         hellohao_network:
-       ports:
-         - "10088:10088"
-         - "10089:10089"
-       volumes:
-         - /HellohaoData/:/HellohaoData/
-       environment:
-         MYSQL_URL: jdbc:mysql://hellohaodb/tbed?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
-         # 自定设置一个MySQL的密码，请保证与下方 POSTGRES_PASSWORD 的变量值一致
-         MYSQL_PASS: tIaNGg@SHa&hIo56
-         # 前端域名(反代10089端口的域名)
-         HELLOHAO_WEB_HOST: http://pic.example.com
-         # 后端域名(反代10088端口的域名)
-         HELLOHAO_SERVER_HOST: http://server.example.com
-     hellohaodb:
-       image: hellohao/mysql-free:1.0
-       networks:
-         hellohao_network:
-       command:
-         - --default-authentication-plugin=mysql_native_password
-         - --character-set-server=utf8mb4
-         - --collation-server=utf8mb4_general_ci
-         - --explicit_defaults_for_timestamp=true
-       ports:
-         - "3307:3307"
-       volumes:
-         - /HellohaoData/mysql:/var/lib/mysql
-       environment:
-         # MySQL的密码
-         MYSQL_ROOT_PASSWORD: tIaNGg@SHa&hIo56
-   networks:
-     hellohao_network:
-   
-   
-   ```
-
-2. 启动 Hellohao 服务
-
-   ```shell
-   docker-compose up -d
-   ```
+> 部署方式分为两种：
+> 1.一键脚本部署：`Tbed-together.zip`（操作简单）
+> 2.自定义部署 前后端分离式部署:`Tbed.zip`（拓展性高适合有一定java前后端分离部署经验的人）
+> 需要注意：一键部署的端口为：服务器：`10088` 前端：`10089`
 
 详细部署教程参考程序[相关文档](http://doc.hellohao.cn)
-
 
 ### 启动项目
 
@@ -195,13 +167,11 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 初始密码：`admin`
 
 ### 客户端(win64/mac)
-
 > 目前已经正式上线
-> ![桌面客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
+![桌面客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
 
 
 ### 微信小程序
-
 > 目前已有测试版，更多功能开发中，开发进度的快慢要根据作者的工作压力、心情状况等自身情况进行评估。
 > 暂时无法给出具体发布小程序的时间。大家期待吧。
 
@@ -218,7 +188,6 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 ### 反馈交流
 
 **如果你遇到BUG欢迎反馈**
-
 - 前往论坛发帖反馈、求助：[Hellohao开发者交流论坛](http://bbs.hellohao.cn)
 - 也可加QQ群探讨（目前已满）：864800972
 
