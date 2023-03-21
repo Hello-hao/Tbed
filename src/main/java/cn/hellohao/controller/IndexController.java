@@ -46,6 +46,7 @@ public class IndexController {
         model.addAttribute("version", "20230320");
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
         model.addAttribute("links", "https://github.com/Hello-hao/tbed");
+        System.out.println("welcome");
         return "welcome";
     }
 
