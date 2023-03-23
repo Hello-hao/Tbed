@@ -81,52 +81,6 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 
 - [x] 图像直链二维码生成
 
-
-
-### 系统预览
-
-![首页](https://upload.cc/i1/2022/02/11/t2wCEF.png)
-
-![控制台详情](https://upload.cc/i1/2022/02/11/Al8UrH.png)
-
-![相册](https://upload.cc/i1/2022/02/11/2LhEHJ.png)
-
-![多存储源](https://upload.cc/i1/2022/02/11/gOPxZW.png)
-
-![站点设置](https://upload.cc/i1/2022/02/11/Hj7pWM.png)
-
-[^_^]: ![首页](http://img.wwery.com/Hellohao/xI9TSKcI.png)
-[^_^]: ![控制台详情](http://img.wwery.com/Hellohao/klytOMWr.png)
-[^_^]: ![相册](http://img.wwery.com/Hellohao/2UQkXTHw.png)
-[^_^]: ![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
-[^_^]: ![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
-
-
-### 运行环境
-
-- JDK 1.8
-- MySQL5.5+
-- Redis
-
-### 所用技术
-
-#### 	前端主要技术
-
-- vue
-- iview
-- vuex
-- axios
-
-#### 	后端主要技术
-
-- SpringBoot
-- MyBatis
-- MySQL
-- Maven
-- JWT认证
-- Shiro
-
-
 ### 快速开始
 
 **Docker-compose部署:**
@@ -185,14 +139,60 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
    docker-compose up -d
    ```
 
-详细部署教程参考程序[相关文档](http://doc.hellohao.cn)
+更多部署教程参考程序[相关文档](http://doc.hellohao.cn)
 
 
 ### 启动项目
+> 访问你的前端域名即可
 
 初始用户名：`admin`
 初始邮箱：`admin`
 初始密码：`admin`
+
+
+### 系统预览
+
+![首页](https://upload.cc/i1/2022/02/11/t2wCEF.png)
+
+![控制台详情](https://upload.cc/i1/2022/02/11/Al8UrH.png)
+
+![相册](https://upload.cc/i1/2022/02/11/2LhEHJ.png)
+
+![多存储源](https://upload.cc/i1/2022/02/11/gOPxZW.png)
+
+![站点设置](https://upload.cc/i1/2022/02/11/Hj7pWM.png)
+
+[^_^]: ![首页](http://img.wwery.com/Hellohao/xI9TSKcI.png)
+[^_^]: ![控制台详情](http://img.wwery.com/Hellohao/klytOMWr.png)
+[^_^]: ![相册](http://img.wwery.com/Hellohao/2UQkXTHw.png)
+[^_^]: ![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
+[^_^]: ![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
+
+
+### 运行环境
+
+- JDK 1.8
+- MySQL5.5+
+- Redis
+
+### 所用技术
+
+#### 	前端主要技术
+
+- vue
+- iview
+- vuex
+- axios
+
+#### 	后端主要技术
+
+- SpringBoot
+- MyBatis
+- MySQL
+- Maven
+- JWT认证
+- Shiro
+
 
 ### 客户端(win64/mac)
 
@@ -220,11 +220,11 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 **如果你遇到BUG欢迎反馈**
 
 - 前往论坛发帖反馈、求助：[Hellohao开发者交流论坛](http://bbs.hellohao.cn)
-- 也可加QQ群探讨（目前已满）：864800972
+- 也可加QQ群探讨：864800972
 
-### 捐赠开发者
+### 更多
 
-**如果你也支持Hellohao图床，可以请我喝杯咖啡。我会持续更新Hellohao图床**
+**如需程序定制或其他业务，请与我们取得联系**
+[Hellohao图像托管官网](http://hellohao.cn)
 
-**捐赠地址:** [**https://tbed.hellohao.cn/pay**](https://tbed.hellohao.cn/pay)
 
