@@ -168,6 +168,11 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 [^_^]: ![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
 [^_^]: ![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
 
+### 客户端(win64/mac)
+
+> 目前已经正式上线
+> ![桌面客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
+
 
 ### 运行环境
 
@@ -192,12 +197,6 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 - Maven
 - JWT认证
 - Shiro
-
-
-### 客户端(win64/mac)
-
-> 目前已经正式上线
-> ![桌面客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
 
 
 ### 微信小程序
