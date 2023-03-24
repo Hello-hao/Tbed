@@ -28,7 +28,6 @@ public class ClientService {
     @Autowired private KeysMapper keysMapper;
     @Autowired private UploadConfigMapper uploadConfigMapper;
     @Autowired private ImgMapper imgMapper;
-    @Autowired private ImgreviewMapper imgreviewMapper;
     @Autowired private ImgTempService imgTempService;
     @Autowired private GetSource getSource;
     @Autowired private ImgViolationJudgeServiceImpl imgViolationJudgeService;

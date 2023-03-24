@@ -62,7 +62,7 @@ public class IndexController {
         jsonObject.put("webname", cd.getString("webname"));
         jsonObject.put("websubtitle", cd.getString("websubtitle"));
         jsonObject.put("keywords", cd.getString("keywords"));
-        jsonObject.put("description", cd.getString("description"));
+        jsonObject.put("webms", cd.getString("webms"));
         jsonObject.put("explain", cd.getString("explain"));
         jsonObject.put("baidu", cd.getString("baidu"));
         jsonObject.put("links", cd.getString("links"));
