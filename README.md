@@ -177,7 +177,7 @@ Core版：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储
 ### 运行环境
 
 - JDK 1.8
-- MySQL5.5+
+- MySQL5.7+
 - Redis
 
 ### 所用技术
