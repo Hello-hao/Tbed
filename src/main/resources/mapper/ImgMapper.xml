@@ -92,27 +92,8 @@
             violation,
             idname
         )
-        select * from (
-                          SELECT  NULL id,
-                                  #{imgname} imgname,
-                                  #{imgurl} imgurl,
-                                  #{userid} userid,
-                                  #{updatetime} updatetime,
-                                  #{sizes} sizes,
-                                  #{abnormal} abnormal,
-                                  #{source} `source`,
-                                  #{imgtype} imgtype,
-                                  #{explains} explains,
-                                  #{md5key} md5key,
-                                  #{imguid} imguid,
-                                  #{format} `format`,
-                                  #{about} about,
-                                  null violation,
-                                  #{idname} idname
-                      ) temp_t
-        where
-            IF((select (select checkduplicate from sysconfig where id =1)=1),
-               not exists (select md5key from imgdata img_t where temp_t.md5key = img_t.md5key),true)
+        VALUES (null, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},
+                #{explains},#{md5key},#{imguid},#{format},#{about},null,#{idname})
     </insert>
 
 
@@ -190,6 +171,9 @@
 
     <select id="selectImgUrlByMD5" parameterType="string" resultType="cn.hellohao.pojo.Images">
         select imgname,imgurl from imgdata where md5key = #{md5key}
+        <if test="userid != null">
+            and userid = #{userid}
+        </if>
     </select>
 
     <!--    查询当前用户的近20条数据-->

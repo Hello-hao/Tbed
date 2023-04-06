@@ -10,13 +10,16 @@ import cn.hellohao.service.UploadConfigService;
 import cn.hellohao.service.impl.UploadServicel;
 import cn.hellohao.service.impl.UserServiceImpl;
 import cn.hellohao.utils.Base64ToMultipartFile;
+import cn.hellohao.utils.SetFiles;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 
 /**
  * @author Hellohao
@@ -86,12 +89,17 @@ public class ClientAppController {
     }
 
     @PostMapping("/imgUpload")
-    public Msg imgUpload(HttpServletRequest request, @RequestParam(required = true, value = "file") MultipartFile file,
+    public Msg imgUpload(HttpServletRequest request, @RequestParam(required = true, value = "file") MultipartFile multipartFile,
                          @RequestParam(required = true, value = "days") String days)  {
         Msg msg = new Msg();
         try{
-            if (null != file) {
-                msg = uploadServicel.uploadForLoc(request,file,Integer.valueOf(days),null);
+            if (null != multipartFile) {
+                String originalFilename = multipartFile.getOriginalFilename();
+                if(StringUtils.isBlank(originalFilename)){
+                    originalFilename = "未命名图像";
+                }
+                File file = SetFiles.changeFile_new(multipartFile);
+                msg = uploadServicel.uploadForLoc(request,file,originalFilename,Integer.valueOf(days),null,null);
             }else{
                 msg.setCode("500");
             }
@@ -109,9 +117,11 @@ public class ClientAppController {
             JSONObject jsonObj = JSONObject.parseObject(data);
             String imgstr = jsonObj.getString("imgstr");
             Integer days = jsonObj.getInteger("days");
+            String md5 = jsonObj.getString("md5");
             if (null != imgstr && !imgstr.isEmpty()) {
                 MultipartFile multipartFile = Base64ToMultipartFile.base64Convert(imgstr);
-                msg = uploadServicel.uploadForLoc(request, multipartFile, days, null);
+                File file = SetFiles.changeFile_new(multipartFile);
+                msg = uploadServicel.uploadForLoc(request, file,"未命名图像", days, null,md5);
             }
         }catch (Exception e){
             e.printStackTrace();

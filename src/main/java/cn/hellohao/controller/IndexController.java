@@ -1,12 +1,14 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.auth.token.JWTUtil;
+import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.UploadServicel;
 import cn.hellohao.service.impl.deleImages;
 import cn.hellohao.utils.GetIPS;
 import cn.hellohao.utils.MyVersion;
+import cn.hellohao.utils.SetFiles;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
 import cn.hutool.captcha.generator.MathGenerator;
@@ -19,15 +21,17 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 public class IndexController {
@@ -78,14 +82,61 @@ public class IndexController {
         msg.setData(jsonObject);
         return msg;
     }
+    @PostMapping("/uploadChunkFile")
+    @ResponseBody
+    @CrossOrigin
+    public Msg uploadChunk(HttpServletRequest request,Chunk chunk) {
+        Msg msg = new Msg();
+        MultipartFile file = chunk.getFile();
+        try {
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get(SetFiles.generatePath(GlobalConstant.HELLOHAOTEMPIMG_PATH+ File.separator+chunk.getUuid(), chunk));
+            java.nio.file.Files.write(path, bytes);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("chunkNumber",chunk.getChunkNumber());
+            jsonObject.put("totalChunks",chunk.getTotalChunks());
+            msg.setData(jsonObject);
+            msg.setCode("200");
+            return msg;
+        } catch (IOException e) {
+            e.printStackTrace();
+            msg.setCode("500");
+            return msg;
+        }
+    }
+
+    @PostMapping("/processFile")
+    @ResponseBody
+    @CrossOrigin
+    public Msg processFile(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data){
+        Msg msg = new Msg();
+        try{
+            Subject subject = SecurityUtils.getSubject();
+            User user = (User) subject.getPrincipal();
+            CompletableFuture<Msg> ret = uploadServicel.mergeFile(request,data,user);
+            msg = ret.get();
+        }catch (Exception e){
+            msg.setCode("500");
+            msg.setInfo("处理文件错误，上传失败");
+        }
+        return msg;
+    }
 
     @PostMapping(value = {"/upload", "/client/upload"})
     @ResponseBody
     public Msg upimg(
             HttpServletRequest request,
             @RequestParam(value = "file", required = false) MultipartFile multipartFile,
-            Integer day) {
-        return uploadServicel.uploadForLoc(request, multipartFile, day, null);
+            Integer day,@RequestParam(value = "md5",required = false) String md5) {
+        JSONArray jsonArray = new JSONArray();
+        Subject subject = SecurityUtils.getSubject();
+        User user = (User) subject.getPrincipal();
+        String originalFilename = multipartFile.getOriginalFilename();
+        if(StringUtils.isBlank(originalFilename)){
+            originalFilename = "未命名图像";
+        }
+        File file = SetFiles.changeFile_new(multipartFile);
+        return uploadServicel.uploadForLoc(request, file,originalFilename, day, null,md5);
     }
 
     @PostMapping(value = {"/uploadForUrl", "/client/uploadForUrl"})
@@ -114,7 +165,7 @@ public class IndexController {
         for (int i = 0; i < URLArr.length; i++) {
             int temp = i + 1;
             if (syscounts >= temp) {
-                Msg msg = uploadServicel.uploadForLoc(request, null, setday, URLArr[i]);
+                Msg msg = uploadServicel.uploadForLoc(request, null,"URL转存图像", setday, URLArr[i],null);
                 if (!msg.getCode().equals("200")) {
                     errcounts++;
                 } else {

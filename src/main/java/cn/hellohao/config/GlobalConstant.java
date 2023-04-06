@@ -10,4 +10,7 @@ import java.io.File;
 public class GlobalConstant {
     public static String SYSTYPE = "LINUX";
     public static String LOCPATH = File.separator + "HellohaoData";
+
+    public static final String HELLOHAOTEMPIMG_PATH = File.separator + "HellohaoData"+File.separator+"hellohaotempimg";
+
 }

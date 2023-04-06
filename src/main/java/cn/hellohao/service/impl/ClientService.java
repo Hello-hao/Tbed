@@ -2,10 +2,14 @@ package cn.hellohao.service.impl;
 
 import cn.hellohao.dao.*;
 import cn.hellohao.pojo.*;
+import cn.hellohao.service.ConfdataService;
 import cn.hellohao.service.ImgTempService;
+import cn.hellohao.service.SysConfigService;
 import cn.hellohao.utils.*;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,11 +27,15 @@ import java.util.*;
  */
 @Service
 public class ClientService {
-
+    private static Logger logger = LoggerFactory.getLogger(ClientService.class);
+    @Autowired
+    ConfdataService confdataService;
+    @Autowired
+    SysConfigService sysConfigService;
     @Autowired private UserMapper userMapper;
     @Autowired private KeysMapper keysMapper;
     @Autowired private UploadConfigMapper uploadConfigMapper;
-    @Autowired private ImgMapper imgMapper;
+    @Autowired private ImgServiceImpl imgServiceImpl;
     @Autowired private ImgTempService imgTempService;
     @Autowired private GetSource getSource;
     @Autowired private ImgViolationJudgeServiceImpl imgViolationJudgeService;
@@ -36,10 +44,11 @@ public class ClientService {
             HttpServletRequest request, MultipartFile multipartFile, String email, String pass,Integer setday) {
         Msg msg = new Msg();
         try {
+            Confdata dataJson = confdataService.selectConfdata("config");
+            JSONObject confdata = JSONObject.parseObject(dataJson.getJsondata());
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String imageFileName = "未命名图像";
             Integer sourceKeyId = 0;
-            FileInputStream fis = null;
             String md5key = null;
             JSONObject jsonObject = new JSONObject();
             String userip = GetIPS.getIpAddr(request);
@@ -85,12 +94,20 @@ public class ClientService {
                 msg.setInfo("图像超出系统限制大小");
                 return msg;
             }
+            FileInputStream fis = null;
             try {
                 fis = new FileInputStream(file);
                 md5key = DigestUtils.md5Hex(fis);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("未获取到图片的MD5,成成UUID");
+            }finally{
+                try {
+                    if (null != fis)
+                        fis.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             Msg fileMiME = TypeDict.FileMiME(file);
             if (!fileMiME.getCode().equals("200")) {
@@ -151,35 +168,21 @@ public class ClientService {
             imgObj.setImguid(imguid);
             imgObj.setFormat(fileMiME.getData().toString());
             imgObj.setIdname(imageFileName);
-            Integer insertRet = imgMapper.insertImgData(imgObj);
-            if (insertRet == 0) {
-                Images imaOBJ = new Images();
-                imaOBJ.setMd5key(md5key);
-                imaOBJ.setUserid(u == null ? 0 : u.getId());
-                List<Images> images = imgMapper.selectImgUrlByMD5(md5key);
-                if (images.size() > 0) {
-                    jsonObject.put("url", images.get(0).getImgurl());
-                    jsonObject.put("name", file.getName());
-                    jsonObject.put("size", images.get(0).getSizes());
-                    msg.setData(jsonObject);
-                    return msg;
-                } else {
-                    msg.setInfo("未获取到指定图像");
-                    msg.setCode("110501");
-                    return msg;
-                }
+            Msg insertRet = imgServiceImpl.insertImgDataForCheck(imgObj,u,confdata,file.getName());
+            if (insertRet.getCode().equals("000")) {
+                return insertRet;
             }
             long stime = System.currentTimeMillis();
             ReturnImage returnImage = getSource.storageSource(key.getStorageType(), map, updatePath, key.getId());
             if (returnImage.getCode().equals("200")) {
                 long etime = System.currentTimeMillis();
-                Print.Normal("上传图片所用总时长：" + String.valueOf(etime - stime) + "ms");
+                logger.info("上传图片所用总时长：" + String.valueOf(etime - stime) + "ms");
                 jsonObject.put("url", imgObj.getImgurl());
                 jsonObject.put("name", imgObj.getImgname());
                 jsonObject.put("size", imgObj.getSizes());
                 imgViolationJudgeService.LegalImageCheck(imgObj,key);
             } else {
-                imgMapper.deleimgForImgUid(imgObj.getImguid());
+                imgServiceImpl.deleimgForImgUid(imgObj.getImguid());
                 msg.setCode("5001");
                 msg.setInfo("上传服务内部错误");
                 return msg;
@@ -216,9 +219,9 @@ public class ClientService {
                 memory = Long.valueOf(uploadConfig.getVisitormemory()); // 单位 B 游客设置总量
                 TotleMemory = Long.valueOf(uploadConfig.getFilesizetourists()); // 单位 B  游客单文件大小
                 UsedTotleMemory =
-                        imgMapper.getusermemory(0) == null
+                        imgServiceImpl.getusermemory(0) == null
                                 ? 0L
-                                : imgMapper.getusermemory(0); // 单位 B
+                                : imgServiceImpl.getusermemory(0); // 单位 B
             } else {
                 // 判断用户能不能上传
                 if (uploadConfig.getUserclose() != 1) {
@@ -231,9 +234,9 @@ public class ClientService {
                 memory = Long.valueOf(user.getMemory()); // 单位 B
                 TotleMemory = Long.valueOf(uploadConfig.getFilesizeuser()); // 单位 B
                 UsedTotleMemory =
-                        imgMapper.getusermemory(user.getId()) == null
+                        imgServiceImpl.getusermemory(user.getId()) == null
                                 ? 0L
-                                : imgMapper.getusermemory(user.getId()); // 单位 B
+                                : imgServiceImpl.getusermemory(user.getId()); // 单位 B
             }
             // 判断上传的图片目录结构类型
             if (uploadConfig.getUrltype() == 2) {

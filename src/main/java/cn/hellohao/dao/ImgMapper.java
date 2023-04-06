@@ -37,7 +37,7 @@ public interface ImgMapper {
 
     Integer md5Count(Images images);
 
-    List<Images> selectImgUrlByMD5(@Param("md5key") String md5key);
+    List<Images> selectImgUrlByMD5(Images images);
 
     List<Images> RecentlyUploaded(@Param("userid") Integer userid);
 

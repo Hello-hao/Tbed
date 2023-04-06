@@ -37,7 +37,7 @@ public interface ImgService {
 
     Integer md5Count(Images images);
 
-    List<Images> selectImgUrlByMD5(String md5key);
+    List<Images> selectImgUrlByMD5(Images images);
 
     List<Images> RecentlyUploaded(Integer userid);
 
