@@ -124,7 +124,7 @@
          - --collation-server=utf8mb4_general_ci
          - --explicit_defaults_for_timestamp=true
        ports:
-         - "3307:3307"
+         - "3307:3306"
        volumes:
          - /HellohaoData/mysql:/var/lib/mysql
        environment:
