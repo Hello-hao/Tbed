@@ -111,7 +111,7 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(instartConfdata);
             Print.Normal("Add table.confdata");
         }
-//        RunSqlScript.RunInsert(inddx_md5key);
+        RunSqlScript.RunInsert(index_imgdata);
         RunSqlScript.RunInsert("ALTER TABLE tbed.`user` MODIFY id int auto_increment;");
         Print.Normal("Stage success");
 
@@ -146,8 +146,7 @@ public class FirstRun implements InitializingBean {
     private String instartConfdata =
       "INSERT INTO tbed.confdata VALUES ('config', '{\\\"sourcekey\\\":7,\\\"emails\\\":1,\\\"webname\\\":\\\"Hellohao图床\\\",\\\"explain\\\":\\\"Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。\\\",\\\"links\\\":\\\"<p style=\\\\\\\"color:#7c7c88;\\\\\\\">© 2019 <a href=\\\\\\\"http://www.Hellohao.cn/\\\\\\\" target=\\\\\\\"_blank\\\\\\\" title=\\\\\\\"Hellohao\\\\\\\">Hellohao</a><span>  - All Rights Reserved</span> </p>\\\",\\\"notice\\\":\\\"也许...|这将是最好用的图床|为了更好的用户体验，建议您注册本站继续免费使用Hellohao图床。本站不得上传任何形式的非法图片，一旦发现，永久删除并禁封账户。情节严重者将相关资料交于相关部门处理。\\\",\\\"domain\\\":\\\"http://127.0.0.1:10088\\\",\\\"background1\\\":\\\"\\\",\\\"sett\\\":\\\"1\\\",\\\"webms\\\":\\\"Hellohao图像托管，是一家免费开源的图像托管，即时分享你的美好瞬间。\\\",\\\"webkeywords\\\":\\\"hellohao图床,图床,图片上传,开源图床,hellohao,图像托管，图片分享\\\",\\\"theme\\\":2,\\\"websubtitle\\\":\\\"这将是你用过最优秀的图像托管程序\\\",\\\"logo\\\":null,\\\"aboutinfo\\\":\\\"<img width=\\\\\\\"300px\\\\\\\" src=\\\\\\\"http://img.wwery.com/hellohao/rPscRYwz.png\\\\\\\">            <br />            <br />            <p>也许,这将是你用到最优秀的图像托管程序</p>            <p>本程序为Hellohao图象托管程序</p>            <br/>            <p style=\\\\\\\"color: #656565;\\\\\\\">作者：hellohao独立开发</p>            <p style=\\\\\\\"color: #656565;\\\\\\\">www.hellohao.cn</p>\\\"}');";
 
-    private String inddx_md5key = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( md5key,imgurl)";
-    //                             create index yarn_app_result_i4 on yarn_app_result (flow_exec_id(100), another_column(50));
+    private String index_imgdata = "ALTER TABLE imgdata ADD INDEX index_md5key_url ( id,md5key,imgname,imgurl,idname,imguid)";
 
     private String dynamic = "alter table imgdata row_format=dynamic";
     private String compressed = "alter table imgdata row_format=compressed";

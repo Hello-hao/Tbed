@@ -16,6 +16,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -313,6 +314,7 @@ public class AdminController {
         String stoptime = jsonObj.getString("stoptime");
         String selectUserType = jsonObj.getString("selectUserType"); // me/all
         String username = jsonObj.getString("username");
+        String searchname = jsonObj.getString("searchname");
         Integer selecttype = jsonObj.getInteger("selecttype");
         boolean violation = jsonObj.getBoolean("violation");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -353,6 +355,9 @@ public class AdminController {
             }
         } else {
             img.setUserid(user.getId());
+        }
+        if(!StringUtils.isBlank(searchname)){
+            img.setSearchname(searchname);
         }
         List<Images> images = imgService.selectimg(img);
         PageInfo<Images> rolePageInfo = new PageInfo<>(images);

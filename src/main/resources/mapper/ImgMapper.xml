@@ -67,6 +67,12 @@
             and
             a.imguid = #{imguid}
         </if>
+        <if test="searchname != null">
+            and CONCAT(
+            imgurl,
+            idname
+            ) LIKE '%${searchname}%'
+        </if>
         <if test="idname != null and idname !=''">
             and idname LIKE '%${idname}%'
         </if>
