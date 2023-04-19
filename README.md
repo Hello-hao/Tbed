@@ -7,6 +7,8 @@
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
+>:exclamation: 托管的所有开源代码可能存在作者经常修改/测试/调整，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
+
 
 ### 引导
 
@@ -24,9 +26,6 @@
 开源版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,~~`U-File`~~,`FTP`,`AWS S3协议`(`百度云BOS`,`青云Qingstor`,`Ucloud US3`,`Minio`等兼容S3协议)
 
 [Core版](https://hellohao.cn)：开源版的基础上增加`Backblaze(B2)` 并且可同个对象存储商家可开多个存储源（可添加至90+存储源）
-
-   
->:exclamation: 由于作者经常更新和修改/测试代码，故开源代码并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
 
     
 ### 更新日志 `20230320`
