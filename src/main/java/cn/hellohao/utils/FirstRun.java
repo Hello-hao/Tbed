@@ -1,7 +1,7 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.config.GlobalConstant;
-import org.slf4j.Logger;
+import cn.hutool.core.io.FileUtil;import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -158,14 +158,15 @@ public class FirstRun implements InitializingBean {
         //判断目录有没有创建
         File file = new File(GlobalConstant.LOCPATH);
         if(!file.exists()){
-            file.mkdirs();
-            file1.mkdirs();
-            file2.mkdirs();
+            FileUtil.mkdir(file);
+            FileUtil.mkdir(file1);
+            FileUtil.mkdir(file2);
+
         }else{
             if(!file1.exists()){
-                file1.mkdirs();
+                FileUtil.mkdir(file1);
             }else if(!file2.exists()){
-                file2.mkdirs();
+                FileUtil.mkdir(file2);
             }
         }
     }
@@ -190,7 +191,8 @@ public class FirstRun implements InitializingBean {
                 System.out.print("文件存在");
             } else {
                 System.out.print("文件不存在");
-                f.createNewFile();// 不存在则创建
+//                f.createNewFile();// 不存在则创建
+                FileUtil.createTempFile(f);
             }
 //            BufferedReader input = new BufferedReader(new FileReader(f));
 //            while ((str = input.readLine()) != null) {
