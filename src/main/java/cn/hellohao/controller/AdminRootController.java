@@ -4,7 +4,9 @@ import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.*;
 import cn.hellohao.utils.NewSendEmail;
+import cn.hellohao.utils.Print;
 import cn.hellohao.utils.SetFiles;
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -388,6 +393,51 @@ public class AdminRootController {
             msg.setInfo("邮箱配置参数不能为空");
         } else {
             msg = NewSendEmail.sendTestEmail(emailConfig, tomail);
+        }
+        return msg;
+    }
+
+    @PostMapping("/sysVersion")
+    @ResponseBody
+    public Msg sysupdate(@RequestParam(value = "data", defaultValue = "") String data) {
+        final Msg msg = new Msg();
+        JSONObject jsonObj = JSONObject.parseObject(data);
+        String  dates = jsonObj.getString("dates");
+        HashMap<String, Object> paramMap = new HashMap<>();
+        String urls = "http://check.hellohao.cn:8090/getNoticeText";
+        JSONObject jsonObject =null;
+        try {
+            URL u = new URL(urls);
+            HttpURLConnection uConnection = (HttpURLConnection) u.openConnection();
+            uConnection.connect();
+            if(uConnection.getResponseCode()==200){
+                    jsonObject =JSONObject.parseObject(HttpUtil.get(urls));
+                    String openv = jsonObject.getString("openv");
+                    String opentext = jsonObject.getString("opentext");
+                    JSONObject versionJson = new JSONObject();
+                    if(Double.valueOf(openv)>Double.valueOf(dates)){
+                        versionJson.put("code","110200");
+                        versionJson.put("newVersion",openv);
+                        versionJson.put("versionMsg",opentext);
+                        msg.setCode("110200");
+                        msg.setData(versionJson);
+                    }else{
+                        versionJson.put("code","110300");
+                        versionJson.put("newVersion",openv);
+                        versionJson.put("versionMsg","当前已是最新版本");
+                        msg.setCode("110300");
+                        msg.setData(versionJson);
+                    }
+            }else{
+                msg.setCode("110500");
+                msg.setData("未获取到更新状态");
+            }
+            uConnection.disconnect();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Print.warning("connect failed");
+            msg.setCode("110500");
+            msg.setData("未获取到更新状态");
         }
         return msg;
     }
