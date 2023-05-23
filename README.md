@@ -95,7 +95,8 @@
    version: "3"
    services:
      tbed-free:
-       image: hellohao/tbed-free:20230320
+       # 具体版本号需要填写目前发行的最新版本
+       image: hellohao/tbed-free:2023xxxx
        networks:
          hellohao_network:
        ports:
@@ -152,7 +153,7 @@
 
 ### 系统预览
 
-![首页](https://upload.cc/i1/2022/02/11/t2wCEF.png)
+![首页](https://upload.cc/i1/2023/05/23/Lsdivj.png)
 
 ![控制台详情](https://upload.cc/i1/2022/02/11/Al8UrH.png)
 
