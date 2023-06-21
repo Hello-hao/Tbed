@@ -57,6 +57,7 @@ public class SetText {
         boolean flag = false;
         try {
             String check = "^\\w+@[a-zA-Z0-9]{2,10}(?:\\.[a-z]{2,4}){1,3}$";
+//            String regex = "\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*"; //这个也可以用
             Pattern regex = Pattern.compile(check);
             Matcher matcher = regex.matcher(email);
             flag = matcher.matches();
@@ -65,7 +66,6 @@ public class SetText {
         }
         return flag;
     }
-
 
 }
 

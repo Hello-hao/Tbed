@@ -76,7 +76,37 @@
         <if test="idname != null and idname !=''">
             and idname LIKE '%${idname}%'
         </if>
-        order by a.id desc
+        order by
+        <choose>
+            <when test="order == 'desc'">
+                a.updatetime desc
+            </when>
+            <when test="order == 'asc'">
+                a.updatetime asc
+            </when>
+            <when test="order == 'sizeAsc'">
+                CONVERT(a.sizes,SIGNED) asc
+            </when>
+            <when test="order == 'sizeDesc'">
+                CONVERT(a.sizes,SIGNED) desc
+            </when>
+            <otherwise>
+                a.updatetime desc
+            </otherwise>
+        </choose>
+<!--        <if test="order == 'desc'">-->
+<!--            a.updatetime desc-->
+<!--        </if>-->
+<!--        <if test="order == 'asc'">-->
+<!--            a.updatetime asc-->
+<!--        </if>-->
+<!--        <if test="order == 'sizeAsc'">-->
+<!--            CONVERT(a.sizes,SIGNED) asc-->
+<!--        </if>-->
+<!--        <if test="order == 'sizeDesc'">-->
+<!--            CONVERT(a.sizes,SIGNED) desc-->
+<!--        </if>-->
+
     </select>
 
     <insert  id="insertImgData" parameterType="cn.hellohao.pojo.Images">

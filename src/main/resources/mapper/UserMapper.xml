@@ -74,6 +74,9 @@
             <if test="email != null">
                 and email = #{email}
             </if>
+            <if test="username != null">
+                and username = #{username}
+            </if>
             <if test="uid != null">
                 and uid = #{uid}
             </if>

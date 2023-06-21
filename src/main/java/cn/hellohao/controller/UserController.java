@@ -62,10 +62,16 @@ public class UserController {
             return msg;
         }
         String regex = "^\\w+$";
-        if(username.length()>20 || !username.matches (regex)){
+        if(username.length()>30){
             //用户名格式不正确
             msg.setCode("110403");
-            msg.setInfo("用户名不得超过20位字符");
+            msg.setInfo("用户名不得超过30位字符");
+            return msg;
+        }
+        if(!username.matches (regex)){
+            //用户名格式不正确
+            msg.setCode("110403");
+            msg.setInfo("用户名不得含有特殊字符");
             return msg;
         }
         if(null==redis_verifyCodeForRegister){
@@ -198,15 +204,15 @@ public class UserController {
             } catch (UnknownAccountException e) {
                 //此异常说明用户名不存在
                 msg.setCode("4000");
-                msg.setInfo("登录邮箱不存在");
-                System.err.println("邮箱不存在");
-                e.printStackTrace();
+                msg.setInfo("登录账号不存在");
+                System.err.println("邮箱/用户名不存在");
+//                e.printStackTrace();
                 return msg;
             }catch (IncorrectCredentialsException e) {
                 msg.setCode("4000");
                 msg.setInfo("登录密码错误");
                 System.err.println("密码不存在");
-                e.printStackTrace();
+//                e.printStackTrace();
                 return msg;
             }catch (Exception e) {
                 msg.setCode("5000");

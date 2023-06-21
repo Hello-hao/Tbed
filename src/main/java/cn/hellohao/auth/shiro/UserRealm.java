@@ -2,6 +2,7 @@ package cn.hellohao.auth.shiro;
 
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.UserService;
+import cn.hellohao.utils.SetText;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -46,7 +47,11 @@ public class UserRealm extends AuthorizingRealm {
         UsernamePasswordToken userToken = null;
         userToken = (UsernamePasswordToken)tokenOBJ;
         User user = new User();
-        user.setEmail(userToken.getUsername());
+        if(SetText.checkEmail(userToken.getUsername())){
+            user.setEmail(userToken.getUsername());
+        }else{
+            user.setUsername(userToken.getUsername());
+        }
         User u = userService.getUsers(user);
         if(u==null){
             return null;

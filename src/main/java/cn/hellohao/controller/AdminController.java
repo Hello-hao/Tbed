@@ -313,6 +313,7 @@ public class AdminController {
         String starttime = jsonObj.getString("starttime");
         String stoptime = jsonObj.getString("stoptime");
         String selectUserType = jsonObj.getString("selectUserType"); // me/all
+        String order = jsonObj.getString("order");
         String username = jsonObj.getString("username");
         String searchname = jsonObj.getString("searchname");
         Integer selecttype = jsonObj.getInteger("selecttype");
@@ -359,6 +360,7 @@ public class AdminController {
         if(!StringUtils.isBlank(searchname)){
             img.setSearchname(searchname);
         }
+        img.setOrder(StringUtils.isBlank(order)?"desc":order);
         List<Images> images = imgService.selectimg(img);
         PageInfo<Images> rolePageInfo = new PageInfo<>(images);
         PageResultBean<Images> pageResultBean =
@@ -407,9 +409,15 @@ public class AdminController {
                 return msg;
             }
             String regex = "^\\w+$";
-            if (username.length() > 20 || !username.matches(regex)) {
+            if (username.length() > 30) {
                 msg.setCode("110403");
-                msg.setInfo("用户名不得超过20位字符");
+                msg.setInfo("用户名不得超过30位字符");
+                return msg;
+            }
+            if(!username.matches (regex)){
+                //用户名格式不正确
+                msg.setCode("110403");
+                msg.setInfo("用户名不得含有特殊字符");
                 return msg;
             }
             if (subject.hasRole("admin")) {
