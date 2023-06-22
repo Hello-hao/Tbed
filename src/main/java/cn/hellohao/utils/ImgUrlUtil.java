@@ -2,6 +2,7 @@ package cn.hellohao.utils;
 
 import cn.hellohao.TbedApplication;
 import cn.hellohao.pojo.Msg;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -83,14 +84,7 @@ public class ImgUrlUtil {
     }
 
 
-    /**
-     * 从网络Url中下载文件
-     * @param urlStr
-     * @param fileName
-     * @param savePath
-     * @throws IOException
-     */
-    public static Map<String ,Object>  downLoadFromUrl(String urlStr,String fileName,String savePath){
+    public static Map<String ,Object>  downLoadFromUrl(String urlStr,String referer,String fileName,String savePath){
 
         Map<String ,Object> resmap = new HashMap<>();
         Map<String ,String> map = checkURLStatusCode(urlStr);
@@ -102,11 +96,11 @@ public class ImgUrlUtil {
         try {
             URL url = new URL(urlStr);
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestProperty("referer", StringUtils.isBlank(referer) ? "no-referrer" : referer);
             //设置超时间为3秒
             conn.setConnectTimeout(5*1000);
-            //防止屏蔽程序抓取而返回403错误 Referer
-            conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-
+            //防止屏蔽程序抓取而返回403错误
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36");
             //得到输入流
             InputStream inputStream = conn.getInputStream();
             //获取自己数组
@@ -125,7 +119,6 @@ public class ImgUrlUtil {
                 inputStream.close();
             }
             //下载并且保存成功后 判断格式 如果不是图像格式 就删除
-//
             if(new File(saveDir+File.separator+fileName).exists()){
                 Msg msg = TypeDict.FileMiME(file);
                 if(msg.getCode().equals("200")){
@@ -144,8 +137,6 @@ public class ImgUrlUtil {
                 resmap.put("res",false);
                 resmap.put("StatusCode","500");
             }
-
-
             return resmap;
         }catch (Exception e){
             e.printStackTrace();
@@ -154,7 +145,6 @@ public class ImgUrlUtil {
             return resmap;
         }
     }
-
 
     /**
      * 从输入流中获取字节数组

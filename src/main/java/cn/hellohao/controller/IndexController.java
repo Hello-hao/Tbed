@@ -47,7 +47,7 @@ public class IndexController {
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序(开源版)");
-        model.addAttribute("version", "20230320");
+        model.addAttribute("version", "20230622");
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
         model.addAttribute("links", "https://github.com/Hello-hao/tbed");
         return "welcome";
@@ -146,6 +146,7 @@ public class IndexController {
         JSONObject jsonObj = JSONObject.parseObject(data);
         Integer setday = jsonObj.getInteger("day");
         String imgUrl = jsonObj.getString("imgUrl");
+        String referer = jsonObj.getString("referer");
         String[] URLArr = imgUrl.split("\n");
 
         Subject subject = SecurityUtils.getSubject();
@@ -165,7 +166,10 @@ public class IndexController {
         for (int i = 0; i < URLArr.length; i++) {
             int temp = i + 1;
             if (syscounts >= temp) {
-                Msg msg = uploadServicel.uploadForLoc(request, null,"URL转存图像", setday, URLArr[i],null);
+                JSONObject imgJson = new JSONObject();
+                imgJson.put("imgUrl",URLArr[i]);
+                imgJson.put("referer",referer);
+                Msg msg = uploadServicel.uploadForLoc(request, null,"URL转存图像", setday, imgJson,null);
                 if (!msg.getCode().equals("200")) {
                     errcounts++;
                 } else {

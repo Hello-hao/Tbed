@@ -53,7 +53,7 @@ public class UploadServicel {
             File file,
             String imgName,
             Integer setday,
-            String imgUrl,
+            JSONObject imgJson,
             String md5key) {
         Msg msg = new Msg();
         try {
@@ -69,8 +69,8 @@ public class UploadServicel {
                 u = userMapper.getUsers(u);
             }
             Integer sourceKeyId = 0;
-            if (imgUrl != null) {
-                Msg imgData = uploadForURL(request, imgUrl);
+            if (imgJson != null) {
+                Msg imgData = uploadForURL(request, imgJson.getString("imgUrl"),imgJson.getString("referer"));
                 if (imgData.getCode().equals("200")) {
                     file = new File((String) imgData.getData());
                 } else {
@@ -254,42 +254,49 @@ public class UploadServicel {
     }
 
 
-    public static Msg uploadForURL(HttpServletRequest request, String imgurl) {
-        Msg msg = new Msg();
-        if (true) {
-            Long imgsize = 0L;
-            try {
-                if (imgsize == 0) {
-                    String ShortUID = SetText.getShortUuid();
-                    String savePath =
-                            request.getSession().getServletContext().getRealPath("/")
-                                    + File.separator
-                                    + "hellohaotmp"
-                                    + File.separator;
-                    Map<String, Object> bl = ImgUrlUtil.downLoadFromUrl(imgurl, ShortUID, savePath);
-                    if ((Boolean) bl.get("res") == true) {
-                        msg.setCode("200");
-                        msg.setData(bl.get("imgPath"));
-                        return msg;
-                    } else {
-                        if (bl.get("StatusCode").equals("110403")) {
-                            msg.setInfo("该链接非图像文件，无法上传");
-                        } else {
-                            msg.setInfo("该链接暂时无法上传");
-                        }
-                        msg.setCode("500");
-                    }
+    public static Msg uploadForURL(HttpServletRequest request, String imgurls,String referer) {
+        final Msg msg = new Msg();
+        String url = imgurls;
+        // 先判断是不是有效链接  并且自动判断协议头http(s)://
+        GetProtocol getProtocol = new GetProtocol();
+        String protocol = getProtocol.getProtocol(url,referer);
+        if (protocol == null) {
+            msg.setInfo("服务器解析该链接失败");
+            msg.setCode("500");
+            return msg;
+        } else {
+            url = protocol;
+        }
+        Long imgsize = 0L;
+        try {
+            if (imgsize == 0) {
+                String ShortUID = SetText.getShortUuid();
+                String savePath =
+                        request.getSession().getServletContext().getRealPath("/")
+                                + File.separator
+                                + "hellohaotmp"
+                                + File.separator;
+                Map<String, Object> bl = ImgUrlUtil.downLoadFromUrl(url,referer, ShortUID, savePath);
+                if ((Boolean) bl.get("res") == true) {
+                    //                        File file = new File();
+                    msg.setCode("200");
+                    msg.setData(bl.get("imgPath")); // savePath + File.separator + ShortUID
+                    return msg;
                 } else {
+                    if (bl.get("StatusCode").equals("110403")) {
+                        msg.setInfo("该链接非图像文件，无法上传");
+                    } else {
+                        msg.setInfo("该链接暂时无法上传");
+                    }
                     msg.setCode("500");
-                    msg.setInfo("获取资源失败");
                 }
-            } catch (Exception e) {
+            } else {
                 msg.setCode("500");
                 msg.setInfo("获取资源失败");
             }
-        } else {
+        } catch (Exception e) {
             msg.setCode("500");
-            msg.setInfo("该链接无效");
+            msg.setInfo("获取资源失败");
         }
 
         return msg;
