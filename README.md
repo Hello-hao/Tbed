@@ -173,7 +173,7 @@
 [^_^]: ![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
 [^_^]: ![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
 
-### 客户端(win64/mac)
+### 桌面客户端(win/mac)
 
 > `开源版`/`Core版` 都可以使用
 > ![桌面客户端软件](https://upload.cc/i1/2022/07/13/5W8Pxh.png)
@@ -183,7 +183,10 @@
 > 仅适用于对接`Core付费版`，开源版暂不可对接使用。
 > 获取地址：[官网获取](https://www.hellohao.cn/pay)
 
-![Hellohao图像托管](https://upload.cc/i1/2022/03/28/Vnp0bT.png)
+
+![Hellohao图像托管](https://hellohao.cn/newassets/img/twechat.png)
+
+[//]: # (![Hellohao图像托管]&#40;https://upload.cc/i1/2022/03/28/Vnp0bT.png&#41;)
 
 
 ### 运行环境
