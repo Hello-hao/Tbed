@@ -181,7 +181,7 @@
 ### 微信小程序
 
 > 仅适用于对接`Core付费版`，开源版暂不可对接使用。
-
+> 获取地址：[官网获取](https://www.hellohao.cn/pay)
 
 ![Hellohao图像托管](https://upload.cc/i1/2022/03/28/Vnp0bT.png)
 
