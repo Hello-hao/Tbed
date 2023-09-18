@@ -47,7 +47,7 @@ public class IndexController {
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序(开源版)");
-        model.addAttribute("version", "20230622");
+        model.addAttribute("version", "20230918");
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
         model.addAttribute("links", "https://github.com/Hello-hao/tbed");
         return "welcome";
@@ -311,6 +311,29 @@ public class IndexController {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("codeKey", uid);
             jsonObject.put("codeImg", captcha.getImageBase64());
+            msg.setData(jsonObject);
+            return msg;
+        } catch (Exception e) {
+            e.printStackTrace();
+            msg.setCode("500");
+            return msg;
+        }
+    }
+
+    @PostMapping(value = {"/verifyCodeFortowSendEmail","/wechat/verifyCodeFortowSendEmail"})
+    @ResponseBody
+    public Msg verifyCodeFortowSendEmail() {
+        Msg msg = new Msg();
+        try {
+            ShearCaptcha captcha = CaptchaUtil.createShearCaptcha(90, 35, 2, 2);
+            // 自定义验证码内容为四则运算方式
+            captcha.setGenerator(new MathGenerator(1));
+            String code = getVerifyCodeOperator(captcha.getCode());
+            String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
+            iRedisService.setValue("verifyCodeFortowSendEmail_"+uid,code);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("codeKey",uid);
+            jsonObject.put("codeImg",captcha.getImageBase64());
             msg.setData(jsonObject);
             return msg;
         } catch (Exception e) {

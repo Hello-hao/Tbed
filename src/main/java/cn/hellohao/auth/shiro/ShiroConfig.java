@@ -31,6 +31,7 @@ public class ShiroConfig {
         filterMap.put("/verifyCode","anon");
         filterMap.put("/verifyCodeForRegister","anon");
         filterMap.put("/verifyCodeForRetrieve","anon");
+        filterMap.put("/verifyCodeFortowSendEmail","anon");
         filterMap.put("/api/**","anon");
         filterMap.put("/user/**","anon");
         filterMap.put("/ota/**","anon");

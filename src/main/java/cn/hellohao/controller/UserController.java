@@ -16,6 +16,8 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -44,6 +46,7 @@ public class UserController {
     private SysConfigService sysConfigService;
     @Autowired
     IRedisService iRedisService;
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @PostMapping("/register")
     @ResponseBody
@@ -143,6 +146,57 @@ public class UserController {
         return msg;
     }
 
+    @PostMapping(value = {"/validateEmail","/wechat/validateEmail"})
+    @ResponseBody
+    public Msg validateEmail(HttpServletRequest httpServletRequest,@RequestParam(value = "data", defaultValue = "") String data) {
+        Msg msg = new Msg();
+        try {
+            JSONObject jsonObj = JSONObject.parseObject(data);
+            String email = jsonObj.getString("email");
+            String towSendEmailCode = jsonObj.getString("towSendEmailCode");
+            Object verifyCodeFortowSendEmail =iRedisService.getValue("verifyCodeFortowSendEmail_"+httpServletRequest.getHeader("verifyCodeFortowSendEmail"));
+            User u = new User();
+            u.setEmail(email);
+            User user = userService.getUsers(u);
+            if(user.getIsok()!=0){
+                msg.setInfo("不知细叶谁裁出，二月春风似剪刀");
+                return msg;
+            }
+            if(null==verifyCodeFortowSendEmail){
+                msg.setCode("4035");
+                msg.setInfo("验证码已失效，请重新弄获取。");
+                return msg;
+            }else if(null==towSendEmailCode){
+                msg.setCode("4036");
+                msg.setInfo("验证码不能为空。");
+                return msg;
+            }
+            if((verifyCodeFortowSendEmail.toString().toLowerCase()).compareTo((towSendEmailCode.toLowerCase()))==0){
+                //注册完发激活链接
+                final Confdata dataJson = confdataService.selectConfdata("config");
+                JSONObject confdata = JSONObject.parseObject(dataJson.getJsondata());
+                EmailConfig emailConfig = emailConfigService.getemail();
+                Thread thread = new Thread() {
+                    public void run() {
+                        Integer a = NewSendEmail.sendEmail(emailConfig,user.getUsername(), user.getUid(), user.getEmail(),confdata);
+                    }
+                };
+                thread.start();
+                msg.setInfo("邮件已发送,请注意查收邮箱尽快激活账户(如果没收到，请检查垃圾邮件)");
+            }else{
+                msg.setCode("110408");
+                msg.setInfo("验证码不正确");
+                return msg;
+            }
+
+        }catch (Exception e){
+            logger.error("报错位置：/validateEmail",e);
+            msg.setCode("500");
+            msg.setInfo("邮件发送失败");
+        }
+        return msg;
+    }
+
     @PostMapping("/login")//new
     @ResponseBody
     public Msg login(HttpServletRequest httpServletRequest,@RequestParam(value = "data", defaultValue = "") String data) {
@@ -184,7 +238,8 @@ public class UserController {
                 User user = (User) SecurityUtils.getSubject().getPrincipal();
                 if(user.getIsok()==0){
                     msg.setInfo("你的账号暂未激活");
-                    msg.setCode("110403");
+                    msg.setData(user.getEmail());
+                    msg.setCode("110402");
                     return msg;
                 }
                 if(user.getIsok()<0){

@@ -10,10 +10,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.BasicHttpAuthenticationFilter;
+
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
 
 /**
  * @author Hellohao
@@ -139,11 +141,16 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                 info = "用户未找到";
             }
             System.err.println("拦截器False-"+info);
-            response.setContentType("application/json;charset=UTF-8");
-            final JSONObject jsonObject = new JSONObject();
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpServletResponse.SC_OK);
+            httpServletResponse.setCharacterEncoding("UTF-8");
+            httpServletResponse.setContentType("application/json");
+            PrintWriter writer = httpServletResponse.getWriter();
+            JSONObject jsonObject = new JSONObject();
             jsonObject.put("code",this.CODE);
             jsonObject.put("info",info);
-            response.getWriter().write(jsonObject.toJSONString());
+            writer.write(jsonObject.toJSONString());
+            writer.flush();
         } catch (Exception e) {
             System.out.println("返回token验证失败403请求，报异常了");
         }
