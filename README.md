@@ -12,7 +12,7 @@
 
 ### 引导
 
-[官网](https://tbed.hellohao.cn) | [论坛](http://bbs.hellohao.cn) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn) | [桌面客户端](https://tbed.hellohao.cn/app) | [前端源码](https://github.com/Hello-hao/tbed-web)
+[官网](https://tbed.hellohao.cn) | [文档](https://doc.hellohao.cn) | [演示站](https://pic.hellohao.cn) | [桌面客户端](https://tbed.hellohao.cn/app) | [微信小程序](https://tbed.hellohao.cn/wechat) | [前端源码](https://github.com/Hello-hao/tbed-web)
 
 
 ### 前言
@@ -28,15 +28,9 @@
 [Core版](https://hellohao.cn)：开源版的基础上增加`Backblaze(B2)` 并且可`同个对象存储商家`可开多个存储源（可添加至90+存储源）
 
     
-### 更新日志 `20230918`
+### 更新日志 `20230905`
 
-- 修复首页批量复制窗点击复制报错
-- 调整菜单个人相册名字为相册空间
-- 调整首页UI宽度
-- 优化代码未激活账号登录时提示重新激活
-- docker-compose方式部署添加数据库用户名配置项
-- 修改拦截器写入响应数据时逻辑
-- 优化图像链接转存功能
+- 修复一些sql异常错误的问题
 
 
 [^_^]: 程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
@@ -109,6 +103,8 @@
          - /HellohaoData/:/HellohaoData/
        environment:
          MYSQL_URL: jdbc:mysql://hellohaodb/tbed?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+         # 数据库用户名（一般使用本镜像数据库无需修改，如果使用外部三方数据库自行修改自己的用户名）
+         MYSQL_USERNAME: root
          # 自定设置一个MySQL的密码，请保证与下方 POSTGRES_PASSWORD 的变量值一致
          MYSQL_PASS: tIaNGg@SHa&hIo56
          # 前端域名(反代10089端口的域名)

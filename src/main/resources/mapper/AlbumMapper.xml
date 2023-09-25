@@ -9,11 +9,12 @@
         FROM
         `album`
         <where>
+            1=1
             <if test="albumkey != null">
-                `albumkey` = #{albumkey}
+                and `albumkey` = #{albumkey}
             </if>
             <if test="userid != null">
-                `userid` = #{userid}
+                and `userid` = #{userid}
             </if>
         </where>
     </select>
@@ -38,14 +39,15 @@
         u.username
         FROM `album` a LEFT JOIN user u on a.userid = u.id
         <where>
+           1=1
             <if test="albumkey != null">
-                `albumkey` like '%${albumkey}%'
+                and `albumkey` like '%${albumkey}%'
             </if>
             <if test="username != null">
-                `username` like '%${username}%'
+                and `username` like '%${username}%'
             </if>
             <if test="userid != null">
-                a.userid = #{userid}
+                and a.userid = #{userid}
             </if>
         </where>
         order by a.createdate
