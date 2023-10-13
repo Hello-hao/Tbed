@@ -28,7 +28,7 @@
 [Core版](https://hellohao.cn)：开源版的基础上增加`Backblaze(B2)` 并且可`同个对象存储商家`可开多个存储源（可添加至90+存储源）
 
     
-### 更新日志 `20230905`
+### 更新日志 `20230925`
 
 - 修复一些sql异常错误的问题
 
@@ -210,6 +210,8 @@
 - Shiro
 
 ### 声明
+Hellohao图像托管已申请[**中国国家版权局计算机软件著作权**](https://register.ccopyright.com.cn/query.html)登记，受法律法规保护。
+> 登记号：2023SR1210640
 
 本项目遵循[GNU Affero General Public License v3.0](https://choosealicense.com/licenses/agpl-3.0/#)开源协议，使用前请悉知。
 如果你想商用或程序定制，请先与我们联系，分享你的利益。
