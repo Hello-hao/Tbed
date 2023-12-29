@@ -44,10 +44,11 @@ public class IndexController {
     @Autowired private IRedisService iRedisService;
     @Autowired private AppClientService appClientService;
 
+    public static String version =  "20230925";
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序(开源版)");
-        model.addAttribute("version", "20230925");
+        model.addAttribute("version", version);
         model.addAttribute("ip", GetIPS.getIpAddr(httpServletRequest));
         model.addAttribute("links", "https://github.com/Hello-hao/tbed");
         return "welcome";
@@ -64,6 +65,7 @@ public class IndexController {
         JSONObject jsonObject = new JSONObject();
         AppClient appClient = appClientService.getAppClientData("app");
         jsonObject.put("webname", cd.getString("webname"));
+        jsonObject.put("version",version);
         jsonObject.put("websubtitle", cd.getString("websubtitle"));
         jsonObject.put("keywords", cd.getString("keywords"));
         jsonObject.put("webms", cd.getString("webms"));
@@ -79,6 +81,7 @@ public class IndexController {
         jsonObject.put("clientname", appClient.getAppname());
         jsonObject.put("clientlogo", appClient.getApplogo());
         jsonObject.put("appupdate", appClient.getAppupdate());
+        jsonObject.put("serverVersion",version);
         msg.setData(jsonObject);
         return msg;
     }
@@ -380,7 +383,7 @@ public class IndexController {
                 return msg;
             }
         }
-        msg = deleimages.dele(null, image.getId());
+        msg = deleimages.dele(false,null, image.getId());
         List<Long> Delids = (List<Long>) msg.getData();
         if (!Delids.contains(image.getId())) {
             msg.setCode("500");

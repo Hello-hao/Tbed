@@ -467,6 +467,7 @@ public class AdminController {
         JSONObject jsonObj = JSONObject.parseObject(data);
         String images = jsonObj.getString("images");
         String uuid = jsonObj.getString("uuid");
+        Boolean forceDel = jsonObj.getBoolean("forceDel")==null?false:jsonObj.getBoolean("forceDel");
         if (images == null) {
             msg.setCode("404");
             msg.setInfo("为获取到图像信息");
@@ -499,7 +500,7 @@ public class AdminController {
         if (imgIds.size() == 0) {
             msg.setCode("110404");
         } else {
-            deleimages.dele(uuid, imgIds.stream().toArray(Long[]::new));
+            deleimages.dele(forceDel,uuid, imgIds.stream().toArray(Long[]::new));
             msg.setCode("200");
         }
         return msg;

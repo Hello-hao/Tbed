@@ -8,7 +8,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -24,7 +23,7 @@ public class JWTUtil {
 
     public static String createToken(User user){
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND,604800 );//单位秒，604800 为7天
+        calendar.add(Calendar.SECOND,2592000 );//单位秒
         Algorithm algorithm = Algorithm.HMAC256(SECRET);
         String token = JWT.create()
                 .withClaim("email", user.getEmail())

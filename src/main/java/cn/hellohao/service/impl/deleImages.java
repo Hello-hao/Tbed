@@ -32,7 +32,7 @@ public class deleImages {
   @Autowired private KeysServiceImpl keysService;
   @Autowired private IRedisService iRedisService;
 
-  public Msg dele(String uuid, Long... imgIds) {
+  public Msg dele(boolean forceDel,String uuid, Long... imgIds) {
     Msg msg = new Msg();
     MyProgress myProgress = new MyProgress();
     myProgress.InitializeDelImg();
@@ -44,6 +44,20 @@ public class deleImages {
       boolean isDele = false;
       try {
         Images image = imgService.selectByPrimaryKey(imgIds[i]);
+        if (!forceDel) {
+          try {
+            imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
+            imgTempService.delImgAndExp(image.getImguid());
+            imgService.deleimg(image.getId());
+            ids.add(image.getId());
+            successCount++;
+            System.out.println("删除成功加一个" + image.getId());
+          } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(image.getImgname() + ":图片数据库记录时发生错误");
+            errorIds.add(image.getImgurl());
+          }
+        }
         Keys key = keysService.selectKeys(image.getSource());
         if (key.getStorageType() == 1) {
           isDele = nosImageupload.delNOS(key.getId(), image);
@@ -64,20 +78,21 @@ public class deleImages {
         } else {
           System.err.println("未获取到对象存储参数，删除失败。");
         }
-//        if (isDele) {
-        try {
-          imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
-          imgTempService.delImgAndExp(image.getImguid());
-          imgService.deleimg(image.getId());
-          ids.add(image.getId());
-          successCount++;
-          System.out.println("删除成功加一个" + image.getId());
-        } catch (Exception e) {
-          e.printStackTrace();
-          System.err.println(image.getImgname() + ":图片数据库记录时发生错误");
-          errorIds.add(image.getImgurl());
+        if (!forceDel) {
+          try {
+            imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
+            imgTempService.delImgAndExp(image.getImguid());
+            imgService.deleimg(image.getId());
+            ids.add(image.getId());
+            successCount++;
+            System.out.println("删除成功加一个" + image.getId());
+          } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println(image.getImgname() + ":图片数据库记录时发生错误");
+            errorIds.add(image.getImgurl());
+          }
         }
-//        }
+
         if(uuid!=null){
           myProgress.setDelSuccessCount(successCount);
           myProgress.setDelSuccessImgList(ids);

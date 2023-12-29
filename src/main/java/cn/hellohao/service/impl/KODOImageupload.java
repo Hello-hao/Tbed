@@ -5,10 +5,10 @@ import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.ReturnImage;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
-import com.qiniu.common.Zone;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
 import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.model.FileInfo;
@@ -28,18 +28,7 @@ public class KODOImageupload {
     public ReturnImage ImageuploadKODO(
             Map<Map<String, String>, File> fileMap, String username, Integer keyID) {
         ReturnImage returnImage = new ReturnImage();
-        Configuration cfg;
-        if (key.getEndpoint().equals("1")) {
-            cfg = new Configuration(Zone.zone0());
-        } else if (key.getEndpoint().equals("2")) {
-            cfg = new Configuration(Zone.zone1());
-        } else if (key.getEndpoint().equals("3")) {
-            cfg = new Configuration(Zone.zone2());
-        } else if (key.getEndpoint().equals("4")) {
-            cfg = new Configuration(Zone.zoneNa0());
-        } else {
-            cfg = new Configuration(Zone.zoneAs0());
-        }
+        Configuration cfg = new Configuration(Region.autoRegion());
         UploadManager uploadManager = new UploadManager(cfg);
         Auth auth = Auth.create(key.getAccessKey(), key.getAccessSecret());
         String upToken = auth.uploadToken(key.getBucketname(), null, 7200, null);
@@ -76,41 +65,25 @@ public class KODOImageupload {
 
     public static Integer Initialize(Keys k) {
         int ret = -1;
-        if (org.apache.commons.lang3.StringUtils.isBlank(k.getAccessKey())
-                || org.apache.commons.lang3.StringUtils.isBlank(k.getAccessSecret())
-                || org.apache.commons.lang3.StringUtils.isBlank(k.getEndpoint())
-                || org.apache.commons.lang3.StringUtils.isBlank(k.getBucketname())
+        if (StringUtils.isBlank(k.getAccessKey())
+                || StringUtils.isBlank(k.getAccessSecret())
+                || StringUtils.isBlank(k.getEndpoint())
+                || StringUtils.isBlank(k.getBucketname())
                 || StringUtils.isBlank(k.getRequestAddress())) {
             return -1;
         }
-        Configuration cfg;
-        if (k.getEndpoint().equals("1")) {
-            cfg = new Configuration(Zone.zone0());
-        } else if (k.getEndpoint().equals("2")) {
-            cfg = new Configuration(Zone.zone1());
-        } else if (k.getEndpoint().equals("3")) {
-            cfg = new Configuration(Zone.zone2());
-        } else if (k.getEndpoint().equals("4")) {
-            cfg = new Configuration(Zone.zoneNa0());
-        } else {
-            cfg = new Configuration(Zone.zoneAs0());
-        }
+        Configuration cfg = new Configuration(Region.autoRegion());
         UploadManager uploadManager = new UploadManager(cfg);
         Auth auth = Auth.create(k.getAccessKey(), k.getAccessSecret());
-        String upToken =
-                auth.uploadToken(
-                        k.getBucketname(),
-                        null,
-                        7200,
-                        null); // auth.uploadToken(k.getBucketname());
-        BucketManager bmObj = new BucketManager(auth, cfg);
+        String upToken = auth.uploadToken(k.getBucketname(), null, 7200, null);
+        BucketManager BM = new BucketManager(auth, cfg);
         BucketManager.FileListIterator fileListIterator = null;
         try {
-            fileListIterator = bmObj.createFileListIterator(k.getBucketname(), "", 1, "/");
+            fileListIterator = BM.createFileListIterator(k.getBucketname(), "", 1, "/");
             FileInfo[] items = fileListIterator.next();
             if (items != null) {
                 ret = 1;
-                bucketManager = bmObj;
+                bucketManager = BM;
                 key = k;
             }
         } catch (Exception e) {
