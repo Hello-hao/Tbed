@@ -44,7 +44,7 @@ public class deleImages {
       boolean isDele = false;
       try {
         Images image = imgService.selectByPrimaryKey(imgIds[i]);
-        if (!forceDel) {
+        if (forceDel) {
           try {
             imgAndAlbumService.deleteImgAndAlbum(image.getImgurl());
             imgTempService.delImgAndExp(image.getImguid());

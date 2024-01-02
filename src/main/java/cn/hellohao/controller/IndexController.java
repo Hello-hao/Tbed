@@ -44,7 +44,7 @@ public class IndexController {
     @Autowired private IRedisService iRedisService;
     @Autowired private AppClientService appClientService;
 
-    public static String version =  "20230925";
+    public static String version =  "20240102";
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序(开源版)");
@@ -65,6 +65,7 @@ public class IndexController {
         JSONObject jsonObject = new JSONObject();
         AppClient appClient = appClientService.getAppClientData("app");
         jsonObject.put("webname", cd.getString("webname"));
+        jsonObject.put("systype","free");
         jsonObject.put("version",version);
         jsonObject.put("websubtitle", cd.getString("websubtitle"));
         jsonObject.put("keywords", cd.getString("keywords"));
@@ -85,7 +86,7 @@ public class IndexController {
         msg.setData(jsonObject);
         return msg;
     }
-    @PostMapping("/uploadChunkFile")
+    @PostMapping(value = {"/uploadChunkFile","/client/uploadChunkFile"})
     @ResponseBody
     @CrossOrigin
     public Msg uploadChunk(HttpServletRequest request,Chunk chunk) {
@@ -108,7 +109,7 @@ public class IndexController {
         }
     }
 
-    @PostMapping("/processFile")
+    @PostMapping(value = {"/processFile","/client/processFile"})
     @ResponseBody
     @CrossOrigin
     public Msg processFile(HttpServletRequest request,@RequestParam(value = "data", defaultValue = "") String data){
