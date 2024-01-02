@@ -4,7 +4,7 @@
 
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
-![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
+![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square) 
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
 >:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
@@ -28,9 +28,17 @@
 [Core版](https://hellohao.cn)：开源版的基础上增加`Backblaze(B2)` 并且可`同个对象存储商家`可开多个存储源（可添加至90+存储源）
 
     
-### 更新日志 `20230925`
+### 更新日志 `20240102`
 
-- 修复一些sql异常错误的问题
+- 重构：相册页面UI显示效果
+- 新增：相册页支持拖拽移动目录并支持了目录相互移动
+- 新增：删除功能新增了强制删除选项
+- 优化：大图片上传逻辑判断及展示效果
+- 调整：用户个人信息失效时间，提高用户体验
+- 调整：去除前端浏览器控制台输出Slogan
+- 优化：七牛云存储源兼容了新地区的对接
+- 优化：用户体验操作或提示
+- 优化：系统处理图片的逻辑
 
 
 [^_^]: 程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
