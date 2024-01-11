@@ -131,10 +131,9 @@ public class ImgServiceImpl implements ImgService {
         if(sysConfig.getCheckduplicate().equals("1")){
             //查重
             Images img = new Images();
-            img.setUserid(user.getId());
+            img.setUserid(user==null?0:user.getId());
             img.setMd5key(images.getMd5key());
             List<Images> list = imgMapper.selectImgUrlByMD5(img);
-            jsonObject.put("url", list.get(0).getImgurl());
             if (list.size() > 0) {
                 jsonObject.put("url", list.get(0).getImgurl());
                 jsonObject.put("name", flilename);

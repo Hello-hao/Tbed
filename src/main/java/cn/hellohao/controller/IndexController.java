@@ -44,7 +44,7 @@ public class IndexController {
     @Autowired private IRedisService iRedisService;
     @Autowired private AppClientService appClientService;
 
-    public static String version =  "20240102";
+    public static String version =  "20240111";
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序(开源版)");

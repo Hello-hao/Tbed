@@ -129,6 +129,11 @@ public class UploadServicel {
                     }
                 }
             }
+            // 判断路径格式 处理一下，去掉最前面的/
+            String RootPath = key.getRootPath().replace(" ", "");
+            if (!RootPath.equals("/")) {
+                updatePath = RootPath.substring(1) + "/" + updatePath;
+            }
             // 先存数据库
             Images imgObj = new Images();
             String imgnameEd = null;
@@ -176,6 +181,7 @@ public class UploadServicel {
             }
 
             long stime = System.currentTimeMillis();
+            System.out.println("上传前地址："+updatePath);
             ReturnImage returnImage = getSource.storageSource(key.getStorageType(), map, updatePath, key.getId());
             if (returnImage.getCode().equals("200")) {
                 long etime = System.currentTimeMillis();
@@ -215,7 +221,6 @@ public class UploadServicel {
             String md5 = jsonObj.getString("md5");
             String classifications = jsonObj.getString("classifications");
             Integer day = jsonObj.getInteger("day");
-            String source = jsonObj.getString("source");
             String imgIdentifier = jsonObj.getString("imgIdentifier");
             JSONArray jsonArray = new JSONArray();
             classifications = classifications==null?"":classifications;
