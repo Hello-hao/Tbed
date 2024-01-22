@@ -1,7 +1,7 @@
 # Hellohao图像托管 - 也许这会是最优秀的图像托管程序
 
 <p align="center">
-  <a href="https://www.eltyun.com/" target="_blank">
+  <a href="https://www.hellohao.cn/" target="_blank">
     <img width="1920px" src="https://upload.cc/i1/2022/02/11/HSg5tX.png">
   </a>
 </p>
