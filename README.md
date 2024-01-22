@@ -35,9 +35,6 @@
 - 优化页面部分提示
 
 
-[^_^]: 程序宣传视频：[自制宣传视频](https://www.bilibili.com/video/BV11r4y1y7mH/)
-
-
 ### 主要功能
 
 - [x] 全端支持，不限于(`web端`/`桌面端Windows/Mac`/`移动端小程序`)
