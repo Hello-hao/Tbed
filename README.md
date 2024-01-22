@@ -12,7 +12,7 @@
 
 >:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
 
-<h3 align="center">赞助商:hearts:</h3>
+<h3 align="center">赞助商</h3>
 
 <p align="center">
   <a href="https://www.eltyun.com/" target="_blank">
