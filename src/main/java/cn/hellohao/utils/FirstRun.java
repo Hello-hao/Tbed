@@ -112,16 +112,28 @@ public class FirstRun implements InitializingBean {
             Print.Normal("Add table.confdata");
         }
         Integer ret7 =
-                RunSqlScript.RunSelectCount(judgeTable + " 'SysTransmit' and column_name = 'keys'");
+                RunSqlScript.RunSelectCount(judgeTable + " 'keys' and column_name = 'SysTransmit'");
         if (ret7 == 0) {
             RunSqlScript.RunInsert(sql7);
             Print.Normal("Add keys.SysTransmit");
         }
         Integer ret8 =
-                RunSqlScript.RunSelectCount(judgeTable + " 'brieflink' and column_name = 'imgdata'");
+                RunSqlScript.RunSelectCount(judgeTable + " 'imgdata' and column_name = 'brieflink'");
         if (ret8 == 0) {
             RunSqlScript.RunInsert(sql8);
             Print.Normal("Add imgdata.brieflink");
+        }
+        Integer ret9 =
+                RunSqlScript.RunSelectCount(judgeTable + " 'imgdata' and column_name = 'shortlink'");
+        if (ret9 == 0) {
+            RunSqlScript.RunInsert(sql9);
+            Print.Normal("Add imgdata.shortlink");
+        }
+        Integer ret10 =
+                RunSqlScript.RunSelectCount(" select count(*) from tbed.keys where storageType='9'");
+        if (ret10 == 0) {
+            RunSqlScript.RunInsert(sql10);
+            Print.Normal("Add Webdav Config");
         }
         RunSqlScript.RunInsert(index_imgdata);
         RunSqlScript.RunInsert("ALTER TABLE tbed.`user` MODIFY id int auto_increment;");
@@ -145,8 +157,9 @@ public class FirstRun implements InitializingBean {
     private String sql7 =
             "alter table `keys` add SysTransmit varchar(50) DEFAULT NULL ;";
     private String sql8 = "alter table `imgdata` add brieflink varchar(100) DEFAULT null ;";
+    private String sql9 = "alter table `imgdata` add shortlink varchar(100) DEFAULT null ;";
     //  图片标识名字段
-    private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
+    private String sql10 = "INSERT INTO `tbed`.`keys`(`id`, `AccessKey`, `AccessSecret`, `Endpoint`, `Bucketname`, `RequestAddress`, `storageType`, `keyname`, `Region`, `RootPath`, `SysTransmit`) VALUES (null, '账号', '密码', '连接', '', '存储源请求域名', 9, 'WebDAV', NULL, '/', NULL);";
 
     private String sql12 = "alter table tbed.user add `token` varchar(255)";
     //创建客户端程序相关表

@@ -1,6 +1,5 @@
 package cn.hellohao.service.impl;
 
-import cn.hellohao.auth.v.GlobalConstant;
 import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Keys;
@@ -8,9 +7,7 @@ import cn.hellohao.pojo.Msg;
 import cn.hellohao.pojo.ReturnImage;
 import cn.hellohao.service.ImgService;
 import cn.hellohao.service.KeysService;
-import cn.hellohao.utils.Print;
 import cn.hellohao.utils.TypeDict;
-import com.aliyun.oss.OSS;
 import com.github.sardine.impl.methods.HttpMkCol;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
@@ -154,7 +151,6 @@ public class WebDAVImageupload {
     }
 
     public Boolean delWebDAV(Integer keyID, Images images) {
-        CloseableHttpClient httpClient = (CloseableHttpClient)GlobalConstant.KeyMap.get(keyID).getObject();
         boolean b = true;
         try {
             Keys keys = keysService.selectKeys(images.getSource());
@@ -179,22 +175,16 @@ public class WebDAVImageupload {
     }
 
 
-    public ResponseEntity<InputStreamResource> getWebDAV(String shortUuid,String brieflink) {
+    public ResponseEntity<InputStreamResource> getWebDAV(String shortUuid) {
         boolean b = true;
         try {
             Images images = null;
-            if(StringUtils.isBlank(shortUuid)){
-                images = imgService.selectImgByBrieflink(brieflink);
-            }else{
-//                images = imgService.selectImgUrlByImgUID(imgUID);
-                images = imgService.selectImgByShortlink(shortUuid);
-            }
+            images = imgService.selectImgByShortlink(shortUuid);
             Keys keys = keysService.selectKeys(images.getSource());
             String rootPath = keys.getRootPath().equals("/")?"":keys.getRootPath();
-            String fileUrl = StringUtils.isBlank(shortUuid)?keys.getEndpoint()+"/"+images.getBriefimgname():keys.getEndpoint()+"/"+images.getImgname();
+            String fileUrl = keys.getEndpoint()+"/"+images.getImgname();
             HttpGet httpGet = new HttpGet(fileUrl);
             HttpResponse response = httpClient.execute(httpGet);
-
 //            if (sardine.exists(keys.getEndpoint() + images.getImgname())) {
 //                InputStream inputStream = sardine.get(keys.getEndpoint() + images.getImgname());
                 HttpHeaders headers = new HttpHeaders();
