@@ -1,4 +1,4 @@
-# Hellohao图像托管程序 - 也许这会是最优秀的图床程序
+# Hellohao图像托管 - 也许这会是最优秀的图像托管程序
 
 <p align="center">
   <a href="https://www.eltyun.com/" target="_blank">
@@ -10,8 +10,6 @@
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
->:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
-
 <h3 align="center">赞助商</h3>
 
 <p align="center">
@@ -20,6 +18,7 @@
   </a>
 </p>
 
+>:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
 
 
 ### 引导
