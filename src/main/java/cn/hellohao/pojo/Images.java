@@ -39,6 +39,8 @@ public class Images {
     private String idname;
     private Integer isRepeat;//如果没有开启查重的时候他是0，开启为1
     private String searchname;
+    private String brieflink;
+    private String shortlink;
     private String order;
 }
 	

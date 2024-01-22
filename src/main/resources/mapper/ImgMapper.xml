@@ -126,12 +126,13 @@
             `format`,
             about,
             violation,
-            idname
+            idname,
+            brieflink,
+            shortlink
         )
         VALUES (null, #{imgname}, #{imgurl}, #{userid}, #{updatetime},#{sizes},#{abnormal},#{source},#{imgtype},
-                #{explains},#{md5key},#{imguid},#{format},#{about},null,#{idname})
+                #{explains},#{md5key},#{imguid},#{format},#{about},null,#{idname},#{brieflink},#{shortlink})
     </insert>
-
 
     <!-- 此用户下总数 -->
     <select id="countimg" parameterType="integer" resultType="integer">
@@ -148,6 +149,14 @@
 
     <select id="selectByPrimaryKey" parameterType="Long" resultType="cn.hellohao.pojo.Images">
         select * from imgdata where id = #{id}
+    </select>
+
+    <select id="selectImgByBrieflink" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        select * from imgdata where binary brieflink = #{brieflink}
+    </select>
+
+    <select id="selectImgByShortlink" parameterType="string" resultType="cn.hellohao.pojo.Images">
+        select * from imgdata where binary shortlink = #{shortlink}
     </select>
 
     <select id="counts" resultType="integer">

@@ -39,8 +39,6 @@ public class GetCurrentSource {
         userService = userServiceImpl;
     }
 
-
-
     public static Group GetSource(Integer userid) {
         //UserType 0-未分配 1-游客 2-用户 3-管理员
         User user =null;

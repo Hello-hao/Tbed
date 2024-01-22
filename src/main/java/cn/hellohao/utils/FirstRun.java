@@ -111,6 +111,18 @@ public class FirstRun implements InitializingBean {
             RunSqlScript.RunInsert(instartConfdata);
             Print.Normal("Add table.confdata");
         }
+        Integer ret7 =
+                RunSqlScript.RunSelectCount(judgeTable + " 'SysTransmit' and column_name = 'keys'");
+        if (ret7 == 0) {
+            RunSqlScript.RunInsert(sql7);
+            Print.Normal("Add keys.SysTransmit");
+        }
+        Integer ret8 =
+                RunSqlScript.RunSelectCount(judgeTable + " 'brieflink' and column_name = 'imgdata'");
+        if (ret8 == 0) {
+            RunSqlScript.RunInsert(sql8);
+            Print.Normal("Add imgdata.brieflink");
+        }
         RunSqlScript.RunInsert(index_imgdata);
         RunSqlScript.RunInsert("ALTER TABLE tbed.`user` MODIFY id int auto_increment;");
         Print.Normal("Stage success");
@@ -130,10 +142,9 @@ public class FirstRun implements InitializingBean {
     private String sql3 ="CREATE TABLE `imgandalbum`  (`imgname` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,`albumkey` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic";
     private String sql4 ="CREATE TABLE `album`  (`albumkey` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,`albumtitle` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,`createdate` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, `password` varchar(5000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic";
     private String sql6 = "alter table imgdata add explains varchar(5000)";
-    //添加album表字段userid
-    private String sql7 = "alter table album add userid int(10)";
-    //添加imgdata表字段md5key
-    private String sql8 = "alter table imgdata add md5key varchar(5000)";
+    private String sql7 =
+            "alter table `keys` add SysTransmit varchar(50) DEFAULT NULL ;";
+    private String sql8 = "alter table `imgdata` add brieflink varchar(100) DEFAULT null ;";
     //  图片标识名字段
     private String sql11 = "alter table `imgdata` add idname varchar(255) DEFAULT '未命名' ;";
 

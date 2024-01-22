@@ -14,5 +14,6 @@ public class Keys {
     private Integer storageType;
     private String keyname;
     private String RootPath;//存入的目录
+    private Boolean SysTransmit;
 
 }

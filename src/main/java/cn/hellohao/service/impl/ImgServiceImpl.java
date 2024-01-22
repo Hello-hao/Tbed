@@ -47,6 +47,16 @@ public class ImgServiceImpl implements ImgService {
     }
 
     @Override
+    public Images selectImgByBrieflink(String brieflink) {
+        return imgMapper.selectImgByBrieflink(brieflink);
+    }
+
+    @Override
+    public Images selectImgByShortlink(String shortlink) {
+        return imgMapper.selectImgByShortlink(shortlink);
+    }
+
+    @Override
     public Integer counts(Integer userid) {
         // TODO Auto-generated method stub
         return imgMapper.counts(userid);

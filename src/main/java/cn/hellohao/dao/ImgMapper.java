@@ -22,6 +22,10 @@ public interface ImgMapper {
 
     Images selectByPrimaryKey(@Param("id") Long id);
 
+    Images selectImgByBrieflink(@Param("brieflink") String brieflink);
+
+    Images selectImgByShortlink(@Param("shortlink") String shortlink);
+
     Integer counts(@Param("userid") Integer userid);
 
     Integer setImg(Images images);

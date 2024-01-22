@@ -51,6 +51,8 @@ public class GetSource {
                 returnImage =  ftpService.FtpUploadFile(fileMap, userpath,keyID);
             }else if(type==8){
                 returnImage =  s3Imageupload.ImageuploadS3(fileMap, userpath,keyID);
+            }else if(type==9){
+                returnImage =  s3Imageupload.ImageuploadS3(fileMap, userpath,keyID);
             }
             else{
                 new StorageSourceInitException("GetSource类捕捉异常：未找到存储源");

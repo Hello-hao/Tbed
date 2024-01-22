@@ -3,6 +3,7 @@ package cn.hellohao.service;
 
 import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +21,10 @@ public interface ImgService {
     Integer countimg(Integer userid);
 
     Images selectByPrimaryKey(Long id);
+
+    Images selectImgByBrieflink(String brieflink);
+
+    Images selectImgByShortlink(String shortlink);
 
     Integer counts(Integer userid);
 

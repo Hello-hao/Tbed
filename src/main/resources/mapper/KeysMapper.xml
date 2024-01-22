@@ -28,6 +28,7 @@
                     WHEN storageType=6 THEN '腾讯云'
                     WHEN storageType=7 THEN 'FTP'
                     WHEN storageType=8 THEN 'S3协议'
+                    WHEN storageType=9 THEN 'WebDAV'
                     ELSE  '未知' END AS storageName,
                keyname
         FROM `keys`  GROUP BY storageType,id,storageName,keyname
@@ -51,7 +52,8 @@
         RequestAddress = #{RequestAddress},
         keyname = #{keyname},
         Region = #{Region},
-        RootPath = #{RootPath}
+        RootPath = #{RootPath},
+        SysTransmit=#{SysTransmit}
         WHERE
             storageType = #{storageType}
     </update>

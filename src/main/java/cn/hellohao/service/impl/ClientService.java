@@ -132,9 +132,10 @@ public class ClientService {
             Images imgObj = new Images();
             String imgnameEd = null;
             Map<Map<String, String>, File> map = new HashMap<>();
+            String shortUuid_y = SetText.getShortUuid();
+            String shortUuid_s = SetText.getShortUuid();
             if (file.exists()) {
                 Map<String, String> m1 = new HashMap<>();
-                String shortUuid_y = SetText.getShortUuid();
                 m1.put("prefix", prefix);
                 m1.put("name", shortUuid_y);
                 map.put(m1, file);
@@ -167,6 +168,8 @@ public class ClientService {
             imgObj.setMd5key(md5key);
             imgObj.setImguid(imguid);
             imgObj.setFormat(fileMiME.getData().toString());
+            imgObj.setShortlink(shortUuid_y);
+            imgObj.setBrieflink(shortUuid_s);
             imgObj.setIdname(imageFileName);
             Msg insertRet = imgServiceImpl.insertImgDataForCheck(imgObj,u,confdata,file.getName());
             if (insertRet.getCode().equals("000")) {
