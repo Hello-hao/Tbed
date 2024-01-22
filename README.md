@@ -1,13 +1,25 @@
 # Hellohao图像托管程序 - 也许这会是最优秀的图床程序
 
-![宣传图Banner](https://upload.cc/i1/2022/02/11/HSg5tX.png)
-
+<p align="center">
+  <a href="https://www.eltyun.com/" target="_blank">
+    <img width="1920px" src="https://upload.cc/i1/2022/02/11/HSg5tX.png">
+  </a>
+</p>
 
 ![Visual Studio Marketplace Rating (Stars)](https://img.shields.io/visual-studio-marketplace/stars/ritwickdey.LiveServer?style=flat-square)
-![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square) 
+![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
 >:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
+
+<h3 align="center">赞助商:hearts:</h3>
+
+<p align="center">
+  <a href="https://www.eltyun.com/" target="_blank">
+    <img width="350px" src="https://t.tdo.ink/hellohao/s9ugmihq.png">
+  </a>
+</p>
+
 
 
 ### 引导
@@ -27,7 +39,7 @@
 
 [Core版](https://hellohao.cn)：开源版的基础上增加`Backblaze(B2)` 并且可`同个对象存储商家`可开多个存储源（可添加至90+存储源）
 
-    
+
 ### 更新日志 `20240111`
 
 - 修复本地存储源上传失败的情况
