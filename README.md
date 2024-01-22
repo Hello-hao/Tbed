@@ -172,12 +172,6 @@
 
 ![站点设置](https://upload.cc/i1/2022/02/11/Hj7pWM.png)
 
-[^_^]: ![首页](http://img.wwery.com/Hellohao/xI9TSKcI.png)
-[^_^]: ![控制台详情](http://img.wwery.com/Hellohao/klytOMWr.png)
-[^_^]: ![相册](http://img.wwery.com/Hellohao/2UQkXTHw.png)
-[^_^]: ![多存储源](http://img.wwery.com/Hellohao/xXSMlsTg.png)
-[^_^]: ![站点设置](http://img.wwery.com/Hellohao/n5zXistG.png)
-
 ### 桌面客户端(win/mac)
 > 获取地址：[官网获取](https://www.hellohao.cn/app)
 
