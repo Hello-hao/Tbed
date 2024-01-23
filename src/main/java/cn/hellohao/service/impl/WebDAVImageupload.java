@@ -67,9 +67,7 @@ public class WebDAVImageupload {
                 String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
                 Msg fileMiME = TypeDict.FileMiME(file);
-                //webdav不能自动创建目录，上传件先创建目录
                 createDirectories(httpClient, key.getEndpoint(),  "/" + username);
-                //上传文件
                 System.out.println("WebDAV地址："+key.getEndpoint() + "/" + username + "/" + ShortUIDName + "." + prefix);
                 HttpPut httpPut = new HttpPut(key.getEndpoint() + "/" + username + "/" + ShortUIDName + "." + prefix);
                 FileEntity fileEntity = new FileEntity(file, ContentType.DEFAULT_BINARY);
@@ -77,10 +75,7 @@ public class WebDAVImageupload {
                 HttpResponse response = httpClient.execute(httpPut);
                 final int statusCode = response.getStatusLine().getStatusCode();
                 logger.info("WebDav上传响应代码："+statusCode);
-//                System.out.println(response.getStatusLine().getStatusCode());//正常成功201  已经存在204（有可能204还代表其他意思）
-//                System.out.println("File upload response for " + file.getName() + ": " + response.getStatusLine());
                 EntityUtils.consume(response.getEntity());
-//                System.out.println(EntityUtils.toString(response.getEntity(),"UTF-8"));
                 if(statusCode >= 200 && statusCode < 300){
                     returnImage.setCode("200");
                 }else{
@@ -183,19 +178,11 @@ public class WebDAVImageupload {
             String fileUrl = keys.getEndpoint()+"/"+images.getImgname();
             HttpGet httpGet = new HttpGet(fileUrl);
             HttpResponse response = httpClient.execute(httpGet);
-//            if (sardine.exists(keys.getEndpoint() + images.getImgname())) {
-//                InputStream inputStream = sardine.get(keys.getEndpoint() + images.getImgname());
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Content-Type", "image/jpeg");
-//                headers.add("Content-disposition", "attachment; filename=wallhaven-5g6yr3.jpg");
                 return ResponseEntity.ok()
                         .headers(headers)
-                        //.header("Content-disposition", "attachment; filename=Nextcloud.png")
-//                        .header("Content-Type", "image/jpg")
                         .body(new InputStreamResource(response.getEntity().getContent()));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//            }
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
