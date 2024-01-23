@@ -5,6 +5,7 @@ import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
 import cn.hellohao.service.impl.UploadServicel;
+import cn.hellohao.service.impl.WebDAVImageupload;
 import cn.hellohao.service.impl.deleImages;
 import cn.hellohao.utils.GetIPS;
 import cn.hellohao.utils.MyVersion;
@@ -19,6 +20,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +46,7 @@ public class IndexController {
     @Autowired private deleImages deleimages;
     @Autowired private IRedisService iRedisService;
     @Autowired private AppClientService appClientService;
-
+    @Autowired private WebDAVImageupload webDAVImageupload;
     public static String version =  "20240111";
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
@@ -189,6 +192,14 @@ public class IndexController {
         jsonObject.put("urls", retArray);
         retMsg.setData(jsonObject);
         return retMsg;
+    }
+
+    //webdav本地托管
+    @GetMapping("/w/{shortuuid}")
+    public ResponseEntity<InputStreamResource> getNextcloudImage(HttpServletRequest request, @PathVariable("shortuuid") String shortuuid) {
+        ResponseEntity<InputStreamResource> webDAV = webDAVImageupload.getWebDAV(shortuuid);
+        return webDAV;
+
     }
 
     @RequestMapping(value = "/getUploadInfo")

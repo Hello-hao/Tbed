@@ -34,6 +34,8 @@ public class FirstJob {
 	@Autowired
 	private S3Imageupload s3Imageupload;
 	@Autowired
+	private WebDAVImageupload webDAVImageupload;
+	@Autowired
 	private FtpServiceImpl ftpService;
 	@Autowired
 	ImgTempService imgTempService;
@@ -78,6 +80,8 @@ public class FirstJob {
 					firstJob.ftpService.delFTP(keys.getId(), images);
 				}else if(keys.getStorageType()==8){
 					firstJob.s3Imageupload.deleS3(keys.getId(), images);
+				}else if(keys.getStorageType()==9){
+					firstJob.webDAVImageupload.delWebDAV(keys.getId(), images);
 				}else{
 					System.err.println("未获取到对象存储参数，上传失败。");
 				}

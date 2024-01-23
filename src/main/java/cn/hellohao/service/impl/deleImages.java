@@ -26,6 +26,7 @@ public class deleImages {
   @Autowired private USSImageupload ussImageupload;
   @Autowired private S3Imageupload s3Imageupload;
   @Autowired private FtpServiceImpl ftpService;
+  @Autowired private WebDAVImageupload webDAVImageupload;
   @Autowired private ImgAndAlbumService imgAndAlbumService;
   @Autowired private ImgTempService imgTempService;
   @Autowired private ImgService imgService;
@@ -75,6 +76,8 @@ public class deleImages {
           isDele = ftpService.delFTP(key.getId(), image);
         } else if (key.getStorageType() == 8) {
           isDele = s3Imageupload.deleS3(key.getId(), image);
+        }else if (key.getStorageType() == 9) {
+          isDele = webDAVImageupload.delWebDAV(key.getId(), image);
         } else {
           System.err.println("未获取到对象存储参数，删除失败。");
         }
@@ -149,6 +152,8 @@ public class deleImages {
           ftpService.delFTP(key.getId(), image);
         } else if (key.getStorageType() == 8) {
           s3Imageupload.deleS3(key.getId(), image);
+        }else if (key.getStorageType() == 9) {
+          webDAVImageupload.delWebDAV(key.getId(), image);
         } else {
           System.err.println("未获取到对象存储参数，删除失败。");
         }

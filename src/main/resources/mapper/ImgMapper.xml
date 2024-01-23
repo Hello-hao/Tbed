@@ -53,11 +53,11 @@
                     <choose>
                         <when test="selecttype==1">
                             and
-                            a.userid in ( SELECT id  from `user` where username LIKE '%${username}%')
+                            a.userid in ( SELECT id  from `user` where username LIKE CONCAT('%', #{username}, '%'))
                         </when>
                         <otherwise>
                             and
-                            a.userid not in ( SELECT id  from `user` where username LIKE '%${username}%')
+                            a.userid not in ( SELECT id  from `user` where username LIKE CONCAT('%', #{username}, '%'))
                         </otherwise>
                     </choose>
                 </if>
@@ -71,10 +71,10 @@
             and CONCAT(
             imgurl,
             idname
-            ) LIKE '%${searchname}%'
+            ) LIKE CONCAT('%', #{searchname}, '%')
         </if>
         <if test="idname != null and idname !=''">
-            and idname LIKE '%${idname}%'
+            and idname LIKE CONCAT('%', #{idname}, '%')
         </if>
         order by
         <choose>

@@ -47,6 +47,22 @@ public class AdminRootController {
     private ImgreviewService imgreviewService;
     @Autowired
     private AppClientService appClientService;
+    @Autowired
+    private NOSImageupload nOSImageupload;
+    @Autowired
+    private OSSImageupload ossImageupload;
+    @Autowired
+    private USSImageupload ussImageupload;
+    @Autowired
+    private KODOImageupload kodoImageupload;
+    @Autowired
+    private COSImageupload cosImageupload;
+    @Autowired
+    private FtpServiceImpl ftpService;
+    @Autowired
+    private S3Imageupload s3Imageupload;
+    @Autowired
+    private WebDAVImageupload webDAVImageupload;
 
 
     @PostMapping(value = "/getUserList")
@@ -189,19 +205,21 @@ public class AdminRootController {
             Keys key = keysService.selectKeys(keyId);
             Integer ret = 0;
             if (key.getStorageType() == 1) {
-                ret = NOSImageupload.Initialize(key);
+                ret = nOSImageupload.Initialize(key);
             } else if (key.getStorageType() == 2) {
-                ret = OSSImageupload.Initialize(key);
+                ret = ossImageupload.Initialize(key);
             } else if (key.getStorageType() == 3) {
-                ret = USSImageupload.Initialize(key);
+                ret = ussImageupload.Initialize(key);
             } else if (key.getStorageType() == 4) {
-                ret = KODOImageupload.Initialize(key);
+                ret = kodoImageupload.Initialize(key);
             } else if (key.getStorageType() == 6) {
-                ret = COSImageupload.Initialize(key);
+                ret = cosImageupload.Initialize(key);
             } else if (key.getStorageType() == 7) {
-                ret = FtpServiceImpl.Initialize(key);
+                ret = ftpService.Initialize(key);
             } else if (key.getStorageType() == 8) {
-                ret = S3Imageupload.Initialize(key);
+                ret = s3Imageupload.Initialize(key);
+            }else if (key.getStorageType() == 9) {
+                ret = webDAVImageupload.Initialize(key);
             }
             Long l = imgService.getsourcememory(keyId);
             jsonObject.put("isok", ret);
@@ -224,23 +242,6 @@ public class AdminRootController {
     @ResponseBody
     public Msg updateStorage(@RequestParam(value = "data", defaultValue = "") String data) {
         JSONObject jsonObj = JSONObject.parseObject(data);
-//        Integer id = jsonObj.getInteger("id");
-//        String AccessKey = jsonObj.getString("AccessKey");
-//        String AccessSecret = jsonObj.getString("AccessSecret");
-//        String Endpoint = jsonObj.getString("Endpoint");
-//        String Bucketname = jsonObj.getString("Bucketname");
-//        String RequestAddress = jsonObj.getString("RequestAddress");
-//        Integer storageType = jsonObj.getInteger("storageType");
-//        String keyname = jsonObj.getString("keyname");
-//        Keys keys = new Keys();
-//        keys.setId(id);
-//        keys.setAccessKey(AccessKey);
-//        keys.setAccessSecret(AccessSecret);
-//        keys.setEndpoint(Endpoint);
-//        keys.setBucketname(Bucketname);
-//        keys.setRequestAddress(RequestAddress);
-//        keys.setStorageType(storageType);
-//        keys.setKeyname(keyname);
         Keys keys = JSON.toJavaObject(jsonObj,Keys.class);
         Msg msg = keysService.updateKey(keys);
         return msg;

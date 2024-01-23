@@ -1,9 +1,9 @@
 package cn.hellohao.utils;
 
 import org.springframework.web.multipart.MultipartFile;
-import sun.misc.BASE64Decoder;
 
 import java.io.*;
+import java.util.Base64;
 
 /**
  * base64转为multipartFile工具类
@@ -74,21 +74,30 @@ public class Base64ToMultipartFile implements MultipartFile {
      * @return
      */
     public static MultipartFile base64Convert(String base64) {
-        String[] baseStrs = base64.split(",");
+//        String[] baseStrs = base64.split(",");
+//        BASE64Decoder decoder = new BASE64Decoder();
+//        byte[] b = new byte[0];
+//        try {
+//            b = decoder.decodeBuffer(baseStrs[1]);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        for (int i = 0; i < b.length; ++i) {
+//            if (b[i] < 0) {
+//                b[i] += 256;
+//            }
+//        }
+//        return new Base64ToMultipartFile (b, baseStrs[0]);
 
-        BASE64Decoder decoder = new BASE64Decoder();
-        byte[] b = new byte[0];
-        try {
-            b = decoder.decodeBuffer(baseStrs[1]);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String[] baseStrs = base64.split(",");
+        byte[] b = Base64.getDecoder().decode(baseStrs[1]);
         for (int i = 0; i < b.length; ++i) {
             if (b[i] < 0) {
                 b[i] += 256;
             }
         }
-        return new Base64ToMultipartFile (b, baseStrs[0]);
+        return new Base64ToMultipartFile(b, baseStrs[0]);
+
     }
 
 

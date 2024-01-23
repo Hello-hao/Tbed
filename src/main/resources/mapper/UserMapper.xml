@@ -213,7 +213,7 @@
             and CONCAT(
             username,
             email
-            ) LIKE '%${username}%'
+            ) LIKE CONCAT('%', #{username}, '%')
         </if>
         order by birthder desc
     </select>

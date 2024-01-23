@@ -5,7 +5,6 @@ import cn.hellohao.auth.token.JWTUtil;
 import cn.hellohao.config.SysName;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
-import cn.hellohao.utils.Base64Encryption;
 import cn.hellohao.utils.NewSendEmail;
 import cn.hellohao.utils.Print;
 import cn.hellohao.utils.SetText;
@@ -27,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.UUID;
 
@@ -55,7 +55,7 @@ public class UserController {
         JSONObject jsonObj = JSONObject.parseObject(data);
         String username = jsonObj.getString("username");
         String email = jsonObj.getString("email");
-        String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
+        String password = Base64.getEncoder().encodeToString(jsonObj.getString("password").getBytes());
         String verifyCodeForRegister = jsonObj.getString("verifyCode");
         Object redis_verifyCodeForRegister = iRedisService.getValue("verifyCodeForRegister_"+httpServletRequest.getHeader("verifyCodeForRegister"));
         if(!SetText.checkEmail(email)){
@@ -203,7 +203,7 @@ public class UserController {
         Msg msg = new Msg();
         JSONObject jsonObj = JSONObject.parseObject(data);
         String email = jsonObj.getString("email");
-        String password = Base64Encryption.encryptBASE64(jsonObj.getString("password").getBytes());
+        String password = Base64.getEncoder().encodeToString(jsonObj.getString("password").getBytes());
         String verifyCode = jsonObj.getString("verifyCode");
         if(null == email || null == password || null == verifyCode){
             msg.setCode("5000");
@@ -385,7 +385,7 @@ public class UserController {
             User user = userService.getUsers(u2);
             user.setIsok(1);
             String new_pass = HexUtil.decodeHexStr(cip);//解密密码
-            user.setPassword(Base64Encryption.encryptBASE64(new_pass.getBytes()));
+            user.setPassword(Base64.getEncoder().encodeToString(new_pass.getBytes()));
             String uid = UUID.randomUUID().toString().replace("-", "").toLowerCase();
             user.setUid(uid);
             if (user != null) {

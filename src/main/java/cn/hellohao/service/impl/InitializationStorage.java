@@ -58,6 +58,8 @@ public class InitializationStorage implements CommandLineRunner {
                     FtpServiceImpl.Initialize(key);
                 }else if(key.getStorageType()==8){
                     S3Imageupload.Initialize(key);
+                }else if(key.getStorageType()==9){
+                    WebDAVImageupload.Initialize(key);
                 }
             }
         }

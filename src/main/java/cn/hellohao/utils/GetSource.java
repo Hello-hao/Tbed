@@ -31,7 +31,8 @@ public class GetSource {
     FtpServiceImpl ftpService;
     @Autowired
     S3Imageupload s3Imageupload;
-
+    @Autowired
+    WebDAVImageupload webDAVImageupload;
     public ReturnImage storageSource(Integer type, Map<Map<String, String>, File> fileMap, String userpath,Integer keyID){
         ReturnImage returnImage = null;
         try {
@@ -52,7 +53,7 @@ public class GetSource {
             }else if(type==8){
                 returnImage =  s3Imageupload.ImageuploadS3(fileMap, userpath,keyID);
             }else if(type==9){
-                returnImage =  s3Imageupload.ImageuploadS3(fileMap, userpath,keyID);
+                returnImage =  webDAVImageupload.ImageuploadWebDAV(fileMap, userpath,keyID);
             }
             else{
                 new StorageSourceInitException("GetSource类捕捉异常：未找到存储源");

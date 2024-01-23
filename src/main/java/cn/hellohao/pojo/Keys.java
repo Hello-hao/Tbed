@@ -16,4 +16,7 @@ public class Keys {
     private String RootPath;//存入的目录
     private Boolean SysTransmit;
 
+    public Boolean getSysTransmit() {
+        return SysTransmit==null?false:SysTransmit;
+    }
 }

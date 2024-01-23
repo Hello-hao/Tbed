@@ -48,8 +48,6 @@ public class WebDAVImageupload {
     private static Logger logger = LoggerFactory.getLogger(WebDAVImageupload.class);
     public ReturnImage ImageuploadWebDAV(Map<Map<String, String>, File> fileMap, String username,Integer keyID) {
         ReturnImage returnImage = new ReturnImage();
-        CloseableHttpClient httpClient  =null;
-        Keys key = null;
         try {
             if(null==httpClient || null==key){
                 System.out.println("WebDAV = 存储源对象为空");
@@ -100,29 +98,29 @@ public class WebDAVImageupload {
     //webdav初始化
     public static Integer Initialize(Keys k) {
         int ret = -1;
-        if(k.getSysTransmit()==false){
-            if (StringUtils.isBlank(k.getAccessKey())
-                    || StringUtils.isBlank(k.getAccessSecret())
-                    || StringUtils.isBlank(k.getEndpoint())
-                    || StringUtils.isBlank(k.getRequestAddress())) {
-                return -1;
-            }
-        }else{
-            if (StringUtils.isBlank(k.getAccessKey())
-                    || StringUtils.isBlank(k.getAccessSecret())
-                    || StringUtils.isBlank(k.getEndpoint())) {
-                return -1;
-            }
-        }
-        String endpoint = k.getEndpoint();
-        CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        credentialsProvider.setCredentials(
-                new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
-                new UsernamePasswordCredentials(k.getAccessKey(), k.getAccessSecret()));
-        CloseableHttpClient httpClientObj = HttpClients.custom()
-                .setDefaultCredentialsProvider(credentialsProvider)
-                .build();
         try {
+            if(k.getSysTransmit()==false){
+                if (StringUtils.isBlank(k.getAccessKey())
+                        || StringUtils.isBlank(k.getAccessSecret())
+                        || StringUtils.isBlank(k.getEndpoint())
+                        || StringUtils.isBlank(k.getRequestAddress())) {
+                    return -1;
+                }
+            }else{
+                if (StringUtils.isBlank(k.getAccessKey())
+                        || StringUtils.isBlank(k.getAccessSecret())
+                        || StringUtils.isBlank(k.getEndpoint())) {
+                    return -1;
+                }
+            }
+            String endpoint = k.getEndpoint();
+            CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+            credentialsProvider.setCredentials(
+                    new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
+                    new UsernamePasswordCredentials(k.getAccessKey(), k.getAccessSecret()));
+            CloseableHttpClient httpClientObj = HttpClients.custom()
+                    .setDefaultCredentialsProvider(credentialsProvider)
+                    .build();
             HttpUriRequest request = RequestBuilder.create("PROPFIND")
                     .setUri(endpoint +"/"+ k.getRootPath())
                     .addHeader("Depth", "1")

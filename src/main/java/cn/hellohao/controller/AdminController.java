@@ -7,7 +7,6 @@ import cn.hellohao.service.*;
 import cn.hellohao.service.impl.AlbumServiceImpl;
 import cn.hellohao.service.impl.UserServiceImpl;
 import cn.hellohao.service.impl.deleImages;
-import cn.hellohao.utils.Base64Encryption;
 import cn.hellohao.utils.SetFiles;
 import cn.hellohao.utils.SetText;
 import cn.hellohao.utils.progress.MyProgress;
@@ -28,10 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Hellohao
@@ -444,10 +440,11 @@ public class AdminController {
                         user.setEmail(email);
                     }
                 }
-                user.setPassword(Base64Encryption.encryptBASE64(password.getBytes()));
+
+                user.setPassword(Base64.getEncoder().encodeToString(password.getBytes()));
                 user.setUid(u.getUid());
             } else {
-                user.setPassword(Base64Encryption.encryptBASE64(password.getBytes()));
+                user.setPassword(Base64.getEncoder().encodeToString(password.getBytes()));
                 user.setUid(u.getUid());
             }
             userService.change(user);

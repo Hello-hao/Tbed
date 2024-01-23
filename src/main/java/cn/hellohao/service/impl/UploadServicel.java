@@ -148,8 +148,10 @@ public class UploadServicel {
                 imgnameEd = updatePath + "/" + shortUuid_y + "." + prefix;
                 imgObj.setImgname(imgnameEd);
                 if (key.getStorageType().equals(5)) {
-                    imgObj.setImgurl(key.getRequestAddress() + "/ota/" + imgnameEd);
-                } else {
+                    imgObj.setImgurl(confdata.getString("domain") + "/ota/" + imgnameEd);
+                } else if(key.getStorageType().equals(9) && key.getSysTransmit()){
+                    imgObj.setImgurl(confdata.getString("domain") + "/w/" + shortUuid_y);
+                }else {
                     imgObj.setImgurl(key.getRequestAddress() + "/" + imgnameEd);
                 }
                 imgObj.setSizes(Long.toString(file.length()));

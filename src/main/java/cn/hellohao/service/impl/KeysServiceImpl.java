@@ -2,6 +2,7 @@ package cn.hellohao.service.impl;
 
 import cn.hellohao.pojo.Msg;
 import cn.hellohao.utils.Print;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +31,8 @@ public class KeysServiceImpl implements KeysService {
     private FtpServiceImpl ftpService;
     @Autowired
     private S3Imageupload s3Imageupload;
+    @Autowired
+    private WebDAVImageupload webDAVImageupload;
 
 
     @Override
@@ -51,6 +54,29 @@ public class KeysServiceImpl implements KeysService {
     public Msg updateKey(Keys key) {
         Msg msg = new Msg();
         Integer ret = -2;
+        //修正一边数据格式，去除末尾的斜杠
+        if(key.getStorageType()==9 || key.getStorageType()==8){
+            //s3或者webdav
+            if(!StringUtils.isBlank(key.getRootPath()) && !key.getRootPath().equals("/")){
+                if (key.getRootPath().endsWith("/")) {
+                    String rootpath = key.getRootPath();
+                    key.setRootPath(rootpath.substring(0, rootpath.length() - 1));
+                }
+            }
+        }
+        if(!StringUtils.isBlank(key.getEndpoint())){
+            final String endpoint = key.getEndpoint();
+            if (endpoint.endsWith("/")) {
+                key.setEndpoint(endpoint.substring(0, endpoint.length() - 1));
+            }
+        }
+        if(!StringUtils.isBlank(key.getRequestAddress())){
+            final String requestAddress = key.getRequestAddress();
+            if (requestAddress.endsWith("/")) {
+                key.setRequestAddress(requestAddress.substring(0, requestAddress.length() - 1));
+            }
+        }
+
         if(key.getStorageType()==1){
             ret =nOSImageupload.Initialize(key);
         }else if (key.getStorageType()==2){
@@ -67,6 +93,8 @@ public class KeysServiceImpl implements KeysService {
             ret = ftpService.Initialize(key);
         }else if(key.getStorageType()==8){
             ret = s3Imageupload.Initialize(key);
+        }else if(key.getStorageType()==9){
+            ret = webDAVImageupload.Initialize(key);
         }else{
             Print.Normal("为获取到存储参数，或者使用存储源是本地的。");
         }
