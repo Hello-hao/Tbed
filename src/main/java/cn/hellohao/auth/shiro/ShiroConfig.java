@@ -33,6 +33,7 @@ public class ShiroConfig {
         filterMap.put("/verifyCodeForRetrieve","anon");
         filterMap.put("/verifyCodeFortowSendEmail","anon");
         filterMap.put("/api/**","anon");
+        filterMap.put("/w/**","anon");
         filterMap.put("/user/**","anon");
         filterMap.put("/ota/**","anon");
         filterMap.put("/admin/root/**","roles[admin]");
