@@ -16,9 +16,9 @@ public class PoolConfig {
     @Bean(name = "taskExecutor")
     public ThreadPoolTaskExecutor taskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(properties.getCorePoolSize());
-        executor.setMaxPoolSize(properties.getMaxPoolSize());
-        executor.setQueueCapacity(properties.getQueueCapacity());
+        executor.setCorePoolSize(properties.getCorePoolSize()); //设置核心线程数
+        executor.setMaxPoolSize(properties.getMaxPoolSize()); //设置最大线程数
+        executor.setQueueCapacity(properties.getQueueCapacity()); //设置队列容量
         executor.setThreadNamePrefix(properties.getThreadNamePrefix());
         executor.setKeepAliveSeconds(properties.getKeepAliveTime());
         executor.setWaitForTasksToCompleteOnShutdown(properties.isWaitForTasksToCompleteOnShutdown());
@@ -42,7 +42,7 @@ public class PoolConfig {
         private int corePoolSize = 5;
         private int maxPoolSize = 50;
         private int keepAliveTime = 15;
-        private int queueCapacity = 6;
+        private int queueCapacity = 10;
         private String threadNamePrefix = "Tbed-Thread";
         private boolean allowCoreThreadTimeout = false;
         private boolean waitForTasksToCompleteOnShutdown = false;

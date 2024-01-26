@@ -11,6 +11,8 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,12 +28,11 @@ import java.util.*;
  * @date 2021/10/28 16:38
  */
 @Service
+@EnableAsync
 public class ClientService {
     private static Logger logger = LoggerFactory.getLogger(ClientService.class);
-    @Autowired
-    ConfdataService confdataService;
-    @Autowired
-    SysConfigService sysConfigService;
+    @Autowired private ConfdataService confdataService;
+    @Autowired private SysConfigService sysConfigService;
     @Autowired private UserMapper userMapper;
     @Autowired private KeysMapper keysMapper;
     @Autowired private UploadConfigMapper uploadConfigMapper;
@@ -40,6 +41,7 @@ public class ClientService {
     @Autowired private GetSource getSource;
     @Autowired private ImgViolationJudgeServiceImpl imgViolationJudgeService;
 
+    @Async("taskExecutor")
     public Msg uploadImg(
             HttpServletRequest request, MultipartFile multipartFile, String email, String pass,Integer setday) {
         Msg msg = new Msg();

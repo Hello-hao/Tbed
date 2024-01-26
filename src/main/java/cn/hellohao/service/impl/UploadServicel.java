@@ -18,6 +18,8 @@ import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
  * @date 2020/1/9 15:46
  */
 @Service
+@EnableAsync
 public class UploadServicel {
     private static Logger logger = LoggerFactory.getLogger(UploadServicel.class);
     @Autowired
@@ -48,6 +51,7 @@ public class UploadServicel {
     @Autowired deleImages deleimages;
     @Autowired ImgViolationJudgeServiceImpl imgViolationJudgeService;
 
+    @Async("taskExecutor")
     public Msg uploadForLoc(
             HttpServletRequest request,
             File file,

@@ -39,11 +39,14 @@
 [Core版](https://hellohao.cn)：开源版的基础上增加`Backblaze(B2)` 并且可`同个对象存储商家`可开多个存储源（可添加至90+存储源）
 
 
-### 更新日志 `20240111`
+### 更新日志 `20240124`
 
+- 新增支持对接WebDAV存储源
 - 修复本地存储源上传失败的情况
 - 修复某些存储源目录创建不正确的问题
 - 优化页面部分提示
+- 修复潜在的一些安全隐患
+
 
 
 ### 主要功能
@@ -151,6 +154,8 @@
 
 更多部署教程参考程序[相关文档](http://doc.hellohao.cn)
 
+更强大的功能可[购买Core版](http://tbed.hellohao.cn/pay)程序
+
 
 ### 启动项目
 > 访问你的前端域名即可
@@ -186,7 +191,7 @@
 
 ![Hellohao图像托管](https://hellohao.cn/newassets/img/twechat.png)
 
-[//]: # (![Hellohao图像托管]&#40;https://upload.cc/i1/2022/03/28/Vnp0bT.png&#41;)
+[//]: # "![Hellohao图像托管]&#40;https://upload.cc/i1/2022/03/28/Vnp0bT.png&#41;"
 
 
 ### 运行环境
@@ -232,5 +237,4 @@ Hellohao图像托管已申请[**中国国家版权局计算机软件著作权**]
 
 **如需程序定制或其他业务，请与我们取得联系**
 [Hellohao图像托管官网](http://hellohao.cn)
-
 
