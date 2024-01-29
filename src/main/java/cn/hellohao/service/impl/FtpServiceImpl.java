@@ -7,15 +7,19 @@ import cn.hutool.extra.ftp.Ftp;
 import cn.hutool.extra.ftp.FtpMode;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTP;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Service
 public class FtpServiceImpl {
+    private static Logger logger = LoggerFactory.getLogger(FtpServiceImpl.class);
     private Keys key;
 
     public static int Initialize(Keys k) {
@@ -66,22 +70,26 @@ public class FtpServiceImpl {
             return returnImage;
         }
         File file = null;
+        FileInputStream stream = null;
         try {
             for (Map.Entry<Map<String, String>, File> entry : fileMap.entrySet()) {
                 String prefix = entry.getKey().get("prefix");
                 String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
+                stream = new FileInputStream(file);
                 boolean isUpload = ftp.upload(
                         "/" + username,
                         ShortUIDName + "." + prefix,
-                        file);
+                        stream);
                 if (!isUpload) {
                     returnImage.setCode("400");
                 }
+                try {if(stream!=null){stream.close();}} catch (Exception e) { }
             }
             returnImage.setCode("200");
         } catch (Exception e) {
-            e.printStackTrace();
+            try {if(stream!=null){stream.close();}} catch (Exception ex) { }
+            logger.error("FTP发生异常：",e);
             returnImage.setCode("500");
         }
         return returnImage;

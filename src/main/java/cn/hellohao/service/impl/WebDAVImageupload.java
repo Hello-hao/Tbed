@@ -32,6 +32,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 
@@ -66,9 +67,7 @@ public class WebDAVImageupload {
                 String prefix = entry.getKey().get("prefix");
                 String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
-                Msg fileMiME = TypeDict.FileMiME(file);
                 createDirectories(httpClient, key.getEndpoint(),  "/" + username);
-                System.out.println("WebDAV地址："+key.getEndpoint() + "/" + username + "/" + ShortUIDName + "." + prefix);
                 HttpPut httpPut = new HttpPut(key.getEndpoint() + "/" + username + "/" + ShortUIDName + "." + prefix);
                 FileEntity fileEntity = new FileEntity(file, ContentType.DEFAULT_BINARY);
                 httpPut.setEntity(fileEntity);
@@ -84,7 +83,7 @@ public class WebDAVImageupload {
             }
 
         } catch (Exception e) {
-            logger.error("ImageuploadWebDAV:92异常",e);
+            logger.error("ImageuploadWebDAV:87异常",e);
             returnImage.setCode("500");
         }
         return returnImage;

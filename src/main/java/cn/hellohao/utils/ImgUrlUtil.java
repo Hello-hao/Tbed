@@ -65,7 +65,7 @@ public class ImgUrlUtil {
             httpUrlConnection.setConnectTimeout(300000);
             httpUrlConnection.setReadTimeout(300000);
             httpUrlConnection.connect();
-            String code = new Integer(httpUrlConnection.getResponseCode()).toString();
+            String code = Integer.toString(httpUrlConnection.getResponseCode());
             String message = httpUrlConnection.getResponseMessage();
             System.out.println("getResponseCode code ="+ code);
             System.out.println("getResponseMessage message ="+ message);
@@ -85,7 +85,7 @@ public class ImgUrlUtil {
 
 
     public static Map<String ,Object>  downLoadFromUrl(String urlStr,String referer,String fileName,String savePath){
-
+        FileInputStream fileInputStream = null;
         Map<String ,Object> resmap = new HashMap<>();
         Map<String ,String> map = checkURLStatusCode(urlStr);
         if(map.size()==0 || map.get("Check").equals("false")){
@@ -120,7 +120,8 @@ public class ImgUrlUtil {
             }
             //下载并且保存成功后 判断格式 如果不是图像格式 就删除
             if(new File(saveDir+File.separator+fileName).exists()){
-                Msg msg = TypeDict.FileMiME(file);
+                fileInputStream = new FileInputStream(file);
+                Msg msg = TypeDict.FileMiME(fileInputStream);
                 if(msg.getCode().equals("200")){
                     File f = new File(saveDir+File.separator+fileName);
                     String imgPath = saveDir+File.separator+fileName+"."+(msg.getData().toString().replace("image/",""));
@@ -137,9 +138,16 @@ public class ImgUrlUtil {
                 resmap.put("res",false);
                 resmap.put("StatusCode","500");
             }
+            if(fileInputStream!=null){
+                fileInputStream.close();
+            }
             return resmap;
         }catch (Exception e){
-            e.printStackTrace();
+            try{
+                if(fileInputStream!=null){
+                    fileInputStream.close();
+                }
+            }catch (Exception e2){ }
             resmap.put("res",false);
             resmap.put("StatusCode","500");
             return resmap;

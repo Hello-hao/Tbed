@@ -14,13 +14,17 @@ import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.storage.model.FileInfo;
 import com.qiniu.util.Auth;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.Map;
 
 @Service
 public class KODOImageupload {
+    private static Logger logger = LoggerFactory.getLogger(KODOImageupload.class);
     static String upToken;
     static BucketManager bucketManager;
     static Keys key;
@@ -33,15 +37,15 @@ public class KODOImageupload {
         Auth auth = Auth.create(key.getAccessKey(), key.getAccessSecret());
         String upToken = auth.uploadToken(key.getBucketname(), null, 7200, null);
         File file = null;
+        FileInputStream stream = null;
         try {
             for (Map.Entry<Map<String, String>, File> entry : fileMap.entrySet()) {
                 String prefix = entry.getKey().get("prefix");
                 String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
+                stream = new FileInputStream(file);
                 try {
-                    Response response =
-                            uploadManager.put(
-                                    file, username + "/" + ShortUIDName + "." + prefix, upToken);
+                    Response response = uploadManager.put(stream,username + "/" + ShortUIDName + "." + prefix, upToken, null, null);
                     DefaultPutRet putRet =
                             new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
 
@@ -54,10 +58,12 @@ public class KODOImageupload {
                     } catch (QiniuException ex2) {
                     }
                 }
+                try {if(stream!=null){stream.close();}} catch (Exception ex) { }
             }
             returnImage.setCode("200");
         } catch (Exception e) {
-            e.printStackTrace();
+            try {if(stream!=null){stream.close();}} catch (Exception ex) { }
+            logger.error("KODO发生异常：",e);
             returnImage.setCode("500");
         }
         return returnImage;

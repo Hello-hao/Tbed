@@ -25,7 +25,10 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,7 +38,6 @@ import java.util.concurrent.CompletableFuture;
  * @date 2020/1/9 15:46
  */
 @Service
-@EnableAsync
 public class UploadServicel {
     private static Logger logger = LoggerFactory.getLogger(UploadServicel.class);
     @Autowired
@@ -51,7 +53,6 @@ public class UploadServicel {
     @Autowired deleImages deleimages;
     @Autowired ImgViolationJudgeServiceImpl imgViolationJudgeService;
 
-    @Async("taskExecutor")
     public Msg uploadForLoc(
             HttpServletRequest request,
             File file,
@@ -81,47 +82,23 @@ public class UploadServicel {
                     return imgData;
                 }
             }
+            FileInputStream stream = new FileInputStream(file);
             String imguid = UUID.randomUUID().toString().replace("-", "");
             Msg msg1 = updateImgCheck(u, uploadConfig);
             if (!msg1.getCode().equals("300")) {
+                try {
+                    if(stream!=null){stream.close();}
+                    file.delete();
+                } catch (Exception e) { }
                 return msg1;
             }
-            sourceKeyId = group.getKeyid();
-            Keys key = keysMapper.selectKeys(sourceKeyId);
-            Long tmp = (memory == -1 ? -2 : UsedTotleMemory);
-            if (tmp >= memory) {
-                msg.setCode("4005");
-                msg.setInfo(u == null ? "游客空间已用尽" : "您的可用空间不足");
-                return msg;
-            }
-            if (file.length() > TotleMemory) {
-                msg.setCode("4006");
-                msg.setInfo("图像超出系统限制大小");
-                return msg;
-            }
-            Msg fileMiME = TypeDict.FileMiME(file);
-            if (!fileMiME.getCode().equals("200")) {
-                msg.setCode("4000");
-                msg.setInfo(fileMiME.getInfo());
-                return msg;
-            }
-            if (md5key == null || md5key.equals("")) {
-                FileInputStream fis = null;
-                try {
-                    fis = new FileInputStream(file);
-                    md5key = DigestUtils.md5Hex(fis);
-                } catch (Exception e) {
-                    logger.error("获取MD5错误",e);
-                }finally{
-                    try {
-                        if (null != fis)
-                            fis.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            String prefix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+            JSONObject updateJson = JSONObject.parseObject(msg1.getData().toString());
+            final JSONObject groupJson = updateJson.getJSONObject("group");
+            final Group group = groupJson.toJavaObject(Group.class);
+            Long memory = updateJson.getLong("memory");
+            Long UsedTotleMemory = updateJson.getLong("UsedTotleMemory");
+            Long TotleMemory = updateJson.getLong("TotleMemory");
+            String updatePath = updateJson.getString("updatePath");
             if (uploadConfig.getBlacklist() != null) {
                 String[] iparr = uploadConfig.getBlacklist().split(";");
                 for (String s : iparr) {
@@ -129,10 +106,66 @@ public class UploadServicel {
                         file.delete();
                         msg.setCode("4003");
                         msg.setInfo("你暂时不能上传");
+                        try {
+                            if(stream!=null){stream.close();}
+                            file.delete();
+                        } catch (Exception e) { }
                         return msg;
                     }
                 }
             }
+            sourceKeyId = group.getKeyid();
+            Keys key = keysMapper.selectKeys(sourceKeyId);
+            Long tmp = (memory == -1 ? -2 : UsedTotleMemory);
+            if (tmp >= memory) {
+                msg.setCode("4005");
+                msg.setInfo(u == null ? "游客空间已用尽" : "您的可用空间不足");
+                try {
+                    if(stream!=null){stream.close();}
+                    file.delete();
+                } catch (Exception e) { }
+                return msg;
+            }
+            if (file.length() > TotleMemory) {
+                msg.setCode("4006");
+                msg.setInfo("图像超出系统限制大小");
+                try {
+                    if(stream!=null){stream.close();}
+                    file.delete();
+                } catch (Exception e) { }
+                return msg;
+            }
+            Msg fileMiME = TypeDict.FileMiME(stream);
+            if (!fileMiME.getCode().equals("200")) {
+                msg.setCode("4000");
+                msg.setInfo(fileMiME.getInfo());
+                try {
+                    if(stream!=null){stream.close();}
+                    file.delete();
+                } catch (Exception e) { }
+                return msg;
+            }
+            if (md5key == null || md5key.equals("")) {
+                md5key = DigestUtils.md5Hex(stream);
+//                FileInputStream fis = null;
+//                try {
+//                    fis = new FileInputStream(file);
+//                    md5key = DigestUtils.md5Hex(fis);
+//                } catch (Exception e) {
+//                    logger.error("获取MD5错误",e);
+//                }finally{
+//                    try {
+//                        if (null != fis)
+//                            fis.close();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+            }
+            String prefix = file.getName().substring(file.getName().lastIndexOf(".") + 1);
+            try {
+                if(stream!=null){stream.close();}
+            } catch (Exception e) { }
             // 判断路径格式 处理一下，去掉最前面的/
             String RootPath = key.getRootPath().replace(" ", "");
             if (!RootPath.equals("/")) {
@@ -162,6 +195,7 @@ public class UploadServicel {
             }else{
                 msg.setInfo("未获取到指定图像:110503");
                 msg.setCode("110503");
+                try { file.delete(); } catch (Exception e) { }
                 return msg;
             }
             imgObj.setUpdatetime(df.format(new Date()));
@@ -186,6 +220,7 @@ public class UploadServicel {
 //            Integer insertRet = imgMapper.insertImgData(imgObj);
             Msg insertRet = imgServiceImpl.insertImgDataForCheck(imgObj,u,confdata,file.getName());
             if (insertRet.getCode().equals("000")) {
+                try { file.delete(); } catch (Exception e) { }
                 return insertRet;
             }
 
@@ -199,24 +234,21 @@ public class UploadServicel {
                 jsonObject.put("name", imgObj.getImgname());
                 jsonObject.put("imguid", imgObj.getImguid());
                 imgViolationJudgeService.LegalImageCheck(imgObj,key);
-//                new Thread(
-//                                () -> {
-//                                    LegalImageCheck(imgObj);
-//                                })
-//                        .start();
             } else {
                 imgServiceImpl.deleimgForImgUid(imgObj.getImguid());
                 msg.setCode("5001");
                 msg.setInfo("上传服务内部错误");
+                try { file.delete(); } catch (Exception e) { }
                 return msg;
             }
-            file.delete();
             msg.setData(jsonObject);
+            file.delete();
             return msg;
         } catch (Exception e) {
             e.printStackTrace();
             msg.setInfo("上传时发生了一些错误");
             msg.setCode("110500");
+            file.delete();
             return msg;
         }
     }
@@ -316,18 +348,20 @@ public class UploadServicel {
         return msg;
     }
 
-    private static Group group; // 上传用户或游客的所属分组
-    private static Long memory; // 上传用户或者游客的分配容量 memory
-    private static Long TotleMemory; // 用户或者游客下可使用的总容量 //maxsize
-    private static Long UsedTotleMemory; // 用户或者游客已经用掉的总容量 //usermemory
-    private static String updatePath = "tourist";
+//    private static Group group; // 上传用户或游客的所属分组
+//    private static Long memory; // 上传用户或者游客的分配容量 memory
+//    private static Long TotleMemory; // 用户或者游客下可使用的总容量 //maxsize
+//    private static Long UsedTotleMemory; // 用户或者游客已经用掉的总容量 //usermemory
+//    private static String updatePath = "tourist";
 
     // 判断用户 或 游客 当前上传图片的一系列校验
     private Msg updateImgCheck(User user, UploadConfig uploadConfig) {
         Msg msg = new Msg();
-        java.text.DateFormat dateFormat = null;
+        JSONObject jsonObject = new JSONObject();
+        String updatePath = "tourist";
         try {
-            dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            Group group = GetCurrentSource.GetSource(user == null ? null : user.getId());
+            jsonObject.put("group",group);
             if (user == null) {
                 if (uploadConfig.getIsupdate() != 1) {
                     msg.setCode("1000");
@@ -335,13 +369,15 @@ public class UploadServicel {
                     return msg;
                 }
                 updatePath = "tourist";
-                group = GetCurrentSource.GetSource(null);
-                memory = Long.valueOf(uploadConfig.getVisitormemory()); // 单位 B 游客设置总量
-                TotleMemory = Long.valueOf(uploadConfig.getFilesizetourists()); // 单位 B  游客单文件大小
-                UsedTotleMemory =
+                Long memory = Long.valueOf(uploadConfig.getVisitormemory()); // 单位 B 游客设置总量
+                Long TotleMemory = Long.valueOf(uploadConfig.getFilesizetourists()); // 单位 B  游客单文件大小
+                Long UsedTotleMemory =
                         imgServiceImpl.getusermemory(0) == null
                                 ? 0L
                                 : imgServiceImpl.getusermemory(0); // 单位 B
+                jsonObject.put("memory",memory);
+                jsonObject.put("TotleMemory",TotleMemory);
+                jsonObject.put("UsedTotleMemory",UsedTotleMemory);
             } else {
                 if (uploadConfig.getUserclose() != 1) {
                     msg.setCode("1001");
@@ -349,20 +385,26 @@ public class UploadServicel {
                     return msg;
                 }
                 updatePath = user.getUsername();
-                group = GetCurrentSource.GetSource(user.getId());
-                memory = Long.valueOf(user.getMemory()); // 单位 B  *1024*1024
-                TotleMemory = Long.valueOf(uploadConfig.getFilesizeuser()); // 单位 B
-                UsedTotleMemory =
+                Long memory = Long.valueOf(user.getMemory()); // 单位 B  *1024*1024
+                Long TotleMemory = Long.valueOf(uploadConfig.getFilesizeuser()); // 单位 B
+                Long UsedTotleMemory =
                         imgServiceImpl.getusermemory(user.getId()) == null
                                 ? 0L
                                 : imgServiceImpl.getusermemory(user.getId()); // 单位 B
+                jsonObject.put("memory",memory);
+                jsonObject.put("TotleMemory",TotleMemory);
+                jsonObject.put("UsedTotleMemory",UsedTotleMemory);
             }
             if (uploadConfig.getUrltype() == 2) {
-                updatePath = dateFormat.format(new Date());
+                LocalDate currentDate = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+                updatePath = currentDate.format(formatter);
             }
+            jsonObject.put("updatePath",updatePath);
+            msg.setData(jsonObject);
             msg.setCode("300");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("updateImgCheck异常：",e);
             msg.setCode("500");
         }
         return msg;

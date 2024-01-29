@@ -2,6 +2,9 @@ package cn.hellohao.utils;
 
 import cn.hellohao.pojo.Chunk;
 import cn.hellohao.pojo.Msg;
+import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -13,6 +16,7 @@ import java.text.DecimalFormat;
 import java.util.stream.Stream;
 
 public class SetFiles {
+    private static Logger logger = LoggerFactory.getLogger(SetFiles.class);
     // 转换文件方法
     public static File changeFile(MultipartFile multipartFile) {
         // 获取文件名
@@ -47,17 +51,16 @@ public class SetFiles {
 
     // 转换文件方法
     public static File changeFile_new(MultipartFile multipartFile) {
-        // 获取文件名
         String fileName = multipartFile.getOriginalFilename();//getOriginalFilename
-        // 获取文件后缀
         String prefix = fileName.substring(fileName.lastIndexOf("."));
         // todo 修改临时文件文件名
         File file = null;
         try {
-            file = File.createTempFile(fileName, prefix);
-            multipartFile.transferTo(file);
+            String new_FileName = System.getProperty("java.io.tmpdir")+"hellohao_tmp_upload"+File.separator+fileName;
+            file = new File(new_FileName);
+            FileUtils.copyInputStreamToFile(multipartFile.getInputStream(), file);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("SetFiles.changeFile_new", e);
         }
         return file;
     }

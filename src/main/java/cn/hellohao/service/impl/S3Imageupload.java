@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -51,21 +52,25 @@ public class S3Imageupload {
             return returnImage;
         }
         File file = null;
+        FileInputStream stream = null;
         try {
             for (Map.Entry<Map<String, String>, File> entry : fileMap.entrySet()) {
                 String prefix = entry.getKey().get("prefix");
                 String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
+                stream = new FileInputStream(file);
                 AS3.putObject(
                         new PutObjectRequest(
                                 KEY.getBucketname(),
                                 username + "/" + ShortUIDName + "." + prefix,
-                                file));
+                                stream,null));
                 //        S3Object object = s3.getObject( new GetObjectRequest( key.getBucketname(),
+                try {if(stream!=null){stream.close();}} catch (Exception e) { }
             }
             returnImage.setCode("200");
         } catch (Exception e) {
-            e.printStackTrace();
+            try {if(stream!=null){stream.close();}} catch (Exception ex) { }
+            logger.error("S3协议上传发生异常：",e);
             returnImage.setCode("500");
         }
         return returnImage;

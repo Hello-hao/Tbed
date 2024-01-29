@@ -9,6 +9,8 @@ import com.netease.cloud.auth.Credentials;
 import com.netease.cloud.services.nos.NosClient;
 import com.netease.cloud.services.nos.model.ObjectListing;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;

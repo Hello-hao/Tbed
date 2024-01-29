@@ -7,15 +7,16 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class TypeDict {
 
     //apache大法
-    public static Msg FileMiME(File file ){
+    public static Msg FileMiME(InputStream stream){
         final Msg msg = new Msg();
         try {
             Tika tika = new Tika();
-            String fileType = tika.detect(file);
+            String fileType = tika.detect(stream);
             if (fileType != null && fileType.contains("/")) {
                 if(fileType.contains("image/")){
                     msg.setData(fileType);
