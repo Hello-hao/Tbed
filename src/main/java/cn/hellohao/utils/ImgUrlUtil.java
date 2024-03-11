@@ -75,7 +75,7 @@ public class ImgUrlUtil {
                 throw new Exception("ResponseCode is not begin with 2,code="+code);
             }
             map.put("Check","true");
-            System.out.println("连接正常");
+//            System.out.println("连接正常");
         }catch(Exception ex){
             System.out.println(ex.getMessage());
         }

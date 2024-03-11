@@ -145,7 +145,6 @@ public class FirstRun implements InitializingBean {
     //检查表是否存在，后边加'imgdata' and column_name = 'explains'  检查字段是否存在
     private String isTableName = "SELECT count(table_name) FROM information_schema.TABLES WHERE TABLE_SCHEMA='tbed' and table_name =";
     private String judgeTable = "select count(*) from information_schema.columns where TABLE_SCHEMA='tbed' and table_name = ";
-    //创建blacklist  2019-11-29
     private String sql0 =
             "alter table `keys` add (Region varchar(255) DEFAULT null,RootPath varchar(255) DEFAULT '/');";
     private String sql1 = "select count(*) from information_schema.columns where table_name = 'uploadconfig' and column_name = 'blacklist'";

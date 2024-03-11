@@ -11,16 +11,12 @@ public class Msg implements Serializable {
 
 	private static final long serialVersionUID = 5196249482551119279L;
 
-	//返回码
 	private String code ="200";
 	
-	//提示信息
 	private String info="操作成功";
 	
-	//返回数据
 	private Object data;
 	
-	//异常
 	private String exceptions;
 
 	

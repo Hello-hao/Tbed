@@ -35,7 +35,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
         String serviceName = httpServletRequest.getServletPath();//获取接口
         String Users_Origin = httpServletRequest.getHeader("usersOrigin");
         String token = httpServletRequest.getHeader("Authorization");
-        //验证前端域名
         if(httpServletRequest.getMethod().equals("POST") && !serviceName.contains("/api") && !serviceName.contains("/verifyCode")
                 && !serviceName.contains("/getClientVersion") && !serviceName.contains("/client")){
             try{
@@ -75,7 +74,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                     Subject subject = SecurityUtils.getSubject();
                     UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(userData.getEmail(),userData.getPassword());
                     tokenOBJ.setRememberMe(true);
-                    //执行登录方法，如果没有异常，说明登录成功
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);
                     User loginUser = (User) SecurityUtils.getSubject().getPrincipal();
@@ -102,7 +100,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时
                 } catch (Exception e) {
-//                    System.err.println("拦截器，登录失败，false");
                     this.CODE = "403";
                     return false;
                 }

@@ -415,8 +415,6 @@ public class UploadServicel {
     public static String plusDay(int setday) {
         Date d = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String currdate = format.format(d);
-        System.out.println("现在的日期是：" + currdate);
         Calendar ca = Calendar.getInstance();
         ca.setTime(d);
         ca.add(Calendar.DATE, setday); // num为增加的天数，可以改变的
