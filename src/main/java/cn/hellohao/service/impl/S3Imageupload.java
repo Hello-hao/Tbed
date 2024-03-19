@@ -12,10 +12,7 @@ import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.Bucket;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +56,9 @@ public class S3Imageupload {
                 String ShortUIDName = entry.getKey().get("name");
                 file = entry.getValue();
                 stream = new FileInputStream(file);
+                //解决存储源不能浏览图片的问题
+//                ObjectMetadata objectMetadata = new ObjectMetadata();
+//                objectMetadata.addUserMetadata();
                 AS3.putObject(
                         new PutObjectRequest(
                                 KEY.getBucketname(),
