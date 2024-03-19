@@ -47,7 +47,7 @@ public class IndexController {
     @Autowired private IRedisService iRedisService;
     @Autowired private AppClientService appClientService;
     @Autowired private WebDAVImageupload webDAVImageupload;
-    public static String version =  "20240130";
+    public static String version =  "20240319";
     @RequestMapping(value = "/")
     public String Welcome(Model model, HttpServletRequest httpServletRequest) {
         model.addAttribute("name", "服务端程序(开源版)");
