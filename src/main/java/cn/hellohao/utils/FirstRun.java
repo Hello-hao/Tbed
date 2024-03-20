@@ -211,9 +211,9 @@ public class FirstRun implements InitializingBean {
         try {
             File f = new File(filePath);
             if (f.exists()) {
-                System.out.print("文件存在");
+                logger.info("文件存在");
             } else {
-                System.out.print("文件不存在");
+                logger.info("文件不存在,准备创建");
 //                f.createNewFile();// 不存在则创建
                 FileUtil.createTempFile(f);
             }
