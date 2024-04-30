@@ -1,7 +1,9 @@
 package cn.hellohao.utils;
 
 import cn.hellohao.config.GlobalConstant;
-import cn.hutool.core.io.FileUtil;import org.slf4j.Logger;
+import cn.hutool.core.io.FileUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,10 +108,13 @@ public class FirstRun implements InitializingBean {
             Print.Normal("Add table.appclient");
         }
         Integer isconfdata = RunSqlScript.RunSelectCount(isTableName+"'confdata'");
+        String isdata = RunSqlScript.RunSelectCountForString("select * from confdata where `key`='config'",2);
         if(isconfdata==0){
             RunSqlScript.RunInsert(createConfdata);
             RunSqlScript.RunInsert(instartConfdata);
             Print.Normal("Add table.confdata");
+        }else if(StringUtils.isBlank(isdata)){
+            RunSqlScript.RunInsert(instartConfdata);
         }
         Integer ret7 =
                 RunSqlScript.RunSelectCount(judgeTable + " 'keys' and column_name = 'SysTransmit'");
