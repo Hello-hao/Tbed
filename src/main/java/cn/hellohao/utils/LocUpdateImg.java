@@ -46,8 +46,15 @@ public class LocUpdateImg {
             while ((len = fileInputStream.read(bs)) != -1) {
               bos.write(bs, 0, len);
             }
-            bos.flush();
-            bos.close();
+              try {
+                  bos.flush();
+                  if(bos!=null){
+                      bos.close();
+                  }
+                  if(fileInputStream!=null){
+                      fileInputStream.close();
+                  }
+              }catch (Exception e){}
           }
           returnImage.setCode("200");
         } catch (Exception e) {

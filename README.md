@@ -10,13 +10,6 @@
 ![https://img.shields.io/badge/license-AGPL-blue.svg?style=flat-square](https://img.shields.io/badge/license-AGPL-blue.svg?longCache=true&style=flat-square)
 ![https://img.shields.io/badge/language-java-orange.svg?style=flat-square](https://img.shields.io/badge/language-java-yellow.svg?longCache=true&style=popout-square)
 
-<h3 align="center">赞助商</h3>
-
-<p align="center">
-  <a href="https://www.eltyun.com/" target="_blank">
-    <img width="350px" src="https://t.tdo.ink/hellohao/s9ugmihq.png">
-  </a>
-</p>
 
 >:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
 
@@ -185,11 +178,7 @@
 > 仅适用于对接`Core付费版`，开源版暂不可对接使用。
 > 获取地址：[官网获取](https://www.hellohao.cn/pay)
 
-
-![Hellohao图像托管](https://hellohao.cn/newassets/img/twechat.png)
-
-[//]: # "![Hellohao图像托管]&#40;https://upload.cc/i1/2022/03/28/Vnp0bT.png&#41;"
-
+![Hellohao图像托管](https://tbed.hellohao.cn/newassets/img/twechat.png)
 
 ### 运行环境
 
@@ -227,8 +216,7 @@ Hellohao图像托管已申请[**中国国家版权局计算机软件著作权**]
 
 **如果你遇到BUG欢迎反馈**
 
-- 前往论坛发帖反馈、求助：[Hellohao开发者交流论坛](http://bbs.hellohao.cn)
-- 也可加QQ群探讨：864800972
+- Q群探讨：864800972
 
 ### 更多
 
