@@ -29,7 +29,7 @@
 
 开源版：`本地`,`阿里OSS`,`又拍USS`,`七牛KODO`,`腾讯COS`,`网易NOS`,`FTP`,`AWS S3协议`
 
-[Core版](https://hellohao.cn)：开源版的基础上增加`WedDAV`,`Backblaze(B2)` 并且可`同个对象存储商家`可开多个存储源（可添加至90+存储源）
+[Core版](https://hellohao.cn)：付费版包含更多功能，[购买Core版本](https://tbed.hellohao.cn)
 
 
 ### 更新日志 `20240319`
