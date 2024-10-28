@@ -42,7 +42,6 @@ public class ShiroConfig {
         bean.setUnauthorizedUrl("/authError");
         bean.setFilterChainDefinitionMap(filterMap);
         return bean;
-
     }
 
     @Bean

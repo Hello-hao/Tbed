@@ -56,7 +56,7 @@ public class UserRealm extends AuthorizingRealm {
         if(u==null){
             return null;
         }
-        //密码认证（防止泄露，不需要我们做）
+        //密码认证
         return new SimpleAuthenticationInfo(u,u.getPassword(),"");
     }
 }
