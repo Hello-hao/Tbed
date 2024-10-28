@@ -32,8 +32,4 @@ public class XssFilter implements Filter {
         filterChain.doFilter(new XssHttpServletRequestWrapper(request),servletResponse);
     }
 
-    @Override
-    public void destroy() {
-
-    }
 }

@@ -32,7 +32,6 @@ import java.util.*;
 /**
  * @author Hellohao
  * @version 1.0
- * @date 2019-07-17 14:22
  */
 @Controller
 @RequestMapping("/admin")

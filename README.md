@@ -13,9 +13,9 @@
 
 >:exclamation: 托管的所有开源代码可能存在作者修改/测试/调整等行为，均为实验性代码，故并不保证程序或功能的可用性，如果你想要部署程序，请下载我们提供的编译整合包进行安装部署。
 
-### 感谢JetBrains对开发者的大力支持
+### 感谢[JetBrains](https://www.jetbrains.com)对开发者的大力支持
 
-<a href="https://www.jetbrains.com/" target="_blank">
+<a href="https://www.jetbrains.com" target="_blank">
  <img width="80px" src="https://images.icon-icons.com/3053/PNG/512/intellij_macos_bigsur_icon_190061.png">
  <img width="80px" src="https://images.icon-icons.com/3053/PNG/512/intellij_webstorm_macos_bigsur_icon_190053.png">
  <img width="80px" src="https://images.icon-icons.com/3053/PNG/512/intellij_datagrip_macos_bigsur_icon_190058.png">

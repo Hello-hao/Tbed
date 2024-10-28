@@ -8,7 +8,7 @@ import cn.hellohao.service.impl.UploadServicel;
 import cn.hellohao.service.impl.WebDAVImageupload;
 import cn.hellohao.service.impl.deleImages;
 import cn.hellohao.utils.GetIPS;
-import cn.hellohao.utils.MyVersion;
+import cn.hellohao.utils.MyStringUtils;
 import cn.hellohao.utils.SetFiles;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.ShearCaptcha;
@@ -418,7 +418,7 @@ public class IndexController {
             AppClient app = appClientService.getAppClientData("app");
             if (!StringUtils.isBlank(app.getAppupdate())) {
                 String version = app.getAppupdate().replaceAll("\\.", "");
-                if (MyVersion.compareVersion(app.getAppupdate(), appv) == 1) {
+                if (MyStringUtils.compareVersion(app.getAppupdate(), appv) == 1) {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("winpackurl", app.getWinpackurl());
                     jsonObject.put("macpackurl", app.getMacpackurl());
