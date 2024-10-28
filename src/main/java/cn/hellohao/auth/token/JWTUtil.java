@@ -36,7 +36,7 @@ public class JWTUtil {
     }
 
     public static JSONObject checkToken(String token){
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();//验证对象
+        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
         JSONObject jsonObject = new JSONObject();
         if(null==token){
             jsonObject.put("check",false);
