@@ -81,7 +81,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
             }
         }
 
-//        String token = httpServletRequest.getHeader("Authorization");
         JSONObject jsonObject = JWTUtil.checkToken(token);
         if(!jsonObject.getBoolean("check")){
             if(!serviceName.contains("admin") || serviceName.contains("admin/client")){
@@ -151,7 +150,6 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
         } catch (Exception e) {
             System.out.println("返回token验证失败403请求，报异常了");
         }
-
         return false;
     }
 
