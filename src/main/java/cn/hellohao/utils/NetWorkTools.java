@@ -1,16 +1,69 @@
 package cn.hellohao.utils;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import org.apache.commons.lang3.StringUtils;
 
-public class  GetProtocol {
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.Query;
+import java.lang.management.ManagementFactory;
+import java.net.HttpURLConnection;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.Set;
+
+public class NetWorkTools {
+
+    /**
+     * @return
+     * @throws MalformedObjectNameException
+     * 获取当前机器的端口号
+     */
+    public static String getLocalPort()  {//throws MalformedObjectNameException
+        MBeanServer beanServer = ManagementFactory.getPlatformMBeanServer();
+        Set<ObjectName> objectNames = null;
+        try {
+            objectNames = beanServer.queryNames(new ObjectName("*:type=Connector,*"),
+                    Query.match(Query.attr("protocol"), Query.value("HTTP/1.1")));
+        } catch (MalformedObjectNameException e) {
+            e.printStackTrace();
+        }
+        String port = objectNames.iterator().next().getKeyProperty("port");
+        return port;
+    }
+
+    /**
+     * @return
+     * 获取当前机器的IP
+     */
+    public static String getLocalIP() {
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        byte[] ipAddr = addr.getAddress();
+        String ipAddrStr = "";
+        for (int i = 0; i < ipAddr.length; i++) {
+            if (i > 0) {
+                ipAddrStr += ".";
+            }
+            ipAddrStr += ipAddr[i] & 0xFF;
+        }
+        return ipAddrStr;
+    }
+
+
+    /*
+    * 获取协议头
+    * */
     private final  static String HTTP= "http://";
     private final  static  String HTTPS =  "https://";
-    private String newurl;
+    private static String newurl;
 
     //判断协议 能连接上则协议正确
-    public  String getProtocol(String url,String referer) {
+    public static String getProtocol(String url,String referer) {
         newurl = clearUrl(url);
         url = HTTP + newurl;
         if (exists(url,referer)) {
@@ -23,10 +76,9 @@ public class  GetProtocol {
                 return null;
             }
         }
- 
     }
     //清除URL里多余的符号
-    private  String clearUrl(String url) {
+    private static String clearUrl(String url) {
         if (url.contains(HTTP)) {
             url = url.substring(url.lastIndexOf(HTTP) + HTTP.length());
             for (int i = 0; i < url.length(); i++) {
@@ -60,7 +112,7 @@ public class  GetProtocol {
         return url;
     }
     //是否能连接上
-   private boolean exists(String url,String referer) {
+    private static boolean exists(String url, String referer) {
         try {
             HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
             con.setConnectTimeout(3000);
@@ -73,17 +125,5 @@ public class  GetProtocol {
         }
     }
 
-    public static void main(String[] args){
-
-        try {
-            String url = "https://img-blog.csdnimg.cn/cbf3201a3cfe4fc38a7cef006487158c.png";
-            URL obj = new URL(url);
-            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
-            String referer = con.getRequestProperty("Referer");
-            System.out.println("Referer: " + referer);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 }

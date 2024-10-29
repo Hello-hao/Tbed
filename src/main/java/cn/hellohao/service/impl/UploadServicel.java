@@ -304,8 +304,7 @@ public class UploadServicel {
         final Msg msg = new Msg();
         String url = imgurls;
         // 先判断是不是有效链接  并且自动判断协议头http(s)://
-        GetProtocol getProtocol = new GetProtocol();
-        String protocol = getProtocol.getProtocol(url,referer);
+        String protocol = NetWorkTools.getProtocol(url,referer);
         if (protocol == null) {
             msg.setInfo("服务器解析该链接失败");
             msg.setCode("500");
