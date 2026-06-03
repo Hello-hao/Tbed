@@ -16,7 +16,7 @@ private static Random random = new Random();
 public static String randomString(int length) {
 StringBuilder sb = new StringBuilder();
 for (int i = 0; i < length; i++) {
-sb.append(String.valueOf(CODE_SEQ[random.nextInt(CODE_SEQ.length)]));
+sb.append(CODE_SEQ[random.nextInt(CODE_SEQ.length)]);
 }
 return sb.toString();
 }
@@ -24,7 +24,7 @@ return sb.toString();
 public static String randomNumberString(int length) {
 StringBuilder sb = new StringBuilder();
 for (int i = 0; i < length; i++) {
-sb.append(String.valueOf(NUMBER_ARRAY[random.nextInt(NUMBER_ARRAY.length)]));
+sb.append(NUMBER_ARRAY[random.nextInt(NUMBER_ARRAY.length)]);
 }
 return sb.toString();
 }
