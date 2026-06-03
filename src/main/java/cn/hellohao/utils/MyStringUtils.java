@@ -70,7 +70,7 @@ public class MyStringUtils {
      * @return          URL
      */
     public static String concatDomainAndPath(String domain, String path) {
-        if (path != null && path.length() > 1 && path.charAt(0) != '/') {
+        if (path != null && path.length() > 1 && !path.startsWith("/")) {
             path = '/' + path;
         }
         if (domain.charAt(domain.length() - 1) == '/') {
