@@ -124,7 +124,7 @@
 <!--		</encoder>-->
 <!--	</appender>-->
 
-	<!--name包下的类的日志输出-->
+	<!-- cn.hellohao 包下类的日志输出 -->
 	<logger name="cn.hellohao" additivity="false" level="DEBUG" >
 		<appender-ref ref="CONSOLE" />
 		<appender-ref ref="INFO" />
