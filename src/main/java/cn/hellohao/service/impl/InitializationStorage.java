@@ -43,22 +43,23 @@ public class InitializationStorage implements CommandLineRunner {
     public void intiStorage(){
         List<Keys> keylist = keysMapper.getKeys();
         for (Keys key : keylist) {
-            if(key.getStorageType()!=0 && key.getStorageType()!=null){
-                if(key.getStorageType()==1){
+            Integer storageType = key.getStorageType();
+            if(storageType != null && storageType != 0){
+                if(storageType == 1){
                     NOSImageupload.Initialize(key);
-                }else if (key.getStorageType()==2){
+                }else if (storageType == 2){
                     OSSImageupload.Initialize(key);
-                }else if(key.getStorageType()==3){
+                }else if(storageType == 3){
                     USSImageupload.Initialize(key);
-                }else if(key.getStorageType()==4){
+                }else if(storageType == 4){
                     KODOImageupload.Initialize(key);
-                }else if(key.getStorageType()==6){
+                }else if(storageType == 6){
                     COSImageupload.Initialize(key);
-                }else if(key.getStorageType()==7){
+                }else if(storageType == 7){
                     FtpServiceImpl.Initialize(key);
-                }else if(key.getStorageType()==8){
+                }else if(storageType == 8){
                     S3Imageupload.Initialize(key);
-                }else if(key.getStorageType()==9){
+                }else if(storageType == 9){
                     WebDAVImageupload.Initialize(key);
                 }
             }
