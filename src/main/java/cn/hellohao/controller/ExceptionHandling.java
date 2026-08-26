@@ -31,7 +31,7 @@ public class ExceptionHandling {
     @ExceptionHandler
     public String test4(SocketException e){
         ModelAndView modelAndView = new ModelAndView("/index");
-        Print.Normal("存储源配置不正确，初始化失败"+ e.getMessage());
+        Print.Normal("存储源配置不正确，初始化失败：" + e.getMessage());
         e.printStackTrace();
         modelAndView.addObject("error",e.getMessage());
         return e.getMessage();
