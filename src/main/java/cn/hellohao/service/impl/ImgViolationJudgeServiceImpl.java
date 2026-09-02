@@ -6,7 +6,6 @@ import cn.hellohao.pojo.Images;
 import cn.hellohao.pojo.Imgreview;
 import cn.hellohao.pojo.Keys;
 import cn.hellohao.pojo.Msg;
-import cn.hellohao.utils.FirstRun;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baidu.aip.contentcensor.AipContentCensor;
@@ -22,7 +21,7 @@ import java.util.List;
 @Service
 public class ImgViolationJudgeServiceImpl {
 
-    private static Logger logger = LoggerFactory.getLogger(FirstRun.class);
+    private static Logger logger = LoggerFactory.getLogger(ImgViolationJudgeServiceImpl.class);
     @Autowired
     ImgreviewServiceImpl imgreviewService;
     @Autowired ImgMapper imgMapper;
