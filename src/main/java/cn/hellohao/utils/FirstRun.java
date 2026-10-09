@@ -201,13 +201,14 @@ public class FirstRun implements InitializingBean {
 
 
     public boolean isWindows() {
-        System.out.println("当前系统类型:"+System.getProperties().getProperty("os.name").toUpperCase());
-        if(System.getProperties().getProperty("os.name").toUpperCase().contains("MAC")){
+        String osName = System.getProperties().getProperty("os.name").toUpperCase();
+        System.out.println("当前系统类型:"+osName);
+        if(osName.contains("MAC")){
             GlobalConstant.SYSTYPE = "MAC";
             Properties props=System.getProperties();
             GlobalConstant.LOCPATH = props.getProperty("user.home")+File.separator+".HellohaoData";
         }
-        return System.getProperties().getProperty("os.name").toUpperCase().indexOf("WINDOWS") != -1;
+        return osName.indexOf("WINDOWS") != -1;
     }
 
     public static void contentToTxt(String filePath, String content) {
