@@ -86,6 +86,14 @@
 
 ### 快速开始
 
+启动包含本次修复的版本前，请生成并安全保存独立的 JWT 签名密钥（至少 32 字节）：
+
+```bash
+export HELLOHAO_JWT_SECRET="$(openssl rand -base64 32 | tr -d '\n')"
+```
+
+未设置、仅含空白或不足 32 字节时，应用拒绝启动。重启和多实例间应复用同一个密钥；也可通过 Spring 配置项 `jwt.secret` 提供。更换密钥后旧 JWT 失效，需要重新登录。新 JWT 不再包含密码，使用密钥保护的凭据版本标记保留改密后旧 JWT 无法恢复登录的行为；本次不迁移现有数据库的密码存储格式。
+
 **Docker-compose部署:**
 
 1. 创建`docker-compose.yml`文件
@@ -108,6 +116,7 @@
        volumes:
          - /HellohaoData/:/HellohaoData/
        environment:
+         HELLOHAO_JWT_SECRET: ${HELLOHAO_JWT_SECRET:?Set HELLOHAO_JWT_SECRET}
          MYSQL_URL: jdbc:mysql://hellohaodb/tbed?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
          # 数据库用户名（一般使用本镜像数据库无需修改，如果使用外部三方数据库自行修改自己的用户名）
          MYSQL_USERNAME: root
