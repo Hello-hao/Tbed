@@ -1,6 +1,7 @@
 package cn.hellohao.auth.filter;
 
 import cn.hellohao.auth.token.JWTUtil;
+import cn.hellohao.auth.token.JwtAuthenticationToken;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.impl.UserServiceImpl;
 import cn.hellohao.utils.SpringContextHolder;
@@ -93,8 +94,7 @@ public class SubjectFilter extends BasicHttpAuthenticationFilter {
             Subject subject = SecurityUtils.getSubject();
             User user = (User) subject.getPrincipal();
             if(user==null){
-                UsernamePasswordToken tokenOBJ = new UsernamePasswordToken(jsonObject.getString("email"),jsonObject.getString("password"));
-                tokenOBJ.setRememberMe(true);
+                JwtAuthenticationToken tokenOBJ = new JwtAuthenticationToken(token);
                 try {
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);//一小时

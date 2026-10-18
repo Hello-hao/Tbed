@@ -1,8 +1,12 @@
 package cn.hellohao.auth.shiro;
 
+import cn.hellohao.auth.token.JWTUtil;
+import cn.hellohao.auth.token.JwtAuthenticationToken;
 import cn.hellohao.pojo.User;
 import cn.hellohao.service.UserService;
 import cn.hellohao.utils.SetText;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -11,6 +15,7 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 
@@ -25,6 +30,11 @@ public class UserRealm extends AuthorizingRealm {
 
     @Autowired
     private UserService userService;
+
+    @Override
+    public boolean supports(AuthenticationToken token) {
+        return token instanceof JwtAuthenticationToken || super.supports(token);
+    }
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
@@ -44,6 +54,34 @@ public class UserRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken tokenOBJ) throws AuthenticationException {
+        if (tokenOBJ instanceof JwtAuthenticationToken) {
+            DecodedJWT jwt;
+            try {
+                jwt = JWTUtil.verifyToken((String) tokenOBJ.getCredentials());
+            } catch (JWTVerificationException e) {
+                throw new IncorrectCredentialsException("Invalid or expired JWT", e);
+            }
+            String email = jwt.getClaim("email").asString();
+            String uid = jwt.getClaim("uid").asString();
+            if (!StringUtils.hasText(email) || !StringUtils.hasText(uid)) {
+                throw new IncorrectCredentialsException("JWT identity is missing");
+            }
+            User lookup = new User();
+            lookup.setEmail(email);
+            lookup.setUid(uid);
+            User user = userService.getUsers(lookup);
+            if (user == null) {
+                throw new UnknownAccountException();
+            }
+            if (user.getIsok() == null || user.getIsok() < 1) {
+                throw new DisabledAccountException();
+            }
+            if (!JWTUtil.matchesCredentials(jwt, user)) {
+                throw new IncorrectCredentialsException("JWT credentials are no longer current");
+            }
+            // JWT signature verification authenticates this branch, not a password claim.
+            return new SimpleAuthenticationInfo(user, tokenOBJ.getCredentials(), getName());
+        }
         UsernamePasswordToken userToken = null;
         userToken = (UsernamePasswordToken)tokenOBJ;
         User user = new User();

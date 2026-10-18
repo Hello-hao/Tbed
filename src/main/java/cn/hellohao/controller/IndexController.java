@@ -1,6 +1,7 @@
 package cn.hellohao.controller;
 
 import cn.hellohao.auth.token.JWTUtil;
+import cn.hellohao.auth.token.JwtAuthenticationToken;
 import cn.hellohao.config.GlobalConstant;
 import cn.hellohao.pojo.*;
 import cn.hellohao.service.*;
@@ -17,7 +18,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -239,10 +239,7 @@ public class IndexController {
             JSONObject tokenJson = JWTUtil.checkToken(token);
             if (tokenJson.getBoolean("check")) {
                 Subject subject = SecurityUtils.getSubject();
-                UsernamePasswordToken tokenOBJ =
-                        new UsernamePasswordToken(
-                                tokenJson.getString("email"), tokenJson.getString("password"));
-                tokenOBJ.setRememberMe(true);
+                JwtAuthenticationToken tokenOBJ = new JwtAuthenticationToken(token);
                 try {
                     subject.login(tokenOBJ);
                     SecurityUtils.getSubject().getSession().setTimeout(3600000);
